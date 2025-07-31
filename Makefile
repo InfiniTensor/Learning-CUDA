@@ -9,14 +9,14 @@
 # *********************************************************************
 
 # -------------------------------
-# Configuration (Teacher-Adjustable)
+# Configuration
 # -------------------------------
 CC              := nvcc                  # CUDA compiler
-CFLAGS          := -std=c++17 -O0        # Compile flags (adjust as needed)
-TARGET          := test_kth_largest      # Executable name (fixed)
-STUDENT_SRC     := src/kernels.cu        # Student's kernel implementation (EDITABLE)
+CFLAGS          := -std=c++17 -O0        # Compile flags
+TARGET          := test_kernels     	 # Executable name
+STUDENT_SRC     := src/kernels.cu        # Kernel implementation 
 STUDENT_OBJ     := $(STUDENT_SRC:.cu=.o) # Compiled student object (auto-generated)
-TEST_OBJ        := tester/tester.o       # Pre-compiled test object (NO SOURCE)
+TEST_OBJ        := tester/tester.o       # Pre-compiled test object
 TEST_VERBOSE_FLAG := --verbose            # Tester's actual verbose argument (e.g., --verbose, -v)
 VERBOSE         :=                      # User-provided verbose mode (true/false; default: false)
 
@@ -49,7 +49,7 @@ run: $(TARGET)
 	fi
 	./$(TARGET) $(VERBOSE_ARG)
 
-# Clean target: Delete temporary files (executable + student object)
+# Clean target: Delete temporary files (executable + src object)
 clean:
 	@echo "=== Cleaning temporary files ==="
 	rm -f $(TARGET) $(STUDENT_OBJ)
@@ -57,12 +57,12 @@ clean:
 # -------------------------------
 # Dependency Rules (Core Logic)
 # -------------------------------
-# Generate executable: Link student code (kernels.o) with test logic (tester.o)
+# Generate executable: Link kernel code (kernels.o) with test logic (tester.o)
 $(TARGET): $(STUDENT_OBJ) $(TEST_OBJ)
 	@echo "=== Linking executable (student code + test logic) ==="
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Generate student object: Compile kernels.cu (triggers template instantiation)
+# Generate src object: Compile kernels.cu (triggers template instantiation)
 $(STUDENT_OBJ): $(STUDENT_SRC)
 	@echo "=== Compiling student code (src/kernels.cu) ==="
 	$(CC) $(CFLAGS) -c $< -o $@
