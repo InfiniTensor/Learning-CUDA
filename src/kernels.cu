@@ -1,21 +1,10 @@
 #include <vector>
 #include <iostream>
-
+#include <algorithm>
+#include <limits>
 #include "../tester/utils.h"
 
-/**
- * @brief Find the k-th largest element in a vector using CUDA.
- * 
- * @tparam T Type of elements in the input vector (should support `int` and `float`).
- * @param h_input Host-side input vector.
- * @param k 1-based index of the element to find (e.g., `k=1` returns the largest element).
- * @return T The k-th largest element in `h_input`.
 
- * @note Must use CUDA kernels for all compute-intensive steps; no significant CPU allowed.
- * @note Library functions that can directly complete a significant part of the work are NOT allowed. 
- * @note For invalid cases, return T(-100).
- * @note Handles device memory management (allocate/copy/free) internally. Errors should be thrown.
- */
 // 定义一个CUDA核函数，用于比较和交换元素
 template <typename T>
 __global__ void compareAndSwap(T* data, int j, int k, size_t n) {
@@ -39,6 +28,19 @@ __global__ void compareAndSwap(T* data, int j, int k, size_t n) {
   }
 }
 
+/**
+ * @brief Find the k-th largest element in a vector using CUDA.
+ * 
+ * @tparam T Type of elements in the input vector (should support `int` and `float`).
+ * @param h_input Host-side input vector.
+ * @param k 1-based index of the element to find (e.g., `k=1` returns the largest element).
+ * @return T The k-th largest element in `h_input`.
+
+ * @note Must use CUDA kernels for all compute-intensive steps; no significant CPU allowed.
+ * @note Library functions that can directly complete a significant part of the work are NOT allowed. 
+ * @note For invalid cases, return T(-100).
+ * @note Handles device memory management (allocate/copy/free) internally. Errors should be thrown.
+ */
 template <typename T>
 T kthLargest(const std::vector<T>& h_input, size_t k) {
   // 检查输入是否有效
@@ -48,28 +50,32 @@ T kthLargest(const std::vector<T>& h_input, size_t k) {
 
   size_t n = h_input.size();
   
-  // 分配设备内存
-  T* d_input = nullptr;
-  CUDA_CHECK(cudaMalloc(&d_input, n * sizeof(T)));
-  
-  // 将输入数据复制到设备
-  CUDA_CHECK(cudaMemcpy(d_input, h_input.data(), n * sizeof(T), cudaMemcpyHostToDevice));
-  
-  // 定义每个线程块的线程数
-  const int threadsPerBlock = 256;
-  const int numBlocks = (n + threadsPerBlock - 1) / threadsPerBlock;
-  
-  // 实现双调排序
   // 使数组大小为2的幂，便于双调排序
   size_t powerOfTwoSize = 1;
   while (powerOfTwoSize < n) {
     powerOfTwoSize <<= 1;
   }
+
+  // 创建一个主机端的填充向量，用数据类型的最小值填充
+  std::vector<T> h_padded_input(powerOfTwoSize, std::numeric_limits<T>::lowest());
+  std::copy(h_input.begin(), h_input.end(), h_padded_input.begin());
+  
+  // 分配设备内存（使用填充后的大小）
+  T* d_input = nullptr;
+  CUDA_CHECK(cudaMalloc(&d_input, powerOfTwoSize * sizeof(T)));
+  
+  // 将填充后的输入数据复制到设备
+  CUDA_CHECK(cudaMemcpy(d_input, h_padded_input.data(), powerOfTwoSize * sizeof(T), cudaMemcpyHostToDevice));
+  
+  // 定义每个线程块的线程数（基于填充后的大小）
+  const int threadsPerBlock = 256;
+  const int numBlocks = (powerOfTwoSize + threadsPerBlock - 1) / threadsPerBlock;
   
   // 双调排序 - 先构建双调序列，然后进行合并排序
   for (size_t k_step = 2; k_step <= powerOfTwoSize; k_step <<= 1) {
     for (size_t j = k_step >> 1; j > 0; j >>= 1) {
-      compareAndSwap<T><<<numBlocks, threadsPerBlock>>>(d_input, j, k_step, n);
+      // 向核函数传递填充后的大小
+      compareAndSwap<T><<<numBlocks, threadsPerBlock>>>(d_input, j, k_step, powerOfTwoSize);
       CUDA_CHECK(cudaDeviceSynchronize());
     }
   }
@@ -84,22 +90,7 @@ T kthLargest(const std::vector<T>& h_input, size_t k) {
   return result;
 }
 
-/**
- * @brief Computes flash attention for given query, key, and value tensors.
- * 
- * @tparam T Data type (float) for input/output tensors
- * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] batch_size Batch dimension size
- * @param[in] target_seq_len Target sequence length
- * @param[in] src_seq_len Source sequence length  
- * @param[in] query_heads Number of query attention heads
- * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
- * @param[in] head_dim Dimension size of each attention head
- * @param[in] is_causal Whether to apply causal masking
- */
+
 // CUDA核函数，用于计算注意力分数和输出
 template <typename T>
 __global__ void flashAttentionKernel(
@@ -185,6 +176,22 @@ __global__ void flashAttentionKernel(
     }
 }
 
+/**
+ * @brief Computes flash attention for given query, key, and value tensors.
+ * 
+ * @tparam T Data type (float) for input/output tensors
+ * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
+ * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
+ * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
+ * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
+ * @param[in] batch_size Batch dimension size
+ * @param[in] target_seq_len Target sequence length
+ * @param[in] src_seq_len Source sequence length  
+ * @param[in] query_heads Number of query attention heads
+ * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
+ * @param[in] head_dim Dimension size of each attention head
+ * @param[in] is_causal Whether to apply causal masking
+ */
 template <typename T>
 void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
