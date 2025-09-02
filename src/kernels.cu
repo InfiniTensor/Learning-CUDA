@@ -176,7 +176,7 @@ __global__ void flashAttentionKernel(
 
   if (batch_id >= batch_size || heads_id >= query_heads) return;
   
-  extern __shared__ uint8_t shared_mem[];
+  extern __shared__ unsigned char shared_mem[];
   T* scores = reinterpret_cast<T*>(shared_mem);
   T* smem = scores + src_seq_len;
 
