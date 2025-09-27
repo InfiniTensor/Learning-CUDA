@@ -25,16 +25,9 @@ __global__ void bitonic_sort_kernel(T* input, int n, int desc, int k, int j) {
   T valx = input[x];
   T valy = input[y];
   T val;
-  if ((valx > valy) == (desc ^ ((x & k) != 0))) {
-    if (x > y) {
+  if ((valx < valy) == (desc ^ ((x & k) != 0))) {
       input[x] = valy;
       input[y] = valx;
-    } 
-  } else {
-    if (x < y) {
-      input[x] = valy;
-      input[y] = valx;  
-    }
   }
 }
 
