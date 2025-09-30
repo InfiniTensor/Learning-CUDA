@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     std::uniform_int_distribution<uint64_t> dis;
 
     for (uint64_t i = 0; i < data_size; i ++)
-        fprintf(fp, "%llu ", dis(gen) % (1ULL << 30));
+        fprintf(fp, "%llu ", dis(gen) & 0xFFFFFFFF00000000);
 
     fclose(fp);
 
