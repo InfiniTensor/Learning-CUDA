@@ -1,0 +1,4 @@
+.vscode
+output/
+unique_extraction/tester/input.in
+unique_extraction/tester/output.out
