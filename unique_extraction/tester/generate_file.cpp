@@ -1,7 +1,9 @@
+#include <omp.h>
 #include <iostream>
 #include <random>
 #include <cstdint>
 
+#define FILE_DATA_SIZE (1 << 24)
 
 int main(int argc, char* argv[]) {
     
@@ -33,18 +35,46 @@ int main(int argc, char* argv[]) {
 
     printf("data_size: %llu\n", data_size);
 
-    FILE* fp;
+    int n = (data_size + FILE_DATA_SIZE - 1) / FILE_DATA_SIZE;
 
-    fp = std::fopen("./tester/input.in", "w");
+    const int num_threads = omp_get_max_threads();
 
-    std::random_device rd;
-    std::mt19937_64 gen(rd());
-    std::uniform_int_distribution<uint64_t> dis;
+    std::vector<uint64_t> seed(num_threads);
+    
+    {
+        std::random_device rd;
+        std::mt19937_64 gen(rd());
+        for (int i = 0; i < num_threads; i++)
+            seed[i] = gen();
+    }
 
-    for (uint64_t i = 0; i < data_size; i ++)
-        fprintf(fp, "%llu ", dis(gen) & 0xFFFFFFFF00000000);
+    #pragma omp parallel for 
+    for (int i = 0; i < n; i++) {
 
-    fclose(fp);
+        int tid = omp_get_thread_num();
+        int data_len = std::min((uint64_t)FILE_DATA_SIZE, data_size - i * FILE_DATA_SIZE);
+        char path[100];
+        snprintf(path, 100 * sizeof(char), "./tester/input/uint64-%llu-%llu.in", data_len, i);
+        
+        FILE* fp;
+
+        fp = std::fopen(path, "w");
+    
+        if (!fp) {
+            fprintf(stderr, "无法创建文件 %s\n", path);
+            continue;
+        } else {
+            fprintf(stdout, "创建成功 %s\n", path);
+        }
+
+        std::mt19937_64 gen(seed[tid]);
+        std::uniform_int_distribution<uint64_t> dis;
+    
+        for (uint64_t j = 0; j < data_len; j ++)
+            fprintf(fp, "%llu ", dis(gen) & 0xFFFFFFFF00000000);
+    
+        fclose(fp);
+    }
 
     return 0;
 }

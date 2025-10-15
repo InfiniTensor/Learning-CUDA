@@ -1,4 +1,6 @@
-
+#include <omp.h>
+#include <filesystem>
+#include <regex>
 #include <vector>
 #include <cstdlib>
 #include <cstdint>
@@ -6,7 +8,9 @@
 #include <sys/mman.h>
 #include <memory>
 #include <random>
+#include <iostream>
 
+#define FILE_DATA_SIZE (1 << 24)
 #define BLOCKSIZE 256
 
 const uint64_t data_tile_size = 1 << 24;
@@ -234,6 +238,7 @@ void write_tile(
     uint64_t* data, uint64_t* scan, uint64_t data_size, 
     uint64_t* write, uint64_t* result, uint64_t& result_size
 ) {
+    cudaMemcpy(&result_size, scan + data_size - 1, sizeof(uint64_t), cudaMemcpyDeviceToHost);
     
     int threadsPerBlock = BLOCKSIZE;
     int blocksPerGrid = (data_size + threadsPerBlock - 1) / threadsPerBlock;
@@ -241,7 +246,6 @@ void write_tile(
     write_tile_kernel<<<blocksPerGrid, threadsPerBlock>>>(data, scan, data_size, write);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(&result_size, scan + data_size - 1, sizeof(uint64_t), cudaMemcpyDeviceToHost);
     cudaMemcpy(result, write, result_size * sizeof(uint64_t), cudaMemcpyDeviceToHost);
 }
 
@@ -255,79 +259,154 @@ void write_tile(
  *          -->分块以前缀和标记下标写回独特特征-->分块写入output_path
  */
 void unique_extraction(std::string input_path, std::string output_path = "unique_feature.output") {
-    uint64_t data_size = 0, end_size = 0;
-    std::vector<uint64_t> data;
-
-
-    FILE *fp_input, *fp_output;
-    fp_input = std::fopen(input_path.c_str(), "r");
-    fp_output = std::fopen(output_path.c_str(), "w");
     
-    uint64_t tmp;
-    while (std::fscanf(fp_input, "%llu", &tmp) != EOF) {
-        data.push_back(tmp);
-        data_size ++;
+
+    uint64_t data_size = 0;
+    size_t file_num = 0;
+
+    std::string folderPath = input_path;
+    std::regex filePattern(R"(uint64-(\d+)-(\d+)\.in)");
+
+    std::vector<std::string> filename;
+    std::vector<uint64_t> data_len;
+
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+            if (!entry.is_regular_file()) continue;
+            
+            filename.push_back(entry.path().filename().string());
+
+            std::smatch matches;
+
+            if (std::regex_match(filename[file_num], matches, filePattern)) {
+                data_len.push_back(std::stoull(matches[1].str()));
+                data_size += data_len[file_num];
+
+            }
+            file_num ++;
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << "\n";
     }
 
-    printf("data_size: %llu\n", data_size);
+    std::cout << "number of data: " << data_size << "\n";
+    std::cout << "number of files: " << file_num << "\n";
 
+    std::cout << "Max threads: " << omp_get_max_threads() << "\n";
+
+    std::vector<uint64_t> data(data_size);
+
+    uint64_t file_cnt = 0;
+
+    bool file_check = true;
+
+    #pragma omp parallel for
+    for (int i = 0; i < file_num; i++) {
+        FILE *fp_input;
+        fp_input = std::fopen((folderPath + filename[i]).c_str(), "r");
+
+        if (!fp_input) {
+            std::cout << "false to open file " << filename[i] << "\n";
+            continue;
+        }
+
+        uint64_t it = 0;
+        #pragma omp atomic capture
+        {
+            it = file_cnt;
+            file_cnt += data_len[i];
+        }
+        
+        uint64_t tmp, check = 0;
+        while (std::fscanf(fp_input, "%llu", &tmp) != EOF) {
+            data[it++] = tmp;
+            check ++;
+        }
+        if (check != data_len[i]) {
+            file_check = false;
+        }
+        
+        std::fclose(fp_input);
+        
+    }
+    
+    if (!file_check || file_cnt != data_size) {
+        std::cout << file_check << " " << file_cnt << "\n";
+        std::cerr << "false to read file\n";
+    } else {
+        std::cout << "success to read file\n";
+    }
+    
     uint64_t *d_data1, *d_data2, *d_data3;
     cudaMalloc(&d_data1, data_tile_size * sizeof(uint64_t));
     cudaMalloc(&d_data2, data_tile_size * sizeof(uint64_t));
     cudaMalloc(&d_data3, data_tile_size * sizeof(uint64_t));
-
     
-    printf("sort start\n");
+    
+    printf("sort of all element start\n");
     // 全特征排序
     bitonic_sort(data.data(), data_size, d_data1, d_data2);
-    printf("sort end\n");
-
-    auto result = std::make_unique<uint64_t[]>(data_tile_size);
-
+    printf("sort of all element end\n");
+    
+    // auto result = std::make_unique<uint64_t[]>(data_tile_size);
+    
+    
+    uint64_t end_size = 0;
+    
     for (uint64_t i = 0; i < data_size; i += data_tile_size) {
-        printf("tile range %llu start\n", i / data_tile_size);
         uint64_t tile_size = std::min(data_tile_size, data_size - i);
-
+        
         
         // 用于判断分块的第一个元素是否 unique
         uint64_t first_mark = i == 0 || data[i - 1] != data[i];
         // 标记 unique feature
         mark_tile(data.data() + i, tile_size, d_data1, d_data2, first_mark);
         
-        printf("tile range %llu mark finish\n", i / data_tile_size);
-
-
         // scan_tile
         scan_tile(d_data2, tile_size, d_data3);
 
-
-        printf("tile range %llu scan finish\n", i / data_tile_size);
-
         uint64_t result_size;
-        write_tile(d_data1, d_data3, tile_size, d_data2, result.get(), result_size);
+        write_tile(d_data1, d_data3, tile_size, d_data2, data.data() + end_size, result_size);
 
-        
-        printf("tile range %llu write finish\n", i / data_tile_size);
-
-        for (uint64_t _ = 0; _ < result_size; _ ++)
-            fprintf(fp_output, "%llu ", result[_]);
         end_size += result_size;
-        printf("tile range %llu end\n", i / data_tile_size);
-
+        
+        printf("tile range %llu finished\n", i / data_tile_size);
     }
 
-    printf("end_size: %llu\n", end_size);
+
+    int out_file_num = (end_size + FILE_DATA_SIZE - 1) / FILE_DATA_SIZE;
+    
+    std::cout << "number of out element: " << end_size << "\n";
+    std::cout << "number of out file: " << out_file_num << "\n";
+
+    #pragma omp parallel for 
+    for (int i = 0; i < out_file_num; i++) {
+
+        int tid = omp_get_thread_num();
+        uint64_t out_start = i * FILE_DATA_SIZE;
+        int out_len = std::min((uint64_t)FILE_DATA_SIZE, end_size - out_start);
+        char path[100];
+        snprintf(path, 100 * sizeof(char), "./tester/output/uint64-%llu-%llu.out", out_len, i);
+        
+        FILE* fp;
+
+        fp = std::fopen(path, "w");
+        
+        for (uint64_t j = 0; j < out_len; j ++)
+            fprintf(fp, "%llu ", data[out_start + j]);
+    
+        fclose(fp);
+    }
 
     cudaFree(d_data1);
     cudaFree(d_data2);
     cudaFree(d_data3);
-
-    std::fclose(fp_input);
-    std::fclose(fp_output);
 }
 
 // test
 int main() {
-    unique_extraction("./tester/input.in", "./tester/output.out");
+    unique_extraction("./tester/input/", "./tester/output/");
     return 0;
 }
+
+// 381344736
