@@ -21,107 +21,89 @@
 #define FULLMASK 0xffffffff
 
 template <typename T>
-__device__ T BlockReduce(T val)
+__device__ T WarpReduce(T val)
 {
-    const int tid = threadIdx.x;
-    const int warpID = tid / warpSize;
-    const int laneID = tid % warpSize;
-
-    for (size_t offset = warpSize / 2; offset > 0; offset >>= 1)
+    for (int offset = warpSize / 2; offset > 0; offset >>= 1)
     {
         val += __shfl_down_sync(FULLMASK, val, offset);
-    }
-
-    
-    __shared__ T warp_shared[32];
-    if (laneID == 0)
-    {
-        warp_shared[warpID] = val;
-    }
-    __syncthreads();
-
-    if (warpID == 0)
-    {
-
-        if (laneID < blockDim.x / warpSize) val = warp_shared[laneID];
-        else val = 0;
-
-        for (size_t offset = warpSize / 2; offset > 0; offset >>= 1)
-        {
-            val += __shfl_down_sync(FULLMASK, val, offset);
-        }
     }
     return val;
 }
 
 
 template <typename T>
-__global__ void trace_kernel(T* d_input, T* d_output, const size_t N)
+__global__ void trace_kernel(const T* d_input, T* d_output, const size_t N)
 {
-    const size_t tid = threadIdx.x;
-    const size_t bid = blockIdx.x;
-    const size_t global_id = tid + bid * blockDim.x;
 
-    T sum = (T)0;
-    for (size_t i =  global_id; i < N; i += blockDim.x * gridDim.x)
+    extern __shared__ char shared_mem[];
+    T* smem = reinterpret_cast<T*>(shared_mem);
+
+    const size_t tid = threadIdx.x;
+    const size_t idx = tid + blockIdx.x * blockDim.x;
+
+    T sum = 0;
+    for (int i = idx; i < N; i += blockDim.x * gridDim.x)
     {
         sum += d_input[i];
     }
 
-    sum = BlockReduce<T>(sum);
+    T warp_sum = WarpReduce<T>(sum);
 
-    if (tid == 0)
-        d_output[bid] = sum;
+    const size_t warpID = tid / warpSize;
+    const size_t laneID = tid % warpSize;
 
+    if (laneID == 0)
+    {
+        smem[warpID] = warp_sum;
+    }
+    __syncthreads();
+
+    if (warpID == 0)
+    {
+        T block_sum = (tid < (blockDim.x + warpSize - 1) / warpSize) ? smem[laneID] : 0;
+        block_sum = WarpReduce(block_sum);
+        if (tid == 0) atomicAdd(d_output, block_sum);
+    }
 }
 
 template <typename T>
 T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-    // 1. 正常的对角线提取
+
     const size_t n_diag = (rows < cols) ? rows : cols;
     std::vector<T> temp;
     temp.reserve(n_diag);
     for (size_t i = 0; i < n_diag; i++) {
-        temp.push_back(h_input[i * cols + i]);
+        temp.push_back(h_input[(size_t)i * cols + i]);
     }
+
 
     const size_t N = temp.size();
     const size_t num_bytes = sizeof(T) * N;
 
-    // 2. 准备设备内存
     T *d_input, *d_output;
     cudaMalloc((void**)&d_input, num_bytes);
-    
-    // 获取硬件属性
-    int deviceID;
-    cudaGetDevice(&deviceID);
-    cudaDeviceProp prop;
-    cudaGetDeviceProperties(&prop, deviceID);
-    size_t threads = prop.maxThreadsPerBlock;
-    size_t blocks = (N + threads - 1) / threads;
+    cudaMalloc((void**)&d_output, sizeof(T));
+    cudaMemset(d_output, 0, sizeof(T));
 
-    // 输出只需要存下每个 block 的结果
-    cudaMalloc((void**)&d_output, blocks * sizeof(T));
     cudaMemcpy(d_input, temp.data(), num_bytes, cudaMemcpyHostToDevice);
 
+    int threadsPerBlock = 1024;
+    int blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
 
-    trace_kernel<T><<<blocks, threads>>>(d_input, d_output, N);
+    size_t smem_size = threadsPerBlock * sizeof(T);
 
+    trace_kernel<T><<<blocksPerGrid, threadsPerBlock, smem_size>>>(d_input, d_output, N);
+
+    T h_res = 0;
     cudaDeviceSynchronize();
 
-    std::vector<T> h_output(blocks);
-    cudaMemcpy(h_output.data(), d_output, blocks * sizeof(T), cudaMemcpyDeviceToHost);
+    cudaMemcpy(&h_res, d_output, sizeof(T), cudaMemcpyDeviceToHost);
 
-    T res = (T)0;
-    for (const auto& val : h_output) {
-        res += val;
-    }
 
-    // 释放资源
     cudaFree(d_input);
     cudaFree(d_output);
 
-    return res;
+    return h_res;
 }
 /**
  * @brief Computes flash attention for given query, key, and value tensors.
