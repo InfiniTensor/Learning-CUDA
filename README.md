@@ -21,7 +21,7 @@ learning-CUDA/
     └── utils.h
 ```  
 
-## 环境配置
+## 🌳 环境配置
 
 ### > 英伟达（NVIDIA）
 
@@ -43,9 +43,10 @@ learning-CUDA/
 
 - 对于非训练营所提供的天数算力，请配置标准的天数 GPU 开放环境。本次作业在天数上默认需支持 C++17，且**本次作业的配置不保证能在所有其他天数环境上无修改直接运行**。
 
-### > 沐曦集成电路（Metax）
+### > 沐曦集成电路（MetaX）
 
 - 如果你使用的是训练营所提供的服务器，遵照沐曦 (C500) 算力文档中的步骤配置好环境即可。
+  - 镜像可以选择 PyTorch 的最新镜像，即 PyTorch 2.8.0， Python 3.1.2，maca 3.3.0.4
 
 - 对于非训练营所提供的沐曦算力，请配置标准的沐曦 GPU 开放环境。本次作业在沐曦上默认需支持 C++17，且**本次作业的配置不保证能在所有其他沐曦环境上无修改直接运行**。
 
@@ -77,6 +78,18 @@ learning-CUDA/
 
 实现 Flash Attention 算子。需支持 causal masking 和 GQA。具体行为与 [torch.nn.functional.scaled_dot_product_attention](https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html) 保持一致。接口未提供的参数所代表的功能无需支持和实现。具体参数要求请参考文件中的注释。该函数需支持 `float` 和 `half` 两种类型。
 
+### 国产平台适配
+
+在完成英伟达的基础上，可以将实现适配至天数、沐曦和/或摩尔这三款 GPU 平台上。
+
+- 天数适配需同样在 `src/kernels.cu` 中进行；
+  
+- 沐曦适配需在 `src/kernels.maca` 中进行；
+
+- 摩尔适配需在 `src/kernels.mu` 中进行；
+
+具体编译和运行方式以及国产适配对评分的影响，分别可见下面的 **编译与运行** 与 **评分规则** 两部分。
+
 ### 注意事项
 
 1. **禁止抄袭与舞弊**，包括抄袭其他学员的代码和开源实现。可以讨论和参考思路，但禁止直接看/抄代码。一经发现，成绩作废并失去进入项目阶段和后续实习与推荐等资格；
@@ -86,7 +99,7 @@ learning-CUDA/
 5. 需进行**适当**的代码注释解释重要部分；
 
 ### 提交方式
-在网站 [InfiniTensor 开源社区](https://www.infinitensor.com/camp/winter2025/homework) 上提交 GitHub 链接，以最新提交为准。
+在网站 [InfiniTensor 开源社区](https://www.infinitensor.com/camp/winter2025/homework) 上提交 GitHub 链接，无需提交 PR，无需重复提交，评分将以截止日期前的最新提交为准。详细提交方式可见作业提交页面。
 
 ## 🛠️ 编译与运行
 
