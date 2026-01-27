@@ -1,16 +1,65 @@
 #include <vector>
-#include <type_traits>
 #include <cuda_fp16.h>
-
 #include "../tester/utils.h"
 
 template <typename T>
-__device__ __forceinline__ double exp_compat(double x) {
-  if constexpr (std::is_same_v<T, float>) {
-    return static_cast<double>(expf(static_cast<float>(x)));
-  } else {
-    return exp(x);
-  }
+__global__ void trace_kernel(const T* input, T* output, size_t rows, size_t cols) {
+    __shared__ T trace_sdata[256];
+
+    size_t diag_size = min(rows, cols);
+    unsigned int tid = threadIdx.x;
+    unsigned int i = blockIdx.x * 256 + threadIdx.x;
+
+    T sum = 0;
+    for (size_t j = i; j < diag_size; j += gridDim.x * 256) {
+        sum += input[j * cols + j];
+    }
+    trace_sdata[tid] = sum;
+    __syncthreads();
+
+    for (unsigned int s = 256 / 2; s > 0; s >>= 1) {
+        if (tid < s) {
+            trace_sdata[tid] += trace_sdata[tid + s];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0) {
+        output[blockIdx.x] = trace_sdata[0];
+    }
+}
+
+template <typename T>
+T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
+    if (h_input.empty() || rows == 0 || cols == 0) {
+        return T(0);
+    }
+
+    T* d_input = nullptr;
+    T* d_output = nullptr;
+    T h_output = T(0);
+
+    const size_t input_size = h_input.size() * sizeof(T);
+
+    unsigned int num_threads = 256;
+    unsigned int num_blocks = 1;
+
+    const size_t output_size = num_blocks * sizeof(T);
+
+    cudaMalloc(&d_input, input_size);
+    cudaMalloc(&d_output, output_size);
+
+    cudaMemcpy(d_input, h_input.data(), input_size, cudaMemcpyHostToDevice);
+    cudaMemset(d_output, 0, output_size);
+
+    trace_kernel<T><<<num_blocks, num_threads>>>(d_input, d_output, rows, cols);
+
+    cudaMemcpy(&h_output, d_output, sizeof(T), cudaMemcpyDeviceToHost);
+
+    cudaFree(d_input);
+    cudaFree(d_output);
+
+    return h_output;
 }
 
 // Naive (non-Flash) attention for float correctness.
@@ -107,97 +156,12 @@ __global__ void attention_naive_float_kernel(
   }
 }
 
-/**
- * @brief Computes the trace of a matrix.
- *
- * The trace of a matrix is defined as the sum of its diagonal elements.
- * This function expects a flattened row-major matrix stored in a
- * std::vector. If the matrix is not square, the trace will sum up
- * elements along the main diagonal up to the smaller of rows or cols.
- *
- * @tparam T The numeric type of matrix elements (e.g., float, int).
- * @param h_input A flattened matrix of size rows * cols.
- * @param rows Number of rows in the matrix.
- * @param cols Number of columns in the matrix.
- * @return The trace (sum of diagonal values) of the matrix.
- */
-template <typename T>
-__global__ void trace_kernel(const T* input, T* output, size_t rows, size_t cols) {
-    __shared__ T trace_sdata[256];
-
-    size_t diag_size = min(rows, cols);
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x * 256 + threadIdx.x;
-
-    T sum = 0;
-    for (size_t j = i; j < diag_size; j += gridDim.x * 256) {
-        sum += input[j * cols + j];
-    }
-    trace_sdata[tid] = sum;
-    __syncthreads();
-
-    for (unsigned int s = 256 / 2; s > 0; s >>= 1) {
-        if (tid < s) {
-            trace_sdata[tid] += trace_sdata[tid + s];
-        }
-        __syncthreads();
-    }
-
-    if (tid == 0) {
-        output[blockIdx.x] = trace_sdata[0];
-    }
-}
-
-template <typename T>
-T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-    if (h_input.empty() || rows == 0 || cols == 0) {
-        return T(0);
-    }
-
-    T* d_input = nullptr;
-    T* d_output = nullptr;
-    T h_output = T(0);
-
-    const size_t input_size = h_input.size() * sizeof(T);
-
-    unsigned int num_threads = 256;
-    unsigned int num_blocks = 1;
-
-    const size_t output_size = num_blocks * sizeof(T);
-
-    cudaMalloc(&d_input, input_size);
-    cudaMalloc(&d_output, output_size);
-
-    cudaMemcpy(d_input, h_input.data(), input_size, cudaMemcpyHostToDevice);
-    cudaMemset(d_output, 0, output_size);
-
-    trace_kernel<T><<<num_blocks, num_threads>>>(d_input, d_output, rows, cols);
-
-    cudaMemcpy(&h_output, d_output, sizeof(T), cudaMemcpyDeviceToHost);
-
-    cudaFree(d_input);
-    cudaFree(d_output);
-
-    return h_output;
-}
-
-/**
- * @brief Flash Attention kernel implementation.
- * 
- * This kernel implements the Flash Attention algorithm with support for:
- * - Causal masking
- * - Grouped Query Attention (GQA)
- * - Block-wise computation to reduce memory usage
- * 
- * The algorithm uses online softmax to avoid storing the full attention matrix.
- * Each thread block processes one query block and iterates over key/value blocks.
- */
 template <typename T>
 __global__ void flash_attention_kernel(
-    const T* __restrict__ Q,      // [batch_size, tgt_seq_len, query_heads, head_dim]
-    const T* __restrict__ K,      // [batch_size, src_seq_len, kv_heads, head_dim]
-    const T* __restrict__ V,      // [batch_size, src_seq_len, kv_heads, head_dim]
-    T* __restrict__ O,            // [batch_size, tgt_seq_len, query_heads, head_dim]
+    const T* __restrict__ Q,
+    const T* __restrict__ K,
+    const T* __restrict__ V,
+    T* __restrict__ O,
     int batch_size,
     int tgt_seq_len,
     int src_seq_len,
@@ -209,31 +173,15 @@ __global__ void flash_attention_kernel(
     bool is_causal,
     float scale) {
     
-    // Calculate indices for this thread block
     const int batch_idx = blockIdx.z;
     const int q_head_idx = blockIdx.y;
     const int q_block_idx = blockIdx.x;
-
-    // Causal masking (standard): allow key positions up to query position.
-    
-    // Calculate the actual query block start and end
     const int q_start = q_block_idx * block_size_q;
     const int q_end = min(q_start + block_size_q, tgt_seq_len);
     const int q_block_len = q_end - q_start;
-    
-    // Calculate which KV head this query head maps to (for GQA)
     const int kv_head_idx = (q_head_idx * kv_heads) / query_heads;
     
-    // Shared memory layout (use double for better precision in intermediate calculations)
-    // - Q block: block_size_q * head_dim
-    // - K block: block_size_kv * head_dim
-    // - V block: block_size_kv * head_dim
-    // - S (scores): block_size_q * block_size_kv (double for precision)
-    // - O (output accumulator): block_size_q * head_dim (double, to improve float accuracy)
-    // - m (max): block_size_q (double for precision)
-    // - l (sum): block_size_q (double for precision)
     extern __shared__ char shared_mem[];
-    // Calculate offsets with proper alignment
     size_t offset = 0;
     T* q_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_q * head_dim * sizeof(T);
@@ -244,17 +192,14 @@ __global__ void flash_attention_kernel(
     T* v_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_kv * head_dim * sizeof(T);
     
-    // Align to double boundary
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* s_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * block_size_kv * sizeof(double);
     
-    // Align to double boundary for accumulator
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* o_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * head_dim * sizeof(double);
     
-    // Align to double boundary
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* m_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * sizeof(double);
@@ -264,8 +209,6 @@ __global__ void flash_attention_kernel(
     const int tid = threadIdx.x;
     const int num_threads = blockDim.x;
     
-    // Initialize output and statistics in shared memory
-    // o_shared stores unnormalized output (will be normalized at the end)
     for (int i = tid; i < q_block_len; i += num_threads) {
         m_shared[i] = -INFINITY;
         l_shared[i] = 0.0;
@@ -275,7 +218,6 @@ __global__ void flash_attention_kernel(
     }
     __syncthreads();
     
-    // Load Q block into shared memory
     for (int i = tid; i < q_block_len * head_dim; i += num_threads) {
         int q_idx = i / head_dim;
         int d_idx = i % head_dim;
@@ -291,15 +233,14 @@ __global__ void flash_attention_kernel(
     }
     __syncthreads();
     
-    // Iterate over KV blocks
     const int num_kv_blocks = (src_seq_len + block_size_kv - 1) / block_size_kv;
     
     for (int kv_block_idx = 0; kv_block_idx < num_kv_blocks; kv_block_idx++) {
         const int kv_start = kv_block_idx * block_size_kv;
         const int kv_end = min(kv_start + block_size_kv, src_seq_len);
         const int kv_block_len = kv_end - kv_start;
+        const double scale_d = static_cast<double>(scale);
         
-        // Load K and V blocks into shared memory
         for (int i = tid; i < kv_block_len * head_dim; i += num_threads) {
             int kv_idx = i / head_dim;
             int d_idx = i % head_dim;
@@ -320,144 +261,74 @@ __global__ void flash_attention_kernel(
         }
         __syncthreads();
         
-        // Compute QK^T for this block (use double for precision)
-        // Parallelize over all (q_idx, kv_idx) pairs
         for (int i = tid; i < q_block_len * kv_block_len; i += num_threads) {
             int q_idx = i / kv_block_len;
             int kv_idx = i % kv_block_len;
             int global_q_idx = q_start + q_idx;
             int global_kv_idx = kv_start + kv_idx;
-            
-            // Apply causal mask if needed
-            if (is_causal && global_q_idx < global_kv_idx) {
+            bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+
+            if (!allowed) {
                 s_shared[q_idx * block_size_kv + kv_idx] = -INFINITY;
-            } else {
-                // Compute dot product.
-                // For float path, match typical reference behavior with float accumulation.
-                if constexpr (std::is_same_v<T, float>) {
-                    float sum = 0.0f;
-                    for (int d = 0; d < head_dim; d++) {
-                        float q_val = q_shared[q_idx * head_dim + d];
-                        float k_val = k_shared[kv_idx * head_dim + d];
-                        sum = fmaf(q_val, k_val, sum);
-                    }
-                    s_shared[q_idx * block_size_kv + kv_idx] = static_cast<double>(sum * scale);
-                } else {
-                    double sum = 0.0;
-                    for (int d = 0; d < head_dim; d++) {
-                        double q_val = static_cast<double>(q_shared[q_idx * head_dim + d]);
-                        double k_val = static_cast<double>(k_shared[kv_idx * head_dim + d]);
-                        sum += q_val * k_val;
-                    }
-                    s_shared[q_idx * block_size_kv + kv_idx] = sum * static_cast<double>(scale);
-                }
+                continue;
             }
+
+            double sum = 0.0;
+            for (int d = 0; d < head_dim; d++) {
+                double q_val = static_cast<double>(q_shared[q_idx * head_dim + d]);
+                double k_val = static_cast<double>(k_shared[kv_idx * head_dim + d]);
+                sum += q_val * k_val;
+            }
+            s_shared[q_idx * block_size_kv + kv_idx] = sum * scale_d;
         }
         __syncthreads();
         
-        // Update online softmax statistics and output
-        // Each thread processes one query position
-        // Use double precision for all intermediate calculations
-        // Online softmax formula: 
-        //   m_new = max(m_old, m_ij)
-        //   alpha = exp(m_old - m_new)
-        //   l_new = alpha * l_old + sum(exp(s_ij - m_new))
-        //   o_new = alpha * o_old + sum(exp(s_ij - m_new) * v_j)
         for (int q_idx = tid; q_idx < q_block_len; q_idx += num_threads) {
             int global_q_idx = q_start + q_idx;
 
-            if constexpr (std::is_same_v<T, float>) {
-                // Float-math path (more likely to match reference + tight tolerances)
-                float m_old = static_cast<float>(m_shared[q_idx]);
-                float l_old = static_cast<float>(l_shared[q_idx]);
+            double m_old = m_shared[q_idx];
+            double l_old = l_shared[q_idx];
 
-                float m_ij = -INFINITY;
-                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                    int global_kv_idx = kv_start + kv_idx;
-                    if (!is_causal || global_q_idx >= global_kv_idx) {
-                        float s_val = static_cast<float>(s_shared[q_idx * block_size_kv + kv_idx]);
-                        m_ij = fmaxf(m_ij, s_val);
-                    }
-                }
-
-                float m_new = fmaxf(m_old, m_ij);
-                if (m_new == -INFINITY) continue;
-
-                float alpha = expf(m_old - m_new);
-                float p_sum = 0.0f;
-
-                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                    int global_kv_idx = kv_start + kv_idx;
-                    if (!is_causal || global_q_idx >= global_kv_idx) {
-                        float s_ij = static_cast<float>(s_shared[q_idx * block_size_kv + kv_idx]);
-                        p_sum += expf(s_ij - m_new);
-                    }
-                }
-
-                for (int d = 0; d < head_dim; d++) {
-                    float o_old = static_cast<float>(o_shared[q_idx * head_dim + d]);
-                    float o_new = alpha * o_old;
-                    for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                        int global_kv_idx = kv_start + kv_idx;
-                        if (!is_causal || global_q_idx >= global_kv_idx) {
-                            float s_ij = static_cast<float>(s_shared[q_idx * block_size_kv + kv_idx]);
-                            float p_ij = expf(s_ij - m_new);
-                            float v_val = v_shared[kv_idx * head_dim + d];
-                            o_new = fmaf(p_ij, v_val, o_new);
-                        }
-                    }
-                    o_shared[q_idx * head_dim + d] = static_cast<double>(o_new);
-                }
-
-                float l_new = alpha * l_old + p_sum;
-                m_shared[q_idx] = static_cast<double>(m_new);
-                l_shared[q_idx] = static_cast<double>(l_new);
-            } else {
-                // Default (double-math) path
-                double m_old = m_shared[q_idx];
-                double l_old = l_shared[q_idx];
-
-                double m_ij = -INFINITY;
-                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                    int global_kv_idx = kv_start + kv_idx;
-                    if (!is_causal || global_q_idx >= global_kv_idx) {
-                        double s_val = s_shared[q_idx * block_size_kv + kv_idx];
-                        m_ij = fmax(m_ij, s_val);
-                    }
-                }
-
-                double m_new = fmax(m_old, m_ij);
-                if (m_new == -INFINITY) continue;
-
-                double alpha = exp(m_old - m_new);
-                double p_sum = 0.0;
-                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                    int global_kv_idx = kv_start + kv_idx;
-                    if (!is_causal || global_q_idx >= global_kv_idx) {
-                        double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
-                        p_sum += exp(s_ij - m_new);
-                    }
-                }
-
-                for (int d = 0; d < head_dim; d++) {
-                    double o_old_val = o_shared[q_idx * head_dim + d];
-                    double o_new_val = alpha * o_old_val;
-                    for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                        int global_kv_idx = kv_start + kv_idx;
-                        if (!is_causal || global_q_idx >= global_kv_idx) {
-                            double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
-                            double p_ij = exp(s_ij - m_new);
-                            double v_val = static_cast<double>(v_shared[kv_idx * head_dim + d]);
-                            o_new_val += p_ij * v_val;
-                        }
-                    }
-                    o_shared[q_idx * head_dim + d] = o_new_val;
-                }
-
-                double l_new = alpha * l_old + p_sum;
-                m_shared[q_idx] = m_new;
-                l_shared[q_idx] = l_new;
+            double m_ij = -INFINITY;
+            for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                int global_kv_idx = kv_start + kv_idx;
+                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                if (!allowed) continue;
+                double s_val = s_shared[q_idx * block_size_kv + kv_idx];
+                m_ij = fmax(m_ij, s_val);
             }
+
+            double m_new = fmax(m_old, m_ij);
+            if (m_new == -INFINITY) continue;
+
+            double alpha = exp(m_old - m_new);
+            double p_sum = 0.0;
+            for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                int global_kv_idx = kv_start + kv_idx;
+                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                if (!allowed) continue;
+                double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
+                p_sum += exp(s_ij - m_new);
+            }
+
+            for (int d = 0; d < head_dim; d++) {
+                double o_old_val = o_shared[q_idx * head_dim + d];
+                double o_new_val = alpha * o_old_val;
+                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                    int global_kv_idx = kv_start + kv_idx;
+                    bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                    if (!allowed) continue;
+                    double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
+                    double p_ij = exp(s_ij - m_new);
+                    double v_val = static_cast<double>(v_shared[kv_idx * head_dim + d]);
+                    o_new_val += p_ij * v_val;
+                }
+                o_shared[q_idx * head_dim + d] = o_new_val;
+            }
+
+            double l_new = alpha * l_old + p_sum;
+            m_shared[q_idx] = m_new;
+            l_shared[q_idx] = l_new;
         }
         __syncthreads();
     }
@@ -563,68 +434,42 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
         return;
     }
 
-    // Otherwise, use the flash-style tiled kernel (half path).
-    int block_size_q = 16;
-    int block_size_kv = 32;
-    
-    // Adjust block sizes based on head_dim to fit in shared memory
-    // Shared memory needed: (block_size_q + block_size_kv*2) * head_dim * sizeof(T) 
-    //                      + block_size_q * block_size_kv * sizeof(double)  // double!
-    //                      + block_size_q * head_dim * sizeof(T)
-    //                      + block_size_q * 2 * sizeof(double)  // double!
-    // For head_dim=64: ~(8+16*2)*64*4 + 8*16*8 + 8*64*4 + 8*16 = ~12KB (safe)
-    // For head_dim=128: ~(8+16*2)*128*4 + 8*16*8 + 8*128*4 + 8*16 = ~24KB (safe)
-    if (head_dim >= 128) {
-        block_size_q = 8;
-        block_size_kv = 16;
-    } else if (head_dim > 64) {
-        block_size_q = 8;
-        block_size_kv = 32;
+    // Otherwise, use the flash-style tiled kernel（half 路径）
+    auto align_double = [](size_t x) {
+        return (x + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    };
+    auto smem_needed = [&](int bq, int bkv) {
+        size_t off = 0;
+        off += (static_cast<size_t>(bq) + 2ull * static_cast<size_t>(bkv)) *
+               static_cast<size_t>(head_dim) * sizeof(T); // Q/K/V
+        off = align_double(off);
+        off += static_cast<size_t>(bq) * static_cast<size_t>(bkv) *
+               sizeof(double);                              // scores
+        off = align_double(off);
+        off += static_cast<size_t>(bq) * static_cast<size_t>(head_dim) *
+               sizeof(double);                              // o accumulator
+        off = align_double(off);
+        off += 2ull * static_cast<size_t>(bq) * sizeof(double); // m / l
+        return off;
+    };
+
+    int block_size_q  = (head_dim >= 128) ? 8 : ((head_dim > 64) ? 8 : 16);
+    int block_size_kv = (head_dim >= 128) ? 16 : ((head_dim > 64) ? 32 : 32);
+
+    size_t shared_mem_size = smem_needed(block_size_q, block_size_kv);
+    const size_t max_shared_mem = 48 * 1024;
+    if (shared_mem_size > max_shared_mem) {
+        block_size_q = 4;
+        block_size_kv = 8;
+        shared_mem_size = smem_needed(block_size_q, block_size_kv);
     }
     
-    // Calculate scale factor (1/sqrt(head_dim))
+    // scale factor: 1/sqrt(head_dim)
     float scale = 1.0f / sqrtf(static_cast<float>(head_dim));
     
-    // Calculate grid dimensions
     const int num_q_blocks = (target_seq_len + block_size_q - 1) / block_size_q;
     dim3 grid(num_q_blocks, query_heads, batch_size);
     dim3 block(256);  // Number of threads per block
-    
-    // Calculate shared memory size with proper alignment
-    // Layout: Q block, K block, V block, S scores (double, aligned), O accumulator (double, aligned), m max (double, aligned), l sum (double)
-    size_t offset = 0;
-    offset += block_size_q * head_dim * sizeof(T);  // Q
-    offset += block_size_kv * head_dim * sizeof(T);  // K
-    offset += block_size_kv * head_dim * sizeof(T);  // V
-    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);  // Align for double
-    offset += block_size_q * block_size_kv * sizeof(double);  // S (double)
-    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);  // Align for double
-    offset += block_size_q * head_dim * sizeof(double);  // O accumulator (double)
-    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);  // Align for double
-    offset += block_size_q * sizeof(double);  // m (double)
-    offset += block_size_q * sizeof(double);  // l (double)
-    size_t shared_mem_size = offset;
-    
-    // Ensure we don't exceed 48KB shared memory limit (most GPUs)
-    const size_t max_shared_mem = 48 * 1024;
-    if (shared_mem_size > max_shared_mem) {
-        // Further reduce block sizes if needed
-        block_size_q = 4;
-        block_size_kv = 8;
-        // Recalculate with smaller blocks
-        offset = 0;
-        offset += block_size_q * head_dim * sizeof(T);
-        offset += block_size_kv * head_dim * sizeof(T);
-        offset += block_size_kv * head_dim * sizeof(T);
-        offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
-        offset += block_size_q * block_size_kv * sizeof(double);
-        offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
-        offset += block_size_q * head_dim * sizeof(double);
-        offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
-        offset += block_size_q * sizeof(double);
-        offset += block_size_q * sizeof(double);
-        shared_mem_size = offset;
-    }
     
     // Launch kernel
     flash_attention_kernel<T><<<grid, block, shared_mem_size>>>(
