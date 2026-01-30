@@ -99,47 +99,56 @@ __global__ void flash_attention_kernel(
     int query_heads,
     int kv_heads,
     int head_dim,
-    int block_size_q,
-    int block_size_kv,
+    int block_size_q,         // 一个block处理的query数量
+    int block_size_kv,        // KV tile的宽度
     bool is_causal,
     float scale) {
     
     const int batch_idx = blockIdx.z;
-    const int q_head_idx = blockIdx.y;
-    const int q_block_idx = blockIdx.x;
+    const int q_head_idx = blockIdx.y;    
+    const int q_block_idx = blockIdx.x;       // 当前block负责的Q tile index
     const int q_start = q_block_idx * block_size_q;
     const int q_end = min(q_start + block_size_q, tgt_seq_len);
     const int q_block_len = q_end - q_start;
-    const int kv_head_idx = (q_head_idx * kv_heads) / query_heads;
+    const int kv_head_idx = (q_head_idx * kv_heads) / query_heads;       // GQA映射：先乘后除，避免kv_head/query_heads等于0
     
     extern __shared__ char shared_mem[];
     size_t offset = 0;
+
+    // Q tile：[block_size_q, head_dim]
     T* q_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_q * head_dim * sizeof(T);
     
+    // K tile：[block_size_kv, head_dim]
     T* k_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_kv * head_dim * sizeof(T);
     
+    // V tile：[block_size_kv, head_dim]
     T* v_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_kv * head_dim * sizeof(T);
     
+    // s_shared[q_idx, kv_idx]: 当前Q/KV tile的所有score，用doulbe存储，避免精度丢失
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* s_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * block_size_kv * sizeof(double);
     
+    // o_shared[q_idx, head_dim]: 当前Q位置、head维度的未归一化输出累计值，用double存储，避免精度丢失
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* o_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * head_dim * sizeof(double);
     
+    // online softmax对应当前全局最大的logit
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* m_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * sizeof(double);
     
+    // online softmax对应的当前全局归一化分母
     double* l_shared = reinterpret_cast<double*>(shared_mem + offset);
     
     const int tid = threadIdx.x;
     const int num_threads = blockDim.x;
     
+    // 初始化m，l，o
     for (int idx = tid; idx < q_block_len; idx += num_threads) {
         m_shared[idx] = -INFINITY;
         l_shared[idx] = 0.0;
@@ -149,6 +158,7 @@ __global__ void flash_attention_kernel(
     }
     __syncthreads();
     
+    // 将Q tile 从global memory加载到shared memory
     for (int idx = tid; idx < q_block_len * head_dim; idx += num_threads) {
         int q_idx = idx / head_dim;
         int d_idx = idx % head_dim;
@@ -166,12 +176,14 @@ __global__ void flash_attention_kernel(
     
     const int num_kv_blocks = (src_seq_len + block_size_kv - 1) / block_size_kv;
     
+    // 外循环：遍历KV tile
     for (int kv_block_idx = 0; kv_block_idx < num_kv_blocks; kv_block_idx++) {
         const int kv_start = kv_block_idx * block_size_kv;
         const int kv_end = min(kv_start + block_size_kv, src_seq_len);
         const int kv_block_len = kv_end - kv_start;
         const double scale_d = static_cast<double>(scale);
         
+        // 内循环：加载当前KV tile到shared memory
         for (int idx = tid; idx < kv_block_len * head_dim; idx += num_threads) {
             int kv_idx = idx / head_dim;
             int d_idx = idx % head_dim;
@@ -192,6 +204,7 @@ __global__ void flash_attention_kernel(
         }
         __syncthreads();
         
+        // 计算局部score
         for (int idx = tid; idx < q_block_len * kv_block_len; idx += num_threads) {
             int q_idx = idx / kv_block_len;
             int kv_idx = idx % kv_block_len;
@@ -226,6 +239,7 @@ __global__ void flash_attention_kernel(
         }
         __syncthreads();
         
+        // Online softmax + Kahan累加
         for (int q_idx = tid; q_idx < q_block_len; q_idx += num_threads) {
             int global_q_idx = q_start + q_idx;
 
