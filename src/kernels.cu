@@ -127,12 +127,12 @@ __global__ void flash_attention_kernel(
     T* v_shared = reinterpret_cast<T*>(shared_mem + offset);
     offset += block_size_kv * head_dim * sizeof(T);
     
-    // s_shared[q_idx, kv_idx]: 当前Q/KV tile的所有score，用doulbe存储，避免精度丢失
-    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    // s_shared[block_size_q, block_size_kv]: 当前Q/KV tile的所有score，用doulbe存储，避免精度丢失
+    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);  // 对齐到double的边界，避免多次访存
     double* s_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * block_size_kv * sizeof(double);
     
-    // o_shared[q_idx, head_dim]: 当前Q位置、head维度的未归一化输出累计值，用double存储，避免精度丢失
+    // o_shared[block_size_q, head_dim]: 当前Q位置、head维度的未归一化输出累计值，用double存储，避免精度丢失
     offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
     double* o_shared = reinterpret_cast<double*>(shared_mem + offset);
     offset += block_size_q * head_dim * sizeof(double);
@@ -165,8 +165,8 @@ __global__ void flash_attention_kernel(
         int global_q_idx = q_start + q_idx;
         if (global_q_idx < tgt_seq_len) {
             int offset = batch_idx * tgt_seq_len * query_heads * head_dim +
-                        global_q_idx * query_heads * head_dim +
-                        q_head_idx * head_dim + d_idx;
+                         global_q_idx * query_heads * head_dim +
+                         q_head_idx * head_dim + d_idx;
             q_shared[idx] = Q[offset];
         } else {
             q_shared[idx] = T(0);
@@ -210,99 +210,93 @@ __global__ void flash_attention_kernel(
             int kv_idx = idx % kv_block_len;
             int global_q_idx = q_start + q_idx;
             int global_kv_idx = kv_start + kv_idx;
-            bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+            bool mask = (is_causal && global_q_idx < global_kv_idx);
 
-            if (!allowed) {
+            if (mask) {
                 s_shared[q_idx * block_size_kv + kv_idx] = -INFINITY;
                 continue;
             }
 
-            // 使用 fmaf 优化点积计算（对 float 类型）或直接使用 double 累加
-            double sum = 0.0;
-            if constexpr (std::is_same_v<T, float>) {
-                // float 类型使用 fmaf 提升精度
-                float dot = 0.0f;
-                for (int d = 0; d < head_dim; d++) {
-                    dot = fmaf(q_shared[q_idx * head_dim + d], 
-                              k_shared[kv_idx * head_dim + d], dot);
-                }
-                sum = static_cast<double>(dot);
-            } else {
-                // half 类型直接使用 double 累加
-                for (int d = 0; d < head_dim; d++) {
-                    double q_val = static_cast<double>(q_shared[q_idx * head_dim + d]);
-                    double k_val = static_cast<double>(k_shared[kv_idx * head_dim + d]);
-                    sum += q_val * k_val;
-                }
+            // 均使用float作为中间量，避免精度丢失
+            float sum = 0.0;
+            for (int d = 0; d < head_dim; d++) {
+                float q_val = static_cast<float>(q_shared[q_idx * head_dim + d]);
+                float k_val = static_cast<float>(k_shared[kv_idx * head_dim + d]);
+                sum += q_val * k_val;
             }
             s_shared[q_idx * block_size_kv + kv_idx] = sum * scale_d;
         }
         __syncthreads();
         
-        // Online softmax + Kahan累加
+        // ─────────────────────────────────────────────────────────────────
+        // Online softmax：每处理一个 KV tile，增量更新 m/l/o
+        // 流程：① 取当前 tile 的 max → ② 算 rescaling 因子 alpha
+        //      ③ 累加 p_sum（softmax 分母）→ ④ 累加 o（softmax 分子 × V）
+        // ─────────────────────────────────────────────────────────────────
         for (int q_idx = tid; q_idx < q_block_len; q_idx += num_threads) {
             int global_q_idx = q_start + q_idx;
 
-            double m_old = m_shared[q_idx];
-            double l_old = l_shared[q_idx];
+            // ① 读取上一 tile 的状态
+            float m_old = static_cast<float>(m_shared[q_idx]);
+            float l_old = static_cast<float>(l_shared[q_idx]);
 
-            double m_ij = -INFINITY;
+            // ② 当前 tile 内的 max
+            float m_ij = -static_cast<float>(INFINITY);
             for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
                 int global_kv_idx = kv_start + kv_idx;
-                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
-                if (!allowed) continue;
-                double s_val = s_shared[q_idx * block_size_kv + kv_idx];
+                if (is_causal && global_q_idx < global_kv_idx) continue;
+                float s_val = s_shared[q_idx * block_size_kv + kv_idx];
                 m_ij = fmax(m_ij, s_val);
             }
 
             double m_new = fmax(m_old, m_ij);
             if (m_new == -INFINITY) continue;
 
+            // ③ rescaling 因子：max 变大时，旧值需整体缩小
             double alpha = exp(m_old - m_new);
-            
-            // 使用 Kahan Summation 减少累加误差
+
+            // ④ 计算并缓存 p_ij = exp(s_ij - m_new)（类似 v2 的 sSafeE）
+            //    然后复用 p_ij 同时完成分母 p_sum 的累加，避免在后续 O 累加里重复计算 exp()
+            const int score_row = q_idx * block_size_kv;
             double p_sum = 0.0;
             double p_err = 0.0;
             for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                int global_kv_idx = kv_start + kv_idx;
-                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
-                if (!allowed) continue;
-                double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
-                double p_ij = exp(s_ij - m_new);
-                // Kahan summation
-                double y = p_ij - p_err;
-                double t = p_sum + y;
+                const int global_kv_idx = kv_start + kv_idx;
+                if (is_causal && global_q_idx < global_kv_idx) {
+                    // masked 的位置等价于 exp(-inf) = 0
+                    s_shared[score_row + kv_idx] = 0.0;
+                    continue;
+                }
+                const double p_ij = exp(s_shared[score_row + kv_idx] - m_new);
+                s_shared[score_row + kv_idx] = p_ij;
+                // Kahan summation for p_sum
+                const double y = p_ij - p_err;
+                const double t = p_sum + y;
                 p_err = (t - p_sum) - y;
                 p_sum = t;
             }
 
+            // ⑤ o_new = alpha * o_old + Σ p_ij * v，当前 tile 的输出贡献（Kahan 累加）
             for (int d = 0; d < head_dim; d++) {
-                double o_old_val = o_shared[q_idx * head_dim + d];
-                double o_new_val = alpha * o_old_val;
-                
-                // 使用 Kahan Summation 减少累加误差
+                double o_new_val = alpha * o_shared[q_idx * head_dim + d];
                 double o_err = 0.0;
                 for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
-                    int global_kv_idx = kv_start + kv_idx;
-                    bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
-                    if (!allowed) continue;
-                    double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
-                    double p_ij = exp(s_ij - m_new);
-                    double v_val = static_cast<double>(v_shared[kv_idx * head_dim + d]);
-                    double term = p_ij * v_val;
-                    // Kahan summation
-                    double y = term - o_err;
-                    double t = o_new_val + y;
+                    const int global_kv_idx = kv_start + kv_idx;
+                    if (is_causal && global_q_idx < global_kv_idx) continue;
+                    // 复用缓存的 p_ij（已写回 s_shared）
+                    const double p_ij = s_shared[score_row + kv_idx];
+                    const double term = p_ij * static_cast<double>(v_shared[kv_idx * head_dim + d]);
+                    const double y = term - o_err;
+                    const double t = o_new_val + y;
                     o_err = (t - o_new_val) - y;
                     o_new_val = t;
                 }
                 o_shared[q_idx * head_dim + d] = o_new_val;
             }
 
-            // l_new = alpha * l_old + p_sum，直接计算即可
-            double l_new = alpha * l_old + p_sum;
+            // ⑥ 更新 m、l，供下一 tile 使用
             m_shared[q_idx] = m_new;
-            l_shared[q_idx] = l_new;
+            l_shared[q_idx] = alpha * l_old + p_sum;
         }
         __syncthreads();
     }
@@ -401,6 +395,8 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
     };
 
     // 根据类型选择合适的 tile 大小
+    // block_size_q:一个block负责的query个数，即每个block负责的Q的行数
+    // block_size_kv:一个KV tile里的key/value个数，即每个block负责的KV的行数
     int block_size_q, block_size_kv;
     if constexpr (std::is_same_v<T, float>) {
         // float 路径使用更大的 tile 以减少重标定次数
