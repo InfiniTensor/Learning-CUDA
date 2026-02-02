@@ -1,7 +1,41 @@
 #include <vector>
+#include <cmath>
 #include <common/maca_fp16.h>
 
 #include "../tester/utils.h"
+
+template <typename T>
+__global__ void trace_kernel(const T* __restrict__ input,
+                             T* __restrict__ block_sums,
+                             size_t rows,
+                             size_t cols) {
+    constexpr unsigned int block_size = 256;
+    __shared__ T shared_sums[block_size];
+
+    const size_t diag_size = rows < cols ? rows : cols;
+    const unsigned int tid = threadIdx.x;
+    const unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // 线程内累加本线程负责的对角元素
+    T thread_sum = T(0);
+    for (size_t i = idx; i < diag_size; i += gridDim.x * blockDim.x) {
+        thread_sum += input[i * cols + i];
+    }
+    shared_sums[tid] = thread_sum;
+    __syncthreads();
+
+    // block 内归约为一个部分和
+    for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+        if (tid < stride) {
+            shared_sums[tid] += shared_sums[tid + stride];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0) {
+        block_sums[blockIdx.x] = shared_sums[0];
+    }
+}
 
 /**
  * @brief Computes the trace of a matrix.
@@ -19,31 +53,356 @@
  */
 template <typename T>
 T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-  // TODO: Implement the trace function
-  return T(-1);
+    if (h_input.empty() || rows == 0 || cols == 0) {
+        return T(0);
+    }
+
+    T* d_input = nullptr;
+    T* d_output = nullptr;
+    T h_output = T(0);
+
+    const size_t input_size = h_input.size() * sizeof(T);
+    const size_t diag_size = rows < cols ? rows : cols;
+
+    constexpr unsigned int block_size = 256;
+    const unsigned int grid_size = (diag_size + block_size - 1) / block_size;
+
+    RUNTIME_CHECK(mcMalloc(&d_input, input_size));
+    RUNTIME_CHECK(mcMalloc(&d_output, grid_size * sizeof(T)));
+
+    RUNTIME_CHECK(mcMemcpy(d_input, h_input.data(), input_size, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemset(d_output, 0, grid_size * sizeof(T)));
+
+    trace_kernel<T><<<grid_size, block_size>>>(d_input, d_output, rows, cols);
+
+    // 回到 host 上做一次确定性的最终归约
+    std::vector<T> h_block_sums(grid_size);
+    RUNTIME_CHECK(mcMemcpy(h_block_sums.data(), d_output, grid_size * sizeof(T), mcMemcpyDeviceToHost));
+
+    for (unsigned int i = 0; i < grid_size; ++i) {
+        h_output += h_block_sums[i];
+    }
+
+    mcFree(d_input);
+    mcFree(d_output);
+
+    return h_output;
+}
+
+template <typename T>
+__global__ void flash_attention_kernel(
+    const T* __restrict__ Q,
+    const T* __restrict__ K,
+    const T* __restrict__ V,
+    T* __restrict__ O,
+    int batch_size,
+    int tgt_seq_len,
+    int src_seq_len,
+    int query_heads,
+    int kv_heads,
+    int head_dim,
+    int block_size_q,
+    int block_size_kv,
+    bool is_causal,
+    float scale) {
+
+    const int batch_idx = blockIdx.z;
+    const int q_head_idx = blockIdx.y;
+    const int q_block_idx = blockIdx.x;
+    const int q_start = q_block_idx * block_size_q;
+    const int q_end = (q_start + block_size_q) < tgt_seq_len ? (q_start + block_size_q) : tgt_seq_len;
+    const int q_block_len = q_end - q_start;
+    const int kv_head_idx = (q_head_idx * kv_heads) / query_heads;
+
+    extern __shared__ char shared_mem[];
+    size_t offset = 0;
+
+    T* q_shared = reinterpret_cast<T*>(shared_mem + offset);
+    offset += block_size_q * head_dim * sizeof(T);
+
+    T* k_shared = reinterpret_cast<T*>(shared_mem + offset);
+    offset += block_size_kv * head_dim * sizeof(T);
+
+    T* v_shared = reinterpret_cast<T*>(shared_mem + offset);
+    offset += block_size_kv * head_dim * sizeof(T);
+
+    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    double* s_shared = reinterpret_cast<double*>(shared_mem + offset);
+    offset += block_size_q * block_size_kv * sizeof(double);
+
+    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    double* o_shared = reinterpret_cast<double*>(shared_mem + offset);
+    offset += block_size_q * head_dim * sizeof(double);
+
+    offset = (offset + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    double* m_shared = reinterpret_cast<double*>(shared_mem + offset);
+    offset += block_size_q * sizeof(double);
+
+    double* l_shared = reinterpret_cast<double*>(shared_mem + offset);
+
+    const int tid = threadIdx.x;
+    const int num_threads = blockDim.x;
+
+    // 初始化 m, l, o
+    for (int idx = tid; idx < q_block_len; idx += num_threads) {
+        m_shared[idx] = -INFINITY;
+        l_shared[idx] = 0.0;
+        for (int d = 0; d < head_dim; d++) {
+            o_shared[idx * head_dim + d] = 0.0;
+        }
+    }
+    __syncthreads();
+
+    // 将 Q tile 从 global memory 加载到 shared memory
+    for (int idx = tid; idx < q_block_len * head_dim; idx += num_threads) {
+        int q_idx = idx / head_dim;
+        int d_idx = idx % head_dim;
+        int global_q_idx = q_start + q_idx;
+        if (global_q_idx < tgt_seq_len) {
+            int off = batch_idx * tgt_seq_len * query_heads * head_dim +
+                      global_q_idx * query_heads * head_dim +
+                      q_head_idx * head_dim + d_idx;
+            q_shared[idx] = Q[off];
+        } else {
+            q_shared[idx] = T(0);
+        }
+    }
+    __syncthreads();
+
+    const int num_kv_blocks = (src_seq_len + block_size_kv - 1) / block_size_kv;
+    const double scale_d = static_cast<double>(scale);
+
+    for (int kv_block_idx = 0; kv_block_idx < num_kv_blocks; kv_block_idx++) {
+        const int kv_start = kv_block_idx * block_size_kv;
+        const int kv_end = (kv_start + block_size_kv) < src_seq_len ? (kv_start + block_size_kv) : src_seq_len;
+        const int kv_block_len = kv_end - kv_start;
+
+        for (int idx = tid; idx < kv_block_len * head_dim; idx += num_threads) {
+            int kv_idx = idx / head_dim;
+            int d_idx = idx % head_dim;
+            int global_kv_idx = kv_start + kv_idx;
+            if (global_kv_idx < src_seq_len) {
+                int k_off = batch_idx * src_seq_len * kv_heads * head_dim +
+                            global_kv_idx * kv_heads * head_dim +
+                            kv_head_idx * head_dim + d_idx;
+                int v_off = batch_idx * src_seq_len * kv_heads * head_dim +
+                            global_kv_idx * kv_heads * head_dim +
+                            kv_head_idx * head_dim + d_idx;
+                k_shared[idx] = K[k_off];
+                v_shared[idx] = V[v_off];
+            } else {
+                k_shared[idx] = T(0);
+                v_shared[idx] = T(0);
+            }
+        }
+        __syncthreads();
+
+        // 计算局部 score
+        for (int idx = tid; idx < q_block_len * kv_block_len; idx += num_threads) {
+            int q_idx = idx / kv_block_len;
+            int kv_idx = idx % kv_block_len;
+            int global_q_idx = q_start + q_idx;
+            int global_kv_idx = kv_start + kv_idx;
+            bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+
+            if (!allowed) {
+                s_shared[q_idx * block_size_kv + kv_idx] = -INFINITY;
+                continue;
+            }
+
+            double sum = 0.0;
+            if (std::is_same<T, float>::value) {
+                float dot = 0.0f;
+                for (int d = 0; d < head_dim; d++) {
+                    dot = fmaf(q_shared[q_idx * head_dim + d],
+                               k_shared[kv_idx * head_dim + d], dot);
+                }
+                sum = static_cast<double>(dot);
+            } else {
+                for (int d = 0; d < head_dim; d++) {
+                    double q_val = static_cast<double>(q_shared[q_idx * head_dim + d]);
+                    double k_val = static_cast<double>(k_shared[kv_idx * head_dim + d]);
+                    sum += q_val * k_val;
+                }
+            }
+            s_shared[q_idx * block_size_kv + kv_idx] = sum * scale_d;
+        }
+        __syncthreads();
+
+        // Online softmax + Kahan 累加
+        for (int q_idx = tid; q_idx < q_block_len; q_idx += num_threads) {
+            int global_q_idx = q_start + q_idx;
+
+            double m_old = m_shared[q_idx];
+            double l_old = l_shared[q_idx];
+
+            double m_ij = -INFINITY;
+            for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                int global_kv_idx = kv_start + kv_idx;
+                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                if (!allowed) continue;
+                double s_val = s_shared[q_idx * block_size_kv + kv_idx];
+                m_ij = fmax(m_ij, s_val);
+            }
+
+            double m_new = fmax(m_old, m_ij);
+            if (m_new == -INFINITY) continue;
+
+            double alpha = exp(m_old - m_new);
+
+            double p_sum = 0.0;
+            double p_err = 0.0;
+            for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                int global_kv_idx = kv_start + kv_idx;
+                bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                if (!allowed) continue;
+                double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
+                double p_ij = exp(s_ij - m_new);
+                double y = p_ij - p_err;
+                double t = p_sum + y;
+                p_err = (t - p_sum) - y;
+                p_sum = t;
+            }
+
+            for (int d = 0; d < head_dim; d++) {
+                double o_old_val = o_shared[q_idx * head_dim + d];
+                double o_new_val = alpha * o_old_val;
+
+                double o_err = 0.0;
+                for (int kv_idx = 0; kv_idx < kv_block_len; kv_idx++) {
+                    int global_kv_idx = kv_start + kv_idx;
+                    bool allowed = (!is_causal || global_q_idx >= global_kv_idx);
+                    if (!allowed) continue;
+                    double s_ij = s_shared[q_idx * block_size_kv + kv_idx];
+                    double p_ij = exp(s_ij - m_new);
+                    double v_val = static_cast<double>(v_shared[kv_idx * head_dim + d]);
+                    double term = p_ij * v_val;
+                    double y = term - o_err;
+                    double t = o_new_val + y;
+                    o_err = (t - o_new_val) - y;
+                    o_new_val = t;
+                }
+                o_shared[q_idx * head_dim + d] = o_new_val;
+            }
+
+            double l_new = alpha * l_old + p_sum;
+            m_shared[q_idx] = m_new;
+            l_shared[q_idx] = l_new;
+        }
+        __syncthreads();
+    }
+
+    // 归一化并写回全局内存
+    for (int idx = tid; idx < q_block_len * head_dim; idx += num_threads) {
+        int q_idx = idx / head_dim;
+        int d_idx = idx % head_dim;
+        int global_q_idx = q_start + q_idx;
+
+        if (global_q_idx < tgt_seq_len && l_shared[q_idx] > 0.0) {
+            double o_unnorm = o_shared[idx];
+            double o_val = o_unnorm / l_shared[q_idx];
+            int off = batch_idx * tgt_seq_len * query_heads * head_dim +
+                      global_q_idx * query_heads * head_dim +
+                      q_head_idx * head_dim + d_idx;
+            O[off] = static_cast<T>(o_val);
+        }
+    }
 }
 
 /**
  * @brief Computes flash attention for given query, key, and value tensors.
- * 
- * @tparam T Data type (float) for input/output tensors
- * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] batch_size Batch dimension size
- * @param[in] target_seq_len Target sequence length
- * @param[in] src_seq_len Source sequence length  
- * @param[in] query_heads Number of query attention heads
- * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
- * @param[in] head_dim Dimension size of each attention head
- * @param[in] is_causal Whether to apply causal masking
  */
 template <typename T>
 void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
-                    int batch_size, int target_seq_len, int src_seq_len, 
-                    int query_heads, int kv_heads, int head_dim, bool is_causal) {       
+                    int batch_size, int target_seq_len, int src_seq_len,
+                    int query_heads, int kv_heads, int head_dim, bool is_causal) {
+
+    if (h_q.empty() || h_k.empty() || h_v.empty() ||
+        batch_size <= 0 || target_seq_len <= 0 || src_seq_len <= 0 ||
+        query_heads <= 0 || kv_heads <= 0 || head_dim <= 0) {
+        h_o.resize(batch_size * target_seq_len * query_heads * head_dim, T(0));
+        return;
+    }
+
+    h_o.resize(batch_size * target_seq_len * query_heads * head_dim);
+
+    T* d_q = nullptr;
+    T* d_k = nullptr;
+    T* d_v = nullptr;
+    T* d_o = nullptr;
+
+    const size_t q_size = batch_size * target_seq_len * query_heads * head_dim * sizeof(T);
+    const size_t k_size = batch_size * src_seq_len * kv_heads * head_dim * sizeof(T);
+    const size_t v_size = batch_size * src_seq_len * kv_heads * head_dim * sizeof(T);
+    const size_t o_size = batch_size * target_seq_len * query_heads * head_dim * sizeof(T);
+
+    RUNTIME_CHECK(mcMalloc(&d_q, q_size));
+    RUNTIME_CHECK(mcMalloc(&d_k, k_size));
+    RUNTIME_CHECK(mcMalloc(&d_v, v_size));
+    RUNTIME_CHECK(mcMalloc(&d_o, o_size));
+
+    RUNTIME_CHECK(mcMemcpy(d_q, h_q.data(), q_size, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemcpy(d_k, h_k.data(), k_size, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemcpy(d_v, h_v.data(), v_size, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemset(d_o, 0, o_size));
+
+    auto align_double = [](size_t x) {
+        return (x + sizeof(double) - 1) / sizeof(double) * sizeof(double);
+    };
+    auto smem_needed = [&](int bq, int bkv) {
+        size_t off = 0;
+        off += (static_cast<size_t>(bq) + 2ull * static_cast<size_t>(bkv)) *
+               static_cast<size_t>(head_dim) * sizeof(T);
+        off = align_double(off);
+        off += static_cast<size_t>(bq) * static_cast<size_t>(bkv) * sizeof(double);
+        off = align_double(off);
+        off += static_cast<size_t>(bq) * static_cast<size_t>(head_dim) * sizeof(double);
+        off = align_double(off);
+        off += 2ull * static_cast<size_t>(bq) * sizeof(double);
+        return off;
+    };
+
+    int block_size_q, block_size_kv;
+    if (std::is_same<T, float>::value) {
+        block_size_q  = (head_dim >= 128) ? 16 : ((head_dim > 64) ? 32 : 32);
+        block_size_kv = (head_dim >= 128) ? 32 : ((head_dim > 64) ? 64 : 64);
+    } else {
+        block_size_q  = (head_dim >= 128) ? 8 : ((head_dim > 64) ? 8 : 16);
+        block_size_kv = (head_dim >= 128) ? 16 : ((head_dim > 64) ? 32 : 32);
+    }
+
+    size_t shared_mem_size = smem_needed(block_size_q, block_size_kv);
+    const size_t max_shared_mem = 48 * 1024;
+    if (shared_mem_size > max_shared_mem) {
+        block_size_q = 4;
+        block_size_kv = 8;
+        shared_mem_size = smem_needed(block_size_q, block_size_kv);
+    }
+
+    float scale = 1.0f / sqrtf(static_cast<float>(head_dim));
+
+    const int num_q_blocks = (target_seq_len + block_size_q - 1) / block_size_q;
+    dim3 grid(num_q_blocks, query_heads, batch_size);
+    dim3 block(256);
+
+    flash_attention_kernel<T><<<grid, block, shared_mem_size>>>(
+        d_q, d_k, d_v, d_o,
+        batch_size, target_seq_len, src_seq_len,
+        query_heads, kv_heads, head_dim,
+        block_size_q, block_size_kv,
+        is_causal, scale
+    );
+
+    RUNTIME_CHECK(mcGetLastError());
+    RUNTIME_CHECK(mcDeviceSynchronize());
+
+    RUNTIME_CHECK(mcMemcpy(h_o.data(), d_o, o_size, mcMemcpyDeviceToHost));
+
+    mcFree(d_q);
+    mcFree(d_k);
+    mcFree(d_v);
+    mcFree(d_o);
 }
 
 // *********************************************************************
