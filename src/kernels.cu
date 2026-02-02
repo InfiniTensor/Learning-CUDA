@@ -1,7 +1,37 @@
 #include <vector>
 #include <cuda_fp16.h>
+#include <cuda_runtime.h>
 
 #include "../tester/utils.h"
+
+/**
+ * @brief CUDA kernel to compute the trace of a matrix.
+ * 
+ * Each thread processes one diagonal element and uses atomicAdd to accumulate the sum.
+ * For a matrix stored in row-major format, the diagonal element at position (i, i)
+ * is located at index i * cols + i in the flattened array.
+ * 
+ * @tparam T The numeric type of matrix elements (e.g., float, int).
+ * @param d_input Device pointer to the flattened input matrix.
+ * @param cols Number of columns in the matrix (used to calculate diagonal element index).
+ * @param n_diagonal Number of diagonal elements to process (min(rows, cols)).
+ * @param d_result Device pointer to store the result (single element).
+ */
+template <typename T>
+__global__ void trace_kernel(const T* d_input, size_t cols, size_t n_diagonal, T* d_result) {
+  // Get the thread index
+  size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+  
+  // Each thread processes one diagonal element
+  if (idx < n_diagonal) {
+    // Calculate the index of diagonal element (i, i) in row-major format
+    // For row i, column i: index = i * cols + i
+    size_t diagonal_idx = idx * cols + idx;
+    
+    // Atomically add the diagonal element to the result
+    atomicAdd(d_result, d_input[diagonal_idx]);
+  }
+}
 
 /**
  * @brief Computes the trace of a matrix.
@@ -19,8 +49,52 @@
  */
 template <typename T>
 T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-  // TODO: Implement the trace function
-  return T(-1);
+  // Calculate the number of diagonal elements (min of rows and cols)
+  size_t n_diagonal = (rows < cols) ? rows : cols;
+  
+  // Handle edge case: empty matrix
+  if (n_diagonal == 0) {
+    return T(0);
+  }
+  
+  // Allocate device memory for input matrix
+  T* d_input;
+  size_t input_size = rows * cols * sizeof(T);
+  RUNTIME_CHECK(cudaMalloc(&d_input, input_size));
+  
+  // Copy input data from host to device
+  RUNTIME_CHECK(cudaMemcpy(d_input, h_input.data(), input_size, cudaMemcpyHostToDevice));
+  
+  // Allocate device memory for result and initialize to zero
+  T* d_result;
+  RUNTIME_CHECK(cudaMalloc(&d_result, sizeof(T)));
+  RUNTIME_CHECK(cudaMemset(d_result, 0, sizeof(T)));
+  
+  // Configure kernel launch parameters
+  // Use 256 threads per block (common choice for good performance)
+  const size_t threads_per_block = 256;
+  const size_t blocks_per_grid = (n_diagonal + threads_per_block - 1) / threads_per_block;
+  
+  // Launch the CUDA kernel
+  trace_kernel<T><<<blocks_per_grid, threads_per_block>>>(
+    d_input, cols, n_diagonal, d_result
+  );
+  
+  // Check for kernel launch errors
+  RUNTIME_CHECK(cudaGetLastError());
+  
+  // Wait for kernel to complete
+  RUNTIME_CHECK(cudaDeviceSynchronize());
+  
+  // Copy result back from device to host
+  T h_result;
+  RUNTIME_CHECK(cudaMemcpy(&h_result, d_result, sizeof(T), cudaMemcpyDeviceToHost));
+  
+  // Free device memory
+  RUNTIME_CHECK(cudaFree(d_input));
+  RUNTIME_CHECK(cudaFree(d_result));
+  
+  return h_result;
 }
 
 /**

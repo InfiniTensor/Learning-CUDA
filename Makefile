@@ -95,7 +95,11 @@ clean:
 # Generate executable: Link kernel code (kernels.o) with test logic (tester.o)
 $(TARGET): $(STUDENT_OBJ) $(TEST_OBJ)
 	@echo "=== Linking executable (student code + test logic) ==="
+ifeq ($(PLATFORM),nvidia)
+	$(CC) $(CFLAGS) $(PLATFORM_DEFINE) -o $@ $^ --compiler-options -lstdc++
+else
 	$(CC) $(CFLAGS) $(PLATFORM_DEFINE) -o $@ $^ $(EXTRA_LIBS)
+endif
 
 # Generate src object: Compile kernels.cu (triggers template instantiation)
 $(STUDENT_OBJ): $(STUDENT_SRC)
