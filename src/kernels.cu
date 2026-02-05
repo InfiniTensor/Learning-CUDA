@@ -2,32 +2,11 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <type_traits>
 #include <cuda_fp16.h>
 #include <cuda_runtime.h>
 
 #include "../tester/utils.h"
-
-namespace {
-template <typename T>
-inline float to_float(T value) {
-  return static_cast<float>(value);
-}
-
-template <>
-inline float to_float<half>(half value) {
-  return __half2float(value);
-}
-
-template <typename T>
-inline T from_float(float value) {
-  return static_cast<T>(value);
-}
-
-template <>
-inline half from_float<half>(float value) {
-  return __float2half_rn(value);
-}
-}  // namespace
 
 template <typename T>
 __device__ inline float to_float_device(T value) {
@@ -51,24 +30,37 @@ __device__ inline half from_float_device<half>(float value) {
 
 template <typename T>
 __global__ void trace_kernel(const T* input, size_t rows, size_t cols, size_t diag, T* output) {
-  size_t idx = static_cast<size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
-  if (idx >= diag) {
-    return;
+  __shared__ T sdata[256];
+  size_t tid = threadIdx.x;
+  size_t idx = static_cast<size_t>(blockIdx.x) * blockDim.x + tid;
+
+  T local_sum = T(0);
+  for (size_t i = idx; i < diag; i += static_cast<size_t>(blockDim.x) * gridDim.x) {
+    size_t input_idx = i * cols + i;
+    local_sum += input[input_idx];
   }
-  // Each thread handles one diagonal element and atomically accumulates.
-  size_t input_idx = idx * cols + idx;
-  atomicAdd(output, input[input_idx]);
+
+  sdata[tid] = local_sum;
+  __syncthreads();
+
+  for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+    if (tid < stride) {
+      sdata[tid] += sdata[tid + stride];
+    }
+    __syncthreads();
+  }
+
+  if (tid == 0) {
+    atomicAdd(output, sdata[0]);
+  }
 }
 
 template <typename T>
-__global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
-                                       int batch_size, int target_seq_len, int src_seq_len,
-                                       int query_heads, int kv_heads, int head_dim,
-                                       int group_size, float scale, bool is_causal) {
-  if (threadIdx.x != 0) {
-    return;
-  }
-
+__global__ void flash_attention_kernel_basic(const T* q, const T* k, const T* v, T* o,
+                                             int batch_size, int target_seq_len, int src_seq_len,
+                                             int query_heads, int kv_heads, int head_dim,
+                                             int group_size, float scale, bool is_causal) {
+  __shared__ float sdata[256];
   int idx = blockIdx.x;
   int total = batch_size * target_seq_len * query_heads;
   if (idx >= total) {
@@ -84,20 +76,18 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
   if (kvh >= kv_heads) {
     kvh = kv_heads - 1;
   }
-  // Softmax over source positions with optional causal masking.
-
   size_t q_stride_bt = static_cast<size_t>(query_heads) * head_dim;
   size_t k_stride_bs = static_cast<size_t>(kv_heads) * head_dim;
+  size_t q_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
+                  static_cast<size_t>(qh) * head_dim;
 
-  float max_score = -INFINITY;
-  for (int s = 0; s < src_seq_len; ++s) {
+  float local_max = -INFINITY;
+  for (int s = threadIdx.x; s < src_seq_len; s += blockDim.x) {
     if (is_causal && s > t) {
       continue;
     }
 
     float dot = 0.0f;
-    size_t q_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
-                    static_cast<size_t>(qh) * head_dim;
     size_t k_base = (static_cast<size_t>(b) * src_seq_len + s) * k_stride_bs +
                     static_cast<size_t>(kvh) * head_dim;
     for (int d = 0; d < head_dim; ++d) {
@@ -105,20 +95,26 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
     }
 
     float score = dot * scale;
-    if (score > max_score) {
-      max_score = score;
-    }
+    local_max = fmaxf(local_max, score);
   }
 
-  float denom = 0.0f;
-  for (int s = 0; s < src_seq_len; ++s) {
+  sdata[threadIdx.x] = local_max;
+  __syncthreads();
+  for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      sdata[threadIdx.x] = fmaxf(sdata[threadIdx.x], sdata[threadIdx.x + stride]);
+    }
+    __syncthreads();
+  }
+  float max_score = sdata[0];
+
+  float local_sum = 0.0f;
+  for (int s = threadIdx.x; s < src_seq_len; s += blockDim.x) {
     if (is_causal && s > t) {
       continue;
     }
 
     float dot = 0.0f;
-    size_t q_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
-                    static_cast<size_t>(qh) * head_dim;
     size_t k_base = (static_cast<size_t>(b) * src_seq_len + s) * k_stride_bs +
                     static_cast<size_t>(kvh) * head_dim;
     for (int d = 0; d < head_dim; ++d) {
@@ -126,8 +122,18 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
     }
 
     float score = dot * scale;
-    denom += expf(score - max_score);
+    local_sum += expf(score - max_score);
   }
+
+  sdata[threadIdx.x] = local_sum;
+  __syncthreads();
+  for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      sdata[threadIdx.x] += sdata[threadIdx.x + stride];
+    }
+    __syncthreads();
+  }
+  float denom = sdata[0];
 
   if (denom == 0.0f) {
     denom = 1.0f;
@@ -135,8 +141,7 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
 
   size_t o_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
                   static_cast<size_t>(qh) * head_dim;
-  for (int d = 0; d < head_dim; ++d) {
-    // Weighted sum over V using normalized attention weights.
+  for (int d = threadIdx.x; d < head_dim; d += blockDim.x) {
     float acc = 0.0f;
     for (int s = 0; s < src_seq_len; ++s) {
       if (is_causal && s > t) {
@@ -144,8 +149,6 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
       }
 
       float dot = 0.0f;
-      size_t q_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
-                      static_cast<size_t>(qh) * head_dim;
       size_t k_base = (static_cast<size_t>(b) * src_seq_len + s) * k_stride_bs +
                       static_cast<size_t>(kvh) * head_dim;
       for (int dk = 0; dk < head_dim; ++dk) {
@@ -159,6 +162,132 @@ __global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
       acc += weight * to_float_device(v[v_base + d]);
     }
     o[o_base + d] = from_float_device<T>(acc);
+  }
+}
+
+template <typename T>
+__global__ void flash_attention_kernel_tiled(const T* q, const T* k, const T* v, T* o,
+                                             int batch_size, int target_seq_len, int src_seq_len,
+                                             int query_heads, int kv_heads, int head_dim,
+                                             int group_size, float scale, bool is_causal, int tile_s) {
+  extern __shared__ float smem_attn[];
+  int idx = blockIdx.x;
+  int total = batch_size * target_seq_len * query_heads;
+  if (idx >= total) {
+    return;
+  }
+
+  int qh = idx % query_heads;
+  int tmp = idx / query_heads;
+  int t = tmp % target_seq_len;
+  int b = tmp / target_seq_len;
+
+  int kvh = qh / group_size;
+  if (kvh >= kv_heads) {
+    kvh = kv_heads - 1;
+  }
+
+  size_t q_stride_bt = static_cast<size_t>(query_heads) * head_dim;
+  size_t k_stride_bs = static_cast<size_t>(kv_heads) * head_dim;
+  size_t q_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
+                  static_cast<size_t>(qh) * head_dim;
+
+  float* q_s = smem_attn;
+  float* k_s = q_s + head_dim;
+  float* v_s = k_s + tile_s * head_dim;
+  float* score_s = v_s + tile_s * head_dim;
+  float* out_s = score_s + tile_s;
+  float* tmp_s = out_s + head_dim;
+
+  for (int d = threadIdx.x; d < head_dim; d += blockDim.x) {
+    q_s[d] = to_float_device(q[q_base + d]);
+    out_s[d] = 0.0f;
+  }
+  __syncthreads();
+
+  float m = -INFINITY;
+  float l = 0.0f;
+
+  for (int s0 = 0; s0 < src_seq_len; s0 += tile_s) {
+    int s = s0 + threadIdx.x;
+    bool valid = (threadIdx.x < tile_s) && (s < src_seq_len) && (!is_causal || s <= t);
+
+    if (valid) {
+      size_t k_base = (static_cast<size_t>(b) * src_seq_len + s) * k_stride_bs +
+                      static_cast<size_t>(kvh) * head_dim;
+      for (int d = 0; d < head_dim; ++d) {
+        k_s[threadIdx.x * head_dim + d] = to_float_device(k[k_base + d]);
+        v_s[threadIdx.x * head_dim + d] = to_float_device(v[k_base + d]);
+      }
+    }
+    __syncthreads();
+
+    float score = -INFINITY;
+    if (valid) {
+      float dot = 0.0f;
+      for (int d = 0; d < head_dim; ++d) {
+        dot += q_s[d] * k_s[threadIdx.x * head_dim + d];
+      }
+      score = dot * scale;
+    }
+    score_s[threadIdx.x] = score;
+    __syncthreads();
+
+    for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+      if (threadIdx.x < stride) {
+        score_s[threadIdx.x] = fmaxf(score_s[threadIdx.x], score_s[threadIdx.x + stride]);
+      }
+      __syncthreads();
+    }
+    float m_tile = score_s[0];
+
+    float exp_val = valid ? expf(score - m_tile) : 0.0f;
+    score_s[threadIdx.x] = exp_val;
+    __syncthreads();
+    for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+      if (threadIdx.x < stride) {
+        score_s[threadIdx.x] += score_s[threadIdx.x + stride];
+      }
+      __syncthreads();
+    }
+    float l_tile = score_s[0];
+
+    for (int d = threadIdx.x; d < head_dim; d += blockDim.x) {
+      tmp_s[d] = 0.0f;
+    }
+    __syncthreads();
+
+    if (valid) {
+      for (int d = 0; d < head_dim; ++d) {
+        atomicAdd(&tmp_s[d], exp_val * v_s[threadIdx.x * head_dim + d]);
+      }
+    }
+    __syncthreads();
+
+    if (threadIdx.x == 0) {
+      if (l_tile > 0.0f) {
+        float m_new = fmaxf(m, m_tile);
+        float alpha = (m == -INFINITY) ? 0.0f : expf(m - m_new);
+        float beta = expf(m_tile - m_new);
+        float l_new = alpha * l + beta * l_tile;
+        if (l_new == 0.0f) {
+          l_new = 1.0f;
+        }
+
+        for (int d = 0; d < head_dim; ++d) {
+          out_s[d] = (alpha * l * out_s[d] + beta * tmp_s[d]) / l_new;
+        }
+        m = m_new;
+        l = l_new;
+      }
+    }
+    __syncthreads();
+  }
+
+  size_t o_base = (static_cast<size_t>(b) * target_seq_len + t) * q_stride_bt +
+                  static_cast<size_t>(qh) * head_dim;
+  for (int d = threadIdx.x; d < head_dim; d += blockDim.x) {
+    o[o_base + d] = from_float_device<T>(out_s[d]);
   }
 }
 
@@ -199,7 +328,7 @@ T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
   RUNTIME_CHECK(cudaMemset(d_output, 0, sizeof(T)));
 
   const int threads = 256;
-  const int blocks = static_cast<int>((diag + threads - 1) / threads);
+  const int blocks = static_cast<int>(std::min<size_t>((diag + threads - 1) / threads, 1024));
   trace_kernel<<<blocks, threads>>>(d_input, rows, cols, diag, d_output);
   RUNTIME_CHECK(cudaDeviceSynchronize());
 
@@ -260,12 +389,26 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
   RUNTIME_CHECK(cudaMemcpy(d_v, h_v.data(), k_count * sizeof(T), cudaMemcpyHostToDevice));
 
   const int total = batch_size * target_seq_len * query_heads;
-  const int threads = 1;
   const int blocks = total;
-  flash_attention_kernel<<<blocks, threads>>>(d_q, d_k, d_v, d_o,
-                                              batch_size, target_seq_len, src_seq_len,
-                                              query_heads, kv_heads, head_dim,
-                                              group_size, scale, is_causal);
+
+  int max_shared = 0;
+  RUNTIME_CHECK(cudaDeviceGetAttribute(&max_shared, cudaDevAttrMaxSharedMemoryPerBlock, 0));
+  const int tile_s = 32;
+  const size_t shared_floats = static_cast<size_t>(head_dim) * (2 * tile_s + 2) + tile_s;
+  const size_t shared_bytes = shared_floats * sizeof(float);
+
+  if (std::is_same<T, half>::value && shared_bytes <= static_cast<size_t>(max_shared) && tile_s <= 256) {
+    flash_attention_kernel_tiled<<<blocks, tile_s, shared_bytes>>>(d_q, d_k, d_v, d_o,
+                                                                   batch_size, target_seq_len, src_seq_len,
+                                                                   query_heads, kv_heads, head_dim,
+                                                                   group_size, scale, is_causal, tile_s);
+  } else {
+    const int threads = 256;
+    flash_attention_kernel_basic<<<blocks, threads>>>(d_q, d_k, d_v, d_o,
+                                                      batch_size, target_seq_len, src_seq_len,
+                                                      query_heads, kv_heads, head_dim,
+                                                      group_size, scale, is_causal);
+  }
   RUNTIME_CHECK(cudaDeviceSynchronize());
 
   RUNTIME_CHECK(cudaMemcpy(h_o.data(), d_o, o_count * sizeof(T), cudaMemcpyDeviceToHost));
