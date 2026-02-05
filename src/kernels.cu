@@ -257,9 +257,17 @@ __global__ void flash_attention_kernel_tiled(const T* q, const T* k, const T* v,
     }
     __syncthreads();
 
-    if (valid) {
-      for (int d = 0; d < head_dim; ++d) {
-        atomicAdd(&tmp_s[d], exp_val * v_s[threadIdx.x * head_dim + d]);
+    // Warp-level reduction over tile_s=32 to avoid shared atomic contention.
+    for (int d = 0; d < head_dim; ++d) {
+      float val = 0.0f;
+      if (valid) {
+        val = exp_val * v_s[threadIdx.x * head_dim + d];
+      }
+      for (int offset = 16; offset > 0; offset >>= 1) {
+        val += __shfl_down_sync(0xffffffff, val, offset);
+      }
+      if (threadIdx.x == 0) {
+        tmp_s[d] = val;
       }
     }
     __syncthreads();
