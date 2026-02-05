@@ -397,7 +397,7 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
   const size_t shared_floats = static_cast<size_t>(head_dim) * (2 * tile_s + 2) + tile_s;
   const size_t shared_bytes = shared_floats * sizeof(float);
 
-  if (std::is_same<T, half>::value && shared_bytes <= static_cast<size_t>(max_shared) && tile_s <= 256) {
+  if (shared_bytes <= static_cast<size_t>(max_shared) && tile_s <= 256) {
     flash_attention_kernel_tiled<<<blocks, tile_s, shared_bytes>>>(d_q, d_k, d_v, d_o,
                                                                    batch_size, target_seq_len, src_seq_len,
                                                                    query_heads, kv_heads, head_dim,
