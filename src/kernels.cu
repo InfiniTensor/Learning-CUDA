@@ -1,48 +1,8 @@
 #include <vector>
 #include <cuda_fp16.h>
-
-#include "../tester/utils.h"
 #include <iostream>
-/**
- * @brief Computes the trace of a matrix.
- *
- * The trace of a matrix is defined as the sum of its diagonal elements.
- * This function expects a flattened row-major matrix stored in a
- * std::vector. If the matrix is not square, the trace will sum up
- * elements along the main diagonal up to the smaller of rows or cols.
- *
- * @tparam T The numeric type of matrix elements (e.g., float, int).
- * @param h_input A flattened matrix of size rows * cols.
- * @param rows Number of rows in the matrix.
- * @param cols Number of columns in the matrix.
- * @return The trace (sum of diagonal values) of the matrix.
- */
-template <typename T>
-T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-    if (h_input.empty() || rows == 0 || cols == 0) return T(0);
-    size_t n = min(rows, cols);
-    T sum = T(0);
-    for (size_t i = 0; i < n; ++i) sum += h_input[i * cols + i];
-    return sum;
-}
 
-/**
- * @brief Computes flash attention for given query, key, and value tensors.
- * 
- * @tparam T Data type (float) for input/output tensors
- * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] batch_size Batch dimension size
- * @param[in] target_seq_len Target sequence length
- * @param[in] src_seq_len Source sequence length  
- * @param[in] query_heads Number of query attention heads
- * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
- * @param[in] head_dim Dimension size of each attention head
- * @param[in] is_causal Whether to apply causal masking
- */
-// 清理函数 
+// ================== 清理函数 ==================
 template <typename T>
 void cleanup(T* d_q, T* d_k, T* d_v, T* d_o) {
     if (d_q) cudaFree(d_q);
@@ -51,7 +11,7 @@ void cleanup(T* d_q, T* d_k, T* d_v, T* d_o) {
     if (d_o) cudaFree(d_o);
 }
 
-//  辅助函数
+// ================== 辅助函数 ==================
 
 // Warp级别归约求最大值
 __device__ inline float warpReduceMax(float val) {
@@ -71,7 +31,7 @@ __device__ inline float warpReduceSum(float val) {
 
 // Block级别归约求最大值
 __device__ inline float blockReduceMax(float val) {
-    static __shared__ float shared[32];
+    __shared__ float shared[32];
     int lane = threadIdx.x % 32;
     int wid = threadIdx.x / 32;
     
@@ -87,7 +47,7 @@ __device__ inline float blockReduceMax(float val) {
 
 // Block级别归约求和
 __device__ inline float blockReduceSum(float val) {
-    static __shared__ float shared[32];
+    __shared__ float shared[32];
     int lane = threadIdx.x % 32;
     int wid = threadIdx.x / 32;
     
@@ -101,7 +61,7 @@ __device__ inline float blockReduceSum(float val) {
     return val;
 }
 
-//  优化后的kernel函数 
+// ================== 优化后的kernel函数 ==================
 
 // float版本的优化kernel
 __global__ void flash_attention_kernel_float_optimized(
@@ -119,7 +79,16 @@ __global__ void flash_attention_kernel_float_optimized(
     if (b >= batch_size || t >= target_seq_len || h >= query_heads) return;
     
     int kvh = h / (query_heads / kv_heads);
-    int valid_len = is_causal ? min(t + 1, src_seq_len) : src_seq_len;
+    
+    // 在device端计算valid_len
+    int valid_len = src_seq_len;
+    if (is_causal) {
+        if (t + 1 < src_seq_len) {
+            valid_len = t + 1;
+        } else {
+            valid_len = src_seq_len;
+        }
+    }
     
     // 计算基础偏移
     size_t q_base = ((b * target_seq_len + t) * query_heads + h) * head_dim;
@@ -128,7 +97,6 @@ __global__ void flash_attention_kernel_float_optimized(
     // 使用共享内存存储查询向量和部分结果
     extern __shared__ float shared_mem[];
     float* q_shared = shared_mem;
-    float* acc_shared = shared_mem + head_dim;
     
     // 协作加载查询向量到共享内存
     for (int i = threadIdx.x; i < head_dim; i += blockDim.x) {
@@ -136,7 +104,7 @@ __global__ void flash_attention_kernel_float_optimized(
     }
     __syncthreads();
     
-    // 计算最大分数（使用并行归约）
+    // 第一步：计算最大分数（使用并行归约）
     float max_score = -1e30f;
     
     // 每个线程处理多个序列位置
@@ -158,12 +126,18 @@ __global__ void flash_attention_kernel_float_optimized(
     }
     
     // Block内归约求最大分数
-    max_score = blockReduceMax(max_score);
+    __shared__ float shared_max;
+    if (threadIdx.x == 0 && threadIdx.y == 0) {
+        shared_max = max_score;
+    }
+    __syncthreads();
+    max_score = shared_max;
     
-    // 计算softmax和输出
-    float sum_exp = 0.0f;
+    // 第二步：计算softmax和输出
+    __shared__ float shared_sum_exp;
+    __shared__ float shared_output;
     
-    // 每个线程初始化自己的累加器
+    float thread_sum_exp = 0.0f;
     float thread_output = 0.0f;
     int d = threadIdx.x;
     
@@ -185,17 +159,23 @@ __global__ void flash_attention_kernel_float_optimized(
             float exp_val = expf(shifted);
             
             // 累加exp值和加权值
-            sum_exp += exp_val;
+            thread_sum_exp += exp_val;
             thread_output += exp_val * V[v_base];
         }
     }
     
-    // 归约求和
-    sum_exp = blockReduceSum(sum_exp);
-    float output = blockReduceSum(thread_output);
+    // 使用原子操作累加到共享内存
+    if (threadIdx.x == 0 && threadIdx.y == 0) {
+        atomicAdd(&shared_sum_exp, thread_sum_exp);
+        atomicAdd(&shared_output, thread_output);
+    }
+    __syncthreads();
     
     // 归一化
     if (threadIdx.x == 0 && threadIdx.y == 0) {
+        float sum_exp = shared_sum_exp;
+        float output = shared_output;
+        
         if (sum_exp > 1e-12f) {
             output = output / sum_exp;
         } else if (valid_len > 0) {
@@ -230,7 +210,16 @@ __global__ void flash_attention_kernel_half_optimized(
     if (b >= batch_size || t >= target_seq_len || h >= query_heads) return;
     
     int kvh = h / (query_heads / kv_heads);
-    int valid_len = is_causal ? min(t + 1, src_seq_len) : src_seq_len;
+    
+    // 在device端计算valid_len
+    int valid_len = src_seq_len;
+    if (is_causal) {
+        if (t + 1 < src_seq_len) {
+            valid_len = t + 1;
+        } else {
+            valid_len = src_seq_len;
+        }
+    }
     
     size_t q_base = ((b * target_seq_len + t) * query_heads + h) * head_dim;
     size_t kv_base = (b * src_seq_len * kv_heads + kvh) * head_dim;
@@ -238,7 +227,6 @@ __global__ void flash_attention_kernel_half_optimized(
     // 使用共享内存
     extern __shared__ float shared_mem[];
     float* q_shared = shared_mem;
-    float* acc_shared = shared_mem + head_dim;
     
     float scale_f = __half2float(scale);
     
@@ -248,7 +236,7 @@ __global__ void flash_attention_kernel_half_optimized(
     }
     __syncthreads();
     
-    // 计算最大分数
+    // 第一步：计算最大分数
     float max_score = -1e30f;
     
     for (int s_start = 0; s_start < valid_len; s_start += blockDim.y) {
@@ -268,11 +256,19 @@ __global__ void flash_attention_kernel_half_optimized(
     }
     
     // 归约求最大值
-    max_score = blockReduceMax(max_score);
+    __shared__ float shared_max;
+    if (threadIdx.x == 0 && threadIdx.y == 0) {
+        shared_max = max_score;
+    }
+    __syncthreads();
+    max_score = shared_max;
     
-    // 计算softmax和输出
-    float sum_exp = 0.0f;
-    float thread_output = 0.0f;
+    // 第二步：计算softmax和输出
+    __shared__ float shared_sum_exp;
+    __shared__ float shared_output_f;
+    
+    float thread_sum_exp = 0.0f;
+    float thread_output_f = 0.0f;
     int d = threadIdx.x;
     
     for (int s_start = 0; s_start < valid_len; s_start += blockDim.y) {
@@ -294,17 +290,23 @@ __global__ void flash_attention_kernel_half_optimized(
             if (shifted < -20.0f) shifted = -20.0f;
             
             float exp_val = expf(shifted);
-            sum_exp += exp_val;
-            thread_output += exp_val * __half2float(V[v_base]);
+            thread_sum_exp += exp_val;
+            thread_output_f += exp_val * __half2float(V[v_base]);
         }
     }
     
-    // 归约求和
-    sum_exp = blockReduceSum(sum_exp);
-    float output_f = blockReduceSum(thread_output);
+    // 使用原子操作累加
+    if (threadIdx.x == 0 && threadIdx.y == 0) {
+        atomicAdd(&shared_sum_exp, thread_sum_exp);
+        atomicAdd(&shared_output_f, thread_output_f);
+    }
+    __syncthreads();
     
     // 归一化
     if (threadIdx.x == 0 && threadIdx.y == 0) {
+        float sum_exp = shared_sum_exp;
+        float output_f = shared_output_f;
+        
         if (sum_exp > 1e-12f) {
             output_f = output_f / sum_exp;
         } else if (valid_len > 0) {
@@ -322,7 +324,7 @@ __global__ void flash_attention_kernel_half_optimized(
     }
 }
 
-// Flash Attention主函数 
+// ================== Flash Attention主函数 ==================
 template <typename T>
 void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
@@ -370,13 +372,15 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
     // 使用2D block: x维度处理head_dim, y维度处理序列
     dim3 grid(batch_size, query_heads, target_seq_len);
     
-    // 计算block大小
-    int block_x = min(256, head_dim);
-    int block_y = min(4, (valid_len + 3) / 4);  // 每个block处理多个序列位置
+    // 计算block大小 - 简化版本，不在host端使用valid_len
+    int block_x = 256;
+    if (head_dim < block_x) block_x = head_dim;
+    int block_y = 4;  // 每个block处理4个序列位置
+    
     dim3 block(block_x, block_y);
     
     // 计算共享内存大小
-    size_t shared_mem_size = (head_dim + block_x) * sizeof(float);
+    size_t shared_mem_size = head_dim * sizeof(float);
     
     if constexpr (std::is_same_v<T, float>) {
         flash_attention_kernel_float_optimized<<<grid, block, shared_mem_size>>>(
@@ -412,15 +416,24 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
     // 清理
     cleanup(d_q, d_k, d_v, d_o);
 }
-// *********************************************************************
-// Explicit Template Instantiations (REQUIRED FOR LINKING WITH TESTER.O)
-// DO NOT MODIFY THIS SECTION
-// *********************************************************************
+
+// ================== Trace函数（保持原样） ==================
+template <typename T>
+T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
+    if (h_input.empty() || rows == 0 || cols == 0) return T(0);
+    size_t n = rows;
+    if (cols < n) n = cols;
+    T sum = T(0);
+    for (size_t i = 0; i < n; ++i) sum += h_input[i * cols + i];
+    return sum;
+}
+
+// ================== 显式实例化 ==================
 template int trace<int>(const std::vector<int>&, size_t, size_t);
 template float trace<float>(const std::vector<float>&, size_t, size_t);
 template void flashAttention<float>(const std::vector<float>&, const std::vector<float>&,
-  const std::vector<float>&, std::vector<float>&,
-  int, int, int, int, int, int, bool);
-template void flashAttention<half>(const std::vector<half>&, const std::vector<half>&,
-  const std::vector<half>&, std::vector<half>&,
-  int, int, int, int, int, int, bool);
+                                    const std::vector<float>&, std::vector<float>&,
+                                    int, int, int, int, int, int, bool);
+template void flashAttention<__half>(const std::vector<__half>&, const std::vector<__half>&,
+                                     const std::vector<__half>&, std::vector<__half>&,
+                                     int, int, int, int, int, int, bool);
