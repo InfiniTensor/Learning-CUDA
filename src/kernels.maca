@@ -1,7 +1,289 @@
 #include <vector>
-#include <common/maca_fp16.h>
+#include <iostream>
+#include <cmath>
+#include <cassert>
+#include <type_traits>
 
+#include <common/maca_fp16.h>
 #include "../tester/utils.h"
+
+constexpr int BLOCK_Q = 32;
+constexpr int BLOCK_KV = 32;
+constexpr int BLOCK_X = 16;
+constexpr int BLOCK_Y = 16;
+using CompType = float;
+
+template<typename T> __device__ __forceinline__ T min_val();
+template<> __device__ __forceinline__ float min_val<float>() { return -INFINITY; }
+template<> __device__ __forceinline__ half min_val<half>() { return __ushort_as_half(0xFC00); }
+
+__device__ __forceinline__ bool is_neg_inf(half x) { return (__half_as_ushort(x) == 0xFC00); }
+__device__ __forceinline__ bool is_neg_inf(float x) { return isinf(x) && signbit(x); }
+
+__device__ __forceinline__ CompType stable_sum(CompType sum, CompType val, CompType& comp) {
+    CompType t = sum + val;
+    if (fabsf(sum) >= fabsf(val)) comp += (sum - t) + val;
+    else comp += (val - t) + sum;
+    return t;
+}
+
+template<typename T>
+struct FAConfig {
+    T* q; T* k; T* v; T* o;
+    int bs, tlen, slen, qh, kvh, hdim;
+    bool causal;
+    size_t qb_size, qh_size, kvb_size, kvh_size;
+    float scale;
+    
+    FAConfig(T* q, T* k, T* v, T* o,
+             int bs, int tlen, int slen,
+             int qh, int kvh, int hdim, bool causal):
+        q(q), k(k), v(v), o(o),
+        bs(bs), tlen(tlen), slen(slen),
+        qh(qh), kvh(kvh), hdim(hdim),
+        causal(causal), scale(1.0f / sqrtf(hdim))
+    {
+        qb_size = tlen * qh * hdim;
+        qh_size = tlen * hdim;
+        kvb_size = slen * kvh * hdim;
+        kvh_size = slen * hdim;
+    }
+};
+
+template<typename T>
+class SharedAlloc {
+public:
+    __device__ SharedAlloc(T* base): ptr(base), off(0) {}
+    __device__ T* alloc(size_t n) { T* ret = ptr + off; off += n; return ret; }
+private:
+    T* ptr; size_t off;
+};
+
+template <typename T>
+__device__ void mem_copy(const T* src, T* dst, int n) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int nt = blockDim.y * blockDim.x;
+    for (int i = tid; i < n; i += nt) dst[i] = src[i];
+    __syncthreads();
+}
+
+template <typename T>
+__device__ void copy_stride_in(const T* src, CompType* dst, int n, int hdim, int stride) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int nt = blockDim.y * blockDim.x;
+    for (int i = tid; i < n; i += nt) {
+        int r = i / hdim, c = i % hdim;
+        dst[i] = src[r * stride + c];
+    }
+}
+
+template <typename T>
+__device__ void copy_stride_out(const CompType* src, T* dst, int n, int hdim, int stride) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int nt = blockDim.y * blockDim.x;
+    for (int i = tid; i < n; i += nt) {
+        int r = i / hdim, c = i % hdim;
+        dst[r * stride + c] = src[i];
+    }
+}
+
+template <typename T>
+__device__ void mem_set(T* mem, int n, T val) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * blockDim.y;
+    for (int i = tid; i < n; i += stride) mem[i] = val;
+    __syncthreads();
+}
+
+__device__ void apply_mask(CompType* s, int br, int bc, int brc, int bcc, int off) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int nt = blockDim.x * blockDim.y;
+    int total = brc * bcc;
+    for (int i = tid; i < total; i += nt) {
+        int r = i / bcc, c = i % bcc;
+        int q = br + r + off, k = bc + c;
+        if (k > q) s[i] = min_val<CompType>();
+    }
+}
+
+__device__ void calc_max(const CompType* s, const CompType* m, CompType* m_new, int r, int c) {
+    int tx = threadIdx.x, ty = threadIdx.y;
+    int ct = blockDim.x, rs = blockDim.y;
+    for (int row = ty; row < r; row += rs) {
+        CompType local = min_val<CompType>();
+        for (int col = tx; col < c; col += ct)
+            local = max(local, s[row * c + col]);
+        unsigned mask = __activemask();
+        for (int d = ct >> 1; d > 0; d >>= 1)
+            local = max(local, __shfl_down_sync(mask, local, d, ct));
+        if (tx == 0) m_new[row] = max(m[row], local);
+    }
+}
+
+__device__ void safe_exp(CompType* s, const CompType* m, int r, int c) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * blockDim.y;
+    for (int i = tid; i < r * c; i += stride) {
+        int row = i / c;
+        if (is_neg_inf(s[i])) s[i] = CompType(0);
+        else {
+            CompType x = s[i] - m[row];
+            if (x < CompType(-30)) s[i] = CompType(0);
+            else s[i] = expf(x);
+        }
+    }
+}
+
+__device__ void update_bias(CompType* o, const CompType* m, const CompType* m_new, int r, int c) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * blockDim.y;
+    for (int i = tid; i < r * c; i += stride) {
+        int row = i / c;
+        o[i] *= expf(m[row] - m_new[row]);
+    }
+}
+
+__device__ void update_L(const CompType* s, const CompType* m, const CompType* m_new,
+                        CompType* L, int r, int c) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * blockDim.y;
+    for (int row = tid; row < r; row += stride) {
+        CompType sum = CompType(0), comp = CompType(0);
+        for (int col = 0; col < c; ++col)
+            sum = stable_sum(sum, s[row * c + col], comp);
+        L[row] = expf(m[row] - m_new[row]) * L[row] + sum;
+    }
+}
+
+__device__ void norm_out(CompType* o, const CompType* L, int r, int c) {
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * blockDim.y;
+    for (int i = tid; i < r * c; i += stride) {
+        int row = i / c;
+        o[i] /= L[row];
+    }
+}
+
+template <bool TransB>
+__device__ void block_gemm(const CompType* A, const CompType* B, const CompType* bias,
+                          CompType* C, int m, int k, int n, CompType factor) {
+    int tx = threadIdx.x, ty = threadIdx.y;
+    int dc = blockDim.x, dr = blockDim.y;
+    for (int r = ty; r < m; r += dr) {
+        for (int c = tx; c < n; c += dc) {
+            CompType acc = CompType(0), comp = CompType(0);
+            for (int i = 0; i < k; ++i) {
+                CompType term;
+                if constexpr (!TransB) term = A[r * k + i] * B[i * n + c];
+                else term = A[r * k + i] * B[c * k + i];
+                acc = stable_sum(acc, term, comp);
+            }
+            acc *= factor;
+            CompType b = (bias) ? bias[r * n + c] : CompType(0);
+            C[r * n + c] = acc + b;
+        }
+    }
+}
+
+template<typename T>
+__device__ void process_block(FAConfig<T> cfg, int b, int h, int qb) {
+    extern __shared__ char smem[];
+    CompType* sm = reinterpret_cast<CompType*>(smem);
+    SharedAlloc<CompType> alloc(sm);
+    
+    T* q_ptr = cfg.q + cfg.qb_size * b + qb * cfg.hdim * cfg.qh * BLOCK_Q + h * cfg.hdim;
+    T* k_base = cfg.k + cfg.kvb_size * b;
+    T* v_base = cfg.v + cfg.kvb_size * b;
+    
+    int qr = cfg.tlen - qb * BLOCK_Q < BLOCK_Q ? cfg.tlen - qb * BLOCK_Q : BLOCK_Q;
+    int qe = qr * cfg.hdim;
+    int kvh = h * cfg.kvh / cfg.qh;
+    
+    CompType* sm_q = alloc.alloc(BLOCK_Q * cfg.hdim);
+    CompType* sm_k = alloc.alloc(BLOCK_KV * cfg.hdim);
+    CompType* sm_v = alloc.alloc(BLOCK_KV * cfg.hdim);
+    CompType* sm_o = alloc.alloc(BLOCK_Q * cfg.hdim);
+    CompType* sm_L = alloc.alloc(BLOCK_Q);
+    CompType* sm_m = alloc.alloc(BLOCK_Q);
+    CompType* sm_mn = alloc.alloc(BLOCK_Q);
+    CompType* sm_s = alloc.alloc(BLOCK_Q * BLOCK_KV);
+    
+    mem_set(sm_m, qr, min_val<CompType>());
+    mem_set(sm_L, qr, CompType(0));
+    mem_set(sm_o, BLOCK_Q * cfg.hdim, CompType(0));
+    
+    copy_stride_in(q_ptr, sm_q, qe, cfg.hdim, cfg.qh * cfg.hdim);
+    __syncthreads();
+    
+    CompType factor = CompType(1.0) / sqrt(CompType(cfg.hdim));
+    int kvi = 0;
+    
+    for (int i = 0; i < cfg.slen; i += BLOCK_KV, kvi++) {
+        T* k_ptr = k_base + i * cfg.hdim * cfg.kvh + kvh * cfg.hdim;
+        T* v_ptr = v_base + i * cfg.hdim * cfg.kvh + kvh * cfg.hdim;
+        int kvr = cfg.slen - kvi * BLOCK_KV < BLOCK_KV ? cfg.slen - kvi * BLOCK_KV : BLOCK_KV;
+        int kve = kvr * cfg.hdim;
+        
+        copy_stride_in(k_ptr, sm_k, kve, cfg.hdim, cfg.kvh * cfg.hdim);
+        __syncthreads();
+        copy_stride_in(v_ptr, sm_v, kve, cfg.hdim, cfg.kvh * cfg.hdim);
+        __syncthreads();
+        
+        block_gemm<true>(sm_q, sm_k, nullptr, sm_s, qr, cfg.hdim, kvr, factor);
+        __syncthreads();
+        
+        if (cfg.causal) {
+            apply_mask(sm_s, qb * BLOCK_Q, kvi * BLOCK_KV, qr, kvr, 0);
+            __syncthreads();
+        }
+        
+        calc_max(sm_s, sm_m, sm_mn, qr, kvr);
+        __syncthreads();
+        
+        safe_exp(sm_s, sm_mn, qr, kvr);
+        __syncthreads();
+        
+        update_L(sm_s, sm_m, sm_mn, sm_L, qr, kvr);
+        __syncthreads();
+        
+        update_bias(sm_o, sm_m, sm_mn, qr, cfg.hdim);
+        __syncthreads();
+        
+        block_gemm<false>(sm_s, sm_v, sm_o, sm_o, qr, kvr, cfg.hdim, CompType(1.0));
+        __syncthreads();
+        
+        mem_copy(sm_mn, sm_m, qr);
+    }
+    
+    norm_out(sm_o, sm_L, qr, cfg.hdim);
+    __syncthreads();
+    
+    T* out = cfg.o + b * cfg.qb_size + qb * BLOCK_Q * cfg.hdim * cfg.qh + h * cfg.hdim;
+    copy_stride_out(sm_o, out, qe, cfg.hdim, cfg.qh * cfg.hdim);
+    __syncthreads();
+}
+
+template<typename T>
+__global__ void fa_kernel(FAConfig<T> cfg) {
+    int qb = blockIdx.x, b = blockIdx.y, h = blockIdx.z;
+    process_block(cfg, b, h, qb);
+}
+
+template <typename T>
+__global__ void trace_kernel(const T* in, T* out, size_t stride, size_t n) {
+    size_t idx = blockDim.x * blockIdx.x + threadIdx.x;
+    size_t tid = threadIdx.x;
+    const unsigned mask = __activemask();
+    
+    T sum = 0;
+    for (size_t i = idx; i < n; i += blockDim.x * gridDim.x)
+        sum += in[i * stride];
+    
+    for (int d = 16; d > 0; d >>= 1)
+        sum += __shfl_down_sync(mask, sum, d);
+    
+    if (tid % 32 == 0) atomicAdd(out, sum);
+}
 
 /**
  * @brief Computes the trace of a matrix.
@@ -19,8 +301,27 @@
  */
 template <typename T>
 T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-  // TODO: Implement the trace function
-  return T(-1);
+    if (h_input.empty() || rows == 0 || cols == 0) return T(0);
+    
+    T *d_in, *d_out;
+    size_t bytes = rows * cols * sizeof(T);
+    size_t n = std::min(rows, cols);
+    
+    d_in = nullptr; d_out = nullptr;
+    mcMalloc(&d_in, bytes);
+    mcMalloc(&d_out, sizeof(T));
+    mcMemset(d_out, 0, sizeof(T));
+    mcMemcpy(d_in, h_input.data(), bytes, mcMemcpyHostToDevice);
+    
+    dim3 block(256);
+    dim3 grid(std::max(1ul, (n + block.x - 1) / block.x));
+    trace_kernel<<<grid, block>>>(d_in, d_out, cols + 1, n);
+    
+    T result;
+    mcMemcpy(&result, d_out, sizeof(T), mcMemcpyDeviceToHost);
+    mcFree(d_in);
+    mcFree(d_out);
+    return result;
 }
 
 /**
@@ -42,8 +343,50 @@ T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
 template <typename T>
 void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
-                    int batch_size, int target_seq_len, int src_seq_len, 
-                    int query_heads, int kv_heads, int head_dim, bool is_causal) {       
+                    int batch_size, int target_seq_len, int src_seq_len,
+                    int query_heads, int kv_heads, int head_dim, bool is_causal) {
+    if (batch_size <= 0 || target_seq_len <= 0 || src_seq_len <= 0 || 
+        query_heads <= 0 || kv_heads <= 0 || head_dim <= 0) return;
+    if (query_heads % kv_heads != 0) return;
+    
+    h_o.resize(batch_size * target_seq_len * query_heads * head_dim);
+    
+    dim3 block(BLOCK_X, BLOCK_Y);
+    int qb = (target_seq_len + BLOCK_Q - 1) / BLOCK_Q;
+    dim3 grid(qb, batch_size, query_heads);
+    
+    size_t smem = sizeof(CompType) * (2 * BLOCK_Q * head_dim + 2 * BLOCK_KV * head_dim + 
+                                      1 * BLOCK_KV * BLOCK_Q + 4 * BLOCK_Q);
+    
+    mcStream_t s = nullptr;
+    mcStreamCreate(&s);
+    
+    T *d_q, *d_k, *d_v, *d_o;
+    size_t qsz = h_o.size() * sizeof(T);
+    size_t kvsz = batch_size * src_seq_len * kv_heads * head_dim * sizeof(T);
+    
+    d_q = d_k = d_v = d_o = nullptr;
+    mcMalloc(&d_q, qsz);
+    mcMalloc(&d_o, qsz);
+    mcMalloc(&d_k, kvsz);
+    mcMalloc(&d_v, kvsz);
+    
+    mcMemcpy(d_q, h_q.data(), qsz, mcMemcpyHostToDevice);
+    mcMemcpy(d_k, h_k.data(), kvsz, mcMemcpyHostToDevice);
+    mcMemcpy(d_v, h_v.data(), kvsz, mcMemcpyHostToDevice);
+    
+    FAConfig<T> cfg(d_q, d_k, d_v, d_o, batch_size, target_seq_len, src_seq_len,
+                   query_heads, kv_heads, head_dim, is_causal);
+    
+    fa_kernel<<<grid, block, smem>>>(cfg);
+    mcMemcpy(h_o.data(), d_o, qsz, mcMemcpyDeviceToHost);
+    
+    mcStreamSynchronize(s);
+    mcFree(d_q);
+    mcFree(d_k);
+    mcFree(d_v);
+    mcFree(d_o);
+    mcStreamDestroy(s);
 }
 
 // *********************************************************************
