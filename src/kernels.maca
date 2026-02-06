@@ -1,60 +1,276 @@
 #include <vector>
-#include <common/maca_fp16.h>
+#include <cfloat>
+#include <cmath>
+#include <algorithm>
+#include <stdexcept>
+#include <iostream>
+#include <cstdlib>
+#include <maca_fp16.h>
 
 #include "../tester/utils.h"
 
-/**
- * @brief Computes the trace of a matrix.
- *
- * The trace of a matrix is defined as the sum of its diagonal elements.
- * This function expects a flattened row-major matrix stored in a
- * std::vector. If the matrix is not square, the trace will sum up
- * elements along the main diagonal up to the smaller of rows or cols.
- *
- * @tparam T The numeric type of matrix elements (e.g., float, int).
- * @param h_input A flattened matrix of size rows * cols.
- * @param rows Number of rows in the matrix.
- * @param cols Number of columns in the matrix.
- * @return The trace (sum of diagonal values) of the matrix.
- */
-template <typename T>
-T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
-  // TODO: Implement the trace function
-  return T(-1);
+// Error checking macro
+#define MACA_CHECK(call) \
+{ \
+    mcError_t err = call; \
+    if (err != mcSuccess) \
+    { \
+        std::cerr << "MACA error at " << __FILE__ << ":" << __LINE__ \
+                  << " - " << mcGetErrorString(err) << "\n"; \
+        exit(1); \
+    } \
 }
 
-/**
- * @brief Computes flash attention for given query, key, and value tensors.
- * 
- * @tparam T Data type (float) for input/output tensors
- * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] batch_size Batch dimension size
- * @param[in] target_seq_len Target sequence length
- * @param[in] src_seq_len Source sequence length  
- * @param[in] query_heads Number of query attention heads
- * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
- * @param[in] head_dim Dimension size of each attention head
- * @param[in] is_causal Whether to apply causal masking
- */
+template <typename T>
+__host__ __device__ __forceinline__ float to_float(T x) {
+  return static_cast<float>(x);
+}
+
+template <>
+__host__ __device__ __forceinline__ float to_float<__half>(__half x) {
+  return __half2float(x);
+}
+
+template <typename T>
+__host__ __device__ __forceinline__ T from_float(float x) {
+  return static_cast<T>(x);
+}
+
+template <>
+__host__ __device__ __forceinline__ __half from_float<__half>(float x) {
+  return __float2half_rn(x);
+}
+
+// Warp归约模板
+template <typename T>
+__device__ __forceinline__ T warp_reduce_sum(T val) {
+  const auto mask = __activemask();
+  #pragma unroll
+  for (int delta = warpSize >> 1; delta >= 1; delta >>= 1) {
+    val += __shfl_xor_sync(mask, val, delta);
+  }
+  return val;
+}
+
+// trace_kernel
+template <typename T>
+__global__ void trace_kernel(const T* d_input, int cols, int n_diag, T* d_sum) {
+  constexpr int kNumThreads = 256;
+  __shared__ T reduce_smem[kNumThreads];
+
+  int tid = threadIdx.x;
+  int idx = blockIdx.x * kNumThreads + tid;
+  int warp = tid / warpSize;
+  int lane = tid % warpSize;
+  int num_warps = (kNumThreads + warpSize - 1) / warpSize;
+
+  T sum = (idx < n_diag) ? d_input[idx * cols + idx] : T(0);
+  sum = warp_reduce_sum<T>(sum);
+
+  if (lane == 0) {
+    reduce_smem[warp] = sum;
+  }
+  __syncthreads();
+
+  sum = (tid < num_warps) ? reduce_smem[tid] : T(0);
+  if (warp == 0) {
+    sum = warp_reduce_sum<T>(sum);
+    if (lane == 0) {
+      atomicAdd(d_sum, sum);
+    }
+  }
+}
+
+template <typename T>
+T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
+  if (h_input.empty() || rows == 0 || cols == 0) {
+    return T(0);
+  }
+
+  const int n_diag = static_cast<int>(std::min(rows, cols));
+  const int block_size = 256;
+  const int grid_size = (n_diag + block_size - 1) / block_size;
+
+  T* d_input = nullptr;
+  T* d_sum = nullptr;
+
+  MACA_CHECK(mcMalloc(&d_input, h_input.size() * sizeof(T)));
+  MACA_CHECK(mcMalloc(&d_sum, sizeof(T)));
+
+  MACA_CHECK(mcMemcpy(
+      d_input, h_input.data(), h_input.size() * sizeof(T), mcMemcpyHostToDevice));
+  MACA_CHECK(mcMemset(d_sum, 0, sizeof(T)));
+
+  trace_kernel<T><<<grid_size, block_size>>>(d_input, static_cast<int>(cols), n_diag, d_sum);
+  MACA_CHECK(mcGetLastError());
+  MACA_CHECK(mcDeviceSynchronize());
+
+  T h_sum = T(0);
+  MACA_CHECK(mcMemcpy(&h_sum, d_sum, sizeof(T), mcMemcpyDeviceToHost));
+
+  MACA_CHECK(mcFree(d_input));
+  MACA_CHECK(mcFree(d_sum));
+
+  return h_sum;
+}
+
+constexpr int FLASH_BLOCK_SIZE = 32;
+
+// flash_attention_kernel
+template <typename T>
+__global__ void flash_attention_kernel(const T* q, const T* k, const T* v, T* o,
+                                       int batch_size, int target_seq_len, int src_seq_len,
+                                       int query_heads, int kv_heads, int head_dim,
+                                       bool is_causal) {
+  (void)batch_size;
+  const int b = blockIdx.z;
+  const int qh = blockIdx.y;
+  const int t = blockIdx.x;
+  const int tid = threadIdx.x;
+
+  if (t >= target_seq_len) {
+    return;
+  }
+  if (tid != 0) {
+    return;
+  }
+
+  int kvh = 0;
+  if (query_heads % kv_heads == 0) {
+    const int q_per_kv = query_heads / kv_heads;
+    kvh = qh / q_per_kv;
+  } else {
+    kvh = qh % kv_heads;
+  }
+
+  const int effective_src = is_causal ? min(src_seq_len, t + 1) : src_seq_len;
+  const int out_base = ((b * target_seq_len + t) * query_heads + qh) * head_dim;
+
+  extern __shared__ float smem[];
+  float* q_vec = smem;                 // [head_dim]
+  float* out_accum = q_vec + head_dim; // [head_dim]
+
+  if (effective_src <= 0) {
+    for (int d = 0; d < head_dim; ++d) {
+      o[out_base + d] = from_float<T>(0.0f);
+    }
+    return;
+  }
+
+  const float inv_sqrt_d = 1.0f / sqrtf(static_cast<float>(head_dim));
+  for (int d = 0; d < head_dim; ++d) {
+    const int q_idx = ((b * target_seq_len + t) * query_heads + qh) * head_dim + d;
+    q_vec[d] = to_float<T>(q[q_idx]);
+    out_accum[d] = 0.0f;
+  }
+
+  float m = -FLT_MAX;
+  for (int s = 0; s < effective_src; ++s) {
+    float dot = 0.0f;
+    const int k_base = ((b * src_seq_len + s) * kv_heads + kvh) * head_dim;
+    for (int d = 0; d < head_dim; ++d) {
+      dot = fmaf(q_vec[d], to_float<T>(k[k_base + d]), dot);
+    }
+    m = fmaxf(m, dot * inv_sqrt_d);
+  }
+
+  float denom = 0.0f;
+  for (int s = 0; s < effective_src; ++s) {
+    float dot = 0.0f;
+    const int k_base = ((b * src_seq_len + s) * kv_heads + kvh) * head_dim;
+    for (int d = 0; d < head_dim; ++d) {
+      dot = fmaf(q_vec[d], to_float<T>(k[k_base + d]), dot);
+    }
+
+    const float w = expf(dot * inv_sqrt_d - m);
+    denom += w;
+
+    const int v_base = ((b * src_seq_len + s) * kv_heads + kvh) * head_dim;
+    for (int d = 0; d < head_dim; ++d) {
+      out_accum[d] += w * to_float<T>(v[v_base + d]);
+    }
+  }
+
+  const float inv_denom = (denom > 0.0f) ? (1.0f / denom) : 0.0f;
+  for (int d = 0; d < head_dim; ++d) {
+    o[out_base + d] = from_float<T>(out_accum[d] * inv_denom);
+  }
+}
+
 template <typename T>
 void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
-                    int batch_size, int target_seq_len, int src_seq_len, 
-                    int query_heads, int kv_heads, int head_dim, bool is_causal) {       
+                    int batch_size, int target_seq_len, int src_seq_len,
+                    int query_heads, int kv_heads, int head_dim, bool is_causal) {
+  const size_t o_elems =
+      static_cast<size_t>(batch_size > 0 ? batch_size : 0) *
+      static_cast<size_t>(target_seq_len > 0 ? target_seq_len : 0) *
+      static_cast<size_t>(query_heads > 0 ? query_heads : 0) *
+      static_cast<size_t>(head_dim > 0 ? head_dim : 0);
+  if (h_o.size() != o_elems) {
+    h_o.resize(o_elems);
+  }
+
+  if (o_elems == 0) {
+    return;
+  }
+  if (batch_size <= 0 || target_seq_len <= 0 || src_seq_len <= 0 ||
+      query_heads <= 0 || kv_heads <= 0 || head_dim <= 0) {
+    std::fill(h_o.begin(), h_o.end(), from_float<T>(0.0f));
+    return;
+  }
+
+  const size_t q_elems =
+      static_cast<size_t>(batch_size) * target_seq_len * query_heads * head_dim;
+  const size_t k_elems =
+      static_cast<size_t>(batch_size) * src_seq_len * kv_heads * head_dim;
+  const size_t v_elems =
+      static_cast<size_t>(batch_size) * src_seq_len * kv_heads * head_dim;
+
+  if (h_q.size() != q_elems || h_k.size() != k_elems || h_v.size() != v_elems) {
+    throw std::invalid_argument(
+        "flashAttention: input tensor sizes do not match provided dimensions.");
+  }
+
+  T* d_q = nullptr;
+  T* d_k = nullptr;
+  T* d_v = nullptr;
+  T* d_o = nullptr;
+
+  MACA_CHECK(mcMalloc(&d_q, q_elems * sizeof(T)));
+  MACA_CHECK(mcMalloc(&d_k, k_elems * sizeof(T)));
+  MACA_CHECK(mcMalloc(&d_v, v_elems * sizeof(T)));
+  MACA_CHECK(mcMalloc(&d_o, o_elems * sizeof(T)));
+
+  MACA_CHECK(mcMemcpy(d_q, h_q.data(), q_elems * sizeof(T), mcMemcpyHostToDevice));
+  MACA_CHECK(mcMemcpy(d_k, h_k.data(), k_elems * sizeof(T), mcMemcpyHostToDevice));
+  MACA_CHECK(mcMemcpy(d_v, h_v.data(), v_elems * sizeof(T), mcMemcpyHostToDevice));
+
+  dim3 grid_dim(target_seq_len, query_heads, batch_size);
+  const int block_size = FLASH_BLOCK_SIZE;
+  const size_t smem_size = static_cast<size_t>(2 * head_dim) * sizeof(float);
+
+  flash_attention_kernel<T><<<grid_dim, block_size, smem_size>>>(
+      d_q, d_k, d_v, d_o,
+      batch_size, target_seq_len, src_seq_len,
+      query_heads, kv_heads, head_dim, is_causal);
+
+  MACA_CHECK(mcGetLastError());
+  MACA_CHECK(mcDeviceSynchronize());
+
+  MACA_CHECK(mcMemcpy(h_o.data(), d_o, o_elems * sizeof(T), mcMemcpyDeviceToHost));
+
+  MACA_CHECK(mcFree(d_q));
+  MACA_CHECK(mcFree(d_k));
+  MACA_CHECK(mcFree(d_v));
+  MACA_CHECK(mcFree(d_o));
 }
 
-// *********************************************************************
-// Explicit Template Instantiations (REQUIRED FOR LINKING WITH TESTER.O)
-// DO NOT MODIFY THIS SECTION
-// *********************************************************************
 template int trace<int>(const std::vector<int>&, size_t, size_t);
 template float trace<float>(const std::vector<float>&, size_t, size_t);
 template void flashAttention<float>(const std::vector<float>&, const std::vector<float>&,
   const std::vector<float>&, std::vector<float>&,
   int, int, int, int, int, int, bool);
-template void flashAttention<half>(const std::vector<half>&, const std::vector<half>&,
-  const std::vector<half>&, std::vector<half>&,
+template void flashAttention<__half>(const std::vector<__half>&, const std::vector<__half>&,
+  const std::vector<__half>&, std::vector<__half>&,
   int, int, int, int, int, int, bool);
