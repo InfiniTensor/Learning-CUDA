@@ -117,238 +117,297 @@ T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
  * @param[in] is_causal Whether to apply causal masking
  */
 
-template <typename T>
-struct TypeConverter {
-    __device__ __forceinline__ static float to_float(T val);
-    __device__ __forceinline__ static T from_float(float val);
-};
+ template <typename T>
+ struct TypeConverter;
+ 
+ template <>
+ struct TypeConverter<float> {
+     __device__ __forceinline__ static float to_float(float v) {
+         return v;
+     }
+     __device__ __forceinline__ static float from_float(float v) {
+         return v;
+     }
+ };
+ 
+ template <>
+ struct TypeConverter<half> {
+     __device__ __forceinline__ static float to_float(half v) {
+         return __half2float(v);
+     }
+     __device__ __forceinline__ static half from_float(float v) {
+         return __float2half(v);
+     }
+ };
 
-template <>
-struct TypeConverter<float> {
-    __device__ __forceinline__ static float to_float(float val) {
-        return val;
-    }
-    __device__ __forceinline__ static float from_float(float val) {
-        return val;
-    }
-};
+ // 特殊 head_dim 模板特化
+ template <typename T, int HEAD_DIM>
+ __global__ void flash_attention_forward_kernel_fast(
+     const T* __restrict__ Q,
+     const T* __restrict__ K,
+     const T* __restrict__ V,
+     T* __restrict__ O,
+     int batch_size,
+     int tgt_seq_len,
+     int src_seq_len,
+     int query_heads,
+     int kv_heads,
+     bool is_causal,
+     float softmax_scale
+ ) {
+     // 每个线程处理一个 Q 众多头中的一个头中的 token
+     int tgt_idx   = blockIdx.x * blockDim.x + threadIdx.x;
+     int head_idx  = blockIdx.y;
+     int batch_idx = blockIdx.z;
+ 
+     if (tgt_idx >= tgt_seq_len) return;
+ 
+     int kv_head_idx = (head_idx * kv_heads) / query_heads;
+    
 
-template <>
-struct TypeConverter<half> {
-    __device__ __forceinline__ static float to_float(half val) {
-        return __half2float(val);
-    }
-    __device__ __forceinline__ static half from_float(float val) {
-        return __float2half(val);
-    }
-};
+     // 计算内存偏移量
+     int q_offset =
+         batch_idx * tgt_seq_len * query_heads * HEAD_DIM +
+         tgt_idx   * query_heads * HEAD_DIM +
+         head_idx  * HEAD_DIM;
+ 
+     int kv_batch_offset =
+         batch_idx * src_seq_len * kv_heads * HEAD_DIM +
+         kv_head_idx * HEAD_DIM;
+    
+     // Q[i] 向量
+     float q_vec[HEAD_DIM]; 
+     float out[HEAD_DIM];
+ 
+ #pragma unroll
+     for (int d = 0; d < HEAD_DIM; ++d) {
+         q_vec[d] = TypeConverter<T>::to_float(Q[q_offset + d]);
+         out[d]   = 0.0f;
+     }
 
-// Flash Attention Kernel
-template <typename T>
-__global__ void flash_attention_forward_kernel(
-    const T* __restrict__ Q,
-    const T* __restrict__ K, 
-    const T* __restrict__ V,
-    T* __restrict__ O,
-    const int batch_size,
-    const int tgt_seq_len,
-    const int src_seq_len,
-    const int query_heads,
-    const int kv_heads,
-    const int head_dim,
-    const bool is_causal,
-    const float softmax_scale
-) {
-    // 线程索引
-    const int batch_idx = blockIdx.z;
-    const int head_idx = blockIdx.y;
-    const int global_tgt_idx = blockIdx.x * blockDim.x + threadIdx.x;
-    
-    // 边界检查
-    if (global_tgt_idx >= tgt_seq_len) return;
-    
-    // GQA 支持
-    const int kv_head_idx = (head_idx * kv_heads) / query_heads;
-    
-    // 计算偏移量
-    const size_t q_batch_stride = tgt_seq_len * query_heads * head_dim;
-    const size_t q_seq_stride = query_heads * head_dim;
-    const size_t q_head_stride = head_dim;
-    
-    const int q_offset = batch_idx * q_batch_stride + 
-                         global_tgt_idx * q_seq_stride + 
-                         head_idx * q_head_stride;
-    
-    const size_t kv_batch_stride = src_seq_len * kv_heads * head_dim;
-    const size_t kv_seq_stride = kv_heads * head_dim;
-    const size_t kv_head_stride = head_dim;
-    
-    const int kv_batch_offset = batch_idx * kv_batch_stride + 
-                                kv_head_idx * kv_head_stride;
-    
-    const int o_offset = batch_idx * q_batch_stride + 
-                         global_tgt_idx * q_seq_stride + 
-                         head_idx * q_head_stride;
-    
-    // 在线 Softmax 状态
-    float max_score = -FLT_MAX;
-    float sum_exp = 0.0f;
-    
-    // 动态分配输出累加器（避免固定大小假设）
-    float* output_acc = new float[head_dim];
-    float* q_vec = new float[head_dim];
-    
-    // 初始化
-    for (int d = 0; d < head_dim; ++d) {
-        output_acc[d] = 0.0f;
-        q_vec[d] = TypeConverter<T>::to_float(Q[q_offset + d]);     // 加载 Q 的第 i 行作为外循环
-    } 
-    
-    // 分块处理 Key 和 Value
-    const int BLOCK_SIZE = 64;  // 固定分块大小
-    
-    // 使用 KV 的第 j 行作为内循环
-    for (int src_block_start = 0; src_block_start < src_seq_len; src_block_start += BLOCK_SIZE) {
-        const int src_block_end = min(src_block_start + BLOCK_SIZE, src_seq_len);
-        
-        // 计算当前块的注意力分数
-        float block_scores[64];  // 匹配 BLOCK_SIZE
-        
-        for (int i = 0; i < BLOCK_SIZE; ++i) {
-            const int src_idx = src_block_start + i;
-            
-            if (src_idx >= src_block_end) {
-                block_scores[i] = -FLT_MAX;
-                continue;
-            }
-            
-            // Causal masking
-            if (is_causal && src_idx > global_tgt_idx) {
-                block_scores[i] = -FLT_MAX;
-                continue;
-            }
-            
-            // 计算 Q·K^T
-            const int k_offset = kv_batch_offset + src_idx * kv_seq_stride;
-            
-            float score = 0.0f;
-            for (int d = 0; d < head_dim; ++d) {
-                float k_val = TypeConverter<T>::to_float(K[k_offset + d]);
-                score += q_vec[d] * k_val;
-            }
-            
-            block_scores[i] = score * softmax_scale;
-        }
-        
-        // 在线 Softmax 更新
-        float prev_max = max_score;
-        
-        // 更新最大值
-        for (int i = 0; i < BLOCK_SIZE; ++i) {
-            if (block_scores[i] > -FLT_MAX) {
-                max_score = fmaxf(max_score, block_scores[i]);
-            }
-        }
-        
-        // 重新缩放
-        const float correction = expf(prev_max - max_score);
-        sum_exp *= correction;
-        
-        for (int d = 0; d < head_dim; ++d) {
-            output_acc[d] *= correction;
-        }
-        
-        // 累加当前块的贡献
-        for (int i = 0; i < BLOCK_SIZE; ++i) {
-            const int src_idx = src_block_start + i;
-            
-            if (src_idx >= src_block_end || block_scores[i] == -FLT_MAX) {
-                continue;
-            }
-            
-            const float attn_weight = expf(block_scores[i] - max_score);
-            sum_exp += attn_weight;
-            
-            const int v_offset = kv_batch_offset + src_idx * kv_seq_stride;
-            
-            for (int d = 0; d < head_dim; ++d) {
-                float v_val = TypeConverter<T>::to_float(V[v_offset + d]);
-                output_acc[d] += attn_weight * v_val;
-            }
-        }
-    }
-    
-    // 最终归一化并写出
-    const float inv_sum = (sum_exp > 1e-6f) ? (1.0f / sum_exp) : 0.0f;
-    
-    for (int d = 0; d < head_dim; ++d) {
-        O[o_offset + d] = TypeConverter<T>::from_float(output_acc[d] * inv_sum);
-    }
-    
-    // 清理
-    delete[] output_acc;
-    delete[] q_vec;
-}
 
-template <typename T>
-void flashAttention(
-    const std::vector<T>& h_q,
-    const std::vector<T>& h_k,
-    const std::vector<T>& h_v,
-    std::vector<T>& h_o,
-    int batch_size,
-    int target_seq_len,
-    int src_seq_len,
-    int query_heads,
-    int kv_heads,
-    int head_dim,
-    bool is_causal
-) {
-    const float softmax_scale = 1.0f / sqrtf(static_cast<float>(head_dim));
-    
-    const size_t q_size = batch_size * target_seq_len * query_heads * head_dim;
-    const size_t kv_size = batch_size * src_seq_len * kv_heads * head_dim;
-    const size_t o_size = q_size;
-    
-    T *d_q, *d_k, *d_v, *d_o;
-    cudaMalloc(&d_q, q_size * sizeof(T));
-    cudaMalloc(&d_k, kv_size * sizeof(T));
-    cudaMalloc(&d_v, kv_size * sizeof(T));
-    cudaMalloc(&d_o, o_size * sizeof(T));
-    
-    cudaMemcpy(d_q, h_q.data(), q_size * sizeof(T), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_k, h_k.data(), kv_size * sizeof(T), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_v, h_v.data(), kv_size * sizeof(T), cudaMemcpyHostToDevice);
-    
-    const int threads_per_block = 256;
-    dim3 block_dim(threads_per_block);
-    dim3 grid_dim(
-        (target_seq_len + threads_per_block - 1) / threads_per_block,
-        query_heads,
-        batch_size
-    );
-    
-    flash_attention_forward_kernel<T><<<grid_dim, block_dim>>>(
-        d_q, d_k, d_v, d_o,
-        batch_size, target_seq_len, src_seq_len,
-        query_heads, kv_heads, head_dim,
-        is_causal, softmax_scale
-    );
-    
-    cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) {
-        printf("CUDA Error: %s\n", cudaGetErrorString(err));
-    }
-    
-    cudaMemcpy(h_o.data(), d_o, o_size * sizeof(T), cudaMemcpyDeviceToHost);
-    cudaDeviceSynchronize();
-    
-    cudaFree(d_q);
-    cudaFree(d_k);
-    cudaFree(d_v);
-    cudaFree(d_o);
-}
+    // Online Softmax + Attention
+     float max_score = -FLT_MAX;
+     float sum_exp   = 0.0f;    // Softmax 分母
+ 
+     for (int s = 0; s < src_seq_len; ++s) {
+         if (is_causal && s > tgt_idx) continue;
+ 
+         int k_offset = kv_batch_offset + s * kv_heads * HEAD_DIM;
+ 
+         float score = 0.0f;
 
+         // 计算 Q * K ^ T
+ #pragma unroll
+         for (int d = 0; d < HEAD_DIM; ++d) {
+             score += q_vec[d] *
+                      TypeConverter<T>::to_float(K[k_offset + d]);
+         }
+         score *= softmax_scale;
+         
+
+         // Online Softmax 更新
+         float prev_max = max_score;
+         max_score = fmaxf(max_score, score);
+ 
+         float scale = expf(prev_max - max_score);
+         sum_exp *= scale;
+ #pragma unroll
+         for (int d = 0; d < HEAD_DIM; ++d) out[d] *= scale;
+ 
+         float w = expf(score - max_score);
+         sum_exp += w;
+ 
+         int v_offset = kv_batch_offset + s * kv_heads * HEAD_DIM;
+ #pragma unroll
+         for (int d = 0; d < HEAD_DIM; ++d) {
+             out[d] += w * TypeConverter<T>::to_float(V[v_offset + d]);
+         }
+     }
+ 
+     float inv = (sum_exp > 1e-6f) ? 1.0f / sum_exp : 0.0f;
+ 
+ #pragma unroll
+     for (int d = 0; d < HEAD_DIM; ++d) {
+         O[q_offset + d] =
+             TypeConverter<T>::from_float(out[d] * inv);
+     }
+ }
+
+
+ // 支持任意 head_dim
+ template <typename T>
+ __global__ void flash_attention_forward_kernel_generic(
+     const T* __restrict__ Q,
+     const T* __restrict__ K,
+     const T* __restrict__ V,
+     T* __restrict__ O,
+     int batch_size,
+     int tgt_seq_len,
+     int src_seq_len,
+     int query_heads,
+     int kv_heads,
+     int head_dim,
+     bool is_causal,
+     float softmax_scale
+ ) {
+     extern __shared__ float smem[];
+ 
+     int tid      = threadIdx.x;
+     int tgt_idx  = blockIdx.x * blockDim.x + tid;
+     int head_idx = blockIdx.y;
+     int batch_idx = blockIdx.z;
+ 
+     if (tgt_idx >= tgt_seq_len) return;
+ 
+     float* q_vec = smem + tid * head_dim;
+     float* out   = q_vec + blockDim.x * head_dim;
+ 
+     int kv_head_idx = (head_idx * kv_heads) / query_heads;
+ 
+     int q_offset =
+         batch_idx * tgt_seq_len * query_heads * head_dim +
+         tgt_idx   * query_heads * head_dim +
+         head_idx  * head_dim;
+ 
+     int kv_batch_offset =
+         batch_idx * src_seq_len * kv_heads * head_dim +
+         kv_head_idx * head_dim;
+
+     // 加载到 shared memory
+     for (int d = 0; d < head_dim; ++d) {
+         q_vec[d] = TypeConverter<T>::to_float(Q[q_offset + d]);
+         out[d]   = 0.0f;
+     }
+ 
+     float max_score = -FLT_MAX;
+     float sum_exp   = 0.0f;
+ 
+     for (int s = 0; s < src_seq_len; ++s) {
+         if (is_causal && s > tgt_idx) continue;
+ 
+         int k_offset = kv_batch_offset + s * kv_heads * head_dim;
+ 
+         float score = 0.0f;
+         for (int d = 0; d < head_dim; ++d) {
+             score += q_vec[d] *
+                      TypeConverter<T>::to_float(K[k_offset + d]);
+         }
+         score *= softmax_scale;
+ 
+         float prev_max = max_score;
+         max_score = fmaxf(max_score, score);
+ 
+         float scale = expf(prev_max - max_score);
+         sum_exp *= scale;
+         for (int d = 0; d < head_dim; ++d) out[d] *= scale;
+ 
+         float w = expf(score - max_score);
+         sum_exp += w;
+ 
+         int v_offset = kv_batch_offset + s * kv_heads * head_dim;
+         for (int d = 0; d < head_dim; ++d) {
+             out[d] += w * TypeConverter<T>::to_float(V[v_offset + d]);
+         }
+     }
+ 
+     float inv = (sum_exp > 1e-6f) ? 1.0f / sum_exp : 0.0f;
+ 
+     for (int d = 0; d < head_dim; ++d) {
+         O[q_offset + d] =
+             TypeConverter<T>::from_float(out[d] * inv);
+     }
+ }
+ 
+ template <typename T>
+ void flashAttention(
+     const std::vector<T>& h_q,
+     const std::vector<T>& h_k,
+     const std::vector<T>& h_v,
+     std::vector<T>& h_o,
+     int batch_size,
+     int tgt_seq_len,
+     int src_seq_len,
+     int query_heads,
+     int kv_heads,
+     int head_dim,
+     bool is_causal
+ ) {
+     float softmax_scale = 1.0f / sqrtf((float)head_dim);
+ 
+     size_t q_size  = batch_size * tgt_seq_len * query_heads * head_dim;
+     size_t kv_size = batch_size * src_seq_len * kv_heads * head_dim;
+ 
+     T *d_q, *d_k, *d_v, *d_o;
+     cudaMalloc(&d_q, q_size * sizeof(T));
+     cudaMalloc(&d_k, kv_size * sizeof(T));
+     cudaMalloc(&d_v, kv_size * sizeof(T));
+     cudaMalloc(&d_o, q_size * sizeof(T));
+ 
+     cudaMemcpy(d_q, h_q.data(), q_size * sizeof(T), cudaMemcpyHostToDevice);
+     cudaMemcpy(d_k, h_k.data(), kv_size * sizeof(T), cudaMemcpyHostToDevice);
+     cudaMemcpy(d_v, h_v.data(), kv_size * sizeof(T), cudaMemcpyHostToDevice);
+ 
+     dim3 block(128);
+     dim3 grid(
+         (tgt_seq_len + block.x - 1) / block.x,
+         query_heads,
+         batch_size
+     );
+
+     // 选择 kernel 路径
+     bool use_fast =
+         (head_dim == 16 || head_dim == 32 ||
+          head_dim == 64 || head_dim == 128);
+ 
+     if (use_fast) {
+        // 特殊 head_dim
+         if (head_dim == 16)
+             flash_attention_forward_kernel_fast<T,16><<<grid,block>>>(
+                 d_q,d_k,d_v,d_o,
+                 batch_size,tgt_seq_len,src_seq_len,
+                 query_heads,kv_heads,is_causal,softmax_scale);
+         else if (head_dim == 32)
+             flash_attention_forward_kernel_fast<T,32><<<grid,block>>>(
+                d_q,d_k,d_v,d_o,
+                batch_size,tgt_seq_len,src_seq_len,
+                query_heads,kv_heads,is_causal,softmax_scale
+             );
+         else if (head_dim == 64)
+             flash_attention_forward_kernel_fast<T,64><<<grid,block>>>(
+                d_q,d_k,d_v,d_o,
+                batch_size,tgt_seq_len,src_seq_len,
+                query_heads,kv_heads,is_causal,softmax_scale
+             );
+         else if (head_dim == 128)
+             flash_attention_forward_kernel_fast<T,128><<<grid,block>>>(
+                d_q,d_k,d_v,d_o,
+                batch_size,tgt_seq_len,src_seq_len,
+                query_heads,kv_heads,is_causal,softmax_scale
+             );
+     } else {
+
+        // 任意 head_dim
+         size_t smem_size =
+             2 * block.x * head_dim * sizeof(float);
+ 
+         flash_attention_forward_kernel_generic<T>
+             <<<grid, block, smem_size>>>(
+                 d_q, d_k, d_v, d_o,
+                 batch_size, tgt_seq_len, src_seq_len,
+                 query_heads, kv_heads,
+                 head_dim, is_causal, softmax_scale);
+     }
+ 
+     cudaMemcpy(h_o.data(), d_o, q_size * sizeof(T),
+                cudaMemcpyDeviceToHost);
+ 
+     cudaFree(d_q);
+     cudaFree(d_k);
+     cudaFree(d_v);
+     cudaFree(d_o);
+ }
+ 
 // *********************************************************************
 // Explicit Template Instantiations (REQUIRED FOR LINKING WITH TESTER.O)
 // DO NOT MODIFY THIS SECTION
@@ -361,4 +420,3 @@ template void flashAttention<float>(const std::vector<float>&, const std::vector
 template void flashAttention<half>(const std::vector<half>&, const std::vector<half>&,
   const std::vector<half>&, std::vector<half>&,
   int, int, int, int, int, int, bool);
-
