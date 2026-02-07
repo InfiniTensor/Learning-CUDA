@@ -2,6 +2,7 @@
 #include <cuda_fp16.h>
 
 #include "../tester/utils.h"
+#define BLOCKSIZE 256
 
 /**
  * @brief Computes the trace of a matrix.
@@ -17,10 +18,46 @@
  * @param cols Number of columns in the matrix.
  * @return The trace (sum of diagonal values) of the matrix.
  */
+ template <typename T>
+ __global__ void traceKernel(const T* input,size_t rows, size_t cols,T* output){
+  __shared__ T cache[BLOCKSIZE];
+  cache[threadIdx.x] = 0;
+  for(int i = blockIdx.x * blockDim.x + threadIdx.x;i < cols && i<rows;i+=blockDim.x * gridDim.x ){
+    cache[threadIdx.x] += input[i*cols + i];
+  }
+  __syncthreads();
+  //上面就把跨block线程的迹加到cache里面去。
+  for(int total = blockDim.x / 2 ;total > 0;total /= 2){
+    if(threadIdx.x < total){
+      cache[threadIdx.x] += cache[threadIdx.x + total];
+    }
+    __syncthreads();
+  }
+  if(threadIdx.x == 0){
+    atomicAdd(output,cache[0]);
+  }
+ }
+
 template <typename T>
 T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
   // TODO: Implement the trace function
-  return T(-1);
+  int Blocknumber_x = (cols + BLOCKSIZE - 1) / BLOCKSIZE;
+
+  T* d_input;
+  size_t size = rows * cols * sizeof(T);
+  cudaMalloc((void**)&d_input, size);
+  cudaMemcpy(d_input, h_input.data(), size, cudaMemcpyHostToDevice);
+
+  T* d_output;
+  cudaMalloc((void**)&d_output, sizeof(T));
+  cudaMemset(d_output, 0, sizeof(T));
+
+  traceKernel<T><<<Blocknumber_x,BLOCKSIZE>>>(d_input, rows, cols,d_output);
+  T h_output;
+  cudaMemcpy(&h_output, d_output, sizeof(T), cudaMemcpyDeviceToHost);
+  cudaFree(d_input);
+  cudaFree(d_output);
+  return h_output;
 }
 
 /**
@@ -45,6 +82,7 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     int batch_size, int target_seq_len, int src_seq_len, 
                     int query_heads, int kv_heads, int head_dim, bool is_causal) {       
   // TODO: Implement the flash attention function
+  
 }
 
 // *********************************************************************
