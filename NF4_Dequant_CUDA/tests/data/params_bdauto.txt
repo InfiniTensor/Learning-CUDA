@@ -1,0 +1,8 @@
+blocksize = 64
+compute_type = "bf16"
+target_gpu = "T4"
+blocks_per_group = 256
+bnb_time_ms = 3.691622
+block_dim = 256
+autotune_block_dim = true
+autotune_repeats = 5

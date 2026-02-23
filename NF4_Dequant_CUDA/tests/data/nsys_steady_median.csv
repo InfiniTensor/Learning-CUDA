@@ -1,0 +1,10 @@
+rounds,5
+metric,base_median,new_median,delta_pct
+kernel_avg_ns,284314.800,288686.000,1.54
+d2h_total_ns,12783731.000,12820520.000,0.29
+h2d_total_ns,3900727.000,0.000,-100.00
+cudaMemcpy_api_total_ns,23174712.000,54661.000,-99.76
+cudaMemcpyAsync_api_total_ns,0.000,54661.000,0.00
+cudaMalloc_api_total_ns,2688784.000,0.000,-100.00
+cudaMallocHost_api_total_ns,0.000,0.000,0.00
+cudaFreeHost_api_total_ns,0.000,0.000,0.00

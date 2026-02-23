@@ -1,0 +1,15 @@
+{
+  "bitsandbytes_version": "0.49.2",
+  "rows": 4096,
+  "cols": 4096,
+  "blocksize": 64,
+  "blocks_per_group": 128,
+  "num_elements": 16777216,
+  "num_packed_bytes": 8388608,
+  "num_blocks": 262144,
+  "num_groups": 2048,
+  "absmax2_len": 2048,
+  "code2_len": 256,
+  "offset": 2.5974583625793457,
+  "save_ref_fp32": false
+}

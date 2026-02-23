@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="G:\Learning-CUDA\NF4_Dequant_CUDA\build\CMakeFiles\d5303fdf617a3c6a187c7a799d3b5986\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{49F5D80F-AA8A-3CFF-A141-3BC2998AB8DE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

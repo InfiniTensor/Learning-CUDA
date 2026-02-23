@@ -1,0 +1,8 @@
+blocksize = 64
+compute_type = "bf16"
+target_gpu = "T4"
+blocks_per_group = 256
+bnb_time_ms = 3.691622
+profile_loop_iters = 3
+reuse_device_buffers = true
+kernel_warmup_iters = 0

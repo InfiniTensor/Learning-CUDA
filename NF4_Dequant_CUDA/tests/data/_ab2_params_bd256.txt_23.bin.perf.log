@@ -1,0 +1,13 @@
+kernel_time_ms=1.111808
+effective_bandwidth_gbps=37.963161
+speedup_vs_bnb=3.320377
+target_gpu=T4
+compute_type=bf16
+blocksize=64
+blocks_per_group=256
+block_dim=256
+autotune_block_dim=false
+autotune_repeats=5
+num_rows=4096
+num_cols=4096
+num_elements=16777216

@@ -1,0 +1,2 @@
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+100.0,1443364,5,288672.8,288667.0,288154,289179,446.2,"nf4_dequant_kernel(const unsigned char *, const unsigned char *, const __half *, const __half *, float, void *, long long, int, int, bool)"

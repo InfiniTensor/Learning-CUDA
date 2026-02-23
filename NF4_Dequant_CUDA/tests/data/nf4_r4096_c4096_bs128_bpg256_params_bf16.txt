@@ -1,0 +1,4 @@
+blocksize = 128
+compute_type = "bf16"
+target_gpu = "T4"
+blocks_per_group = 256
