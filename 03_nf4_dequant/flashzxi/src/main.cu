@@ -10,9 +10,9 @@
 int main() {
     int row = 10000;
     int col = 10000;
-    std::string file_prefix = std::string("/home/core_dump/Learning-CUDA/03_nf4_dequant/flashzxi/test/data/nf4_") + std::to_string(row) + "x" + std::to_string(col) + "_fp16";
+    std::string file_prefix = std::string("/home/flashzxi/CLionProjects/Learning-CUDA/03_nf4_dequant/flashzxi/test/data/nf4_") + std::to_string(row) + "x" + std::to_string(col) + "_fp16";
     auto conf = parse_quant_state(file_prefix  + ".bin",
-        "/home/core_dump/Learning-CUDA/03_nf4_dequant/flashzxi/test/conf/blocksize64_fp16_T4.ini",
+        "/home/flashzxi/CLionProjects/Learning-CUDA/03_nf4_dequant/flashzxi/test/conf/blocksize64_fp16_T4.ini",
         file_prefix + "_w_dequant.bin");
 
     // conf.print();

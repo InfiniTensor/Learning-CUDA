@@ -3,8 +3,6 @@
 //
 #include <cuda_fp16.h>
 #include <string>
-#include "cutlass/core_io.h"
-#include "cutlass/util/host_tensor.h"
 #include <cuda_fp16.h>
 #include <cuda_bf16.h>
 #include "quant_state.h"
@@ -146,7 +144,7 @@ __global__ void dequant_nf4_elements_one_phase_warp8_batchN_kernel(
         int group_size,
         float offset,
         HFP_T* output) {
-    float kNF4[16] = {
+    constexpr float kNF4[16] = {
         -1.0000000f, -0.6961928f, -0.5250731f, -0.3949175f,
         -0.2844414f, -0.1847734f, -0.0910500f,  0.0000000f,
          0.0795803f,  0.1609302f,  0.2461123f,  0.3379152f,
@@ -157,12 +155,12 @@ __global__ void dequant_nf4_elements_one_phase_warp8_batchN_kernel(
     int bidx = blockIdx.x;
     int lane_id = threadIdx.x;
 
-    // load code2
-    __shared__ float shm_code2_float[128];
+    // load code2 不用shared memory更快
+//    __shared__ float shm_code2_float[128];
 
-    LDST32BITS(shm_code2_float[lane_id]) = LDST32BITS(code2[2 * lane_id]);
-    HFP_T* shm_code2 = (HFP_T *) shm_code2_float;
-    __syncthreads();
+//    LDST32BITS(shm_code2_float[lane_id]) = LDST32BITS(code2[2 * lane_id]);
+//    HFP_T* shm_code2 = (HFP_T *) shm_code2_float;
+//    __syncthreads();
 
     int block_offset = bidx * 128 * N;
 
@@ -175,7 +173,12 @@ __global__ void dequant_nf4_elements_one_phase_warp8_batchN_kernel(
         int g_packed_weights_offset = block_offset + 8 * 128 * i + 8 * lane_id;
         int block_idx = g_packed_weights_offset / block_size;
         int group_idx = block_idx / group_size;
-        float scale = f162float(shm_code2[absmax_q[block_idx]] * absmax2[group_idx]) + offset;
+
+        HFP_T h2[2];
+        uint8_t q = absmax_q[block_idx];
+        LDST32BITS(h2[0]) = LDST32BITS(code2[(q >> 1) << 1]);        // 读 32-bit
+        HFP_T h = (q & 1) ? h2[1] : h2[0];
+        float scale = f162float(h * absmax2[group_idx]) + offset;
         if (packed_weights + g_packed_weights_offset / 2 + 4 < packed_weights_end) {
             LDST32BITS(f_packed_weights[0]) = LDST32BITS(packed_weights[g_packed_weights_offset / 2]);
 #pragma unroll

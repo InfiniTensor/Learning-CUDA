@@ -9,10 +9,16 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 set(CMAKE_CUDA_ARCHITECTURES native)
 
+if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build type" FORCE)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+            "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
+endif()
+
 add_executable(nf4_dequant
         src/main.cu
         src/nf4_dequant_naive.cu
-        src/nf4_dequant_warpN.cu
+        src/nf4_dequant_warp8.cu
 )
 
 target_include_directories(nf4_dequant PRIVATE
