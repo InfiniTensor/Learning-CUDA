@@ -2,11 +2,20 @@ CXX = g++
 NVCC = nvcc
 CUDA_PATH ?= /usr/local/cuda
 CXXFLAGS = -std=c++17 -O3 -Wall -Wextra -I./include -I$(CUDA_PATH)/include
-NVCCFLAGS = -O3 -I./include
+NVCCFLAGS = -O3 -gencode arch=compute_89,code=sm_89 -I./include
 
 OPENCV_CFLAGS = $(shell pkg-config --cflags opencv4)
 OPENCV_LIBS = $(shell pkg-config --libs opencv4)
 CUDA_LIBS = -L$(CUDA_PATH)/lib64 -lcudart
+
+# Detect OpenCV CUDA module (cudaimgproc)
+HAVE_OPENCV_CUDA := $(shell pkg-config --libs opencv4 2>/dev/null | grep -q cudaimgproc && echo 1)
+ifeq ($(HAVE_OPENCV_CUDA),1)
+  CXXFLAGS += -DHAVE_OPENCV_CUDA
+  $(info OpenCV CUDA modules detected: enabling cv::cuda::bilateralFilter baseline)
+else
+  $(info OpenCV CUDA modules not found: cv::cuda baseline disabled)
+endif
 
 SRC_DIR = src
 BUILD_DIR = build

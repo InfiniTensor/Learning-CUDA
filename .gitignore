@@ -1,0 +1,9 @@
+build/
+bilateral_filter
+lib/
+*.raw
+*.o
+*.prof
+*.nsys-rep
+*.ncu-rep
+.vscode/

@@ -1,3 +1,5 @@
+#include <cuda_runtime.h>
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -55,6 +57,36 @@ BenchmarkResult compute_stats(const std::vector<double>& times) {
 
     return result;
 }
+
+// Helper: benchmark OpenCV CUDA if available. Returns true if benchmarked.
+#ifdef HAVE_OPENCV_CUDA
+static bool bench_opencv_cuda(const ImageData& input, const FilterParams& params,
+                              ImageData& output_cv_cuda, BenchmarkResult& cv_cuda_stats,
+                              double /*megapixels*/) {
+    // Probe: check if OpenCV CUDA bilateral filter works
+    if (!apply_bilateral_filter_opencv_cuda(input, output_cv_cuda, params)) {
+        fprintf(stderr, "OpenCV CUDA: no CUDA device available, skipping\n");
+        return false;
+    }
+
+    // Warmup
+    for (int i = 0; i < WARMUP_RUNS; ++i) {
+        apply_bilateral_filter_opencv_cuda(input, output_cv_cuda, params);
+    }
+
+    // Benchmark
+    std::vector<double> times;
+    for (int i = 0; i < BENCHMARK_RUNS; ++i) {
+        auto start = std::chrono::high_resolution_clock::now();
+        apply_bilateral_filter_opencv_cuda(input, output_cv_cuda, params);
+        auto end = std::chrono::high_resolution_clock::now();
+        times.push_back(std::chrono::duration<double, std::milli>(end - start).count());
+    }
+
+    cv_cuda_stats = compute_stats(times);
+    return true;
+}
+#endif
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
@@ -151,7 +183,7 @@ int main(int argc, char* argv[]) {
             cuda_times.push_back(std::chrono::duration<double, std::milli>(end - start).count());
         }
 
-        // Benchmark OpenCV
+        // Benchmark OpenCV CPU
         std::vector<double> cv_times;
         for (int i = 0; i < BENCHMARK_RUNS; ++i) {
             auto start = std::chrono::high_resolution_clock::now();
@@ -166,29 +198,64 @@ int main(int argc, char* argv[]) {
 
         double mae_cpu_cv = compute_mae(output_cpu, output_opencv);
         double mae_cuda_cv = compute_mae(output_cuda, output_opencv);
+        double psnr_cpu_cv = compute_psnr(output_cpu, output_opencv);
+        double psnr_cuda_cv = compute_psnr(output_cuda, output_opencv);
+
+        // OpenCV CUDA baseline
+#ifdef HAVE_OPENCV_CUDA
+        ImageData output_cv_cuda;
+        BenchmarkResult cv_cuda_stats;
+        bool have_cv_cuda =
+            bench_opencv_cuda(input, params, output_cv_cuda, cv_cuda_stats, megapixels);
+        double mae_cv_cuda = -1.0, psnr_cv_cuda = -1.0;
+        if (have_cv_cuda) {
+            mae_cv_cuda = compute_mae(output_cv_cuda, output_opencv);
+            psnr_cv_cuda = compute_psnr(output_cv_cuda, output_opencv);
+        }
+#endif
 
         printf("\n=== Benchmark Results (mean ± stddev) ===\n");
-        printf("CPU    : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cpu_stats.mean_ms,
+        printf("CPU       : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cpu_stats.mean_ms,
                cpu_stats.stddev_ms, cpu_stats.min_ms, cpu_stats.max_ms,
                megapixels / (cpu_stats.mean_ms / 1000.0));
-        printf("CUDA   : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cuda_stats.mean_ms,
+        printf("CUDA      : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cuda_stats.mean_ms,
                cuda_stats.stddev_ms, cuda_stats.min_ms, cuda_stats.max_ms,
                megapixels / (cuda_stats.mean_ms / 1000.0));
-        printf("OpenCV : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cv_stats.mean_ms,
+        printf("OpenCV    : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cv_stats.mean_ms,
                cv_stats.stddev_ms, cv_stats.min_ms, cv_stats.max_ms,
                megapixels / (cv_stats.mean_ms / 1000.0));
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("OpenCVCUDA: %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n",
+                   cv_cuda_stats.mean_ms, cv_cuda_stats.stddev_ms, cv_cuda_stats.min_ms,
+                   cv_cuda_stats.max_ms, megapixels / (cv_cuda_stats.mean_ms / 1000.0));
+        }
+#endif
 
         printf("\nSpeedup (based on mean):\n");
         printf("  CUDA vs CPU:    %.2fx\n", cpu_stats.mean_ms / cuda_stats.mean_ms);
         printf("  CUDA vs OpenCV: %.2fx\n", cv_stats.mean_ms / cuda_stats.mean_ms);
         printf("  OpenCV vs CPU:  %.2fx\n", cpu_stats.mean_ms / cv_stats.mean_ms);
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("  CUDA vs OpenCVCUDA: %.2fx\n", cv_cuda_stats.mean_ms / cuda_stats.mean_ms);
+        }
+#endif
 
-        printf("\nMAE (vs OpenCV):\n");
-        printf("  CPU:  %.4f %s\n", mae_cpu_cv, mae_cpu_cv < 1.0 ? "✓" : "✗");
-        printf("  CUDA: %.4f %s\n", mae_cuda_cv, mae_cuda_cv < 1.0 ? "✓" : "✗");
+        printf("\nQuality (vs OpenCV CPU):\n");
+        printf("  CPU:  MAE=%.4f  PSNR=%.2f dB  %s\n", mae_cpu_cv, psnr_cpu_cv,
+               mae_cpu_cv < 1.0 ? "✓" : "✗");
+        printf("  CUDA: MAE=%.4f  PSNR=%.2f dB  %s\n", mae_cuda_cv, psnr_cuda_cv,
+               mae_cuda_cv < 1.0 ? "✓" : "✗");
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("  OpenCVCUDA: MAE=%.4f  PSNR=%.2f dB  %s\n", mae_cv_cuda, psnr_cv_cuda,
+                   mae_cv_cuda < 1.0 ? "✓" : "✗");
+        }
+#endif
 
     } else if (bench_mode) {
-        // Benchmark CUDA vs OpenCV only (skip slow CPU)
+        // Benchmark CUDA vs OpenCV (skip slow CPU)
         ImageData output_cuda, output_opencv;
 
         output_cuda.width = input.width;
@@ -204,7 +271,6 @@ int main(int argc, char* argv[]) {
             apply_bilateral_filter_cuda(input.data.data(), output_cuda.data.data(), input.width,
                                         input.height, input.channels, params.radius,
                                         params.sigma_spatial, params.sigma_color);
-            apply_bilateral_filter_opencv(input, output_opencv, params);
         }
 
         // Benchmark CUDA
@@ -218,7 +284,12 @@ int main(int argc, char* argv[]) {
             cuda_times.push_back(std::chrono::duration<double, std::milli>(end - start).count());
         }
 
-        // Benchmark OpenCV
+        // Warmup OpenCV CPU
+        for (int i = 0; i < WARMUP_RUNS; ++i) {
+            apply_bilateral_filter_opencv(input, output_opencv, params);
+        }
+
+        // Benchmark OpenCV CPU
         std::vector<double> cv_times;
         for (int i = 0; i < BENCHMARK_RUNS; ++i) {
             auto start = std::chrono::high_resolution_clock::now();
@@ -230,19 +301,57 @@ int main(int argc, char* argv[]) {
         auto cuda_stats = compute_stats(cuda_times);
         auto cv_stats = compute_stats(cv_times);
         double mae = compute_mae(output_cuda, output_opencv);
+        double psnr = compute_psnr(output_cuda, output_opencv);
+
+        // OpenCV CUDA baseline
+#ifdef HAVE_OPENCV_CUDA
+        ImageData output_cv_cuda;
+        BenchmarkResult cv_cuda_stats;
+        bool have_cv_cuda =
+            bench_opencv_cuda(input, params, output_cv_cuda, cv_cuda_stats, megapixels);
+        double mae_cv_cuda = -1.0, psnr_cv_cuda = -1.0;
+        if (have_cv_cuda) {
+            mae_cv_cuda = compute_mae(output_cv_cuda, output_opencv);
+            psnr_cv_cuda = compute_psnr(output_cv_cuda, output_opencv);
+        }
+#endif
 
         printf("\n=== Benchmark Results ===\n");
-        printf("CUDA   : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cuda_stats.mean_ms,
+        printf("CUDA      : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cuda_stats.mean_ms,
                cuda_stats.stddev_ms, cuda_stats.min_ms, cuda_stats.max_ms,
                megapixels / (cuda_stats.mean_ms / 1000.0));
-        printf("OpenCV : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cv_stats.mean_ms,
+        printf("OpenCV    : %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n", cv_stats.mean_ms,
                cv_stats.stddev_ms, cv_stats.min_ms, cv_stats.max_ms,
                megapixels / (cv_stats.mean_ms / 1000.0));
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("OpenCVCUDA: %.2f ± %.2f ms [min=%.2f, max=%.2f] (%.2f MP/s)\n",
+                   cv_cuda_stats.mean_ms, cv_cuda_stats.stddev_ms, cv_cuda_stats.min_ms,
+                   cv_cuda_stats.max_ms, megapixels / (cv_cuda_stats.mean_ms / 1000.0));
+        }
+#endif
+
         printf("\nSpeedup: CUDA is %.2fx %s than OpenCV\n",
                cv_stats.mean_ms > cuda_stats.mean_ms ? cv_stats.mean_ms / cuda_stats.mean_ms
                                                      : cuda_stats.mean_ms / cv_stats.mean_ms,
                cv_stats.mean_ms > cuda_stats.mean_ms ? "faster" : "slower");
-        printf("MAE: %.4f %s\n", mae, mae < 1.0 ? "✓" : "✗");
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("Speedup: CUDA is %.2fx %s than OpenCVCUDA\n",
+                   cv_cuda_stats.mean_ms > cuda_stats.mean_ms
+                       ? cv_cuda_stats.mean_ms / cuda_stats.mean_ms
+                       : cuda_stats.mean_ms / cv_cuda_stats.mean_ms,
+                   cv_cuda_stats.mean_ms > cuda_stats.mean_ms ? "faster" : "slower");
+        }
+#endif
+
+        printf("MAE: %.4f  PSNR: %.2f dB  %s\n", mae, psnr, mae < 1.0 ? "✓" : "✗");
+#ifdef HAVE_OPENCV_CUDA
+        if (have_cv_cuda) {
+            printf("OpenCVCUDA vs OpenCV: MAE=%.4f  PSNR=%.2f dB  %s\n", mae_cv_cuda, psnr_cv_cuda,
+                   mae_cv_cuda < 1.0 ? "✓" : "✗");
+        }
+#endif
 
     } else if (compare_mode) {
         ImageData output_cpu, output_opencv;
@@ -273,6 +382,7 @@ int main(int argc, char* argv[]) {
         auto cpu_stats = compute_stats(cpu_times);
         auto cv_stats = compute_stats(cv_times);
         double mae = compute_mae(output_cpu, output_opencv);
+        double psnr = compute_psnr(output_cpu, output_opencv);
 
         printf("\n=== Benchmark Results ===\n");
         printf("CPU    : %.2f ± %.2f ms (%.2f MP/s)\n", cpu_stats.mean_ms, cpu_stats.stddev_ms,
@@ -280,7 +390,7 @@ int main(int argc, char* argv[]) {
         printf("OpenCV : %.2f ± %.2f ms (%.2f MP/s)\n", cv_stats.mean_ms, cv_stats.stddev_ms,
                megapixels / (cv_stats.mean_ms / 1000.0));
         printf("Speedup: %.2fx\n", cpu_stats.mean_ms / cv_stats.mean_ms);
-        printf("MAE: %.4f %s\n", mae, mae < 1.0 ? "✓" : "✗");
+        printf("MAE: %.4f  PSNR: %.2f dB  %s\n", mae, psnr, mae < 1.0 ? "✓" : "✗");
 
     } else if (cuda_only) {
         ImageData output;

@@ -26,6 +26,9 @@
 #ifndef BLOCK_Y
 #define BLOCK_Y 16
 #endif
+// Opt A: launch bounds hints for register allocation
+#define THREADS_PER_BLOCK (BLOCK_X * BLOCK_Y)
+#define MIN_BLOCKS_PER_SM 4
 #define MAX_RADIUS     16
 #define LUT_SIZE       ((2 * MAX_RADIUS + 1) * (2 * MAX_RADIUS + 1))
 #define COLOR_LUT_SIZE 256
@@ -53,7 +56,8 @@ __device__ inline uint8_t to_output<uint8_t>(float v) {
 // ============================================================================
 
 template <int RADIUS, typename InT = float, typename OutT = float>
-__global__ void k_bilateral_filter_gray_template(const InT* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_filter_gray_template(const InT* __restrict__ input,
                                                  OutT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
@@ -122,7 +126,8 @@ __global__ void k_bilateral_filter_gray_template(const InT* __restrict__ input,
 // ============================================================================
 
 template <int RADIUS, typename InT = float, typename OutT = float>
-__global__ void k_bilateral_filter_rgb_template(const InT* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_filter_rgb_template(const InT* __restrict__ input,
                                                 OutT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
@@ -218,7 +223,8 @@ __global__ void k_bilateral_filter_rgb_template(const InT* __restrict__ input,
 // ============================================================================
 
 template <int RADIUS, typename InT = float>
-__global__ void k_bilateral_horizontal_gray(const InT* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_horizontal_gray(const InT* __restrict__ input,
                                             float* __restrict__ output, int width, int height) {
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
@@ -268,7 +274,8 @@ __global__ void k_bilateral_horizontal_gray(const InT* __restrict__ input,
 }
 
 template <int RADIUS, typename OutT = float>
-__global__ void k_bilateral_vertical_gray(const float* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_vertical_gray(const float* __restrict__ input,
                                           OutT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
@@ -323,7 +330,8 @@ __global__ void k_bilateral_vertical_gray(const float* __restrict__ input,
 // ============================================================================
 
 template <int RADIUS, typename InT = float>
-__global__ void k_bilateral_horizontal_rgb(const InT* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_horizontal_rgb(const InT* __restrict__ input,
                                            float* __restrict__ output, // always float intermediate
                                            int width, int height) {
 
@@ -402,7 +410,7 @@ __global__ void k_bilateral_horizontal_rgb(const InT* __restrict__ input,
 }
 
 template <int RADIUS, typename OutT = float>
-__global__ void
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
 k_bilateral_vertical_rgb(const float* __restrict__ input, // always float from intermediate
                          OutT* __restrict__ output, int width, int height) {
 
@@ -486,7 +494,8 @@ k_bilateral_vertical_rgb(const float* __restrict__ input, // always float from i
 
 // Grayscale runtime version
 template <typename InT = float, typename OutT = float>
-__global__ void k_bilateral_filter_shared(const InT* __restrict__ input, OutT* __restrict__ output,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_filter_shared(const InT* __restrict__ input, OutT* __restrict__ output,
                                           int width, int height, int radius) {
 
     extern __shared__ float smem[];
@@ -549,7 +558,8 @@ __global__ void k_bilateral_filter_shared(const InT* __restrict__ input, OutT* _
 
 // RGB runtime version
 template <typename InT = float, typename OutT = float>
-__global__ void k_bilateral_filter_rgb_shared(const InT* __restrict__ input,
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+k_bilateral_filter_rgb_shared(const InT* __restrict__ input,
                                               OutT* __restrict__ output, int width, int height,
                                               int radius) {
 
