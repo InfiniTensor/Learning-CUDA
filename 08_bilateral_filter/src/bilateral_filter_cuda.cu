@@ -1,0 +1,1164 @@
+// Standard library
+#include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+
+// Project headers (includes <cuda_runtime.h> via bilateral_filter_cuda.cuh)
+#include "bilateral_filter_cuda.cuh"
+
+// clang-format off
+#define CUDA_CHECK(call)                                                \
+    do {                                                                \
+        cudaError_t err = call;                                         \
+        if (err != cudaSuccess) {                                       \
+            fprintf(stderr, "CUDA error at %s:%d: %s\n",                \
+                    __FILE__, __LINE__, cudaGetErrorString(err));       \
+            exit(EXIT_FAILURE);                                         \
+        }                                                               \
+    } while (0)
+// clang-format on
+
+#ifndef BLOCK_X
+#define BLOCK_X 16 // Opt4: 16x16 = 256 threads; better smem cache vs 32x8
+#endif
+#ifndef BLOCK_Y
+#define BLOCK_Y 16
+#endif
+#define MAX_RADIUS     16
+#define LUT_SIZE       ((2 * MAX_RADIUS + 1) * (2 * MAX_RADIUS + 1))
+#define COLOR_LUT_SIZE 256
+
+__constant__ float d_spatial_lut[LUT_SIZE];
+__constant__ float d_color_lut[COLOR_LUT_SIZE];
+
+// ============================================================================
+// Opt2: type-safe output helper for uint8/float kernel output
+// ============================================================================
+
+template <typename T>
+__device__ inline T to_output(float v);
+template <>
+__device__ inline float to_output<float>(float v) {
+    return v;
+}
+template <>
+__device__ inline uint8_t to_output<uint8_t>(float v) {
+    return static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, v)));
+}
+
+// ============================================================================
+// Template-based grayscale bilateral filter with compile-time radius
+// ============================================================================
+
+template <int RADIUS, typename InT = float, typename OutT = float>
+__global__ void k_bilateral_filter_gray_template(const InT* __restrict__ input,
+                                                 OutT* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int TILE_SIZE = TILE_W * TILE_H;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem[TILE_SIZE];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    const int thread_id = ty * BLOCK_X + tx;
+    const int threads_per_block = BLOCK_X * BLOCK_Y;
+
+// Collaborative loading
+#pragma unroll
+    for (int i = thread_id; i < TILE_SIZE; i += threads_per_block) {
+        int sy = i / TILE_W;
+        int sx = i % TILE_W;
+        int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
+        int gy = blockIdx.y * BLOCK_Y + sy - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        smem[i] = static_cast<float>(input[gy * width + gx]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const int ly = ty + RADIUS;
+    const float center = smem[ly * TILE_W + lx];
+
+    float sum = 0.0f;
+    float weight_sum = 0.0f;
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+#pragma unroll
+        for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+            float neighbor = smem[(ly + dy) * TILE_W + (lx + dx)];
+
+            float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + (dx + RADIUS)];
+
+            int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+            diff = min(diff, COLOR_LUT_SIZE - 1);
+            float color_weight = d_color_lut[diff];
+
+            float w = spatial_weight * color_weight;
+            sum += neighbor * w;
+            weight_sum += w;
+        }
+    }
+
+    output[y * width + x] = to_output<OutT>(sum / weight_sum);
+}
+
+// ============================================================================
+// Template-based RGB bilateral filter with compile-time radius
+// Full loop unrolling for known radius values
+// ============================================================================
+
+template <int RADIUS, typename InT = float, typename OutT = float>
+__global__ void k_bilateral_filter_rgb_template(const InT* __restrict__ input,
+                                                OutT* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int TILE_SIZE = TILE_W * TILE_H;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem_r[TILE_SIZE];
+    __shared__ float smem_g[TILE_SIZE];
+    __shared__ float smem_b[TILE_SIZE];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    const int thread_id = ty * BLOCK_X + tx;
+    const int threads_per_block = BLOCK_X * BLOCK_Y;
+
+// Collaborative loading
+#pragma unroll
+    for (int i = thread_id; i < TILE_SIZE; i += threads_per_block) {
+        int sy = i / TILE_W;
+        int sx = i % TILE_W;
+        int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
+        int gy = blockIdx.y * BLOCK_Y + sy - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        int gidx = (gy * width + gx) * 3;
+        smem_r[i] = static_cast<float>(input[gidx]);
+        smem_g[i] = static_cast<float>(input[gidx + 1]);
+        smem_b[i] = static_cast<float>(input[gidx + 2]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const int ly = ty + RADIUS;
+    const int lidx = ly * TILE_W + lx;
+
+    const float center_r = smem_r[lidx];
+    const float center_g = smem_g[lidx];
+    const float center_b = smem_b[lidx];
+
+    float sum_r = 0.0f, sum_g = 0.0f, sum_b = 0.0f;
+    float wsum = 0.0f;
+
+// Opt5: single shared color weight per neighbor, computed from mean absolute channel diff.
+// Reduces 3 LUT lookups + 3 wsum accumulators to 1 each. Tradeoff: MAE rises ~0.65→0.80,
+// which is acceptable (< 1.0). OpenCV actually uses Euclidean distance across channels,
+// so this is a different (simpler) approximation.
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+#pragma unroll
+        for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+            int nidx = (ly + dy) * TILE_W + (lx + dx);
+            float nr = smem_r[nidx];
+            float ng = smem_g[nidx];
+            float nb = smem_b[nidx];
+
+            float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + (dx + RADIUS)];
+
+            // Single color distance: mean absolute channel difference
+            int diff = static_cast<int>(
+                (fabsf(nr - center_r) + fabsf(ng - center_g) + fabsf(nb - center_b)) *
+                    (1.0f / 3.0f) +
+                0.5f);
+            diff = min(diff, COLOR_LUT_SIZE - 1);
+
+            float w = spatial_weight * d_color_lut[diff];
+
+            sum_r += nr * w;
+            sum_g += ng * w;
+            sum_b += nb * w;
+            wsum += w;
+        }
+    }
+
+    // Opt6b: replace 3 divisions with 1 reciprocal + 3 multiplications
+    float rcp_wsum = __frcp_rn(wsum);
+    int out_idx = (y * width + x) * 3;
+    output[out_idx] = to_output<OutT>(sum_r * rcp_wsum);
+    output[out_idx + 1] = to_output<OutT>(sum_g * rcp_wsum);
+    output[out_idx + 2] = to_output<OutT>(sum_b * rcp_wsum);
+}
+
+// ============================================================================
+// Separable approximation for grayscale: horizontal + vertical passes
+// O(2r) complexity instead of O(r^2)
+// ============================================================================
+
+template <int RADIUS, typename InT = float>
+__global__ void k_bilateral_horizontal_gray(const InT* __restrict__ input,
+                                            float* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem[BLOCK_Y][TILE_W];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // Load row with halo
+    for (int i = tx; i < TILE_W; i += BLOCK_X) {
+        int gx = blockIdx.x * BLOCK_X + i - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        int gy = min(y, height - 1);
+        smem[ty][i] = static_cast<float>(input[gy * width + gx]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const float center = smem[ty][lx];
+
+    float sum = 0.0f;
+    float weight_sum = 0.0f;
+
+#pragma unroll
+    for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+        float neighbor = smem[ty][lx + dx];
+        float spatial_weight = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+
+        int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+        diff = min(diff, COLOR_LUT_SIZE - 1);
+        float color_weight = d_color_lut[diff];
+
+        float w = spatial_weight * color_weight;
+        sum += neighbor * w;
+        weight_sum += w;
+    }
+
+    output[y * width + x] = sum / weight_sum;
+}
+
+template <int RADIUS, typename OutT = float>
+__global__ void k_bilateral_vertical_gray(const float* __restrict__ input,
+                                          OutT* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem[TILE_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // Load column with halo
+    for (int i = ty; i < TILE_H; i += BLOCK_Y) {
+        int gy = blockIdx.y * BLOCK_Y + i - RADIUS;
+        gy = max(0, min(height - 1, gy));
+        int gx = min(x, width - 1);
+        smem[i][tx] = input[gy * width + gx];
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;
+    const float center = smem[ly][tx];
+
+    float sum = 0.0f;
+    float weight_sum = 0.0f;
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        float neighbor = smem[ly + dy][tx];
+        float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+
+        int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+        diff = min(diff, COLOR_LUT_SIZE - 1);
+        float color_weight = d_color_lut[diff];
+
+        float w = spatial_weight * color_weight;
+        sum += neighbor * w;
+        weight_sum += w;
+    }
+
+    output[y * width + x] = to_output<OutT>(sum / weight_sum);
+}
+
+// ============================================================================
+// Separable approximation for RGB: horizontal + vertical passes
+// O(2r) complexity instead of O(r^2)
+// ============================================================================
+
+template <int RADIUS, typename InT = float>
+__global__ void k_bilateral_horizontal_rgb(const InT* __restrict__ input,
+                                           float* __restrict__ output, // always float intermediate
+                                           int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem_r[BLOCK_Y][TILE_W];
+    __shared__ float smem_g[BLOCK_Y][TILE_W];
+    __shared__ float smem_b[BLOCK_Y][TILE_W];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // Load row with halo
+    for (int i = tx; i < TILE_W; i += BLOCK_X) {
+        int gx = blockIdx.x * BLOCK_X + i - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        int gy = min(y, height - 1);
+        int gidx = (gy * width + gx) * 3;
+        smem_r[ty][i] = static_cast<float>(input[gidx]);
+        smem_g[ty][i] = static_cast<float>(input[gidx + 1]);
+        smem_b[ty][i] = static_cast<float>(input[gidx + 2]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const float center_r = smem_r[ty][lx];
+    const float center_g = smem_g[ty][lx];
+    const float center_b = smem_b[ty][lx];
+
+    float sum_r = 0.0f, sum_g = 0.0f, sum_b = 0.0f;
+    float wsum_r = 0.0f, wsum_g = 0.0f, wsum_b = 0.0f;
+
+#pragma unroll
+    for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+        float nr = smem_r[ty][lx + dx];
+        float ng = smem_g[ty][lx + dx];
+        float nb = smem_b[ty][lx + dx];
+
+        // Use 1D spatial weight (center row of 2D LUT)
+        float spatial_weight = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+
+        int diff_r = static_cast<int>(fabsf(nr - center_r) + 0.5f);
+        int diff_g = static_cast<int>(fabsf(ng - center_g) + 0.5f);
+        int diff_b = static_cast<int>(fabsf(nb - center_b) + 0.5f);
+        diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+        diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+        diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+        float cw_r = d_color_lut[diff_r];
+        float cw_g = d_color_lut[diff_g];
+        float cw_b = d_color_lut[diff_b];
+
+        float w_r = spatial_weight * cw_r;
+        float w_g = spatial_weight * cw_g;
+        float w_b = spatial_weight * cw_b;
+
+        sum_r += nr * w_r;
+        sum_g += ng * w_g;
+        sum_b += nb * w_b;
+        wsum_r += w_r;
+        wsum_g += w_g;
+        wsum_b += w_b;
+    }
+
+    int out_idx = (y * width + x) * 3;
+    output[out_idx] = sum_r / wsum_r;
+    output[out_idx + 1] = sum_g / wsum_g;
+    output[out_idx + 2] = sum_b / wsum_b;
+}
+
+template <int RADIUS, typename OutT = float>
+__global__ void
+k_bilateral_vertical_rgb(const float* __restrict__ input, // always float from intermediate
+                         OutT* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem_r[TILE_H][BLOCK_X];
+    __shared__ float smem_g[TILE_H][BLOCK_X];
+    __shared__ float smem_b[TILE_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // Load column with halo
+    for (int i = ty; i < TILE_H; i += BLOCK_Y) {
+        int gy = blockIdx.y * BLOCK_Y + i - RADIUS;
+        gy = max(0, min(height - 1, gy));
+        int gx = min(x, width - 1);
+        int gidx = (gy * width + gx) * 3;
+        smem_r[i][tx] = input[gidx];
+        smem_g[i][tx] = input[gidx + 1];
+        smem_b[i][tx] = input[gidx + 2];
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;
+    const float center_r = smem_r[ly][tx];
+    const float center_g = smem_g[ly][tx];
+    const float center_b = smem_b[ly][tx];
+
+    float sum_r = 0.0f, sum_g = 0.0f, sum_b = 0.0f;
+    float wsum_r = 0.0f, wsum_g = 0.0f, wsum_b = 0.0f;
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        float nr = smem_r[ly + dy][tx];
+        float ng = smem_g[ly + dy][tx];
+        float nb = smem_b[ly + dy][tx];
+
+        // Use 1D spatial weight (center column of 2D LUT)
+        float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+
+        int diff_r = static_cast<int>(fabsf(nr - center_r) + 0.5f);
+        int diff_g = static_cast<int>(fabsf(ng - center_g) + 0.5f);
+        int diff_b = static_cast<int>(fabsf(nb - center_b) + 0.5f);
+        diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+        diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+        diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+        float cw_r = d_color_lut[diff_r];
+        float cw_g = d_color_lut[diff_g];
+        float cw_b = d_color_lut[diff_b];
+
+        float w_r = spatial_weight * cw_r;
+        float w_g = spatial_weight * cw_g;
+        float w_b = spatial_weight * cw_b;
+
+        sum_r += nr * w_r;
+        sum_g += ng * w_g;
+        sum_b += nb * w_b;
+        wsum_r += w_r;
+        wsum_g += w_g;
+        wsum_b += w_b;
+    }
+
+    int out_idx = (y * width + x) * 3;
+    output[out_idx] = to_output<OutT>(sum_r / wsum_r);
+    output[out_idx + 1] = to_output<OutT>(sum_g / wsum_g);
+    output[out_idx + 2] = to_output<OutT>(sum_b / wsum_b);
+}
+
+// ============================================================================
+// Runtime-radius version (fallback)
+// ============================================================================
+
+// Grayscale runtime version
+template <typename InT = float, typename OutT = float>
+__global__ void k_bilateral_filter_shared(const InT* __restrict__ input, OutT* __restrict__ output,
+                                          int width, int height, int radius) {
+
+    extern __shared__ float smem[];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    const int tile_w = BLOCK_X + 2 * radius;
+    const int tile_h = BLOCK_Y + 2 * radius;
+    const int smem_size = tile_w * tile_h;
+    const int thread_id = ty * BLOCK_X + tx;
+    const int threads_per_block = BLOCK_X * BLOCK_Y;
+
+    // Collaborative loading
+    for (int i = thread_id; i < smem_size; i += threads_per_block) {
+        int sy = i / tile_w;
+        int sx = i % tile_w;
+        int gx = blockIdx.x * BLOCK_X + sx - radius;
+        int gy = blockIdx.y * BLOCK_Y + sy - radius;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        smem[i] = static_cast<float>(input[gy * width + gx]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + radius;
+    const int ly = ty + radius;
+    const float center = smem[ly * tile_w + lx];
+
+    float sum = 0.0f;
+    float weight_sum = 0.0f;
+    const int lut_width = 2 * radius + 1;
+
+#pragma unroll 4
+    for (int dy = -radius; dy <= radius; ++dy) {
+#pragma unroll 4
+        for (int dx = -radius; dx <= radius; ++dx) {
+            float neighbor = smem[(ly + dy) * tile_w + (lx + dx)];
+
+            float spatial_weight = d_spatial_lut[(dy + radius) * lut_width + (dx + radius)];
+
+            int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+            diff = min(diff, COLOR_LUT_SIZE - 1);
+            float color_weight = d_color_lut[diff];
+
+            float w = spatial_weight * color_weight;
+            sum += neighbor * w;
+            weight_sum += w;
+        }
+    }
+
+    output[y * width + x] = to_output<OutT>(sum / weight_sum);
+}
+
+// RGB runtime version
+template <typename InT = float, typename OutT = float>
+__global__ void k_bilateral_filter_rgb_shared(const InT* __restrict__ input,
+                                              OutT* __restrict__ output, int width, int height,
+                                              int radius) {
+
+    extern __shared__ float smem[];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    const int tile_w = BLOCK_X + 2 * radius;
+    const int tile_h = BLOCK_Y + 2 * radius;
+    const int tile_size = tile_w * tile_h;
+
+    float* smem_r = smem;
+    float* smem_g = smem + tile_size;
+    float* smem_b = smem + 2 * tile_size;
+
+    const int thread_id = ty * BLOCK_X + tx;
+    const int threads_per_block = BLOCK_X * BLOCK_Y;
+
+    for (int i = thread_id; i < tile_size; i += threads_per_block) {
+        int sy = i / tile_w;
+        int sx = i % tile_w;
+        int gx = blockIdx.x * BLOCK_X + sx - radius;
+        int gy = blockIdx.y * BLOCK_Y + sy - radius;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        int gidx = (gy * width + gx) * 3;
+        smem_r[i] = static_cast<float>(input[gidx]);
+        smem_g[i] = static_cast<float>(input[gidx + 1]);
+        smem_b[i] = static_cast<float>(input[gidx + 2]);
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + radius;
+    const int ly = ty + radius;
+    const int lidx = ly * tile_w + lx;
+
+    const float center_r = smem_r[lidx];
+    const float center_g = smem_g[lidx];
+    const float center_b = smem_b[lidx];
+
+    float sum_r = 0.0f, sum_g = 0.0f, sum_b = 0.0f;
+    float wsum_r = 0.0f, wsum_g = 0.0f, wsum_b = 0.0f;
+    const int lut_width = 2 * radius + 1;
+
+#pragma unroll 4
+    for (int dy = -radius; dy <= radius; ++dy) {
+#pragma unroll 4
+        for (int dx = -radius; dx <= radius; ++dx) {
+            int nidx = (ly + dy) * tile_w + (lx + dx);
+            float nr = smem_r[nidx];
+            float ng = smem_g[nidx];
+            float nb = smem_b[nidx];
+
+            float spatial_weight = d_spatial_lut[(dy + radius) * lut_width + (dx + radius)];
+
+            int diff_r = static_cast<int>(fabsf(nr - center_r) + 0.5f);
+            int diff_g = static_cast<int>(fabsf(ng - center_g) + 0.5f);
+            int diff_b = static_cast<int>(fabsf(nb - center_b) + 0.5f);
+            diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+            diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+            diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+            float cw_r = d_color_lut[diff_r];
+            float cw_g = d_color_lut[diff_g];
+            float cw_b = d_color_lut[diff_b];
+
+            float w_r = spatial_weight * cw_r;
+            float w_g = spatial_weight * cw_g;
+            float w_b = spatial_weight * cw_b;
+
+            sum_r += nr * w_r;
+            sum_g += ng * w_g;
+            sum_b += nb * w_b;
+            wsum_r += w_r;
+            wsum_g += w_g;
+            wsum_b += w_b;
+        }
+    }
+
+    int out_idx = (y * width + x) * 3;
+    output[out_idx] = to_output<OutT>(sum_r / wsum_r);
+    output[out_idx + 1] = to_output<OutT>(sum_g / wsum_g);
+    output[out_idx + 2] = to_output<OutT>(sum_b / wsum_b);
+}
+
+// ============================================================================
+// LUT initialization
+// ============================================================================
+
+static void init_spatial_lut(int radius, float sigma_spatial) {
+    float coeff = -0.5f / (sigma_spatial * sigma_spatial);
+    int w = 2 * radius + 1;
+    std::vector<float> lut(LUT_SIZE, 0.0f);
+
+    for (int dy = -radius; dy <= radius; ++dy) {
+        for (int dx = -radius; dx <= radius; ++dx) {
+            lut[(dy + radius) * w + (dx + radius)] = expf((dx * dx + dy * dy) * coeff);
+        }
+    }
+
+    CUDA_CHECK(cudaMemcpyToSymbol(d_spatial_lut, lut.data(), w * w * sizeof(float)));
+}
+
+static void init_color_lut(float sigma_color) {
+    float coeff = -0.5f / (sigma_color * sigma_color);
+    std::vector<float> lut(COLOR_LUT_SIZE);
+
+    for (int i = 0; i < COLOR_LUT_SIZE; ++i) {
+        // i ∈ [0,255], i*i ∈ [0,65025]: no overflow for int
+        lut[i] = expf(static_cast<float>(i * i) * coeff);
+    }
+
+    CUDA_CHECK(cudaMemcpyToSymbol(d_color_lut, lut.data(), COLOR_LUT_SIZE * sizeof(float)));
+}
+
+// Opt1: LUT cache - only re-upload when params change
+static void ensure_luts(int radius, float sigma_spatial, float sigma_color) {
+    static int cached_radius = -1;
+    static float cached_sigma_s = -1.f;
+    static float cached_sigma_c = -1.f;
+
+    if (radius == cached_radius && sigma_spatial == cached_sigma_s &&
+        sigma_color == cached_sigma_c) {
+        return;
+    }
+
+    init_spatial_lut(radius, sigma_spatial);
+    init_color_lut(sigma_color);
+
+    cached_radius = radius;
+    cached_sigma_s = sigma_spatial;
+    cached_sigma_c = sigma_color;
+}
+
+// ============================================================================
+// Kernel dispatch with template specialization
+// ============================================================================
+
+enum class FilterMode {
+    STANDARD, // Shared memory + LUT (runtime radius)
+    TEMPLATE, // Template-based (compile-time radius)
+    SEPARABLE // Separable approximation
+};
+
+static FilterMode g_filter_mode = FilterMode::TEMPLATE;
+
+void set_bilateral_filter_mode(int mode) {
+    g_filter_mode = static_cast<FilterMode>(mode);
+}
+
+static FilterMode get_filter_mode() {
+    static bool initialized = false;
+    if (!initialized) {
+        const char* env = getenv("BILATERAL_MODE");
+        if (env) {
+            int mode = atoi(env);
+            if (mode >= 0 && mode <= 2) {
+                g_filter_mode = static_cast<FilterMode>(mode);
+            }
+        }
+        initialized = true;
+    }
+    return g_filter_mode;
+}
+
+// Grayscale template kernel launcher
+template <int RADIUS>
+static void launch_template_kernel_gray(const float* d_input, float* d_output, int width,
+                                        int height, cudaStream_t stream) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_filter_gray_template<RADIUS>
+        <<<grid, block, 0, stream>>>(d_input, d_output, width, height);
+}
+
+// RGB template kernel launcher
+template <int RADIUS>
+static void launch_template_kernel(const float* d_input, float* d_output, int width, int height,
+                                   cudaStream_t stream) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_filter_rgb_template<RADIUS>
+        <<<grid, block, 0, stream>>>(d_input, d_output, width, height);
+}
+
+// Grayscale separable kernel launcher
+template <int RADIUS>
+static void launch_separable_kernel_gray(const float* d_input, float* d_output, float* d_temp,
+                                         int width, int height, cudaStream_t stream) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+
+    // Pass 1: horizontal
+    k_bilateral_horizontal_gray<RADIUS><<<grid, block, 0, stream>>>(d_input, d_temp, width, height);
+
+    // Pass 2: vertical
+    k_bilateral_vertical_gray<RADIUS><<<grid, block, 0, stream>>>(d_temp, d_output, width, height);
+}
+
+// RGB separable kernel launcher
+template <int RADIUS>
+static void launch_separable_kernel(const float* d_input, float* d_output, float* d_temp, int width,
+                                    int height, cudaStream_t stream) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+
+    // Pass 1: horizontal
+    k_bilateral_horizontal_rgb<RADIUS><<<grid, block, 0, stream>>>(d_input, d_temp, width, height);
+
+    // Pass 2: vertical
+    k_bilateral_vertical_rgb<RADIUS><<<grid, block, 0, stream>>>(d_temp, d_output, width, height);
+}
+
+// ============================================================================
+// Opt2: uint8 I/O launchers - kernel reads/writes uint8 directly from GPU
+// ============================================================================
+
+// Grayscale template uint8 launcher
+template <int RADIUS>
+static void launch_u8_gray(const uint8_t* d_in, uint8_t* d_out, int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_filter_gray_template<RADIUS, uint8_t, uint8_t>
+        <<<grid, block, 0, s>>>(d_in, d_out, w, h);
+}
+
+// RGB template uint8 launcher
+template <int RADIUS>
+static void launch_u8_rgb(const uint8_t* d_in, uint8_t* d_out, int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_filter_rgb_template<RADIUS, uint8_t, uint8_t>
+        <<<grid, block, 0, s>>>(d_in, d_out, w, h);
+}
+
+// Grayscale separable uint8 launcher (uint8→float→uint8 via d_temp)
+template <int RADIUS>
+static void launch_u8_sep_gray(const uint8_t* d_in, uint8_t* d_out, float* d_temp, int w, int h,
+                               cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_gray<RADIUS, uint8_t><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_gray<RADIUS, uint8_t><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+// RGB separable uint8 launcher (uint8→float→uint8 via d_temp)
+template <int RADIUS>
+static void launch_u8_sep_rgb(const uint8_t* d_in, uint8_t* d_out, float* d_temp, int w, int h,
+                              cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_rgb<RADIUS, uint8_t><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_rgb<RADIUS, uint8_t><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+// ============================================================================
+// Opt1: persistent GPU buffers - allocated once, reused across calls
+// Opt3: cudaHostRegister cache - page-lock caller's memory for DMA transfers
+// ============================================================================
+
+static struct {
+    uint8_t* d_in_u8 = nullptr;
+    uint8_t* d_out_u8 = nullptr;
+    float* d_temp = nullptr; // separable intermediate
+    size_t n_u8 = 0;
+    size_t n_temp = 0;
+    // Opt3: cached registered host pointers
+    const uint8_t* h_in_reg = nullptr;
+    uint8_t* h_out_reg = nullptr;
+    size_t n_reg = 0;
+} g_bufs;
+
+// Opt3: register caller's heap memory as page-locked so cudaMemcpy uses DMA.
+// Called once per unique (h_in, h_out, n) triple; re-registers when they change.
+static void ensure_registered(const uint8_t* h_in, uint8_t* h_out, size_t n) {
+    if (h_in == g_bufs.h_in_reg && h_out == g_bufs.h_out_reg && n == g_bufs.n_reg)
+        return;
+    // Unregister previous pointers (ignore errors on first call / already-unregistered)
+    if (g_bufs.h_in_reg)
+        cudaHostUnregister(const_cast<uint8_t*>(g_bufs.h_in_reg));
+    if (g_bufs.h_out_reg)
+        cudaHostUnregister(g_bufs.h_out_reg);
+    g_bufs.h_in_reg = nullptr;
+    g_bufs.h_out_reg = nullptr;
+    g_bufs.n_reg = 0;
+    // Register new pointers; if either fails, CUDA_CHECK will abort
+    CUDA_CHECK(cudaHostRegister(const_cast<uint8_t*>(h_in), n, cudaHostRegisterDefault));
+    CUDA_CHECK(cudaHostRegister(h_out, n, cudaHostRegisterDefault));
+    g_bufs.h_in_reg = h_in;
+    g_bufs.h_out_reg = h_out;
+    g_bufs.n_reg = n;
+}
+
+static void ensure_io_buffers(size_t n_u8) {
+    if (n_u8 == g_bufs.n_u8)
+        return;
+    cudaFree(g_bufs.d_in_u8);
+    cudaFree(g_bufs.d_out_u8);
+    CUDA_CHECK(cudaMalloc(&g_bufs.d_in_u8, n_u8));
+    CUDA_CHECK(cudaMalloc(&g_bufs.d_out_u8, n_u8));
+    g_bufs.n_u8 = n_u8;
+}
+
+static void ensure_temp_buffer(size_t n_bytes) {
+    if (n_bytes == g_bufs.n_temp)
+        return;
+    cudaFree(g_bufs.d_temp);
+    CUDA_CHECK(cudaMalloc(&g_bufs.d_temp, n_bytes));
+    g_bufs.n_temp = n_bytes;
+}
+
+void bilateral_filter_cuda(const float* d_input, float* d_output, int width, int height,
+                           int channels, int radius, float sigma_spatial, float sigma_color,
+                           cudaStream_t stream) {
+
+    radius = min(radius, MAX_RADIUS);
+    ensure_luts(radius, sigma_spatial, sigma_color);
+
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+
+    FilterMode mode = get_filter_mode();
+
+    if (channels == 1) {
+        // Grayscale
+        if (mode == FilterMode::TEMPLATE) {
+            switch (radius) {
+            case 3:
+                launch_template_kernel_gray<3>(d_input, d_output, width, height, stream);
+                break;
+            case 5:
+                launch_template_kernel_gray<5>(d_input, d_output, width, height, stream);
+                break;
+            case 7:
+                launch_template_kernel_gray<7>(d_input, d_output, width, height, stream);
+                break;
+            case 9:
+                launch_template_kernel_gray<9>(d_input, d_output, width, height, stream);
+                break;
+            case 10:
+                launch_template_kernel_gray<10>(d_input, d_output, width, height, stream);
+                break;
+            default: {
+                int tile_w = BLOCK_X + 2 * radius;
+                int tile_h = BLOCK_Y + 2 * radius;
+                size_t smem = tile_w * tile_h * sizeof(float);
+                k_bilateral_filter_shared<<<grid, block, smem, stream>>>(d_input, d_output, width,
+                                                                         height, radius);
+                break;
+            }
+            }
+        } else if (mode == FilterMode::SEPARABLE) {
+            size_t temp_size = static_cast<size_t>(width) * height * sizeof(float);
+            ensure_temp_buffer(temp_size);
+
+            switch (radius) {
+            case 3:
+                launch_separable_kernel_gray<3>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                stream);
+                break;
+            case 5:
+                launch_separable_kernel_gray<5>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                stream);
+                break;
+            case 7:
+                launch_separable_kernel_gray<7>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                stream);
+                break;
+            case 9:
+                launch_separable_kernel_gray<9>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                stream);
+                break;
+            case 10:
+                launch_separable_kernel_gray<10>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                 stream);
+                break;
+            default:
+                launch_separable_kernel_gray<5>(d_input, d_output, g_bufs.d_temp, width, height,
+                                                stream);
+                break;
+            }
+        } else {
+            // STANDARD mode
+            int tile_w = BLOCK_X + 2 * radius;
+            int tile_h = BLOCK_Y + 2 * radius;
+            size_t smem = tile_w * tile_h * sizeof(float);
+            k_bilateral_filter_shared<<<grid, block, smem, stream>>>(d_input, d_output, width,
+                                                                     height, radius);
+        }
+    } else {
+        // RGB
+        if (mode == FilterMode::TEMPLATE) {
+            switch (radius) {
+            case 3:
+                launch_template_kernel<3>(d_input, d_output, width, height, stream);
+                break;
+            case 5:
+                launch_template_kernel<5>(d_input, d_output, width, height, stream);
+                break;
+            case 7:
+                launch_template_kernel<7>(d_input, d_output, width, height, stream);
+                break;
+            case 9:
+                launch_template_kernel<9>(d_input, d_output, width, height, stream);
+                break;
+            case 10:
+                launch_template_kernel<10>(d_input, d_output, width, height, stream);
+                break;
+            default: {
+                // Fallback to runtime radius version
+                int tile_w = BLOCK_X + 2 * radius;
+                int tile_h = BLOCK_Y + 2 * radius;
+                size_t smem = 3 * tile_w * tile_h * sizeof(float);
+                k_bilateral_filter_rgb_shared<<<grid, block, smem, stream>>>(d_input, d_output,
+                                                                             width, height, radius);
+                break;
+            }
+            }
+        } else if (mode == FilterMode::SEPARABLE) {
+            // Allocate temporary buffer for separable filter
+            size_t temp_size = static_cast<size_t>(width) * height * channels * sizeof(float);
+            ensure_temp_buffer(temp_size);
+
+            switch (radius) {
+            case 3:
+                launch_separable_kernel<3>(d_input, d_output, g_bufs.d_temp, width, height, stream);
+                break;
+            case 5:
+                launch_separable_kernel<5>(d_input, d_output, g_bufs.d_temp, width, height, stream);
+                break;
+            case 7:
+                launch_separable_kernel<7>(d_input, d_output, g_bufs.d_temp, width, height, stream);
+                break;
+            case 9:
+                launch_separable_kernel<9>(d_input, d_output, g_bufs.d_temp, width, height, stream);
+                break;
+            case 10:
+                launch_separable_kernel<10>(d_input, d_output, g_bufs.d_temp, width, height,
+                                            stream);
+                break;
+            default:
+                launch_separable_kernel<5>(d_input, d_output, g_bufs.d_temp, width, height, stream);
+                break;
+            }
+        } else {
+            // STANDARD mode
+            int tile_w = BLOCK_X + 2 * radius;
+            int tile_h = BLOCK_Y + 2 * radius;
+            size_t smem = 3 * tile_w * tile_h * sizeof(float);
+            k_bilateral_filter_rgb_shared<<<grid, block, smem, stream>>>(d_input, d_output, width,
+                                                                         height, radius);
+        }
+    }
+
+    CUDA_CHECK(cudaGetLastError());
+    if (stream == 0) {
+        CUDA_CHECK(cudaDeviceSynchronize());
+    }
+}
+
+void apply_bilateral_filter_cuda(const uint8_t* h_input, uint8_t* h_output, int width, int height,
+                                 int channels, int radius, float sigma_spatial, float sigma_color) {
+    const size_t n_u8 = static_cast<size_t>(width) * height * channels;
+
+    // (Re)allocate only when image size changes
+    ensure_io_buffers(n_u8);
+
+    // Opt3: page-lock caller's buffers for faster H2D/D2H transfers
+    ensure_registered(h_input, h_output, n_u8);
+
+    CUDA_CHECK(cudaMemcpy(g_bufs.d_in_u8, h_input, n_u8, cudaMemcpyHostToDevice));
+
+    radius = min(radius, MAX_RADIUS);
+    ensure_luts(radius, sigma_spatial, sigma_color);
+
+    // Opt2: dispatch uint8 I/O kernels directly - no float conversion pipeline
+    const FilterMode mode = get_filter_mode();
+    const dim3 block(BLOCK_X, BLOCK_Y);
+    const dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
+
+    if (channels == 1) {
+        if (mode == FilterMode::SEPARABLE) {
+            ensure_temp_buffer(static_cast<size_t>(width) * height * sizeof(float));
+            switch (radius) {
+            case 3:
+                launch_u8_sep_gray<3>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            case 5:
+                launch_u8_sep_gray<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            case 7:
+                launch_u8_sep_gray<7>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            case 9:
+                launch_u8_sep_gray<9>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            case 10:
+                launch_u8_sep_gray<10>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width,
+                                       height, 0);
+                break;
+            default:
+                launch_u8_sep_gray<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            }
+        } else if (mode == FilterMode::TEMPLATE) {
+            switch (radius) {
+            case 3:
+                launch_u8_gray<3>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 5:
+                launch_u8_gray<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 7:
+                launch_u8_gray<7>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 9:
+                launch_u8_gray<9>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 10:
+                launch_u8_gray<10>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            default: {
+                size_t smem = (BLOCK_X + 2 * radius) * (BLOCK_Y + 2 * radius) * sizeof(float);
+                k_bilateral_filter_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem>>>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, radius);
+                break;
+            }
+            }
+        } else {
+            size_t smem = (BLOCK_X + 2 * radius) * (BLOCK_Y + 2 * radius) * sizeof(float);
+            k_bilateral_filter_shared<uint8_t, uint8_t>
+                <<<grid, block, smem>>>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, radius);
+        }
+    } else {
+        // RGB
+        if (mode == FilterMode::SEPARABLE) {
+            ensure_temp_buffer(static_cast<size_t>(width) * height * channels * sizeof(float));
+            switch (radius) {
+            case 3:
+                launch_u8_sep_rgb<3>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                     0);
+                break;
+            case 5:
+                launch_u8_sep_rgb<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                     0);
+                break;
+            case 7:
+                launch_u8_sep_rgb<7>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                     0);
+                break;
+            case 9:
+                launch_u8_sep_rgb<9>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                     0);
+                break;
+            case 10:
+                launch_u8_sep_rgb<10>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                      0);
+                break;
+            default:
+                launch_u8_sep_rgb<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, g_bufs.d_temp, width, height,
+                                     0);
+                break;
+            }
+        } else if (mode == FilterMode::TEMPLATE) {
+            switch (radius) {
+            case 3:
+                launch_u8_rgb<3>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 5:
+                launch_u8_rgb<5>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 7:
+                launch_u8_rgb<7>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 9:
+                launch_u8_rgb<9>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            case 10:
+                launch_u8_rgb<10>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, 0);
+                break;
+            default: {
+                size_t smem = 3 * (BLOCK_X + 2 * radius) * (BLOCK_Y + 2 * radius) * sizeof(float);
+                k_bilateral_filter_rgb_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem>>>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, radius);
+                break;
+            }
+            }
+        } else {
+            size_t smem = 3 * (BLOCK_X + 2 * radius) * (BLOCK_Y + 2 * radius) * sizeof(float);
+            k_bilateral_filter_rgb_shared<uint8_t, uint8_t>
+                <<<grid, block, smem>>>(g_bufs.d_in_u8, g_bufs.d_out_u8, width, height, radius);
+        }
+    }
+
+    // Check kernel launch errors, then sync
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
+
+    CUDA_CHECK(cudaMemcpy(h_output, g_bufs.d_out_u8, n_u8, cudaMemcpyDeviceToHost));
+}
