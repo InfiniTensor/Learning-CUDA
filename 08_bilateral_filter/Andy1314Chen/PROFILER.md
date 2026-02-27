@@ -304,3 +304,112 @@ ADAPTIVE mode (lowest MAE for RGB):
 ---
 
 *Last updated: 2026-02-26 (added OpenCV CUDA baseline + circular window early-continue)*
+
+---
+
+## Cross-Platform Results: Jetson AGX Thor
+
+### Test Environment
+
+- Platform: NVIDIA Jetson AGX Thor (R38.2.1)
+- GPU: NVIDIA Thor (Blackwell, sm_110)
+- Compiler: g++ (C++17, -O3), nvcc (CUDA 13.0)
+- OpenCV: 4.x (CPU only, no CUDA modules)
+
+### Filter Parameters
+
+```
+radius = 5
+sigma_spatial = 3.0
+sigma_color = 30.0
+```
+
+### Performance Results (Opt G/H/I/K/N: 32x8 block + SoA + launch_bounds(256,6) + FP16 intermediate)
+
+Benchmark methodology: 5 warmup runs + 50 timed runs.
+
+#### 4K RGB (3840×2160×3)
+
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
+|----------------|-----------|----------|-------------------|-----|:----------:|
+| **SEP_FP16** | **3.03 ± 0.08** | **2.97** | **2741** | **0.46** | **28.0x** |
+| SEPARABLE | 3.10 ± 0.12 | 3.02 | 2673 | 0.45 | 27.2x |
+| FUSED | 3.98 ± 0.05 | 3.96 | 2083 | 0.45 | 21.1x |
+| TEMPLATE | 5.50 ± 0.07 | 5.47 | 1508 | 0.60 | 15.3x |
+| ADAPTIVE | 6.16 ± 0.06 | 6.13 | 1346 | 0.40 | 13.7x |
+| STANDARD | 9.30 ± 0.01 | 9.28 | 892 | 0.48 | 9.1x |
+| OpenCV CPU | ~84 | ~83 | ~99 | — | 1.0x |
+
+#### 4K Grayscale (3840×2160×1)
+
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
+|----------------|-----------|----------|-------------------|-----|:----------:|
+| **SEP_FP16** | **1.40 ± 0.13** | **1.30** | **5915** | **0.12** | **39.2x** |
+| SEPARABLE | 1.42 ± 0.02 | 1.40 | 5849 | 0.15 | 37.3x |
+| FUSED | 1.72 ± 0.23 | 1.60 | 4809 | 0.15 | 30.9x |
+| TEMPLATE | 3.53 ± 0.11 | 3.46 | 2348 | 0.61 | 15.0x |
+| STANDARD | 4.35 ± 0.07 | 4.33 | 1906 | 0.61 | 12.2x |
+| OpenCV CPU | ~53 | ~52 | ~157 | — | 1.0x |
+
+#### 1080p RGB (1920×1080×3)
+
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
+|----------------|-----------|----------|-------------------|-----|:----------:|
+| **SEP_FP16** | **0.88 ± 0.10** | **0.77** | **2351** | **0.46** | **31.4x** |
+| SEPARABLE | 0.85 ± 0.09 | 0.77 | 2434 | 0.45 | 32.6x |
+| TEMPLATE | 1.54 ± 0.12 | 1.41 | 1344 | 0.61 | 17.9x |
+| OpenCV CPU | ~28 | ~27 | ~75 | — | 1.0x |
+
+#### 1080p Grayscale (1920×1080×1)
+
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
+|----------------|-----------|----------|-------------------|-----|:----------:|
+| **SEP_FP16** | **0.40 ± 0.01** | **0.36** | **5139** | **0.12** | **38.8x** |
+| SEPARABLE | 0.46 ± 0.08 | 0.40 | 4521 | 0.15 | 34.2x |
+| TEMPLATE | 0.97 ± 0.10 | 0.90 | 2129 | 0.61 | 16.0x |
+| OpenCV CPU | ~16 | ~14 | ~130 | — | 1.0x |
+
+### Opt G/H/I/K/N ncu Verification
+
+| Optimization | Metric | Before | After | Change |
+|-------------|--------|--------|-------|--------|
+| Opt G (32x8 block) | Smem bank conflict | 50% excessive | **2.3%** | **-97.6%** |
+| Opt H (SoA temp) | Global uncoalesced (V) | 68% | **29%** | **-39pp** |
+| Opt H (SoA temp) | Global uncoalesced (H) | 69% | **47%** | **-22pp** |
+| Opt I (fmaf) | FMA fusion ratio | ~0.36 | ~0.36 | No change |
+| Opt K (launch_bounds) | Registers/thread | 63 | **40** | **-35%** |
+| Opt K (launch_bounds) | Achieved occupancy | 62% | **97.5%** | **+35pp** |
+| Opt K (launch_bounds) | SM throughput (H) | 64.5% | **79.4%** | **+14.9pp** |
+| Opt N (FP16 temp) | V LD sectors/req | 4.00 | **2.00** | **-50%** |
+| Opt N (FP16 temp) | H ST sectors/req | 4.00 | **2.00** | **-50%** |
+| Opt N (FP16 temp) | FP16 pipe utilization | 0% | ~2% | FP16↔FP32 conversion only |
+
+### Failed Experiments
+
+| Experiment | Expected | Actual | Root Cause |
+|-----------|:--------:|:------:|-----------|
+| Opt L (u8 vectorize) | 10-20% | Cancelled | sectors/req=2.98 ≈ RGB 3B/pixel theoretical limit |
+| Opt M (Fused H+V) | 10-15% | **-31~34%** | Phase1 computation overhead > bandwidth savings |
+| Opt N2 (FP16 compute) | 10-20% | **-8.4%** | Scalar __half = FP32 throughput; float↔half conversion overhead |
+
+### Cross-Platform Comparison (4K RGB, TEMPLATE mode)
+
+| Platform | GPU | Arch | CUDA Time (ms) | Throughput (MP/s) |
+|----------|-----|------|----------------|-------------------|
+| Desktop (WSL2) | RTX 4060 | sm_89 (Ada) | 5.61 | 1478 |
+| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **5.47** | **1508** |
+
+### Cross-Platform Comparison (4K RGB, SEPARABLE mode, best variant)
+
+| Platform | GPU | Arch | Mode | CUDA Time (ms) | Throughput (MP/s) |
+|----------|-----|------|------|----------------|-------------------|
+| Desktop (WSL2) | RTX 4060 | sm_89 (Ada) | SEPARABLE | 5.41 | 1532 |
+| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **SEP_FP16** | **2.97** | **2741** |
+
+> SEPARABLE_FP16 on Thor vs SEPARABLE on RTX 4060: **1.82x faster**, benefiting from
+> Opt H (SoA coalescing), Opt K (occupancy 97.5%), Opt N (FP16 intermediate),
+> and 32MB L2 cache (vs 24MB).
+
+---
+
+*Last updated: 2026-02-27 (Opt G/H/I/K/N + Opt L/M/N2 experiments: FP16 intermediate, fused H+V, FP16 compute)*

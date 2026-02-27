@@ -24,17 +24,30 @@
 // clang-format on
 
 #ifndef BLOCK_X
-#define BLOCK_X 16 // Opt4: 16x16 = 256 threads; better smem cache vs 32x8
+// Opt G: 32x8 ensures each warp spans a single row in shared memory,
+// eliminating cross-row bank conflicts (16x16 caused 2-way conflicts
+// because warp straddles 2 rows with stride 27 mod 32 = -5 overlap).
+#define BLOCK_X 32
 #endif
 #ifndef BLOCK_Y
-#define BLOCK_Y 16
+#define BLOCK_Y 8
 #endif
 // Opt A: launch bounds hints for register allocation
 #define THREADS_PER_BLOCK (BLOCK_X * BLOCK_Y)
 #define MIN_BLOCKS_PER_SM 4
+// Opt K: more aggressive launch bounds for SEPARABLE kernels to reduce
+// register pressure. With 256 threads and 6 blocks/SM: max regs = 65536/(256*6) = 42.
+// This forces compiler to use ≤42 registers, boosting occupancy from 66% to 100%.
+#define MIN_BLOCKS_PER_SM_SEP 6
 #define MAX_RADIUS     16
 #define LUT_SIZE       ((2 * MAX_RADIUS + 1) * (2 * MAX_RADIUS + 1))
 #define COLOR_LUT_SIZE 256
+
+// Opt G: Shared memory bank conflict mitigation via row padding.
+// 32 banks × 4B = 128B per bank cycle. If tile row width is even, threads
+// in a warp accessing consecutive rows at the same column hit the same bank.
+// Padding to an odd width ensures consecutive rows map to different banks.
+#define SMEM_PAD(w) ((w) | 1)  // ensure odd: if even, add 1; if odd, keep
 
 __constant__ float d_spatial_lut[LUT_SIZE];
 __constant__ float d_color_lut[COLOR_LUT_SIZE];
@@ -65,10 +78,11 @@ k_bilateral_filter_gray_template(const InT* __restrict__ input,
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
     constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
-    constexpr int TILE_SIZE = TILE_W * TILE_H;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);  // Opt G: odd stride to avoid bank conflicts
+    constexpr int TILE_SIZE_LOG = TILE_W * TILE_H; // logical elements to load
     constexpr int LUT_WIDTH = 2 * RADIUS + 1;
 
-    __shared__ float smem[TILE_SIZE];
+    __shared__ float smem[TILE_H * TILE_W_PAD];  // Opt G: padded rows
 
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
@@ -78,16 +92,16 @@ k_bilateral_filter_gray_template(const InT* __restrict__ input,
     const int thread_id = ty * BLOCK_X + tx;
     const int threads_per_block = BLOCK_X * BLOCK_Y;
 
-// Collaborative loading
+// Collaborative loading: iterate over logical tile, store into padded layout
 #pragma unroll
-    for (int i = thread_id; i < TILE_SIZE; i += threads_per_block) {
+    for (int i = thread_id; i < TILE_SIZE_LOG; i += threads_per_block) {
         int sy = i / TILE_W;
         int sx = i % TILE_W;
         int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
         int gy = blockIdx.y * BLOCK_Y + sy - RADIUS;
         gx = max(0, min(width - 1, gx));
         gy = max(0, min(height - 1, gy));
-        smem[i] = static_cast<float>(input[gy * width + gx]);
+        smem[sy * TILE_W_PAD + sx] = static_cast<float>(input[gy * width + gx]);
     }
 
     __syncthreads();
@@ -97,7 +111,7 @@ k_bilateral_filter_gray_template(const InT* __restrict__ input,
 
     const int lx = tx + RADIUS;
     const int ly = ty + RADIUS;
-    const float center = smem[ly * TILE_W + lx];
+    const float center = smem[ly * TILE_W_PAD + lx];
 
     float sum = 0.0f;
     float weight_sum = 0.0f;
@@ -109,7 +123,7 @@ k_bilateral_filter_gray_template(const InT* __restrict__ input,
             float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + (dx + RADIUS)];
             if (spatial_weight == 0.0f) continue;  // Opt C/F: skip circular-window corners
 
-            float neighbor = smem[(ly + dy) * TILE_W + (lx + dx)];
+            float neighbor = smem[(ly + dy) * TILE_W_PAD + (lx + dx)];
 
             int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
             diff = min(diff, COLOR_LUT_SIZE - 1);
@@ -136,12 +150,13 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
     constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
-    constexpr int TILE_SIZE = TILE_W * TILE_H;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);  // Opt G: odd stride to avoid bank conflicts
+    constexpr int TILE_SIZE_LOG = TILE_W * TILE_H; // logical elements to load
     constexpr int LUT_WIDTH = 2 * RADIUS + 1;
 
-    __shared__ float smem_r[TILE_SIZE];
-    __shared__ float smem_g[TILE_SIZE];
-    __shared__ float smem_b[TILE_SIZE];
+    __shared__ float smem_r[TILE_H * TILE_W_PAD];
+    __shared__ float smem_g[TILE_H * TILE_W_PAD];
+    __shared__ float smem_b[TILE_H * TILE_W_PAD];
 
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
@@ -151,9 +166,9 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
     const int thread_id = ty * BLOCK_X + tx;
     const int threads_per_block = BLOCK_X * BLOCK_Y;
 
-// Collaborative loading
+// Collaborative loading: iterate over logical tile, store into padded layout
 #pragma unroll
-    for (int i = thread_id; i < TILE_SIZE; i += threads_per_block) {
+    for (int i = thread_id; i < TILE_SIZE_LOG; i += threads_per_block) {
         int sy = i / TILE_W;
         int sx = i % TILE_W;
         int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
@@ -161,9 +176,10 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
         gx = max(0, min(width - 1, gx));
         gy = max(0, min(height - 1, gy));
         int gidx = (gy * width + gx) * 3;
-        smem_r[i] = static_cast<float>(input[gidx]);
-        smem_g[i] = static_cast<float>(input[gidx + 1]);
-        smem_b[i] = static_cast<float>(input[gidx + 2]);
+        int smem_idx = sy * TILE_W_PAD + sx;
+        smem_r[smem_idx] = static_cast<float>(input[gidx]);
+        smem_g[smem_idx] = static_cast<float>(input[gidx + 1]);
+        smem_b[smem_idx] = static_cast<float>(input[gidx + 2]);
     }
 
     __syncthreads();
@@ -173,7 +189,7 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
 
     const int lx = tx + RADIUS;
     const int ly = ty + RADIUS;
-    const int lidx = ly * TILE_W + lx;
+    const int lidx = ly * TILE_W_PAD + lx;
 
     const float center_r = smem_r[lidx];
     const float center_g = smem_g[lidx];
@@ -193,7 +209,7 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
             float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + (dx + RADIUS)];
             if (spatial_weight == 0.0f) continue;  // Opt C/F: skip circular-window corners
 
-            int nidx = (ly + dy) * TILE_W + (lx + dx);
+            int nidx = (ly + dy) * TILE_W_PAD + (lx + dx);
             float nr = smem_r[nidx];
             float ng = smem_g[nidx];
             float nb = smem_b[nidx];
@@ -228,14 +244,15 @@ k_bilateral_filter_rgb_template(const InT* __restrict__ input,
 // ============================================================================
 
 template <int RADIUS, typename InT = float, typename TmpT = float>
-__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
 k_bilateral_horizontal_gray(const InT* __restrict__ input,
                                             TmpT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);  // Opt G: odd stride
     constexpr int LUT_WIDTH = 2 * RADIUS + 1;
 
-    __shared__ float smem[BLOCK_Y][TILE_W];
+    __shared__ float smem[BLOCK_Y][TILE_W_PAD];
 
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
@@ -271,7 +288,7 @@ k_bilateral_horizontal_gray(const InT* __restrict__ input,
         float color_weight = d_color_lut[diff];
 
         float w = spatial_weight * color_weight;
-        sum += neighbor * w;
+        sum = fmaf(neighbor, w, sum);  // Opt I: explicit FMA
         weight_sum += w;
     }
 
@@ -279,9 +296,9 @@ k_bilateral_horizontal_gray(const InT* __restrict__ input,
 }
 
 template <int RADIUS, typename TmpT = float, typename OutT = float>
-__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
 k_bilateral_vertical_gray(const TmpT* __restrict__ input,
-                                          OutT* __restrict__ output, int width, int height) {
+                                           OutT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
     constexpr int LUT_WIDTH = 2 * RADIUS + 1;
@@ -322,7 +339,7 @@ k_bilateral_vertical_gray(const TmpT* __restrict__ input,
         float color_weight = d_color_lut[diff];
 
         float w = spatial_weight * color_weight;
-        sum += neighbor * w;
+        sum = fmaf(neighbor, w, sum);  // Opt I: explicit FMA
         weight_sum += w;
     }
 
@@ -335,17 +352,18 @@ k_bilateral_vertical_gray(const TmpT* __restrict__ input,
 // ============================================================================
 
 template <int RADIUS, typename InT = float, typename TmpT = float>
-__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
 k_bilateral_horizontal_rgb(const InT* __restrict__ input,
                                            TmpT* __restrict__ output, // intermediate (float or __half)
                                            int width, int height) {
 
     constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);  // Opt G: odd stride
     constexpr int LUT_WIDTH = 2 * RADIUS + 1;
 
-    __shared__ float smem_r[BLOCK_Y][TILE_W];
-    __shared__ float smem_g[BLOCK_Y][TILE_W];
-    __shared__ float smem_b[BLOCK_Y][TILE_W];
+    __shared__ float smem_r[BLOCK_Y][TILE_W_PAD];
+    __shared__ float smem_g[BLOCK_Y][TILE_W_PAD];
+    __shared__ float smem_b[BLOCK_Y][TILE_W_PAD];
 
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
@@ -400,23 +418,27 @@ k_bilateral_horizontal_rgb(const InT* __restrict__ input,
         float w_g = spatial_weight * cw_g;
         float w_b = spatial_weight * cw_b;
 
-        sum_r += nr * w_r;
-        sum_g += ng * w_g;
-        sum_b += nb * w_b;
+        // Opt I: explicit FMA for accumulation
+        sum_r = fmaf(nr, w_r, sum_r);
+        sum_g = fmaf(ng, w_g, sum_g);
+        sum_b = fmaf(nb, w_b, sum_b);
         wsum_r += w_r;
         wsum_g += w_g;
         wsum_b += w_b;
     }
 
-    int out_idx = (y * width + x) * 3;
-    output[out_idx]     = static_cast<TmpT>(sum_r / wsum_r);
-    output[out_idx + 1] = static_cast<TmpT>(sum_g / wsum_g);
-    output[out_idx + 2] = static_cast<TmpT>(sum_b / wsum_b);
+    // Opt H: SoA intermediate output — write R/G/B to separate planes for coalesced
+    // vertical reads. Layout: plane_r[0..W*H-1], plane_g[W*H..2*W*H-1], plane_b[2*W*H..].
+    const int pixel_idx = y * width + x;
+    const int plane_size = width * height;
+    output[pixel_idx]                = static_cast<TmpT>(sum_r / wsum_r);
+    output[pixel_idx + plane_size]   = static_cast<TmpT>(sum_g / wsum_g);
+    output[pixel_idx + 2*plane_size] = static_cast<TmpT>(sum_b / wsum_b);
 }
 
 template <int RADIUS, typename TmpT = float, typename OutT = float>
-__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM)
-k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate (float or __half)
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate SoA: R|G|B planes
                          OutT* __restrict__ output, int width, int height) {
 
     constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
@@ -431,15 +453,18 @@ k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate (float 
     const int x = blockIdx.x * BLOCK_X + tx;
     const int y = blockIdx.y * BLOCK_Y + ty;
 
-    // Load column with halo (cast TmpT -> float for FP16 intermediate support)
+    const int plane_size = width * height;
+
+    // Opt H: Load from SoA planes — fully coalesced: consecutive threads read
+    // consecutive addresses within each plane.
     for (int i = ty; i < TILE_H; i += BLOCK_Y) {
         int gy = blockIdx.y * BLOCK_Y + i - RADIUS;
         gy = max(0, min(height - 1, gy));
         int gx = min(x, width - 1);
-        int gidx = (gy * width + gx) * 3;
-        smem_r[i][tx] = static_cast<float>(input[gidx]);
-        smem_g[i][tx] = static_cast<float>(input[gidx + 1]);
-        smem_b[i][tx] = static_cast<float>(input[gidx + 2]);
+        int pidx = gy * width + gx;
+        smem_r[i][tx] = static_cast<float>(input[pidx]);
+        smem_g[i][tx] = static_cast<float>(input[pidx + plane_size]);
+        smem_b[i][tx] = static_cast<float>(input[pidx + 2*plane_size]);
     }
 
     __syncthreads();
@@ -464,6 +489,8 @@ k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate (float 
         // Use 1D spatial weight (center column of 2D LUT)
         float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
 
+        // Opt I: Use fmaf() intrinsic to encourage FMA fusion.
+        // Each diff + 0.5f rounding and w*neighbor accumulation benefits from FMA.
         int diff_r = static_cast<int>(fabsf(nr - center_r) + 0.5f);
         int diff_g = static_cast<int>(fabsf(ng - center_g) + 0.5f);
         int diff_b = static_cast<int>(fabsf(nb - center_b) + 0.5f);
@@ -479,9 +506,10 @@ k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate (float 
         float w_g = spatial_weight * cw_g;
         float w_b = spatial_weight * cw_b;
 
-        sum_r += nr * w_r;
-        sum_g += ng * w_g;
-        sum_b += nb * w_b;
+        // Opt I: explicit FMA for accumulation
+        sum_r = fmaf(nr, w_r, sum_r);
+        sum_g = fmaf(ng, w_g, sum_g);
+        sum_b = fmaf(nb, w_b, sum_b);
         wsum_r += w_r;
         wsum_g += w_g;
         wsum_b += w_b;
@@ -491,6 +519,506 @@ k_bilateral_vertical_rgb(const TmpT* __restrict__ input, // intermediate (float 
     output[out_idx] = to_output<OutT>(sum_r / wsum_r);
     output[out_idx + 1] = to_output<OutT>(sum_g / wsum_g);
     output[out_idx + 2] = to_output<OutT>(sum_b / wsum_b);
+}
+
+// ============================================================================
+// Opt N2: Full FP16 compute separable kernels
+// smem uses __half (halved bandwidth), inner loop uses __half arithmetic
+// (2x throughput on sm_110 Blackwell). LUT lookups stay float, converted to
+// __half before FMA accumulation.
+// ============================================================================
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_horizontal_gray_fp16(const uint8_t* __restrict__ input,
+                                 __half* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ __half smem[BLOCK_Y][TILE_W_PAD];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    for (int i = tx; i < TILE_W; i += BLOCK_X) {
+        int gx = blockIdx.x * BLOCK_X + i - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        int gy = min(y, height - 1);
+        smem[ty][i] = __float2half(static_cast<float>(input[gy * width + gx]));
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const __half center = smem[ty][lx];
+
+    __half sum = __float2half(0.0f);
+    __half weight_sum = __float2half(0.0f);
+
+#pragma unroll
+    for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+        __half neighbor = smem[ty][lx + dx];
+        float spatial_weight = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+
+        // Color distance in float for LUT indexing precision
+        float fn = __half2float(neighbor);
+        float fc = __half2float(center);
+        int diff = static_cast<int>(fabsf(fn - fc) + 0.5f);
+        diff = min(diff, COLOR_LUT_SIZE - 1);
+        float color_weight = d_color_lut[diff];
+
+        __half w = __float2half(spatial_weight * color_weight);
+        sum = __hfma(neighbor, w, sum);
+        weight_sum = __hadd(weight_sum, w);
+    }
+
+    output[y * width + x] = __hdiv(sum, weight_sum);
+}
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_vertical_gray_fp16(const __half* __restrict__ input,
+                               uint8_t* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ __half smem[TILE_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    for (int i = ty; i < TILE_H; i += BLOCK_Y) {
+        int gy = blockIdx.y * BLOCK_Y + i - RADIUS;
+        gy = max(0, min(height - 1, gy));
+        int gx = min(x, width - 1);
+        smem[i][tx] = input[gy * width + gx];
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;
+    const __half center = smem[ly][tx];
+
+    __half sum = __float2half(0.0f);
+    __half weight_sum = __float2half(0.0f);
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        __half neighbor = smem[ly + dy][tx];
+        float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+
+        float fn = __half2float(neighbor);
+        float fc = __half2float(center);
+        int diff = static_cast<int>(fabsf(fn - fc) + 0.5f);
+        diff = min(diff, COLOR_LUT_SIZE - 1);
+        float color_weight = d_color_lut[diff];
+
+        __half w = __float2half(spatial_weight * color_weight);
+        sum = __hfma(neighbor, w, sum);
+        weight_sum = __hadd(weight_sum, w);
+    }
+
+    float result = __half2float(sum) / __half2float(weight_sum);
+    output[y * width + x] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, result)));
+}
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_horizontal_rgb_fp16(const uint8_t* __restrict__ input,
+                                __half* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ __half smem_r[BLOCK_Y][TILE_W_PAD];
+    __shared__ __half smem_g[BLOCK_Y][TILE_W_PAD];
+    __shared__ __half smem_b[BLOCK_Y][TILE_W_PAD];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    for (int i = tx; i < TILE_W; i += BLOCK_X) {
+        int gx = blockIdx.x * BLOCK_X + i - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        int gy = min(y, height - 1);
+        int gidx = (gy * width + gx) * 3;
+        smem_r[ty][i] = __float2half(static_cast<float>(input[gidx]));
+        smem_g[ty][i] = __float2half(static_cast<float>(input[gidx + 1]));
+        smem_b[ty][i] = __float2half(static_cast<float>(input[gidx + 2]));
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int lx = tx + RADIUS;
+    const __half center_r = smem_r[ty][lx];
+    const __half center_g = smem_g[ty][lx];
+    const __half center_b = smem_b[ty][lx];
+
+    __half sum_r = __float2half(0.0f), sum_g = __float2half(0.0f), sum_b = __float2half(0.0f);
+    __half wsum_r = __float2half(0.0f), wsum_g = __float2half(0.0f), wsum_b = __float2half(0.0f);
+
+#pragma unroll
+    for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+        __half nr = smem_r[ty][lx + dx];
+        __half ng = smem_g[ty][lx + dx];
+        __half nb = smem_b[ty][lx + dx];
+
+        float spatial_weight = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+
+        // Color distance in float for LUT precision
+        float fr = __half2float(nr), fg = __half2float(ng), fb = __half2float(nb);
+        float cr = __half2float(center_r), cg = __half2float(center_g), cb = __half2float(center_b);
+        int diff_r = static_cast<int>(fabsf(fr - cr) + 0.5f);
+        int diff_g = static_cast<int>(fabsf(fg - cg) + 0.5f);
+        int diff_b = static_cast<int>(fabsf(fb - cb) + 0.5f);
+        diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+        diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+        diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+        __half w_r = __float2half(spatial_weight * d_color_lut[diff_r]);
+        __half w_g = __float2half(spatial_weight * d_color_lut[diff_g]);
+        __half w_b = __float2half(spatial_weight * d_color_lut[diff_b]);
+
+        sum_r = __hfma(nr, w_r, sum_r);
+        sum_g = __hfma(ng, w_g, sum_g);
+        sum_b = __hfma(nb, w_b, sum_b);
+        wsum_r = __hadd(wsum_r, w_r);
+        wsum_g = __hadd(wsum_g, w_g);
+        wsum_b = __hadd(wsum_b, w_b);
+    }
+
+    // SoA output
+    const int pixel_idx = y * width + x;
+    const int plane_size = width * height;
+    output[pixel_idx]                = __hdiv(sum_r, wsum_r);
+    output[pixel_idx + plane_size]   = __hdiv(sum_g, wsum_g);
+    output[pixel_idx + 2*plane_size] = __hdiv(sum_b, wsum_b);
+}
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_vertical_rgb_fp16(const __half* __restrict__ input,
+                              uint8_t* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ __half smem_r[TILE_H][BLOCK_X];
+    __shared__ __half smem_g[TILE_H][BLOCK_X];
+    __shared__ __half smem_b[TILE_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    const int plane_size = width * height;
+
+    for (int i = ty; i < TILE_H; i += BLOCK_Y) {
+        int gy = blockIdx.y * BLOCK_Y + i - RADIUS;
+        gy = max(0, min(height - 1, gy));
+        int gx = min(x, width - 1);
+        int pidx = gy * width + gx;
+        smem_r[i][tx] = input[pidx];
+        smem_g[i][tx] = input[pidx + plane_size];
+        smem_b[i][tx] = input[pidx + 2*plane_size];
+    }
+
+    __syncthreads();
+
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;
+    const __half center_r = smem_r[ly][tx];
+    const __half center_g = smem_g[ly][tx];
+    const __half center_b = smem_b[ly][tx];
+
+    __half sum_r = __float2half(0.0f), sum_g = __float2half(0.0f), sum_b = __float2half(0.0f);
+    __half wsum_r = __float2half(0.0f), wsum_g = __float2half(0.0f), wsum_b = __float2half(0.0f);
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        __half nr = smem_r[ly + dy][tx];
+        __half ng = smem_g[ly + dy][tx];
+        __half nb = smem_b[ly + dy][tx];
+
+        float spatial_weight = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+
+        float fr = __half2float(nr), fg = __half2float(ng), fb = __half2float(nb);
+        float cr = __half2float(center_r), cg = __half2float(center_g), cb = __half2float(center_b);
+        int diff_r = static_cast<int>(fabsf(fr - cr) + 0.5f);
+        int diff_g = static_cast<int>(fabsf(fg - cg) + 0.5f);
+        int diff_b = static_cast<int>(fabsf(fb - cb) + 0.5f);
+        diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+        diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+        diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+        __half w_r = __float2half(spatial_weight * d_color_lut[diff_r]);
+        __half w_g = __float2half(spatial_weight * d_color_lut[diff_g]);
+        __half w_b = __float2half(spatial_weight * d_color_lut[diff_b]);
+
+        sum_r = __hfma(nr, w_r, sum_r);
+        sum_g = __hfma(ng, w_g, sum_g);
+        sum_b = __hfma(nb, w_b, sum_b);
+        wsum_r = __hadd(wsum_r, w_r);
+        wsum_g = __hadd(wsum_g, w_g);
+        wsum_b = __hadd(wsum_b, w_b);
+    }
+
+    // Final division in float for output precision
+    int out_idx = (y * width + x) * 3;
+    float rr = __half2float(sum_r) / __half2float(wsum_r);
+    float rg = __half2float(sum_g) / __half2float(wsum_g);
+    float rb = __half2float(sum_b) / __half2float(wsum_b);
+    output[out_idx]     = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, rr)));
+    output[out_idx + 1] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, rg)));
+    output[out_idx + 2] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, rb)));
+}
+
+// ============================================================================
+// Opt M: Fused H+V separable kernel — single kernel, zero intermediate buffer.
+// Phase 1: load raw pixels with 2D halo → smem_raw, do horizontal filtering
+//          for ALL rows (BLOCK_Y + 2*RADIUS) → smem_h.
+// Phase 2: __syncthreads(), do vertical filtering from smem_h → global output.
+// Saves: 1 kernel launch + entire intermediate buffer read/write.
+// ============================================================================
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_fused_gray(const uint8_t* __restrict__ input,
+                       uint8_t* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;       // raw data columns
+    constexpr int FUSED_H = BLOCK_Y + 2 * RADIUS;      // rows to horizontal-filter
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);
+    constexpr int RAW_SIZE = FUSED_H * TILE_W;          // total raw pixels to load
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    // smem_raw: original pixel data with 2D halo for horizontal filtering
+    __shared__ float smem_raw[FUSED_H][TILE_W_PAD];
+    // smem_h: horizontal filtering results (only center BLOCK_X columns, all FUSED_H rows)
+    __shared__ float smem_h[FUSED_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int thread_id = ty * BLOCK_X + tx;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // ---- Phase 0: Collaborative load of raw data with 2D halo ----
+    for (int i = thread_id; i < RAW_SIZE; i += THREADS_PER_BLOCK) {
+        int sy = i / TILE_W;
+        int sx = i % TILE_W;
+        int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
+        int gy = blockIdx.y * BLOCK_Y + sy - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        smem_raw[sy][sx] = static_cast<float>(input[gy * width + gx]);
+    }
+
+    __syncthreads();
+
+    // ---- Phase 1: Horizontal filtering for ALL FUSED_H rows ----
+    // Each thread handles multiple rows to cover all FUSED_H rows
+    for (int row = thread_id; row < FUSED_H * BLOCK_X; row += THREADS_PER_BLOCK) {
+        int hy = row / BLOCK_X;  // which of the FUSED_H rows
+        int hx = row % BLOCK_X;  // which column (0..BLOCK_X-1)
+
+        int lx = hx + RADIUS;   // center position in smem_raw
+        float center = smem_raw[hy][lx];
+        float sum = 0.0f;
+        float wsum = 0.0f;
+
+#pragma unroll
+        for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+            float neighbor = smem_raw[hy][lx + dx];
+            float sw = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+            int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+            diff = min(diff, COLOR_LUT_SIZE - 1);
+            float cw = d_color_lut[diff];
+            float w = sw * cw;
+            sum = fmaf(neighbor, w, sum);
+            wsum += w;
+        }
+        smem_h[hy][hx] = sum / wsum;
+    }
+
+    __syncthreads();
+
+    // ---- Phase 2: Vertical filtering from smem_h → global output ----
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;  // center row in smem_h
+    float center = smem_h[ly][tx];
+
+    float sum = 0.0f;
+    float wsum = 0.0f;
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        float neighbor = smem_h[ly + dy][tx];
+        float sw = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+        int diff = static_cast<int>(fabsf(neighbor - center) + 0.5f);
+        diff = min(diff, COLOR_LUT_SIZE - 1);
+        float cw = d_color_lut[diff];
+        float w = sw * cw;
+        sum = fmaf(neighbor, w, sum);
+        wsum += w;
+    }
+
+    output[y * width + x] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, sum / wsum)));
+}
+
+template <int RADIUS>
+__global__ void __launch_bounds__(THREADS_PER_BLOCK, MIN_BLOCKS_PER_SM_SEP)
+k_bilateral_fused_rgb(const uint8_t* __restrict__ input,
+                      uint8_t* __restrict__ output, int width, int height) {
+
+    constexpr int TILE_W = BLOCK_X + 2 * RADIUS;
+    constexpr int FUSED_H = BLOCK_Y + 2 * RADIUS;
+    constexpr int TILE_W_PAD = SMEM_PAD(TILE_W);
+    constexpr int RAW_SIZE = FUSED_H * TILE_W;
+    constexpr int LUT_WIDTH = 2 * RADIUS + 1;
+
+    __shared__ float smem_raw_r[FUSED_H][TILE_W_PAD];
+    __shared__ float smem_raw_g[FUSED_H][TILE_W_PAD];
+    __shared__ float smem_raw_b[FUSED_H][TILE_W_PAD];
+    __shared__ float smem_h_r[FUSED_H][BLOCK_X];
+    __shared__ float smem_h_g[FUSED_H][BLOCK_X];
+    __shared__ float smem_h_b[FUSED_H][BLOCK_X];
+
+    const int tx = threadIdx.x;
+    const int ty = threadIdx.y;
+    const int thread_id = ty * BLOCK_X + tx;
+    const int x = blockIdx.x * BLOCK_X + tx;
+    const int y = blockIdx.y * BLOCK_Y + ty;
+
+    // ---- Phase 0: Collaborative load ----
+    for (int i = thread_id; i < RAW_SIZE; i += THREADS_PER_BLOCK) {
+        int sy = i / TILE_W;
+        int sx = i % TILE_W;
+        int gx = blockIdx.x * BLOCK_X + sx - RADIUS;
+        int gy = blockIdx.y * BLOCK_Y + sy - RADIUS;
+        gx = max(0, min(width - 1, gx));
+        gy = max(0, min(height - 1, gy));
+        int gidx = (gy * width + gx) * 3;
+        smem_raw_r[sy][sx] = static_cast<float>(input[gidx]);
+        smem_raw_g[sy][sx] = static_cast<float>(input[gidx + 1]);
+        smem_raw_b[sy][sx] = static_cast<float>(input[gidx + 2]);
+    }
+
+    __syncthreads();
+
+    // ---- Phase 1: Horizontal filtering for ALL FUSED_H rows ----
+    for (int row = thread_id; row < FUSED_H * BLOCK_X; row += THREADS_PER_BLOCK) {
+        int hy = row / BLOCK_X;
+        int hx = row % BLOCK_X;
+        int lx = hx + RADIUS;
+
+        float cr = smem_raw_r[hy][lx];
+        float cg = smem_raw_g[hy][lx];
+        float cb = smem_raw_b[hy][lx];
+
+        float sr = 0.0f, sg = 0.0f, sb = 0.0f;
+        float wr = 0.0f, wg = 0.0f, wb = 0.0f;
+
+#pragma unroll
+        for (int dx = -RADIUS; dx <= RADIUS; ++dx) {
+            float nr = smem_raw_r[hy][lx + dx];
+            float ng = smem_raw_g[hy][lx + dx];
+            float nb = smem_raw_b[hy][lx + dx];
+
+            float sw = d_spatial_lut[RADIUS * LUT_WIDTH + (dx + RADIUS)];
+
+            int diff_r = static_cast<int>(fabsf(nr - cr) + 0.5f);
+            int diff_g = static_cast<int>(fabsf(ng - cg) + 0.5f);
+            int diff_b = static_cast<int>(fabsf(nb - cb) + 0.5f);
+            diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+            diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+            diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+            float w_r = sw * d_color_lut[diff_r];
+            float w_g = sw * d_color_lut[diff_g];
+            float w_b = sw * d_color_lut[diff_b];
+
+            sr = fmaf(nr, w_r, sr);
+            sg = fmaf(ng, w_g, sg);
+            sb = fmaf(nb, w_b, sb);
+            wr += w_r;
+            wg += w_g;
+            wb += w_b;
+        }
+        smem_h_r[hy][hx] = sr / wr;
+        smem_h_g[hy][hx] = sg / wg;
+        smem_h_b[hy][hx] = sb / wb;
+    }
+
+    __syncthreads();
+
+    // ---- Phase 2: Vertical filtering from smem_h → global output ----
+    if (x >= width || y >= height)
+        return;
+
+    const int ly = ty + RADIUS;
+    float cr = smem_h_r[ly][tx];
+    float cg = smem_h_g[ly][tx];
+    float cb = smem_h_b[ly][tx];
+
+    float sr = 0.0f, sg = 0.0f, sb = 0.0f;
+    float wr = 0.0f, wg = 0.0f, wb = 0.0f;
+
+#pragma unroll
+    for (int dy = -RADIUS; dy <= RADIUS; ++dy) {
+        float nr = smem_h_r[ly + dy][tx];
+        float ng = smem_h_g[ly + dy][tx];
+        float nb = smem_h_b[ly + dy][tx];
+
+        float sw = d_spatial_lut[(dy + RADIUS) * LUT_WIDTH + RADIUS];
+
+        int diff_r = static_cast<int>(fabsf(nr - cr) + 0.5f);
+        int diff_g = static_cast<int>(fabsf(ng - cg) + 0.5f);
+        int diff_b = static_cast<int>(fabsf(nb - cb) + 0.5f);
+        diff_r = min(diff_r, COLOR_LUT_SIZE - 1);
+        diff_g = min(diff_g, COLOR_LUT_SIZE - 1);
+        diff_b = min(diff_b, COLOR_LUT_SIZE - 1);
+
+        float w_r = sw * d_color_lut[diff_r];
+        float w_g = sw * d_color_lut[diff_g];
+        float w_b = sw * d_color_lut[diff_b];
+
+        sr = fmaf(nr, w_r, sr);
+        sg = fmaf(ng, w_g, sg);
+        sb = fmaf(nb, w_b, sb);
+        wr += w_r;
+        wg += w_g;
+        wb += w_b;
+    }
+
+    int out_idx = (y * width + x) * 3;
+    output[out_idx]     = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, sr / wr)));
+    output[out_idx + 1] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, sg / wg)));
+    output[out_idx + 2] = static_cast<uint8_t>(fminf(255.0f, fmaxf(0.0f, sb / wb)));
 }
 
 // ============================================================================
@@ -730,7 +1258,8 @@ enum class FilterMode {
     TEMPLATE,       // Template-based (compile-time radius)
     SEPARABLE,      // Separable approximation (float intermediate)
     SEPARABLE_FP16, // Separable approximation (__half intermediate, half bandwidth)
-    ADAPTIVE        // Adaptive radius: per-pixel radius from local gradient
+    ADAPTIVE,       // Adaptive radius: per-pixel radius from local gradient
+    FUSED           // Opt M: Fused H+V single kernel, zero intermediate buffer
 };
 
 static FilterMode g_filter_mode = FilterMode::TEMPLATE;
@@ -745,7 +1274,7 @@ static FilterMode get_filter_mode() {
         const char* env = getenv("BILATERAL_MODE");
         if (env) {
             int mode = atoi(env);
-            if (mode >= 0 && mode <= 4) {
+            if (mode >= 0 && mode <= 5) {
                 g_filter_mode = static_cast<FilterMode>(mode);
             }
         }
@@ -800,8 +1329,64 @@ static void launch_u8_sep_rgb(const uint8_t* d_in, uint8_t* d_out, float* d_temp
     k_bilateral_vertical_rgb<RADIUS, float, uint8_t><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
 }
 
-// FP16 separable launchers removed to reduce fatbin size (20 kernel instantiations).
-// SEPARABLE_FP16 mode now falls through to float SEPARABLE at runtime.
+// Opt N: FP16 intermediate separable launchers — half-bandwidth intermediate buffer.
+// H kernel: uint8 → smem(float) → compute(float) → output(__half)
+// V kernel: input(__half) → smem(float) → compute(float) → output(uint8)
+// Compute stays FP32 for precision; only the H↔V transfer uses FP16.
+
+template <int RADIUS>
+static void launch_u8_sep_gray_fp16(const uint8_t* d_in, uint8_t* d_out, __half* d_temp,
+                                    int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_gray<RADIUS, uint8_t, __half><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_gray<RADIUS, __half, uint8_t><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+template <int RADIUS>
+static void launch_u8_sep_rgb_fp16(const uint8_t* d_in, uint8_t* d_out, __half* d_temp,
+                                   int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_rgb<RADIUS, uint8_t, __half><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_rgb<RADIUS, __half, uint8_t><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+// Opt N2: Full FP16 compute launchers — smem + arithmetic in __half
+template <int RADIUS>
+static void launch_u8_sep_gray_fp16_compute(const uint8_t* d_in, uint8_t* d_out, __half* d_temp,
+                                            int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_gray_fp16<RADIUS><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_gray_fp16<RADIUS><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+template <int RADIUS>
+static void launch_u8_sep_rgb_fp16_compute(const uint8_t* d_in, uint8_t* d_out, __half* d_temp,
+                                           int w, int h, cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_horizontal_rgb_fp16<RADIUS><<<grid, block, 0, s>>>(d_in, d_temp, w, h);
+    k_bilateral_vertical_rgb_fp16<RADIUS><<<grid, block, 0, s>>>(d_temp, d_out, w, h);
+}
+
+// Opt M: Fused H+V launchers — single kernel, no intermediate buffer
+template <int RADIUS>
+static void launch_u8_fused_gray(const uint8_t* d_in, uint8_t* d_out, int w, int h,
+                                 cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_fused_gray<RADIUS><<<grid, block, 0, s>>>(d_in, d_out, w, h);
+}
+
+template <int RADIUS>
+static void launch_u8_fused_rgb(const uint8_t* d_in, uint8_t* d_out, int w, int h,
+                                cudaStream_t s) {
+    dim3 block(BLOCK_X, BLOCK_Y);
+    dim3 grid((w + BLOCK_X - 1) / BLOCK_X, (h + BLOCK_Y - 1) / BLOCK_Y);
+    k_bilateral_fused_rgb<RADIUS><<<grid, block, 0, s>>>(d_in, d_out, w, h);
+}
 
 // ============================================================================
 // Opt1: persistent GPU buffers - allocated once, reused across calls
@@ -861,6 +1446,15 @@ static void ensure_temp_buffer(size_t n_bytes) {
     cudaFree(g_bufs.d_temp);
     CUDA_CHECK(cudaMalloc(&g_bufs.d_temp, n_bytes));
     g_bufs.n_temp = n_bytes;
+}
+
+// Opt N: FP16 intermediate buffer for SEPARABLE_FP16 mode
+static void ensure_temp_h16_buffer(size_t n_bytes) {
+    if (n_bytes == g_bufs.n_temp_h16)
+        return;
+    cudaFree(g_bufs.d_temp_h16);
+    CUDA_CHECK(cudaMalloc(&g_bufs.d_temp_h16, n_bytes));
+    g_bufs.n_temp_h16 = n_bytes;
 }
 
 // Adaptive mode: per-pixel radius map buffer
@@ -1159,7 +1753,17 @@ static void dispatch_u8_kernel(
     const dim3 grid((width + BLOCK_X - 1) / BLOCK_X, (height + BLOCK_Y - 1) / BLOCK_Y);
 
     if (channels == 1) {
-        if (mode == FilterMode::ADAPTIVE) {
+        if (mode == FilterMode::FUSED) {
+            // Opt M: Fused H+V in single kernel — no intermediate buffer
+            if (radius == 5) {
+                launch_u8_fused_gray<5>(d_in, d_out, width, height, stream);
+            } else {
+                // Fallback to 2-pass separable
+                size_t smem = (BLOCK_X + 2*radius) * (BLOCK_Y + 2*radius) * sizeof(float);
+                k_bilateral_filter_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem, stream>>>(d_in, d_out, width, height, radius);
+            }
+        } else if (mode == FilterMode::ADAPTIVE) {
             int r_max = radius;
             int r_min = max(2, radius - 1);
             float grad_threshold = fmaxf(sigma_color * 1.5f, 20.0f);
@@ -1172,7 +1776,18 @@ static void dispatch_u8_kernel(
             size_t smem_bytes = static_cast<size_t>(tile_w) * tile_h * sizeof(float);
             k_bilateral_adaptive_gray<uint8_t, uint8_t>
                 <<<grid, block, smem_bytes, stream>>>(d_in, d_out, d_rmap, width, height, r_max);
-        } else if (mode == FilterMode::SEPARABLE_FP16 || mode == FilterMode::SEPARABLE) {
+        } else if (mode == FilterMode::SEPARABLE_FP16) {
+            // Opt N: FP16 intermediate buffer — FP32 compute, __half H↔V transfer.
+            // Opt N2 (full FP16 compute) was tested but ~8% slower due to scalar __half
+            // having no throughput advantage over FP32 + float↔half conversion overhead.
+            if (radius == 5) {
+                launch_u8_sep_gray_fp16<5>(d_in, d_out, d_temp_h16, width, height, stream);
+            } else {
+                size_t smem = (BLOCK_X + 2*radius) * (BLOCK_Y + 2*radius) * sizeof(float);
+                k_bilateral_filter_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem, stream>>>(d_in, d_out, width, height, radius);
+            }
+        } else if (mode == FilterMode::SEPARABLE) {
             // Only radius=5 specialization; others fallback to runtime shared-memory
             if (radius == 5) {
                 launch_u8_sep_gray<5>(d_in, d_out, d_temp, width, height, stream);
@@ -1197,7 +1812,16 @@ static void dispatch_u8_kernel(
         }
     } else {
         // RGB
-        if (mode == FilterMode::ADAPTIVE) {
+        if (mode == FilterMode::FUSED) {
+            // Opt M: Fused H+V in single kernel — no intermediate buffer
+            if (radius == 5) {
+                launch_u8_fused_rgb<5>(d_in, d_out, width, height, stream);
+            } else {
+                size_t smem = 3 * (BLOCK_X + 2*radius) * (BLOCK_Y + 2*radius) * sizeof(float);
+                k_bilateral_filter_rgb_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem, stream>>>(d_in, d_out, width, height, radius);
+            }
+        } else if (mode == FilterMode::ADAPTIVE) {
             int r_max = radius;
             int r_min = max(2, radius - 1);
             float grad_threshold = fmaxf(sigma_color * 1.5f, 20.0f);
@@ -1210,7 +1834,16 @@ static void dispatch_u8_kernel(
             size_t smem_bytes = 3 * static_cast<size_t>(tile_w) * tile_h * sizeof(float);
             k_bilateral_adaptive_rgb<uint8_t, uint8_t>
                 <<<grid, block, smem_bytes, stream>>>(d_in, d_out, d_rmap, width, height, r_max);
-        } else if (mode == FilterMode::SEPARABLE_FP16 || mode == FilterMode::SEPARABLE) {
+        } else if (mode == FilterMode::SEPARABLE_FP16) {
+            // Opt N: FP16 intermediate buffer — FP32 compute, __half H↔V transfer.
+            if (radius == 5) {
+                launch_u8_sep_rgb_fp16<5>(d_in, d_out, d_temp_h16, width, height, stream);
+            } else {
+                size_t smem = 3 * (BLOCK_X + 2*radius) * (BLOCK_Y + 2*radius) * sizeof(float);
+                k_bilateral_filter_rgb_shared<uint8_t, uint8_t>
+                    <<<grid, block, smem, stream>>>(d_in, d_out, width, height, radius);
+            }
+        } else if (mode == FilterMode::SEPARABLE) {
             if (radius == 5) {
                 launch_u8_sep_rgb<5>(d_in, d_out, d_temp, width, height, stream);
             } else {
@@ -1391,8 +2024,10 @@ void apply_bilateral_filter_cuda(const uint8_t* h_input, uint8_t* h_output, int 
     CUDA_CHECK(cudaMemcpy(g_bufs.d_in_u8, h_input, n_u8, cudaMemcpyHostToDevice));
 
     // Pre-allocate intermediate buffers required by the selected mode
-    if (mode == FilterMode::SEPARABLE || mode == FilterMode::SEPARABLE_FP16) {
-        // FP16 intermediate was removed; both modes use float temp buffer
+    if (mode == FilterMode::SEPARABLE_FP16) {
+        // Opt N: FP16 intermediate buffer — half the bandwidth between H and V passes
+        ensure_temp_h16_buffer(static_cast<size_t>(width) * height * channels * sizeof(__half));
+    } else if (mode == FilterMode::SEPARABLE) {
         ensure_temp_buffer(static_cast<size_t>(width) * height * channels * sizeof(float));
     } else if (mode == FilterMode::ADAPTIVE) {
         ensure_radius_map_buffer(static_cast<size_t>(width) * height);

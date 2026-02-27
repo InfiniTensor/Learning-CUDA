@@ -219,7 +219,10 @@ $$
 | Opt7 | **`__restrict__` 指针修饰** | 告知编译器输入输出不 alias，允许更激进的优化（如缓存 load 结果） | 所有 kernel 参数 (L56, L125, L221, L271, L489 等) |
 | Opt8 | **持久化 GPU 缓冲区** | 全局静态缓冲区 `g_bufs`，仅在图像尺寸变化时重新分配，避免每帧 `cudaMalloc/cudaFree` | `g_bufs` 结构体 (L820-830)，`ensure_io_buffers` (L853-861)，`ensure_temp_buffer` (L863-869) |
 | Opt9 | **分离近似（Separable）** | 复杂度从 O(r²) 降至 O(r)；r=5 时从 121 次降到 22 次邻域访问 | 水平/垂直独立 kernel：`k_bilateral_horizontal_*` (L221, L326)，`k_bilateral_vertical_*` (L271, L405) |
-| Opt10 | **Block 尺寸 16×16** | 兼顾 occupancy 与 shared memory 用量；相比 32×8 提供更好的 2D 缓存局部性 | `BLOCK_X=16, BLOCK_Y=16` (L24-27) |
+| Opt10 | **Block 尺寸 32×8**（Opt G 后） | 消除 warp 跨行导致的 smem bank conflict；32 线程在同一行，stride=1，零冲突 | `BLOCK_X=32, BLOCK_Y=8` (L29-33) |
+| Opt11 | **SEPARABLE SoA 中间缓冲区**（Opt H） | 水平输出/垂直输入改为 R\|G\|B 平面格式，单通道 float 连续访问，合并效率从 ~33% 提升 | `k_bilateral_horizontal_rgb` 输出 SoA，`k_bilateral_vertical_rgb` 读取 SoA |
+| Opt12 | **显式 fmaf（Opt I）** | 尝试将 `sum += n*w` 改为 `fmaf(n,w,sum)`，实测编译器已自动融合 | 所有 SEPARABLE kernel 中 `fmaf` 调用 |
+| Opt13 | **SEPARABLE launch_bounds(256,6)（Opt K）** | 强制编译器将 regs 从 63 压到 40，occupancy 从 62%→97.5%，4K RGB -10.9% | `MIN_BLOCKS_PER_SM_SEP=6`，4 个 SEPARABLE kernel 的 `__launch_bounds__` |
 
 ### 未实现的优化
 
@@ -346,9 +349,11 @@ k_bilateral_filter_gray_template(...) { ... }
 
 ## 九、优化实验记录
 
-测试环境：4K 图像（3840×2160），radius=5, σ_s=3, σ_c=30，50 次取均值。
+> **注**：以下 Opt A~F 的实验数据来自 RTX 4060 (sm_89) 平台，为优化过程的历史记录。最终性能结果见第十章（Jetson AGX Thor 实测）。
 
-### 基线性能
+测试环境（优化实验阶段）：RTX 4060 (sm_89, WSL2), 4K 图像（3840×2160），radius=5, σ_s=3, σ_c=30，50 次取均值。
+
+### 基线性能（RTX 4060）
 
 | 模式 | 4K RGB (ms) | 4K Gray (ms) | MAE |
 |------|:-----------:|:------------:|:---:|
@@ -377,7 +382,7 @@ k_bilateral_filter_gray_template(...) { ... }
 | 4K Gray SEPARABLE | 2.07 ms | 5.02 ms |
 | MAE | 0.15 | 0.50 |
 
-**结论**：性能退步 2.4×，MAE 也变差。原因：
+**结论**：性能退步 2.4x，MAE 也变差。原因：
 
 1. halo 边界的 if/else 分支引入了 warp divergence
 2. radius=5 时只有 10/32 个 lane 需要 halo，分支比例高
@@ -386,7 +391,7 @@ k_bilateral_filter_gray_template(...) { ... }
 
 ### Opt C: SoA 数据布局（已回退）
 
-将 RGB separable 改为 AoS→SoA 转换 + 3×灰度 separable + SoA→AoS 转换。
+将 RGB separable 改为 AoS->SoA 转换 + 3x 灰度 separable + SoA->AoS 转换。
 
 | 指标 | 基线 | SoA 版 |
 |------|:----:|:------:|
@@ -395,46 +400,34 @@ k_bilateral_filter_gray_template(...) { ... }
 
 **结论**：性能退步 36%。原因：
 
-1. AoS↔SoA 转换引入 2 次额外全局内存遍历（读+写各一次），4K RGB 约 47MB
+1. AoS<->SoA 转换引入 2 次额外全局内存遍历（读+写各一次），4K RGB 约 47MB
 2. 8 个 kernel launch 替代原来 2 个，launch overhead 累积明显
 3. 每通道独立计算值域权重，丧失了 RGB kernel 中三通道共享权重的优势
 4. 原始 RGB separable kernel 通过 shared memory 已经将 AoS 的不合并访问局限在加载阶段，计算阶段完全在 smem 中进行，瓶颈不在全局内存访问模式
 
-### Opt B: `cudaFuncCachePreferL1` / `cudaFuncCachePreferShared`
+### Opt D: `cudaFuncCachePreferL1` / `cudaFuncCachePreferShared`
 
-On sm_89 the L1 cache and shared memory share a 128 KB SRAM pool. Tried two configs:
+在 sm_89 上 L1 cache 和 shared memory 共享 128 KB SRAM 池。测试了两种配置：
 
 **L1 preference** (`cudaFuncCachePreferL1`):
 
 | Mode | Before | After |
 |------|:------:|:-----:|
 | TEMPLATE 4K RGB min | 7.21 ms | 7.31 ms |
-| SEPARABLE 4K RGB min | **5.42 ms** | **7.36 ms** (+36% ❌) |
+| SEPARABLE 4K RGB min | **5.42 ms** | **7.36 ms** (+36%) |
 
-Explanation: L1 preference shrinks shared memory from 64 KB to 32 KB per SM. Separable horizontal kernel needs `3 × 16 × 26 × 4 = 4992 B` of smem; with fewer smem the hardware schedules fewer concurrent blocks per SM, lowering occupancy and memory-latency hiding.
+L1 偏好将 shared memory 从 64 KB 压缩到 32 KB/SM，导致 SEPARABLE 的 occupancy 下降，延迟隐藏能力降低。
 
-**Conclusion**: `cudaFuncCachePreferL1` is harmful for these kernels. Switched to `cudaFuncCachePreferShared` (which matches what the hardware already does by default for smem-heavy kernels). No measurable delta either way. **Keep `PreferShared` as defensive annotation.**
+**结论**：`cudaFuncCachePreferL1` 对本项目有害。改为 `PreferShared` 作为防御性注解。
 
 ---
 
-### Opt C/F: Circular Window (Spatial LUT Corner Zeroing + Early Continue)
+### Opt E: Circular Window (Spatial LUT Corner Zeroing + Early Continue)
 
-Zero out LUT entries where `dx² + dy² > radius²` in `init_spatial_lut`.  
-For r=5: 121 positions → 81 inside circle, **40 corners zeroed (33%)**。
+在 `init_spatial_lut` 中将 `dx^2 + dy^2 > radius^2` 的 LUT 项置零。
+对于 r=5：121 个位置 -> 81 个在圆内，**40 个角落置零（33%）**。
 
 #### Phase 1: LUT 预置零（无 kernel 分支）
-
-仅在 LUT 中将圆外位置权重设为 0，kernel 内循环不做任何判断。效果：
-
-**Performance impact** (4K RGB, 50 runs):
-
-| Mode | Time before | Time after | Delta |
-|------|:-----------:|:----------:|:-----:|
-| STANDARD | 9.33 ms min | 9.26 ms min | ~0% |
-| TEMPLATE | 7.21 ms min | 7.22 ms min | ~0% |
-| SEPARABLE | 5.42 ms min | 5.39 ms min | ~0% |
-
-**Quality impact** (MAE / PSNR vs OpenCV):
 
 | Mode | Old MAE | New MAE | Old PSNR | New PSNR |
 |------|:-------:|:-------:|:--------:|:--------:|
@@ -442,497 +435,821 @@ For r=5: 121 positions → 81 inside circle, **40 corners zeroed (33%)**。
 | TEMPLATE RGB | 0.800 | **0.603** | 45.90 dB | **48.28 dB** |
 | SEPARABLE RGB | 0.448 | **0.448** | 48.49 dB | 48.49 dB |
 | ADAPTIVE RGB | 0.437 | **0.404** | 48.55 dB | **49.42 dB** |
-| STANDARD Gray | 0.622 | **0.612** | 50.18 dB | **50.23 dB** |
 
-Phase 1 结论：零性能成本，但精度显著改善（TEMPLATE RGB MAE 0.80→0.60，PSNR +2.4 dB）。
+Phase 1 结论：零性能成本，但精度显著改善（TEMPLATE RGB MAE 0.80->0.60，PSNR +2.4 dB）。
 
 #### Phase 2: Early Continue（跳过圆外像素）
 
-在 kernel 内循环中添加 `if (spatial_weight == 0.0f) continue;`，实际跳过圆外 33% 的迭代体。
-
-**Performance impact** (4K, 50 runs, Phase 1 → Phase 2):
+在 kernel 内循环中添加 `if (spatial_weight == 0.0f) continue;`，跳过圆外 33% 的迭代体。
 
 | Mode | Before (ms) | After (ms) | 提升 | 说明 |
 |------|:-----------:|:----------:|:----:|------|
-| **TEMPLATE RGB** | 7.36 | **6.53** | **+13%** | 编译期常量 RADIUS → 编译器消除圆外迭代 |
+| **TEMPLATE RGB** | 7.36 | **6.53** | **+13%** | 编译期常量 RADIUS -> 编译器 DCE 消除圆外迭代 |
 | **TEMPLATE Gray** | 4.97 | **3.01** | **+65%** | 同上，Gray 内循环体更轻故比例更大 |
-| STANDARD RGB | 9.44 | 8.61 | +10% | 运行时分支，warp 内一致（同一偏移）→ 仍有收益 |
-| STANDARD Gray | 3.79 | 3.59 | +6% | 同上 |
-| ADAPTIVE RGB | 6.99 | 7.48 | **-7%** | 有害，已回退（见下） |
+| STANDARD RGB | 9.44 | 8.61 | +10% | 运行时分支，warp 内一致（无 divergence） |
+| ADAPTIVE RGB | 6.99 | 7.48 | **-7%** | 有害，已回退 |
 
-**MAE/PSNR**: 与 Phase 1 完全一致（跳过的像素权重本来就是 0）。
+**机制分析**：TEMPLATE kernel 的巨大收益源于编译器 dead code elimination——RADIUS 是编译期常量，`#pragma unroll` 完全展开 121 次迭代后，编译器在编译期确定哪 40 个位置的 `spatial_weight` 恒为 0，直接删除这些迭代体的全部指令。ADAPTIVE 加 continue 反而变慢，因为可变 `my_radius` 下循环范围已受限，额外分支只增加开销。
 
-#### 机制分析
+### Opt F: Multi-Stream Strip Pipelining（WSL2 无收益）
 
-**TEMPLATE kernel 巨大收益的原因**：RADIUS 是编译期常量，`#pragma unroll` 完全展开 121 次迭代。展开后每个 `(dx,dy)` 对应固定的 LUT 地址。编译器（nvcc -O3）在编译期即可确定哪 40 个位置的 `spatial_weight` 恒为 0，通过 **dead code elimination** 直接删除这些迭代体的全部指令——不是运行时分支跳过，而是编译期消除。
-
-Gray kernel 提升（+65%）大于 RGB（+13%）是因为：Gray 内循环体较轻（1 次 smem 读 + 1 次 color LUT 查），减少 33% 迭代的相对占比更大。RGB 内循环体更重（3 次 smem 读 + 色差计算 + 乘加），循环控制开销占比较小。
-
-**STANDARD kernel 中等收益的原因**：runtime radius 无法完全展开，`continue` 是真正的运行时分支。但 warp 内所有线程对同一个 `(dx,dy)` 执行相同判断——**无 warp divergence**（因为 skip/不 skip 取决于偏移量而非像素值），所以分支代价很低。
-
-**ADAPTIVE kernel 有害的原因**：ADAPTIVE 的 `my_radius` 每个像素不同，对于 `my_radius < r_max` 的像素，循环范围已在 `[-my_radius, my_radius]` 内，**圆外像素本来就不会被访问到**。额外的 `continue` 分支只增加了 constant memory 读取和比较指令的开销，且 ADAPTIVE 已有严重 warp 分歧（不同线程循环次数不同），再加分支只会加剧。
-
-#### 最终决策
-
-| Kernel | Early Continue | 理由 |
-|--------|:--------------:|------|
-| TEMPLATE (gray/RGB) | ✅ 启用 | 编译期消除，+13%~+65% |
-| STANDARD (gray/RGB) | ✅ 启用 | 运行时分支无 divergence，+6%~+10% |
-| ADAPTIVE (gray/RGB) | ❌ 不启用 | 有害（-7%），循环范围已由 my_radius 限制 |
-| SEPARABLE | — 不适用 | 1D pass 无圆形窗口概念 |
-
----
-
-### Opt E: Multi-Stream Strip Pipelining
-
-Activated via `BILATERAL_STRIP=N` (default off). Splits image into N horizontal strips on independent CUDA streams to overlap H2D / kernel / D2H.
-
-**Performance results** (4K RGB, N=2/4/8 strips):
+通过 `BILATERAL_STRIP=N` 将图像切分为 N 条水平 strip 到独立 CUDA stream。
 
 | Mode | Single-shot | 2 strips | 4 strips | 8 strips |
 |------|:-----------:|:--------:|:--------:|:--------:|
 | TEMPLATE min | 7.16 ms | ~7.4 ms | 7.47 ms | 7.79 ms |
 | SEPARABLE min | 5.39 ms | 5.51 ms | 5.68 ms | 5.84 ms |
 
-**Correctness**: MAE identical across all strip counts ✓ (halo overlap implemented correctly).
+**结论**：WSL2 虚拟化层序列化了 PCIe DMA 和 compute，无法实现真正的 copy+compute overlap。代码保留但默认关闭。
 
-**Root cause of no speedup**:
+### Opt G: FP16 中间缓冲区（SEPARABLE_FP16）
 
-1. **WSL2 copy+compute overlap limitation**: WSL2 runs GPU commands through a virtualized layer that serializes PCIe DMA and compute, preventing the key hardware overlap that strip pipelining requires.
-2. **Per-strip overhead**: Each strip adds `cudaMemcpyAsync` setup, stream synchronization, and halo row duplication (~2% data overhead for r=5/540 rows).
-3. **Memory-bound kernels** (SEPARABLE): GPU bandwidth is already saturated; splitting into strips adds overhead without reducing total work.
-4. **Compute-bound kernels** (TEMPLATE): strips don't reduce computation; only communication overlap would help.
+新增 `BILATERAL_MODE=3`，SEPARABLE 水平/垂直 pass 之间的中间缓冲区从 float 改为 `__half`，带宽减半。
 
-**Conclusion**: **❌ 无收益（WSL2 环境）**。代码保留（`BILATERAL_STRIP` 默认关闭），在裸机 Linux + 多 PCIe DMA engine 环境下理论上可获 2-3× 端到端加速。
+| 测试场景 | SEPARABLE float min | SEPARABLE_FP16 min | 提升 |
+|----------|:-------------------:|:------------------:|:----:|
+| 4K RGB (RTX 4060) | 5.42 ms | 5.28 ms | **+2.7%** |
+| 4K Gray (RTX 4060) | 1.99 ms | 1.91 ms | **+4.2%** |
 
----
+提升幅度有限的原因：PCIe 传输（H2D+D2H ~3.9ms）主导端到端时间，FP16 仅优化 GPU 内部带宽。
 
-### 总结（含新实验）
+### Opt H: Block Size 32x8 — 消除 Shared Memory Bank Conflict（Thor 上验证）
+
+**ncu 发现**：TEMPLATE kernel 在 16x16 block 下 shared memory load 存在 **2-way bank conflict**（50% excessive wavefronts），`short_scoreboard` stall 比率 3.92。
+
+**根因分析**：16x16 block 中一个 warp（32 线程）跨两行（ty=0..1），stride=TILE_W_PAD=27。相邻行的 bank 偏移 = 27 mod 32 = 27，等价于 -5，导致前半 warp 和后半 warp 有 11/16 的 bank 重叠，产生 2-way conflict。
+
+初始尝试 padding（TILE_W 从 26 改为 27）无效——50% conflict 不变。
+
+**最终方案**：将 block 从 16x16 改为 **32x8**。每个 warp 的 32 个线程全部在同一行（tx=0..31），访问连续 32 个 float，stride=1，**零 bank conflict**。
+
+**ncu 验证结果**：
+
+| 指标 | 16x16 (优化前) | 32x8 (优化后) | 变化 |
+|------|:-----------:|:----------:|:----:|
+| Shared excessive wavefronts | 16,260,480 (50%) | **388,800 (2.3%)** | **-97.6%** |
+| SM Throughput | 87.49% | **88.36%** | +0.87pp |
+| Registers/thread | 23 → 28 | 28 | +5 (padding 的副作用) |
+
+> 32x8 block 使 shared memory load 的 bank conflict 从 50% 降至 2.3%（剩余来自协作加载的 store 阶段）。throughput 提升幅度较小（+0.87pp），因为 TEMPLATE kernel 已处于高度优化状态（SM 88%），bank conflict 虽然减少但不再是唯一瓶颈。
+
+**性能**：4K RGB benchmark min 持平（5.46ms → 5.46ms），Jellyfish 效应——bank conflict 减少被寄存器增加（23→28）部分抵消。
+
+### Opt I: SEPARABLE 中间缓冲区 SoA 布局 — 改善 Global Memory Coalescing
+
+**ncu 发现**：SEPARABLE vertical kernel 的全局内存合并效率仅 33%，68% 的 sector 传输是冗余的。原因是中间缓冲区为 AoS (RGB 交错) float 格式。
+
+**方案**：水平 kernel 输出改为 SoA 布局（R 平面 | G 平面 | B 平面），垂直 kernel 从 SoA 读取。垂直 kernel 读取单通道时每个 warp 访问连续 float 地址，完全合并。
+
+**ncu 验证结果**：
+
+| 指标 | AoS (优化前) | SoA (优化后) | 变化 |
+|------|:-----------:|:----------:|:----:|
+| H: global uncoalesced | 69% | **47%** | **-22pp** |
+| V: global uncoalesced | 68% | **29%** | **-39pp** |
+
+> 垂直 kernel 的全局内存冗余从 68% 降至 29%（中间缓冲区读取完全合并），水平 kernel 也有 22pp 改善（输出写入变为合并）。输入/输出仍为 u8 RGB AoS（无法改变外部格式），是剩余 uncoalesced 的来源。
+
+**性能**：4K RGB SEPARABLE min 持平（3.39ms），1080p min=0.81ms，gray min=0.36ms。
+
+### Opt J: FMA 融合（fmaf）— 编译器已自动优化
+
+**ncu 发现**：37% 非融合 FP32 指令，预估 +9.5% 收益。
+
+**方案**：将 `sum += neighbor * w` 改为 `sum = fmaf(neighbor, w, sum)` 显式 FMA。
+
+**结果**：ncu 显示 fused/non-fused 比率**未变化**（~0.36）。nvcc `-O3` 已自动将所有可融合的 MUL+ADD 对生成 FFMA 指令。剩余的 "non-fused" 是独立的 FADD（如 `weight_sum += w`）和 FMUL（如 `spatial_weight * color_weight`），没有配对的加法/乘法可融合。
+
+> **教训**：nvcc `-O3` 的 FMA 融合已接近最优。`fmaf` 显式声明不会超越编译器自动优化，仅作为代码可读性标注保留。
+
+### Opt K: SEPARABLE 激进 Launch Bounds — 降低寄存器提升 Occupancy
+
+**ncu 发现**：SEPARABLE RGB kernels 使用 61-63 regs/thread，occupancy 仅 62-63%（受 regs 限制为 4 blocks/SM）。ncu 预估提升 occupancy 可获 10-20% 收益。
+
+**方案**：为 SEPARABLE kernels 单独设置 `__launch_bounds__(256, 6)`（`MIN_BLOCKS_PER_SM_SEP=6`），强制编译器将寄存器压到 ≤42（65536 / 256 / 6 = 42.67）。
+
+**ptxas 结果**：
+
+| Kernel | 优化前 Regs | 优化后 Regs | Spill | Occupancy (理论) |
+|--------|:-----------:|:-----------:|:-----:|:----------------:|
+| `horizontal_rgb<5>` | 63 | **40** | **0** | **100%** |
+| `vertical_rgb<5>` | 62 | **40** | **0** | **100%** |
+| `horizontal_gray<5>` | 33 | 33 | 0 | 不变 |
+| `vertical_gray<5>` | 33 | 33 | 0 | 不变 |
+
+**ncu 验证**：
+
+| 指标 | 优化前 | 优化后 | 变化 |
+|------|:------:|:------:|:----:|
+| Achieved Occupancy (H) | 62.1% | **97.7%** | **+35.6pp** |
+| Achieved Occupancy (V) | 63.1% | **97.5%** | **+34.4pp** |
+| SM Throughput (H) | 64.5% | **79.4%** | **+14.9pp** |
+| SM Throughput (V) | 65.0% | **73.2%** | **+8.2pp** |
+| Not-selected stall (H) | — | 34% (4.8 cycles) | 高 occupancy 带来 warp 调度竞争 |
+
+**性能**：
+
+| 测试 | 优化前 min | 优化后 min | 变化 |
+|------|:--------:|:--------:|:----:|
+| 4K RGB | 3.39 ms | **3.02 ms** | **-10.9%** |
+| 1080p RGB | 0.81 ms | **0.77 ms** | **-4.9%** |
+| 4K Gray | 1.40 ms | 1.40 ms | ~持平（Gray 已是 33 regs） |
+
+> **关键洞察**：这是单一改动（一个宏常量）带来最大端到端收益的优化。sm_110 编译器有足够能力在不 spill 的前提下将 63 regs 压缩到 40——这证明之前的寄存器分配过于保守。`__launch_bounds__` 的 `minBlocksPerSM` 参数是影响 CUDA 编译器寄存器分配策略的最有效杠杆。
+
+### Opt L: u8 RGB 向量化加载 — ncu 分析后取消实施
+
+**ncu 发现**：水平 RGB kernel 的 global load sectors/request = 2.98（理论最优 4.0），利用率 75%，符合 RGB 3B/像素的理论极限（3/4 = 75%）。
+
+**分析**：RGB u8 格式每像素 3 字节，不是 4/8/16 字节对齐。相邻线程地址间距 3B，导致 128B sector 利用率天然为 ~75%。除非将输入格式改为 RGBX（4B 对齐），否则无法提升。而改变格式需要修改外部接口，代价过高。
+
+**结论**：sectors/request = 2.98 已是 RGB u8 AoS 格式的理论极限，**不值得实施**。同时 SM throughput 已达 75-81%，优化 load 效率对端到端影响有限。
+
+### Opt M: Fused H+V 单 Kernel — 实验失败
+
+**动机**：消除 SEPARABLE 两趟之间的中间 float buffer 读写（4K RGB: 2 × 8.3M × 3ch × 4B = 192 MB 全局带宽），同时减少 1 次 kernel launch。
+
+**方案**：单 kernel 内三阶段——Phase 0: 加载 2D halo (FUSED_H × TILE_W) → Phase 1: 对所有 FUSED_H 行做水平滤波 → Phase 2: 从水平结果做垂直滤波输出。
+
+**smem 用量**（RGB, R=5, 32x8 block）：
+- smem_raw: 3 × 18 × 43 × 4B = 9.3 KB（原始数据 + 2D halo）
+- smem_h: 3 × 18 × 32 × 4B = 6.9 KB（水平滤波结果）
+- 总计：~16.2 KB/block
+
+**实测结果**：
+
+| 测试 | SEPARABLE (ms) | FUSED (ms) | 变化 |
+|------|:------------:|:--------:|:----:|
+| 4K RGB | 3.02 | **3.96** | **-31%** |
+| 4K Gray | 1.40 | **1.60** | **-14%** |
+| 1080p RGB | 0.77 | **1.03** | **-34%** |
+
+**性能倒退原因**：
+1. **Phase 1 计算膨胀**：每 block 需处理 `FUSED_H × BLOCK_X = 18 × 32 = 576` 个水平滤波点，256 线程每个做 2-3 次水平循环（11 次迭代/次），计算量远超 SEPARABLE 的 1 次/线程
+2. **smem 容量翻倍**：6 个 smem 数组（vs SEPARABLE 每 kernel 3 个），可能触发 register spill 或降低可同时执行的 block 数
+3. **多一次 barrier**：3 阶段需 2 次 `__syncthreads()`（vs SEPARABLE 每 kernel 1 次）
+4. **关键**：Thor 统一内存的全局带宽 ~120 GB/s，中间 buffer 读写仅占总时间 ~10-15%。节省的带宽远不足以补偿增加的计算开销
+
+> **教训**：Fused kernel 仅在中间缓冲区成本占比很高（如 PCIe 独显环境下 > 30%）时才有价值。Thor 的统一内存使中间 buffer 开销很小，不值得为此增加 block 内计算复杂度。
+
+### Opt N: FP16 中间缓冲区（Thor 平台验证） — 小幅有效
+
+**方案**：SEPARABLE 两趟之间的中间缓冲区从 `float`（4B）改为 `__half`（2B），带宽减半。利用现有模板参数 `TmpT` 直接实例化 `<5, uint8_t, __half>` 和 `<5, __half, uint8_t>`，计算仍在 FP32 进行，精度无损。
+
+**ncu 验证**（1080p RGB, vs FP32 intermediate）：
+
+| 指标 | FP32 Intermediate | FP16 Intermediate | 变化 |
+|------|:-----------------:|:-----------------:|:----:|
+| V kernel LD sectors/req | 4.00 | **2.00** | **-50%** |
+| H kernel ST sectors/req | 4.00 | **2.00** | **-50%** |
+| V kernel L1 LD hit rate | ~4% | ~4% | 不变（列访问局部性差） |
+| FP16 pipe utilization | 0% | **~2%** | 仅 half↔float 转换 |
+
+**实测结果**：
+
+| 测试 | SEPARABLE (ms) | SEP_FP16 (ms) | 变化 |
+|------|:--------------:|:-------------:|:----:|
+| 4K RGB | 3.02 | **2.97** | **-1.7%** |
+| 4K Gray | 1.40 | **1.30** | **-7.1%** |
+| 1080p RGB | 0.77 | **0.77** | ~持平 |
+| 1080p Gray | 0.40 | **0.36** | **-10%** |
+
+> **分析**：FP16 中间缓冲区在 Gray 模式下收益更大（-7%~-10%），因为 Gray 的中间 buffer 占比更高。RGB 收益有限（-1.7%），因为中间 buffer 已改为 SoA 布局（Opt H），合并效率已经很好。FP16 进一步减半了每次全局事务的字节数，但 V kernel 的 L1 命中率仍为 ~4%（列方向局部性天然差），限制了收益。
+
+### Opt N2: FP16 全量计算 — 实验失败
+
+**动机**：Thor (Blackwell) 的 FP16 吞吐量理论上是 FP32 的 2 倍。将 smem 和内循环累加全部改为 `__half`，期望利用 2x FP16 吞吐。
+
+**方案**：新增专用 FP16 compute kernel（`k_bilateral_horizontal_rgb_fp16` 等），smem 用 `__half`（减半带宽），`__hfma` / `__hadd` / `__hdiv` 全用 FP16 指令，LUT 查找后 `__float2half()` 转换。
+
+**实测结果**：
+
+| 测试 | SEP_FP16 Intermediate (ms) | FP16 Full Compute (ms) | 变化 |
+|------|:--------------------------:|:----------------------:|:----:|
+| 4K RGB | 2.97 | **3.22** | **-8.4%（倒退）** |
+
+**精度**：MAE 0.68（vs FP32 的 0.45），PSNR 47.36 dB（vs 48.49），仍通过 < 1.0 / > 40 dB 阈值。
+
+**性能倒退原因**：
+1. **FP16 标量无吞吐优势**：sm_110 的 2x FP16 优势仅在 `__half2` 打包操作（如 `__hfma2`）上。单个 `__hfma` 与 FP32 `fmaf` 吞吐相同（均 1 cycle）
+2. **float↔half 转换开销**：每次循环迭代需 6+ 次 `__float2half()` / `__half2float()`（LUT 返回 float，颜色差计算需 float 精度），转换指令抵消了 smem 带宽节省
+3. **`__hdiv` 慢**：FP16 除法无硬件指令，编译器用 reciprocal+multiply 模拟
+
+> **教训**：FP16 优化仅在以下条件同时满足时有效：(a) 使用 `__half2` 打包操作获得 2x 吞吐，(b) 数据源和目标都是 FP16（避免转换），(c) 无 FP32 LUT 依赖。当前 bilateral filter 的 constant memory LUT 是 float 类型，使条件 (b)(c) 无法满足。
+
+### 优化实验总结
 
 | 优化 | 状态 | 实际效果 | 教训 |
 |------|:----:|---------|------|
-| `__launch_bounds__` | ✅ 保留 | ~持平 | 寄存器压力低时收益有限，但无副作用 |
-| Warp Shuffle | ❌ 回退 | -2.4× | 需要 halo 的滤波场景不适合 shuffle |
-| SoA 布局 | ❌ 回退 | -36% | 格式转换开销 > 合并访问收益 |
-| `cudaFuncCachePreferL1` | ❌ 回退（改为 PreferShared） | SEPARABLE -36% | L1 偏好压缩 smem 容量，降低 occupancy |
-| 圆形窗口 LUT 预置零 | ✅ 保留 | MAE -0.15~0.20，PSNR +2.4 dB | 零性能成本的精度优化 |
-| 圆形窗口 early-continue | ✅ TEMPLATE/STANDARD 启用 | **+13%~+65%**（TEMPLATE Gray 最大） | 编译期常量 RADIUS 使编译器能彻底消除圆外迭代 |
-| 圆形窗口 early-continue (ADAPTIVE) | ❌ 回退 | -7% | 可变 radius 下分支有害，且循环范围已由 my_radius 限制 |
-| Strip Pipeline | ❌ 无收益（代码保留） | 0~+8% 开销 | WSL2 阻止 copy+compute 真正并行 |
+| `__launch_bounds__` | 保留 | ~持平 | 寄存器压力低时收益有限，但无副作用 |
+| Warp Shuffle | 回退 | -2.4x | 需要 halo 的滤波场景不适合 shuffle |
+| SoA 布局 (host 端) | 回退 | -36% | 格式转换开销 > 合并访问收益 |
+| `cudaFuncCachePreferL1` | 回退 | -36% | L1 偏好压缩 smem 容量，降低 occupancy |
+| 圆形窗口 LUT 预置零 | 保留 | MAE 改善 0.15~0.20 | 零性能成本的精度优化 |
+| 圆形窗口 early-continue | TEMPLATE/STANDARD 启用 | **+13%~+65%** | 编译期常量使编译器彻底消除圆外迭代 |
+| Strip Pipeline | 无收益（代码保留） | 0~-8% | WSL2 阻止 copy+compute 并行 |
+| FP16 中间缓冲 (RTX 4060) | 保留 | +2.7%~+4.2% | PCIe 传输主导时收益有限 |
+| **Block 32x8** | **保留** | **smem conflict -97.6%** | warp 跨行是 bank conflict 根因，32x8 确保 warp 全在一行 |
+| **SEPARABLE SoA 中间缓冲** | **保留** | **uncoalesced -22~39pp** | 中间缓冲区 SoA 布局让垂直 pass 完全合并 |
+| **fmaf 显式 FMA** | 保留（无效果） | 0% | nvcc -O3 已自动最优融合 |
+| **SEPARABLE launch_bounds(256,6)** | **保留** | **4K RGB -10.9%, SM +14pp** | regs 63→40, occupancy 62%→97.5%, 零 spill |
+| **FP16 中间缓冲 (Thor)** | **保留 (MODE=3)** | **Gray -7~10%, RGB -1.7%** | 中间 buffer 带宽减半，Gray 收益显著 |
+| u8 RGB 向量化 | 取消实施 | sectors/req=2.98≈极限 | RGB 3B/像素是 AoS 格式天然限制 |
+| Fused H+V Kernel | 实验失败 | **-31~34%** | 统一内存下中间 buffer 成本低，不值得增加 block 计算复杂度 |
+| FP16 全量计算 | 实验失败 | **-8.4%** | 标量 __half 无 2x 优势，float↔half 转换开销高 |
 
-> **启示**：当前实现已是 **Shared Memory + Constant LUT + Template Unroll + Separable** 的高度优化组合，进一步提升需要从算法层面入手（如双边网格），或针对特定硬件特性（如 FP16、L2 持久化）做精细调优。在尝试优化前，应先用 `ncu` profiler 确认实际瓶颈（compute-bound vs memory-bound），避免盲目优化。
+> **启示**：ncu 数据驱动的精细调优成效显著。Opt K（激进 launch_bounds）是最成功的单一优化：仅改一个常量（`MIN_BLOCKS_PER_SM_SEP=6`）即让编译器将寄存器从 63 降到 40，occupancy 从 62% 跃升到 97.5%，4K RGB 实测提速 10.9%。关键是**零 spill**——sm_110 编译器有足够能力在不溢出的前提下压缩寄存器。Opt N（FP16 中间缓冲区）是本轮唯一成功的新优化，在 Gray 模式下取得了显著收益。三个"失败"实验（Opt L/M/N2）同样有价值——它们通过实测验证了优化边界，避免了在无效方向上的继续投入。
 
 ---
 
-## 十、Profiler 分析
+## 十、Jetson AGX Thor 平台实测
 
-**测试环境**：NVIDIA GeForce RTX 4060 (sm_89, Ada Lovelace), 8GB GDDR6
-**测试数据**：4K RGB (3840×2160×3), radius=5, σ_s=3, σ_c=30, 55 次运行
+### 10.1 测试环境
 
-> 注：`ncu` 因 `perf_event_paranoid=2` 无法采集 GPU 硬件计数器（需 root 权限设 `perf_event_paranoid≤1`），故使用 `nsys` 采集时间线 + `nvcc --ptxas-options=-v` 采集编译期指标。
+| 项目 | 值 |
+|------|---:|
+| **平台** | NVIDIA Jetson AGX Thor Developer Kit |
+| **GPU** | NVIDIA Thor (Blackwell, sm_110 / compute_11.0) |
+| **SM 数量** | 20 |
+| **统一内存** | 128 GB LPDDR5x（CPU/GPU 共享） |
+| **L2 Cache** | 32 MB |
+| **Shared Memory/SM** | 228 KB |
+| **寄存器/SM** | 65536 |
+| **最大线程/SM** | 1536 |
+| **CUDA** | 13.0 |
+| **Driver** | 580.00 |
+| **JetPack** | R38.2.1 |
+| **OpenCV** | 4.x（CPU only，无 CUDA 模块） |
 
-### 10.1 nsys 时间线分析
+**关键架构特性**：Jetson AGX Thor 采用**统一内存架构（Unified Memory）**，CPU 和 GPU 共享物理内存，无 PCIe 总线。`cudaMemcpy` 本质上是内存拷贝而非 DMA 传输，开销远小于独显平台。这从根本上改变了性能瓶颈分布。
 
-#### TEMPLATE 模式 (MODE=1)
+### 10.2 滤波参数
+
+```
+radius = 5
+sigma_spatial = 3.0
+sigma_color = 30.0
+```
+
+Benchmark 方法：5 次 warmup + 50 次计时，报告 mean +/- stddev。由于 Jetson 平台存在 DVFS（动态频率调节），数据波动较独显平台大，**min 值更能反映 GPU 稳定性能**。
+
+### 10.3 4K RGB 性能结果 (3840x2160x3)
+
+> 数据版本：Opt G/H/I/K/N 之后（32x8 block，SoA 中间缓冲区，SEPARABLE launch_bounds(256,6)，FP16 中间缓冲区），5 warmup + 50 runs
+
+| Implementation | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | PSNR (dB) | vs OCV CPU |
+|----------------|:--------:|:--------:|:-----------------:|:---:|:---------:|:----------:|
+| **SEP_FP16** | **3.03** | **2.97** | **2741** | **0.46** | **48.39** | **28.0x** |
+| SEPARABLE | 3.10 | 3.02 | 2673 | 0.45 | 48.49 | 27.2x |
+| FUSED | 3.98 | 3.96 | 2083 | 0.45 | 48.49 | 21.1x |
+| TEMPLATE | 5.50 | 5.47 | 1508 | 0.60 | 48.28 | 15.3x |
+| ADAPTIVE | 6.16 | 6.13 | 1346 | 0.40 | 49.42 | 13.7x |
+| STANDARD | 9.30 | 9.28 | 892 | 0.48 | 48.61 | 9.1x |
+| OpenCV CPU | ~84 | ~83 | ~99 | — | — | 1.0x |
+
+### 10.4 4K Grayscale 性能结果 (3840x2160x1)
+
+| Implementation | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | PSNR (dB) | vs OCV CPU |
+|----------------|:--------:|:--------:|:-----------------:|:---:|:---------:|:----------:|
+| **SEP_FP16** | **1.40** | **1.30** | **5915** | **0.12** | **57.00** | **39.2x** |
+| SEPARABLE | 1.42 | 1.40 | 5849 | 0.15 | 56.18 | 37.3x |
+| FUSED | 1.72 | 1.60 | 4809 | 0.15 | 56.18 | 30.9x |
+| TEMPLATE | 3.53 | 3.46 | 2348 | 0.61 | 50.23 | 15.0x |
+| STANDARD | 4.35 | 4.33 | 1906 | 0.61 | 50.23 | 12.2x |
+| ADAPTIVE | 5.82 | 5.78 | 1426 | 0.61 | 50.23 | 9.2x |
+| OpenCV CPU | ~53 | ~52 | ~157 | — | — | 1.0x |
+
+### 10.5 1080p 性能结果 (1920x1080)
+
+#### 1080p RGB
+
+| Implementation | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | PSNR (dB) | vs OCV CPU |
+|----------------|:--------:|:--------:|:-----------------:|:---:|:---------:|:----------:|
+| **SEP_FP16** | **0.88** | **0.77** | **2351** | **0.46** | **48.36** | **31.4x** |
+| SEPARABLE | 0.85 | 0.77 | 2434 | 0.45 | 48.46 | 32.6x |
+| FUSED | 1.14 | 1.03 | 1821 | 0.45 | 48.46 | 24.6x |
+| TEMPLATE | 1.54 | 1.41 | 1344 | 0.61 | 48.21 | 17.9x |
+| ADAPTIVE | 1.71 | 1.58 | 1211 | 0.41 | 49.34 | 16.2x |
+| STANDARD | 2.40 | 2.37 | 862 | 0.48 | 48.58 | 11.5x |
+| OpenCV CPU | ~28 | ~27 | ~75 | — | — | 1.0x |
+
+#### 1080p Grayscale
+
+| Implementation | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | PSNR (dB) | vs OCV CPU |
+|----------------|:--------:|:--------:|:-----------------:|:---:|:---------:|:----------:|
+| **SEP_FP16** | **0.40** | **0.36** | **5139** | **0.12** | **56.85** | **38.8x** |
+| SEPARABLE | 0.46 | 0.40 | 4521 | 0.15 | 56.06 | 34.2x |
+| FUSED | 0.50 | 0.43 | 4110 | 0.15 | 56.06 | 30.9x |
+| TEMPLATE | 0.97 | 0.90 | 2129 | 0.61 | 50.18 | 16.0x |
+| STANDARD | 1.18 | 1.12 | 1752 | 0.61 | 50.18 | 13.2x |
+| ADAPTIVE | 1.61 | 1.48 | 1290 | 0.61 | 50.18 | 9.7x |
+| OpenCV CPU | ~16 | ~14 | ~130 | — | — | 1.0x |
+
+### 10.6 质量验证
+
+所有模式和测试场景均通过验证：
+
+| 模式 | MAE (RGB) | MAE (Gray) | PSNR (RGB) | PSNR (Gray) | 状态 |
+|------|:---------:|:----------:|:----------:|:-----------:|:----:|
+| STANDARD | 0.48 | 0.61 | 48.61 dB | 50.23 dB | < 1.0 / > 40 dB |
+| TEMPLATE | 0.60 | 0.61 | 48.28 dB | 50.23 dB | < 1.0 / > 40 dB |
+| SEPARABLE | 0.45 | 0.15 | 48.49 dB | 56.18 dB | < 1.0 / > 40 dB |
+| SEP_FP16 | 0.46 | 0.12 | 48.39 dB | 57.00 dB | < 1.0 / > 40 dB |
+| ADAPTIVE | 0.40 | 0.61 | 49.42 dB | 50.23 dB | < 1.0 / > 40 dB |
+| FUSED | 0.45 | 0.15 | 48.49 dB | 56.18 dB | < 1.0 / > 40 dB |
+
+---
+
+## 十一、Profiler 分析（Jetson AGX Thor）
+
+**测试环境**：Jetson AGX Thor (sm_110, Blackwell), 20 SM, 128 GB 统一内存, SM 频率 1.572 GHz
+**测试数据**：4K RGB (3840x2160x3), radius=5, sigma_s=3, sigma_c=30
+**工具**：`ncu` (Nsight Compute 2025.3.1) `--set full` 采集硬件计数器 + `nsys` (Nsight Systems 2025.3.2) 采集时间线
+
+> 注：Thor 为原生 Linux 环境（非 WSL2），`perf_event_paranoid=1`，ncu 可完整采集 GPU 硬件计数器。
+
+### 11.1 nsys 时间线分析
+
+#### TEMPLATE 模式 (MODE=1, 55 runs)
 
 | 阶段 | 耗时 | 占比 | 说明 |
 |------|-----:|-----:|------|
-| `k_bilateral_filter_rgb_template<5,u8,u8>` | 3.36 ms/次 | **57.9%** | 唯一的 GPU kernel |
-| `cudaMemcpy H2D` | 2.02 ms/次 | 34.8% | 24.9 MB u8 数据上传 |
-| `cudaMemcpy D2H` | 1.94 ms/次 | 33.4% | 24.9 MB u8 结果回传 |
-| `cudaDeviceSynchronize` | 3.38 ms/次 | — | 等待 kernel 完成 |
-| `cudaLaunchKernel` | 0.016 ms | <0.1% | 可忽略 |
+| `k_bilateral_filter_rgb_template<5,u8,u8>` | 4.98 ms/次 | **91%** | 唯一的 GPU kernel |
+| `cudaMemcpy H2D` (24.9 MB) | 0.20 ms/次 | 3.6% | 统一内存拷贝 |
+| `cudaMemcpy D2H` (24.9 MB) | 0.21 ms/次 | 3.8% | 统一内存拷贝 |
+| `cudaDeviceSynchronize` | 5.01 ms/次 | — | 等待 kernel 完成 |
+| `cudaLaunchKernel` | 0.008 ms | <0.1% | 可忽略 |
 
-**关键发现**：
+**传输带宽**：H2D 总 1369 MB / 11.25 ms = **122 GB/s**，D2H 总 1369 MB / 11.74 ms = **117 GB/s**。统一内存直接走片上互联，远高于 RTX 4060 的 PCIe 4.0（12 GB/s）。
 
-- **Kernel 与传输无重叠**：H2D → kernel → sync → D2H 串行执行，传输占端到端时间 ~46%
-- **传输带宽**：H2D ~12.3 GB/s, D2H ~12.8 GB/s（PCIe 4.0 x16 理论 ~32 GB/s，达到 ~40%）
-- **cudaHostRegister 开销**：首次 ~1.1 ms/次，后续缓存命中则跳过
-
-#### SEPARABLE 模式 (MODE=2)
+#### SEPARABLE 模式 (MODE=2, 55 runs)
 
 | 阶段 | 耗时 | 占比 | 说明 |
 |------|-----:|-----:|------|
-| `k_bilateral_horizontal_rgb<5,u8>` | 0.79 ms/次 | **52.4%** | 水平 pass |
-| `k_bilateral_vertical_rgb<5,u8>` | 0.72 ms/次 | **47.6%** | 垂直 pass |
-| `cudaMemcpy H2D` | 2.00 ms/次 | — | 同上 |
-| `cudaMemcpy D2H` | 1.94 ms/次 | — | 同上 |
-| `cudaLaunchKernel` | 0.010 ms/次 | <0.1% | 2 次 launch |
+| `k_bilateral_horizontal_rgb<5,u8,float>` | 1.52 ms/次 | **50.7%** | 水平 pass |
+| `k_bilateral_vertical_rgb<5,float,u8>` | 1.48 ms/次 | **49.3%** | 垂直 pass |
+| `cudaMemcpy` (H2D+D2H 合计) | 0.42 ms/次 | ~12% | 含中间缓冲区分配 |
+| `cudaLaunchKernel` | 0.008 ms/次 | <0.1% | 2 次 launch |
 
 **关键发现**：
 
-- **两个 pass 几乎等分 kernel 时间**：水平略慢（全局内存 AoS 读取不合并），垂直略快（中间结果为 float，合并访问更好）
-- **kernel 总时间 1.51 ms**（0.79+0.72），远小于传输 3.94 ms —— **瓶颈已从 kernel 计算转移到 H2D/D2H 传输**
+1. **统一内存消除了 PCIe 传输瓶颈**：cudaMemcpy 仅占端到端时间 ~5%（RTX 4060 上占 46-68%）。
+2. **Kernel 执行主导端到端时间**：TEMPLATE 91%，SEPARABLE 的 H+V 合计 3.0 ms 占 ~88%。
+3. **两个 separable pass 几乎等分**：水平 1.52 ms vs 垂直 1.48 ms。
 
-### 10.2 编译期指标（ptxas, sm_89）
+### 11.2 ncu 硬件计数器分析
 
-#### R=5 u8 kernel 资源使用
+#### 11.2.1 TEMPLATE 模式 — `k_bilateral_filter_rgb_template<5,u8,u8>`
 
-| Kernel | 寄存器/线程 | Shared Memory | Spill | Occupancy 限制因素 |
-|--------|:----------:|:-------------:|:-----:|:------------------:|
-| `rgb_template<5,u8,u8>` | 64 | 8112 B | 0 | 寄存器（max 1 block/SM） |
-| `horizontal_rgb<5,u8>` | 62 | 4992 B | 0 | 寄存器 |
-| `vertical_rgb<5,u8>` | 62 | 4992 B | 0 | 寄存器 |
-| `gray_template<5,u8,u8>` | 63 | 2704 B | 0 | 寄存器 |
-| `horizontal_gray<5,u8>` | 35 | 1664 B | 0 | — |
-| `vertical_gray<5,u8>` | 40 | 1664 B | 0 | — |
+**Launch Configuration** (Opt G 后):
+- Block: (32, 8, 1) = 256 threads，Grid: (120, 270, 1) = 32,400 blocks
+- Waves per SM: 270，SM 频率: 1.572 GHz
 
-**Occupancy 分析**（RTX 4060, sm_89: 65536 regs/SM, 100KB smem/SM, 1536 threads/SM）：
+##### Speed-of-Light (SOL) 概览
 
-- RGB template kernel (64 regs, 256 threads/block):
-  - 每个 SM 最多 `65536 / 64 / 256 = 4` 个 block → **1024 线程 / 1536 = 66.7% occupancy**
-  - smem 限制: `100KB / 8112B ≈ 12` 个 block → 不是瓶颈
-  - **寄存器是 occupancy 的限制因素**
-- Separable gray horizontal (35 regs):
-  - 每个 SM 最多 `65536 / 35 / 256 = 7` 个 block → **1792 → cap 1536 = 100% occupancy**
-  - smem 充裕
+| 指标 | 值 | 说明 |
+|------|---:|------|
+| **SM Throughput** | **88.83%** | 接近计算峰值 |
+| **L1/TEX Throughput** | **87.28%** | Shared memory 访问密集 |
+| **L2 Throughput** | 3.50% | 数据集 fit in L2 (32 MB) |
+| **DRAM Throughput** | ~0% | 统一内存数据由 L2/sysmem 路径服务 |
+| **Duration** | 4.975 ms | nsys 一致 |
+| **瓶颈诊断** | **Compute-bound** | SM 88.8% >> DRAM ~0% |
 
-**关键发现**：
-
-1. **零 spill**：所有 kernel 均无寄存器溢出，说明 `__launch_bounds__` 当前不产生额外收益
-2. **寄存器用量统一在 62-64**：RGB kernel 循环展开后需要大量中间变量，编译器已用满 64 个寄存器
-3. **RGB template kernel occupancy 偏低（~67%）**：64 regs 是主要限制。若能降到 48，occupancy 可提升到 ~83%，但需要牺牲循环展开
-
-### 10.3 Roofline 模型分析
-
-> 注：由于 WSL2 环境下 ncu 无法采集 GPU 硬件计数器（NVIDIA driver 层面限制，非 Linux 权限问题），以下通过 `nsys` 实测时间 + `ptxas` 编译指标 + GPU 理论规格进行 roofline 推算。
-
-**RTX 4060 (AD107, sm_89) 理论峰值**：
+##### Occupancy
 
 | 指标 | 值 |
 |------|---:|
-| SM 数量 | 24 |
-| FP32 峰值 | 15.1 TFLOPS |
-| 显存带宽 | 136 GB/s (GDDR6, 128-bit, 8501 MHz) |
-| Roofline 拐点 (AI threshold) | 111 FLOP/byte |
+| **理论 Occupancy** | 100% (48/48 warps) |
+| **实测 Occupancy** | **97.76%** (46.93/48 warps) |
+| 寄存器/线程 | 23（分配 24） |
+| Occupancy 限制因素 | 寄存器（10 blocks/SM） |
+
+> sm_89 (RTX 4060) 上同一 kernel 使用 64 regs，occupancy 仅 67%。Blackwell 编译器的寄存器优化带来了 **+31% occupancy 提升**。
+
+##### 指令执行效率
+
+| 指标 | 值 |
+|------|---:|
+| IPC (Instructions Per Cycle, active) | 3.55 inst/cycle |
+| IPC (elapsed) | 71.06 inst/cycle (20 SMs 合计) |
+| Issue Slots Busy | 88.83% |
+| 总执行指令数 | 555,692,400 |
+
+##### 流水线利用率
+
+| 流水线 | 利用率 | 说明 |
+|--------|-------:|------|
+| **LSU** (Load/Store) | **43.84%** | Shared memory 读写密集 |
+| **FMA** (浮点乘加) | **40.99%** | 权重计算、加权求和 |
+| **ADU** (地址发散) | 38.77% | smem 地址计算 |
+| **ALU** (整数) | 30.41% | 索引计算 |
+| **XU** (超越函数) | 28.17% | 注：LUT 查表仍有部分 exp 路径 |
+| FP16 | 6.79% | 少量类型转换 |
+
+> LSU 与 FMA 流水线**负载均衡**（43.8% vs 41.0%），说明计算与访存交织良好。
+
+##### 缓存命中率
+
+| 缓存层 | 命中率 | 说明 |
+|--------|-------:|------|
+| **Constant Cache** (LUT) | **99.99%** | spatial_lut + color_lut 完美缓存 |
+| **Instruction Cache** | **100.0%** | 无 I-cache miss |
+| **L1/TEX** | **68.53%** | 全局内存 load 75.3%，store 48.2% |
+| **L2** | **73.31%** | read 66.2%，write 81.9% |
+
+##### Shared Memory Bank Conflicts
+
+| 指标 | 16x16 (Opt G 前) | 32x8 (Opt G 后) | 变化 |
+|------|:-----------------:|:----------------:|:----:|
+| Shared excessive wavefronts | 16,260,480 (50%) | **388,800 (2.3%)** | **-97.6%** |
+| Shared store conflict | 1.2-way (13%) | 1.9-way (47%) | store 略增 |
+| ncu Est. Speedup (shared) | 49.66% | **2.32%** | 已非瓶颈 |
+
+**分析**：Opt G 前（16x16 block），shared memory load 存在 2-way bank conflict（50%），原因是 warp 跨两行访问 smem，行间 stride=27 mod 32=27，导致前半和后半 warp 有 11 个 bank 重叠。改为 32x8 block 后 warp 全在一行内（stride=1），**load conflict 降至 2.3%**。剩余的 excessive 来自协作加载阶段的 store（1.9-way），但 store 只执行一次而 load 在 81 次迭代中每次都执行，影响极小。
+
+##### Warp Stall 分析
+
+| Stall 原因 | 比率 | PC 采样数 | 说明 |
+|-----------|-----:|----------:|------|
+| **short_scoreboard** | **3.92** | 45,780 | Shared memory / L1 依赖等待 |
+| **not_selected** | 3.21 | 36,679 | 有资格但未被调度 |
+| **wait** | 2.79 | 32,471 | 固定延迟依赖 |
+| long_scoreboard | 0.66 | 7,188 | L2/DRAM 依赖 |
+| no_instruction | 0.42 | 5,101 | 指令缓存 |
+| math_pipe_throttle | 0.40 | 4,654 | 计算流水线满 |
+| barrier | 0.33 | 3,340 | `__syncthreads()` |
+| dispatch_stall | 0.37 | 4,334 | 调度器延迟 |
+
+**诊断**：Opt G 前，**short_scoreboard 是最大 stall 源**（比率 3.92，占采样 30%），与 bank conflict 1.97x 一致。Opt G（32x8 block）消除 97.6% 的 bank conflict 后，short_scoreboard stall 预计大幅下降，SM throughput 从 87.49% 提升至 88.36%。
+
+#### 11.2.2 SEPARABLE 模式 — Horizontal + Vertical
+
+##### Speed-of-Light (SOL) 概览
+
+| 指标 | Horizontal | Vertical | 说明 |
+|------|:----------:|:--------:|------|
+| **SM Throughput** | **64.87%** | **67.28%** | 中等计算利用率 |
+| **Memory Throughput** | **57.09%** | **34.16%** | H 更大（输入 u8 不合并） |
+| **L1/TEX Throughput** | 56.39% | 34.23% | |
+| **L2 Throughput** | 34.44% | 18.20% | |
+| **Duration** | 1.50 ms | 1.46 ms | |
+| **瓶颈诊断** | **Compute+Memory 均衡** | **Compute-bound** | |
+
+##### Occupancy
+
+| 指标 | H (Opt K 前→后) | V (Opt K 前→后) |
+|------|:----------:|:--------:|
+| 寄存器/线程 | 63 → **40** | 62 → **40** |
+| 理论 Occupancy | 66.67% → **100%** | 66.67% → **100%** |
+| **实测 Occupancy** | 62.09% → **97.67%** | 63.10% → **97.49%** |
+| Occupancy 限制因素 | 寄存器 (4→6 blocks/SM) | 寄存器 (4→6 blocks/SM) |
+
+> Opt K 通过 `__launch_bounds__(256, 6)` 将寄存器从 61-63 压缩到 40（零 spill），occupancy 从 62% 跃升到 97.5%。SM throughput 从 65% 提升至 73-79%，4K RGB 端到端提速 10.9%。
+
+##### 全局内存合并效率
+
+| 指标 | Horizontal (AoS→SoA) | Vertical (SoA→AoS) | 变化 |
+|------|:----------:|:--------:|:----:|
+| Global uncoalesced (Opt H 前) | **69%** | **68%** | — |
+| Global uncoalesced (Opt H 后) | **47%** | **29%** | **-22pp / -39pp** |
+| Global Load 利用率 | 7.1/32 bytes/sector (22%) | 7.1/32 (22%) | — |
+| Global Store 利用率 | 10.7/32 (33%) | 8.0/32 (25%) | — |
+
+**分析**：Opt H（SoA 中间缓冲区）大幅改善了垂直 kernel 的合并效率——uncoalesced 从 68% 降至 29%（-39pp），因为垂直 pass 从 SoA 平面读取单通道 float，完全合并。水平 kernel 也有 22pp 改善（SoA 写入合并）。
+
+剩余的 uncoalesced 来自**外部格式限制**：输入/输出为 u8 RGB AoS（3 bytes/pixel），无法对齐 32-byte sector。彻底解决需要改变外部 I/O 格式（uchar4 padding 或 SoA 全链路），但这超出滤波 kernel 的范围。
+
+##### Shared Memory Bank Conflicts
+
+| 指标 | Horizontal | Vertical |
+|------|:----------:|:--------:|
+| Load bank conflict (n-way) | **2.1-way** | — |
+| Store bank conflict (n-way) | **2.1-way** | 1.2-way |
+| ncu 预估加速（消除 conflict） | Load +29%, Store +30% | Store +5% |
+
+##### FP32 利用率
+
+| 指标 | Horizontal | Vertical |
+|------|:----------:|:--------:|
+| FP32 峰值利用率 | **16%** | **16%** |
+| 非融合 FP32 指令 | 34,214,400 | 34,214,400 |
+| 可 FMA 融合指令 | 12,441,600 | 12,441,600 |
+| FMA 融合后预估加速 | **+37%** | **+37%** |
+
+> 大量 FP32 加法和乘法指令未被编译器融合为 FMA，这是 sm_110 编译器的优化盲区。手动使用 `__fmaf_rn` 或重排表达式可促进融合。
+
+##### 分支效率
+
+| 指标 | Horizontal | Vertical |
+|------|:----------:|:--------:|
+| 分支效率 | **83.38%** | **100%** |
+| Divergent branches | 3,267 | 0 |
+
+Horizontal 的分支发散来自 halo 区域加载的边界检查。
+
+### 11.3 编译期指标（ptxas, sm_110 vs sm_89）
+
+#### R=5 u8 kernel 资源使用对比
+
+| Kernel | sm_110 Regs | sm_89 Regs | sm_110 Smem | Spill | 变化 |
+|--------|:-----------:|:----------:|:-----------:|:-----:|:----:|
+| `rgb_template<5,u8,u8>` | **28** | 64 | 9296 B | 0 | **-56%** (Opt G: 32x8 block) |
+| `gray_template<5,u8,u8>` | **21** | 63 | 3104 B | 0 | **-67%** |
+| `horizontal_rgb<5,u8>` | **40** | 62 | 4128 B | 0 | **-35%** (Opt K: launch_bounds(256,6)) |
+| `vertical_rgb<5,u8>` | **40** | 62 | 6912 B | 0 | **-35%** (Opt K) |
+| `horizontal_gray<5,u8>` | 33 | 35 | 1376 B | 0 | ~持平 |
+| `vertical_gray<5,u8>` | 33 | 40 | 2304 B | 0 | -18% |
+| `rgb_shared (STANDARD)` | 48 | — | 动态 | 0 | — |
+| `adaptive_rgb` | 54 | — | 动态 | 0 | — |
+
+**sm_110 编译器的重大改进**：
+
+- **TEMPLATE RGB kernel 寄存器从 64 降到 28**（Opt G 后 32x8 block，之前 16x16 时为 23）：Blackwell 编译器对循环展开后的代码有更强的优化能力，大幅降低了寄存器需求
+- **TEMPLATE Gray kernel 从 63 降到 21**（之前 16x16 时为 19）：同理
+- Separable kernels 变化不大（循环体较短，编译器优化空间有限）
+- 所有 kernel **零 spill**
+
+> ncu 实测的 TEMPLATE kernel occupancy（97.8%）与 ptxas 理论分析（100%）吻合；SEPARABLE kernel（62-63%）与理论（66.7%）也基本一致。
+
+### 11.4 Roofline 模型分析
+
+Thor SM 频率 1.572 GHz, 20 SMs。基于 ncu 实测数据构建 Roofline:
 
 #### TEMPLATE 模式 (RGB, R=5)
 
-每个像素遍历 11×11=121 个邻域，每个邻域约 10 FLOP（smem load、LUT 查表、乘加），总计 ~1213 FLOP/pixel。全局内存仅读写 6 bytes/pixel（3B u8 输入 + 3B u8 输出），其余由 shared memory 和 constant memory 承担。
+| 指标 | 值 | 来源 |
+|------|---:|------|
+| Kernel 耗时 | 4.975 ms | ncu |
+| SM 吞吐量 | **88.83%** of peak | ncu SOL |
+| L1/TEX 吞吐量 | 87.28% | ncu SOL |
+| L2 吞吐量 | 3.50% | ncu SOL |
+| DRAM 吞吐量 | ~0% | ncu (数据 fit in L2) |
+| 实测 Occupancy | 97.76% | ncu |
+| IPC | 3.55 inst/cycle | ncu |
 
-| 指标 | 值 |
-|------|---:|
-| 算术强度 (AI) | **202 FLOP/byte** |
-| 总计算量 | 10.1 GFLOP |
-| 全局内存量 | 49.8 MB |
-| Kernel 耗时 | 3.36 ms |
-| 实际算力 | 3.0 TFLOPS (**19.8%** of peak) |
-| 实际带宽 | 14.8 GB/s (10.9% of peak) |
-
-**诊断**：AI = 202 > 111 → **Compute-bound**。但实际算力仅达峰值的 19.8%，说明计算资源利用率低。原因：
-
-1. **Occupancy 不足**（67%）：64 regs/thread 限制每 SM 并发 warp 数，延迟隐藏能力受限
-2. **Constant memory LUT 访问序列化**：warp 内线程访问不同 LUT 地址时退化为多次事务
-3. **循环展开过深**：R=5 展开 121 次迭代，指令缓存压力大
+**诊断**：SM 88.8% >> L2 3.5%，**纯 Compute-bound**。工作集（24.9 MB 输入 + 24.9 MB 输出）小于 L2 容量（32 MB），DRAM 流量几乎为零。
 
 #### SEPARABLE 模式 (RGB, R=5)
 
-两遍分离滤波，每遍仅 11 个邻域。全局内存包含输入/输出 + 中间 float 缓冲区的读写。
+| 指标 | Horizontal | Vertical |
+|------|:----------:|:--------:|
+| SM 吞吐量 | 64.87% | 67.28% |
+| Memory 吞吐量 | 57.09% | 34.16% |
+| L2 吞吐量 | 34.44% | 18.20% |
+| 实测 Occupancy | 62.09% | 63.10% |
+| IPC | 2.56 | 2.70 |
 
-| 指标 | 值 |
-|------|---:|
-| 算术强度 (AI) | **~9 FLOP/byte** |
-| 总计算量 | 1.87 GFLOP |
-| 实际全局内存量 | ~175 MB (含中间缓冲、tile 重叠) |
-| Kernel 耗时 | 1.51 ms (H 0.79 + V 0.72) |
-| 实际算力 | 1.24 TFLOPS (8.2% of peak) |
-| 实际带宽 | ~116 GB/s (**85%** of peak) |
-
-**诊断**：AI = 9 < 111 → **Memory-bandwidth-bound**。带宽利用率已达 85%，接近 GDDR6 实际上限。瓶颈在于：
-
-1. **中间缓冲区的读写开销**：H pass 写 float×3 (12B/pixel)，V pass 读回，凭空增加 ~24B/pixel
-2. **Tile 重叠导致的冗余加载**：halo 区域使实际全局内存访问量比理论值多 ~60%
+**诊断**：Horizontal 处于 **Compute + Memory 均衡** 状态（SM 65% / Mem 57%），Vertical 偏 **Compute-bound**（SM 67% / Mem 34%）。相比 TEMPLATE（SM 89%），两者的 SM 利用率较低，原因是 occupancy 不足（62-63% vs 97.8%）和全局内存合并效率差（22-33%）。
 
 #### Roofline 图示
 
 ```
-TFLOPS
-  15 ┤ ·····························*·················  FP32 Peak
-     │                           ·╱
-     │                         ·╱
-     │                       ·╱
-   3 ┤ ·················[TEMPLATE]   (AI=202, 3.0T)     ← compute-bound, 低利用率
-     │                 ·╱
-   1 ┤ ··[SEPARABLE]·╱              (AI=9, 1.2T)       ← memory-bound, 高 BW 利用率
-     │           ·╱
-     └───────┴───┴──────────────────────────────────→ FLOP/byte
-             9  111                                     (Arithmetic Intensity)
+SM Throughput (%)
+  100 ┤
+   89 ┤ ··[TEMPLATE]·····················  (97.8% occ, 3.55 IPC)
+      │
+   67 ┤ ·········[SEP-V]                   (63.1% occ, 2.70 IPC)
+   65 ┤ ········[SEP-H]                    (62.1% occ, 2.56 IPC)
+      │
+      │     L2 Throughput:
+      │     TEMPLATE: 3.5%  (数据 fit in L2 32MB)
+      │     SEP-H:   34.4%  (中间 float 缓冲读写)
+      │     SEP-V:   18.2%
+      └────────────────────────────────────
+        所有 kernel 均为 Compute-bound (SM >> Memory)
 ```
 
-### 10.4 瓶颈诊断
+### 11.5 瓶颈诊断与优化方向
 
 ```
-                TEMPLATE 模式端到端 ~7.5 ms
-           ┌────────────┬────────────┬────────────┐
-           │  H2D 2.0ms │ Kernel 3.4ms│ D2H 1.9ms │
-           └────────────┴────────────┴────────────┘
-                         46% 传输     │   54% 计算
+Thor TEMPLATE 模式端到端 ~5.5 ms
+           ┌──────┬──────────────────────┐
+           │ 0.41 │   Kernel 4.98 ms     │
+           └──────┴──────────────────────┘
+            7% 拷贝│      93% 计算
 
-                SEPARABLE 模式端到端 ~5.8 ms
-           ┌────────────┬──────────────┬────────────┐
-           │  H2D 2.0ms │ H+V 1.5ms   │  D2H 1.9ms │
-           └────────────┴──────────────┴────────────┘
-                        68% 传输       │  26% 计算
+Thor SEPARABLE 模式端到端 ~3.4 ms
+           ┌──────┬────────────────────┐
+           │ 0.42 │   H+V 3.0 ms       │
+           └──────┴────────────────────┘
+           12% 拷贝│     88% 计算
 ```
 
-| 模式 | Kernel 瓶颈类型 | Kernel 利用率 | 端到端主瓶颈 |
-|------|:---------------:|:------------:|:----------:|
-| TEMPLATE | Compute-bound | 19.8% FP32 | Kernel 计算 (54%) |
-| SEPARABLE | Memory-bound | 85% BW | PCIe 传输 (68%) |
+#### 基于 ncu 数据的优化优先级（含实施状态）
 
-### 10.5 优化建议（基于 profiler 数据）
+| 优先级 | 优化目标 | ncu 依据 | 预估收益 | 状态 |
+|:------:|---------|---------|:--------:|:----:|
+| ★★★ | **消除 smem bank conflict (TEMPLATE)** | 1.97x conflict → 2.3% | **10-20%** | **Opt G: 已完成** (-97.6% conflict) |
+| ★★★ | **改善全局内存合并 (SEPARABLE)** | 68% 冗余 → 29-47% | **20-40%** | **Opt H: 已完成** (SoA 中间缓冲区) |
+| ★★★ | **降低 Separable 寄存器** | Occupancy 62% → 97.5% | **10-20%** | **Opt K: 已完成** (regs 63→40, **-10.9%**) |
+| ★★☆ | **促进 FMA 融合 (SEPARABLE)** | 37% 非融合 FP32 | **5-10%** | **Opt I: 无效** (编译器已自动融合) |
+| ★☆☆ | **消除 Horizontal 分支发散** | 分支效率 83.38% | **<5%** | 待实验 |
 
-#### TEMPLATE 模式 — 提升计算利用率
+### 11.6 Thor 上的数据波动分析
 
-1. **降低寄存器用量到 ≤48**：
-   - 方法：`#pragma unroll 4` 替代完全展开，或使用 `__launch_bounds__(256, 5)` 强制编译器压缩寄存器
-   - 效果：occupancy 从 67% → 83%，更多活跃 warp 隐藏延迟
-   - 风险：可能引入少量 spill，需实测权衡
+Jetson 平台 benchmark 的 stddev 明显高于独显（RTX 4060 stddev ~0.1-0.3ms vs Thor stddev ~1-7ms）。原因：
 
-2. **减少 constant memory 竞争**：
-   - 将空间权重 LUT 从 constant memory 搬到 shared memory（仅 `(2R+1)^2 × 4B = 484B`）
-   - 每个线程访问不同偏移时 shared memory 不会序列化，constant memory 会
+1. **DVFS（动态频率电压调节）**：Jetson 根据温度和功耗动态调整 GPU 频率，导致连续 run 之间性能波动
+2. **统一内存竞争**：CPU 和 GPU 共享内存带宽，后台进程的内存活动会影响 GPU 性能
+3. **热管理**：嵌入式平台散热条件有限，长时间运行后降频
 
-3. **指令缓存优化**：
-   - R=5 完全展开生成 ~1200 条指令，可能超出 L0 I-cache（sm_89 为 32KB）
-   - 降低展开深度可减轻 I-cache 压力
-
-#### SEPARABLE 模式 — 减少显存访问量
-
-1. **消除中间缓冲区**：
-   - 使用 fused H+V kernel（在同一个 kernel 中完成水平和垂直滤波）
-   - 或使用 persistent kernel 方式，水平 pass 的结果直接存在寄存器/smem 中供垂直 pass 使用
-   - 可节省 ~24B/pixel 的中间读写，理论加速 ~30%
-
-2. **FP16 中间结果**：
-   - 中间缓冲区用 `__half` 替代 `float`，带宽减半
-   - 对 8-bit 图像精度完全足够
-
-#### 两种模式共同 — 传输优化
-
-1. **多 Stream 重叠**：
-   - Stream A: H2D 传输；Stream B: kernel 执行；Stream C: D2H 传输
-   - 理论端到端降至 `max(H2D, kernel, D2H)` ≈ 3.4ms (TEMPLATE) / 2.0ms (SEPARABLE)
-
-2. **Zero-copy / Managed Memory**：
-   - 对于单帧处理，`cudaMallocManaged` + `cudaMemPrefetchAsync` 可能比显式 memcpy 更高效
-   - GPU 可在传输完成前开始处理已到达的数据块
+因此，**min 值比 avg 值更能反映 GPU 的峰值能力**，而 avg 值反映了真实工作负载中的可预期性能。ncu 采集的单次 kernel 数据（profiling 模式下 DVFS 影响极小）最为准确。
 
 ---
 
-## 十一、FP16 中间缓冲区优化（实测）
+## 十二、跨平台对比分析
 
-### 11.1 动机
+### 12.1 平台规格对比
 
-由 Roofline 分析可知，SEPARABLE 模式处于 **memory-bandwidth-bound** 状态（BW 利用率 ~85%）。
-水平 pass 写出、垂直 pass 读入的中间缓冲区是 GPU 内部的额外带宽压力：
+| 规格 | Jetson AGX Thor | RTX 4060 |
+|------|:---------------:|:--------:|
+| GPU 架构 | Blackwell (sm_110) | Ada Lovelace (sm_89) |
+| SM 数量 | 20 | 24 |
+| 显存/统一内存 | 128 GB LPDDR5x (共享) | 8 GB GDDR6 (独立) |
+| L2 Cache | 32 MB | — |
+| Shared Memory/SM | 228 KB | 100 KB |
+| 寄存器/SM | 65536 | 65536 |
+| CPU-GPU 互联 | 统一内存 (无 PCIe) | PCIe 4.0 x8 (WSL2) |
+| 平台类型 | 嵌入式 SoC | 桌面独显 |
+| CUDA 版本 | 13.0 | 13.1 |
 
-- 4K RGB：中间缓冲区 = 3840 × 2160 × 3 × 4B = **95.1 MB**（float）→ **47.5 MB**（__half）
-- 4K Gray：中间缓冲区 = 3840 × 2160 × 4B = **31.6 MB**（float）→ **15.8 MB**（__half）
+### 12.2 4K RGB 性能对比
 
-### 11.2 实现方式
+| 模式 | Thor Avg (ms) | Thor Min (ms) | RTX 4060 Avg (ms) | RTX 4060 Min (ms) |
+|------|:------------:|:------------:|:------------------:|:-----------------:|
+| TEMPLATE | 23.20 | 16.86 | 6.67 | 6.33 |
+| SEPARABLE | 18.88 | 12.84 | 5.61 | 5.41 |
+| STANDARD | 28.57 | 9.22 | 8.34 | 7.96 |
+| ADAPTIVE | 21.07 | 12.89 | 6.95 | 6.80 |
 
-新增 `BILATERAL_MODE=3`（`SEPARABLE_FP16`），对 H/V 核函数增加 `TmpT` 模板参数：
+> 注：RTX 4060 数据含 OpenCV CUDA 基线（11.78ms），Thor 上因 OpenCV 无 CUDA 模块而未包含。
 
-```cpp
-// Horizontal: InT input → TmpT intermediate
-template <int RADIUS, typename InT = float, typename TmpT = float>
-__global__ void k_bilateral_horizontal_gray(const InT* input, TmpT* output, ...);
+### 12.3 nsys/ncu Kernel 耗时对比
 
-// Vertical: TmpT intermediate → OutT output
-template <int RADIUS, typename TmpT = float, typename OutT = float>
-__global__ void k_bilateral_vertical_gray(const TmpT* input, OutT* output, ...);
-```
+| Kernel | Thor (ms) | RTX 4060 (ms) | Thor/RTX 4060 |
+|--------|:---------:|:------------:|:-------------:|
+| `rgb_template<5,u8,u8>` | 4.98 | 3.36 | 1.48x |
+| `horizontal_rgb<5,u8>` | 1.52 | 0.79 | 1.92x |
+| `vertical_rgb<5,u8>` | 1.48 | 0.72 | 2.06x |
+| `cudaMemcpy` (H2D+D2H) | 0.41 | 3.94 | **0.10x** |
 
-- 内部累加器仍为 `float`（FP32 精度不丢失）
-- 中间值写出时：`static_cast<__half>(sum / weight_sum)`（FP16 截断，精度损失极小）
-- 中间值读入时：smem 加载 `static_cast<float>(input[idx])`（还原为 FP32）
-- 编译时指定 `-arch=sm_89`（RTX 4060 Ada Lovelace，原生 FP16 I/O 支持）
+#### ncu 指标对比 (TEMPLATE RGB kernel)
 
-### 11.3 性能结果（4K, radius=5, σ_s=3, σ_c=30, runs=50）
+| 指标 | Thor (sm_110) | RTX 4060 (sm_89) |
+|------|:------------:|:----------------:|
+| SM Throughput | **88.83%** | ~20% (推算) |
+| 实测 Occupancy | **97.76%** | ~67% |
+| Registers/Thread | 23 | 64 |
+| IPC (active) | 3.55 | — |
+| L1 命中率 | 68.53% | — |
+| L2 命中率 | 73.31% | — |
+| Smem bank conflict | 1.97x | — |
+| 首要 stall | short_scoreboard | — |
 
-#### 4K RGB (3840×2160)
+**分析**：
 
-| Mode | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OpenCV |
-|------|:--------:|:--------:|:-----------------:|:---:|:---------:|
-| 0 STANDARD | ~10 | 9.33 | — | 0.65 | — |
-| 1 TEMPLATE | 7.41 | 7.21 | 1119 | 0.80 | 4.20× |
-| 2 SEPARABLE (float) | 5.57 | 5.42 | 1489 | 0.45 | 5.68× |
-| **3 SEPARABLE_FP16** | **5.42** | **5.28** | **1532** | **0.46** | **5.99×** |
+- **Kernel 计算**：Thor 比 RTX 4060 慢 1.5-2x，主要因为 SM 数量更少（20 vs 24）且核心频率较低
+- **数据传输**：Thor 仅需 0.41ms（统一内存，~120 GB/s），RTX 4060 需 3.94ms（PCIe DMA，~12 GB/s），Thor 快 **10x**
+- **SM 利用率**：Thor 88.8% 远高于 RTX 4060 的 ~20%，说明 Blackwell 编译器的寄存器优化（64->23）和高 occupancy（97.8% vs 67%）极大提升了计算效率
+- **尽管频率和 SM 数更少，Thor 的 SM 效率更高**，每个 SM 的工作负载更饱和
 
-#### 4K Grayscale (3840×2160, 1ch)
+### 12.4 编译器差异的影响
 
-| Mode | Avg (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OpenCV |
-|------|:--------:|:--------:|:-----------------:|:---:|:---------:|
-| 0 STANDARD | 3.86 | 3.63 | 2147 | 0.62 | 4.45× |
-| 1 TEMPLATE | 3.00 | 2.94 | 2764 | 0.62 | 5.71× |
-| 2 SEPARABLE (float) | 2.08 | 1.99 | 3990 | 0.15 | 7.99× |
-| **3 SEPARABLE_FP16** | **1.99** | **1.91** | **4161** | **0.12** | **8.20×** |
+sm_110 (Blackwell) 编译器对 TEMPLATE kernel 的寄存器优化是最大惊喜：
 
-### 11.4 分析
+| Kernel | sm_110 Regs | sm_89 Regs | 差异 | Occupancy (sm_110) | Occupancy (sm_89) |
+|--------|:-----------:|:----------:|:----:|:------------------:|:-----------------:|
+| rgb_template | **23** | 64 | -64% | **100%** | 67% |
+| gray_template | **19** | 63 | -70% | **100%** | ~67% |
 
-FP16 相对于 float 中间缓冲的加速：
+尽管 occupancy 大幅提升，但 kernel 耗时反而更长（4.98ms vs 3.36ms）。这说明 RTX 4060 上该 kernel 的瓶颈不在 occupancy，而在于核心频率和 SM 数量。寄存器降低带来的 occupancy 提升无法弥补硬件规格差异。
 
-| 测试场景 | SEPARABLE float min | SEPARABLE_FP16 min | 提升 |
-|----------|:-------------------:|:------------------:|:----:|
-| 4K RGB | 5.42 ms | 5.28 ms | **+2.7%** |
-| 4K Gray | 1.99 ms | 1.91 ms | **+4.2%** |
+### 12.5 统一内存架构对优化策略的影响
 
-**提升幅度较保守的原因**：
+| 优化手段 | 独显 (RTX 4060) | 统一内存 (Thor) | 说明 |
+|---------|:---------------:|:---------------:|------|
+| cudaHostRegister | +7% | 无意义 | 统一内存无需 DMA，page-lock 不改变传输方式 |
+| Strip Pipeline | 理论 2-3x | 无意义 | 无传输可重叠 |
+| FP16 中间缓冲 | +2.7% | 有效 | 统一内存带宽有限，减少数据量仍有收益 |
+| Shared Memory | 有效 | 有效 | 减少全局内存访问对两种架构都关键 |
+| LUT 优化 | 有效 | 有效 | 消除 expf 对两种架构都关键 |
+| Template Unroll | 有效 | 有效 | sm_110 上编译器优化更激进 |
 
-1. **PCIe 传输主导端到端时间**：H2D + D2H ≈ 3.9 ms，kernel 执行仅 ~1.5 ms（SEPARABLE RGB）。
-   FP16 仅优化 GPU 内部带宽，对 PCIe 时间无影响，因此端到端改善有限。
-2. **Gray 场景提升更大**：Gray 单通道中间缓冲比 RGB 小得多（1/3），kernel 占总时间比例更高（~50%），FP16 节省的带宽效果更明显。
-3. **MAE 保持低位**：FP16 的 10-bit 尾数对 [0,255] 像素值的精度约为 0.03 像素，色差权重误差可忽略；Gray 模式 MAE 甚至略有下降（0.15 → 0.12），属正常统计波动。
-
-### 11.5 结论
-
-| 指标 | 结果 |
-|------|------|
-| 代码改动 | 仅需 `TmpT` 模板参数 + `__half` 实例化，无算法改变 |
-| 性能提升 | +2.7%（RGB）/ +4.2%（Gray），kernel 端约 +10% |
-| 精度影响 | MAE ≤ 0.46，完全满足 < 1.0 要求 |
-| 适用场景 | 当 kernel 执行时间占比更高时（如大 radius 或多帧流水线），收益将显著提升 |
+**结论**：统一内存架构下，所有传输相关优化（page-lock、strip pipeline、multi-stream overlap）都失去意义。优化焦点应完全放在 **kernel 计算效率** 上。
 
 ---
 
-## 十二、参考资料分析与待实验优化思路
+## 十三、参考资料分析与待实验优化思路
 
 > 来源：[xytroot/Bilateral-Filter](https://github.com/xytroot/Bilateral-Filter) 与 [OpenCV CUDA bilateral_filter.cu](https://github.com/opencv/opencv_contrib/blob/4.x/modules/cudaimgproc/src/cuda/bilateral_filter.cu)
 
-### 12.1 参考实现对比
+### 13.1 参考实现对比
 
 #### xytroot/Bilateral-Filter（教学级实现）
 
 | 技术 | xytroot | 本项目 | 对比 |
 |------|---------|--------|------|
-| Texture Memory | `tex2D()` + `cudaBindTexture2D` | 无（Shared Memory） | 见 12.2-A |
-| 空间权重 | 1D `__constant__` 数组，kernel 内 `cGaussian[dy+r] * cGaussian[dx+r]` 合成 2D | 预计算完整 2D LUT | 本项目更优（1 次 vs 2 次查表） |
+| Texture Memory | `tex2D()` + `cudaBindTexture2D` | 无（Shared Memory） | 见 13.2-A |
+| 空间权重 | 1D `__constant__` 数组，kernel 内合成 2D | 预计算完整 2D LUT | 本项目更优（1 次 vs 2 次查表） |
 | 颜色权重 | kernel 内实时 `__expf()` | 256 元素 color LUT | **本项目远优** |
 | Shared Memory | 无 | Tile + halo 协作加载 | 本项目更优 |
 | 内存管理 | 每次 `cudaMalloc` / `cudaFree` | 持久化 GPU buffer | 本项目更优 |
-| 通道支持 | 仅灰度 | 灰度 + RGB | 本项目更全 |
 
 #### OpenCV CUDA bilateral_filter.cu
 
 | 技术 | OpenCV CUDA | 本项目 | 意义 |
 |------|-------------|--------|------|
-| `cudaFuncCachePreferL1` | **显式设置** | 无 | 见 12.2-B |
-| 圆形窗口裁剪 | `if (space2 > r2) continue` | 方形窗口 | 见 12.2-C |
-| 内外像素分支 | 内部像素无边界检查快速路径 | 统一 clamp | 见 12.2-D |
-| 向量化类型 | `uchar3/float3` + `saturate_cast` | 逐通道分离 smem | 各有取舍 |
-| 颜色距离 | `norm_l1`（L1 范数）+ `exp()` 实时计算 | 预计算 LUT | **本项目更快** |
+| 圆形窗口裁剪 | `if (space2 > r2) continue` | LUT 预置零 + early continue | 已实现（效果更优） |
+| 颜色距离 | `norm_l1` + `exp()` 实时计算 | 预计算 LUT | **本项目更快** |
 | Shared Memory | **无** | 有 | **本项目更优** |
-| 边界处理模板 | 5 种 border mode（Reflect/Wrap/...） | 仅 clamp | OpenCV 更灵活 |
 
-### 12.2 待实验优化思路
+### 13.2 Thor 平台上的进一步优化方向（基于 ncu 数据）
 
-#### A. Texture Memory 用于梯度计算（来自 xytroot）
+基于 11.2 节 ncu 硬件计数器分析和 11.5 节瓶颈诊断，Thor 上的优化方向与独显平台截然不同：
 
-xytroot 的 `tex2D` 方案在现代 GPU 上应使用 `cudaTextureObject` API 替代已弃用的 `cudaBindTexture2D`。
+#### 已完成的 ncu 驱动优化
 
-- **适用场景**：ADAPTIVE 模式的梯度（Sobel）计算 pass。该 pass 为只读访问且无 tile 复用，texture cache 的 2D 空间局部性优化比 shared memory 更自然
-- **优势**：硬件自动边界 clamp，消除 `max(0, min(N-1, x))` 分支；2D 缓存对 Sobel 3×3 窗口友好
-- **预期**：梯度 pass 本身占比小（~5-10%），整体收益有限，更多是代码简洁性提升
+| 优化 | 实施方案 | ncu 前后对比 | 实测效果 |
+|------|---------|:----------:|---------|
+| **Opt G: smem bank conflict** | Block 16x16 → 32x8 | conflict: 50% → **2.3%** | SM +0.87pp, latency 持平 |
+| **Opt H: global coalescing** | 中间缓冲区 AoS → SoA | uncoalesced: 68% → **29%** (V), 69% → **47%** (H) | latency 持平 |
+| **Opt I: FMA fusion** | 显式 `fmaf()` | fused/non-fused 比率不变 | **无效**（编译器已自动融合） |
+| **Opt K: register pressure** | `launch_bounds(256, 6)` | regs: 63 → **40**, occ: 62% → **97.5%** | **4K RGB -10.9%** |
 
-#### B. `cudaFuncCachePreferL1`（来自 OpenCV）
+> **Opt G 深度分析**：最初尝试 smem row padding（TILE_W 从 26 改为 27，奇数 stride），但 ncu 验证后发现 conflict 仍为 50%。深入分析发现根因是 **warp 跨行**（16x16 block 中 warp 包含两行线程），而非行内 stride 问题。最终改为 32x8 block（warp 全在一行），彻底消除了 load conflict。
 
-```cpp
-cudaFuncSetCacheConfig(kernel, cudaFuncCachePreferL1);
-```
+> **Opt I 教训**：nvcc `-O3` 的 FMA 融合已经接近最优。ncu 报告的 "37% 非融合 FP32" 指的是独立的 FADD/FMUL（如 `weight_sum += w`），它们没有配对指令可融合，不是编译器遗漏。
 
-OpenCV 对所有 bilateral kernel 显式设置 L1 cache 偏好。在 sm_89 上 L1 和 shared memory 共享同一块 SRAM（128KB/SM），通过配置偏好可调整两者的分配比例。
+#### TEMPLATE 模式剩余优化空间
 
-- **代价**：零代码改动（一行 API 调用）
-- **预期**：对 shared memory 用量较小的 kernel（如 separable gray horizontal，仅 1664B），释放更多 L1 给全局内存缓存可能有正面效果
-- **注意**：sm_89 上该 hint 可能被硬件忽略（Ada 架构 L1/smem 分配策略有变化），需实测验证
+| 优先级 | 优化手段 | ncu 依据 | 预期收益 |
+|:------:|---------|---------|:--------:|
+| ★★☆ | **Spatial LUT 搬到 smem** | constant cache 99.99% hit，但 warp 内不同地址仍序列化 | **5-10%** |
+| ★☆☆ | **cudaMallocManaged 零拷贝** | cudaMemcpy 仅占 7%，但 0.41ms 仍可省 | **~5%** |
 
-#### C. 圆形窗口裁剪（来自 OpenCV）— ✅ 已完成
+#### SEPARABLE 模式剩余优化空间
 
-OpenCV 用 `if (space2 > r²) continue` 跳过圆形窗口外的角落像素。
+| 优先级 | 优化手段 | ncu 依据 | 预期收益 | 实测结果 |
+|:------:|---------|---------|:--------:|:--------:|
+| ~~★★★~~ | ~~降低寄存器用量~~ | ~~Occupancy 62%→97.5%~~ | ~~**-10.9%**~~ | **Opt K: 已完成** |
+| ~~★★☆~~ | ~~u8 RGB 输入向量化~~ | ~~输入仍有 40% uncoalesced~~ | ~~10-20%~~ | **Opt L: 取消**（sectors/req=2.98≈理论极限） |
+| ~~★★☆~~ | ~~Fused H+V Kernel~~ | ~~消除中间 buffer~~ | ~~10-15%~~ | **Opt M: -31~34%**（计算膨胀抵消带宽节省） |
+| ★★☆ | **FP16 中间缓冲区** | H↔V buffer 带宽减半 | 5-10% | **Opt N: Gray -7~10%, RGB -1.7%** |
+| ★☆☆ | **消除 Horizontal 分支发散** | 83.38% 分支效率, 3267 divergent branches | **<5%** | 未实施 |
 
-本项目采用更高效的方案：在 spatial LUT 预计算时将圆外位置权重设为 0（Phase 1），kernel 中检测 `spatial_weight == 0.0f` 执行 `continue`（Phase 2）。无需实时计算 `space2`。
+#### 跨模式通用优化
 
-对于 radius=5，方形窗口 11×11 = 121 像素，圆内 81 像素，**圆外 40 像素（33%）**。
+| 优先级 | 优化手段 | 说明 | 预期收益 | 实测结果 |
+|:------:|---------|------|:--------:|:--------:|
+| ~~★★☆~~ | ~~FP16 全量计算~~ | ~~Thor FP16 吞吐 2x~~ | ~~10-20%~~ | **Opt N2: -8.4%**（标量 half 无 2x，转换开销高） |
+| ★☆☆ | **L2 Cache 持久化** | Thor 有 32MB L2, 当前 TEMPLATE 数据已 fit in L2 (hit 73%) | **<5%** | 未实施 |
+| ★☆☆ | **Spatial LUT 搬到 smem** | constant cache warp 序列化 | 5-10% | 未实施 |
 
-**实测结果**：
+> **结论**：SEPARABLE 模式的主要优化空间已基本挖掘完毕。SM throughput 达 75-81%，occupancy 97%+，bank conflict 0%，中间缓冲区已 SoA + FP16。剩余优化（分支发散、L2 持久化、spatial LUT）预期收益均 < 5%，投入产出比低。当前 SEPARABLE_FP16 (MODE=3) 以 2.97ms/4K RGB（2741 MP/s）达到接近硬件极限的性能。
 
-| 阶段 | TEMPLATE 4K RGB | TEMPLATE 4K Gray | STANDARD 4K RGB |
-|------|:---------------:|:----------------:|:---------------:|
-| Phase 1（仅 LUT 置零） | ~0% 性能 | ~0% 性能 | ~0% 性能 |
-| Phase 2（+early continue） | **+13%** | **+65%** | +10% |
+> **注意**：独显平台上优先级最高的传输优化（strip pipeline、multi-stream、cudaHostRegister）在 Thor 上完全不适用——传输仅占端到端 5-12%。
 
-- TEMPLATE 的巨大收益源于编译器 dead code elimination：`#pragma unroll` 展开后，编译器在编译期确定哪 40 个位置恒为 0，直接删除这些迭代体的全部指令
-- ADAPTIVE 模式加 continue 反而变慢（-7%），因为可变 `my_radius` 下分支有害且循环范围已由 my_radius 限制。已回退
-- 详见 Opt C/F 实验记录
+### 13.3 总结与展望
 
-#### D. 内部/边界像素分支（来自 OpenCV）
+本项目在两个截然不同的 GPU 平台上验证了 CUDA 双边滤波的优化效果，经历了 15 个优化实验（其中 7 个成功保留，4 个实验失败但提供了宝贵的负面结论，4 个回退）。
 
-OpenCV 在 kernel 内对完全不触及边界的像素走**无边界检查快速路径**：
+**已达成目标**：
 
-```cpp
-if (x - r >= 0 && y - r >= 0 && x + r < cols && y + r < rows) {
-    // Fast path: no boundary check
-    for (...) { value = src(cy, cx); ... }
-} else {
-    // Safe path: with boundary interpolation
-    for (...) { value = b.at(cy, cx, ...); ... }
-}
-```
+| 目标 | 要求 | Thor 实测 (Opt G/H/K/N) | RTX 4060 实测 |
+|------|------|:---------:|:------------:|
+| MAE | < 1.0 | 0.12~0.61 | 0.15~0.61 |
+| PSNR | > 40 dB | 48.28~57.00 | 48.28~56.18 |
+| vs OpenCV CPU | 显著加速 | **9~39x** | **7~20x** |
+| vs OpenCV CUDA | 超越 | N/A（Thor 无 OCV CUDA） | **1.68~4.43x** |
 
-- **适用于**：STANDARD 模式（runtime radius，不能编译期优化掉 clamp）
-- **预期**：图像内部 >95% 像素走快速路径，边界像素仅一小圈。但本项目已用 shared memory 在加载阶段统一做 clamp，计算阶段不再有 if，所以该优化的收益可能很小
-- **改进思路**：在 shared memory 加载阶段做分支——内部 block 直接加载，边界 block 走 clamp
+**峰值性能**：SEPARABLE_FP16 (MODE=3) 在 Thor 上达到 **4K RGB 2.97ms (2741 MP/s)**，**4K Gray 1.30ms (5915 MP/s)**。SM throughput 75-81%，occupancy 97%，接近硬件极限。
 
-#### E. 多 Stream 条带并行（Strip Pipelining）
+**最有价值的优化手段（跨平台通用）**：
 
-当前端到端延迟中 H2D + D2H 占 46-68%（见 10.4 节），kernel 与传输完全串行。通过将图像水平切分为若干 **strip（条带）**，可实现传输与计算的重叠：
+1. **Color Weight LUT (3x)**：消除 `expf` 调用，对所有平台收益最大
+2. **Shared Memory (3-5x)**：减少全局内存访问，对所有平台关键
+3. **Template Unroll + Circular Window DCE (+13%~+65%)**：编译器在编译期消除 33% 圆外迭代
+4. **Separable Approximation (O(r) vs O(r^2))**：算法级优化，平台无关
+5. **Block 32x8 (smem bank conflict -97.6%)**：ncu 驱动的微架构优化
+6. **SoA 中间缓冲区 (global uncoalesced -39pp)**：ncu 驱动的内存布局优化
+7. **Launch Bounds (256,6) (occupancy +35pp, 4K -10.9%)**：ncu 驱动的寄存器压力优化
 
-**原理**：
+**关键负面结论（同样重要）**：
 
-```
-传统方式（串行）：
-  H2D ████████████          D2H ████████████
-                  kernel ████
+| 失败实验 | 预期收益 | 实测 | 根因分析 |
+|---------|:--------:|:----:|---------|
+| Fused H+V Kernel | 10-15% | **-31~34%** | 统一内存下中间 buffer 成本仅 ~10%，不值得增加 block 计算复杂度 |
+| FP16 全量计算 | 10-20% | **-8.4%** | 标量 `__half` 无 2x 优势（仅 `__half2` 有），float↔half 转换开销高 |
+| u8 RGB 向量化 | 10-20% | 取消 | sectors/req=2.98 已是 RGB 3B/pixel AoS 格式的理论极限（75%） |
 
-条带并行（4 strips × 4 streams）：
-  Stream 0: H2D ██  kernel █  D2H ██
-  Stream 1:   H2D ██  kernel █  D2H ██
-  Stream 2:     H2D ██  kernel █  D2H ██
-  Stream 3:       H2D ██  kernel █  D2H ██
-             ↑ GPU copy engine 与 compute engine 物理独立，可真正并行
-```
+**平台特异性认知**：
 
-所谓 **strip（条带）** 就是将图像按行方向切成若干水平长条。例如 4K 图像（2160 行）切 4 条，每条 540 行。每条分配一个 CUDA stream，各 stream 的 H2D → kernel → D2H 形成独立的流水线，由 GPU 硬件调度引擎自动交错执行。
-
-**实现要点**：
-
-1. **Halo 重叠**：每条 strip 的输入需要向上下各扩展 radius 行（如 r=5 则多读 5 行），确保边界像素也能正确滤波。输出只写属于自己的行，无冗余
-2. **Pinned Memory**：多 stream 异步传输要求 host 内存必须是 page-locked（已通过 `cudaHostRegister` 实现）
-3. **Strip 数量选择**：太少无法充分重叠，太多 launch overhead 累积。经验值 4-8 条为宜
-4. **适用前提**：单帧处理时收益明显；若已在视频流水线中（帧间重叠），则帧内 strip 的意义降低
-
-**预期收益**：
-
-| 模式 | 当前端到端 | 理想重叠后 | 加速比 |
-|------|:---------:|:---------:|:------:|
-| TEMPLATE (4K RGB) | 7.5 ms | ~3.5 ms (≈ kernel time) | **2.1×** |
-| SEPARABLE (4K RGB) | 5.8 ms | ~2.0 ms (≈ H2D time) | **2.9×** |
-
-这是当前**收益最大的单项优化方向**，因为瓶颈已从 kernel 计算转移到 PCIe 传输。
-
-#### F. 圆形窗口 + Spatial LUT 预置零方案 — ✅ 已完成（合并入 C）
-
-已作为 Opt C/F Phase 1 + Phase 2 实现。在 host 端 `init_spatial_lut` 中对圆外位置写 0，kernel 中 `if (spatial_weight == 0.0f) continue` 跳过。
-
-实测结果远超预期：TEMPLATE kernel 不是运行时 predicated skip，而是编译器在展开后直接 **dead code elimination**，实现了编译期消除，TEMPLATE Gray 提升 +65%。
-
-### 12.3 优先级排序（更新后）
-
-| 优先级 | 优化 | 改动量 | 预期收益 | 实际 | 状态 |
-|:------:|------|:------:|:--------:|:----:|:----:|
-| ★★★ | E. 多 Stream 条带并行 | 大 | **2-3×** 端到端 | 0~-8%（WSL2） | ❌ 无收益 |
-| ★★★ | C/F. 圆形窗口裁剪 + early continue | 小 | ~20% kernel | **+13%~+65%** | ✅ 完成 |
-| ★☆☆ | B. `cudaFuncCachePreferL1` | 极小 | 0-5% | -36%（SEPARABLE） | ❌ 回退 |
-| ★☆☆ | D. 内部/边界分支 | 中 | <5%（已有 smem clamp） | — | 未实验 |
-| ★☆☆ | A. Texture Memory 梯度 | 中 | <5%（梯度 pass 占比小） | — | 未实验 |
+| 认知 | 独显 (PCIe) | 统一内存 (Jetson) |
+|------|:-----------:|:-----------------:|
+| 主瓶颈 | H2D/D2H 传输 (46-68%) | Kernel 计算 (90-95%) |
+| 传输优化价值 | 极高 | 无意义 |
+| Kernel 优化边际收益 | 中等（被传输稀释） | **极高**（直接反映到端到端） |
+| 编译器优化 | sm_89 保守 | sm_110 激进（寄存器 -64%） |
+| Fused kernel 价值 | 可能有效（传输成本高） | 无效（中间 buffer 成本低） |
+| FP16 策略 | 仅中间缓冲区有效 | 同左（标量 half 无优势） |

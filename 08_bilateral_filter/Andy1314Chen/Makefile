@@ -2,7 +2,7 @@ CXX = g++
 NVCC = nvcc
 CUDA_PATH ?= /usr/local/cuda
 CXXFLAGS = -std=c++17 -O3 -Wall -Wextra -I./include -I$(CUDA_PATH)/include
-NVCCFLAGS = -O3 -gencode arch=compute_89,code=sm_89 -I./include
+NVCCFLAGS = -O3 -gencode arch=compute_110,code=sm_110 -I./include
 
 OPENCV_CFLAGS = $(shell pkg-config --cflags opencv4)
 OPENCV_LIBS = $(shell pkg-config --libs opencv4)
