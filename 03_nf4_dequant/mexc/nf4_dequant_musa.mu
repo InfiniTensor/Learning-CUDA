@@ -1,49 +1,39 @@
-#include <cuda_fp16.h>
-#include <cuda_runtime.h>
+#include <musa_fp16.h>
+#include <musa_runtime.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h> // 添加用于创建目录
+#include <sys/stat.h>
 #include <sys/time.h>
 
-// 错误检查宏
-#define CUDA_CHECK(call)                                                       \
+#define MUSA_CHECK(call)                                                       \
   do {                                                                         \
-    cudaError_t err = call;                                                    \
-    if (err != cudaSuccess) {                                                  \
-      fprintf(stderr, "CUDA error at %s:%d - %s\n", __FILE__, __LINE__,        \
-              cudaGetErrorString(err));                                        \
+    musaError_t err = call;                                                   \
+    if (err != musaSuccess) {                                                 \
+      fprintf(stderr, "MUSA error at %s:%d - %s\n", __FILE__, __LINE__,        \
+              musaGetErrorString(err));                                       \
       exit(EXIT_FAILURE);                                                      \
     }                                                                          \
   } while (0)
 
 // 将表放入到常量内存加快速度
-__constant__ float NF4_LUT[16] = {
-    -1.00000000f, -0.69619280f, -0.52507305f, -0.39491710f,
-    -0.28444138f, -0.18477343f, -0.09105003f, 0.00000000f,
-    0.07958030f,  0.16093020f,  0.24611230f,  0.33791524f,
-    0.44070983f,  0.56261700f,  0.72295684f,  1.00000000f};
 __constant__ __half NF4_LUT_HALF[16];
+__constant__ __half CODE2_LUT[256];
 
-// ============================================================
-// 创建目录（如果不存在）
-// ============================================================
 void ensure_directory_exists(const char *path) {
   struct stat st = {0};
   if (stat(path, &st) == -1) {
 #ifdef _WIN32
-    mkdir(path);
+    _mkdir(path);
 #else
     mkdir(path, 0755);
 #endif
   }
 }
 
-// ============================================================
-// 初始化 LUT (将 float 转换为 half)
-// ============================================================
+// 初始化 LUT 将 float 转换为 half
 void init_nf4_lut() {
   float lut_f[16] = {-1.00000000f, -0.69619280f, -0.52507305f, -0.39491710f,
                      -0.28444138f, -0.18477343f, -0.09105003f, 0.00000000f,
@@ -54,50 +44,106 @@ void init_nf4_lut() {
   for (int i = 0; i < 16; i++) {
     lut_h[i] = __float2half(lut_f[i]);
   }
-  CUDA_CHECK(cudaMemcpyToSymbol(NF4_LUT_HALF, lut_h, sizeof(lut_h)));
+  MUSA_CHECK(musaMemcpyToSymbol(NF4_LUT_HALF, lut_h, sizeof(lut_h)));
 }
 
-// ============================================================
-// NF4 解量化核函数 (v2 版本 - 性能较好)
-// ============================================================
-__global__ void nf4_dequant_v2(const uint8_t *__restrict__ packed,
+__global__ void nf4_dequant_v5(
+    const uint8_t *__restrict__ packed,
+    const uint8_t *__restrict__ absmax_q,
+    const __half *__restrict__ absmax2,
+    const __half *__restrict__ code2,
+    float offset,
+    int64_t total_half_elements,
+    int blocksize,
+    int group_size,
+    __half *__restrict__ output)
+{
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    int64_t total_bytes = total_half_elements >> 1;   
+    int64_t byte_idx = (int64_t)tid * 4;
+    if (byte_idx >= total_bytes) return;
+    uint32_t pack4 = ((const uint32_t*)packed)[tid];
+    uint8_t b0 =  pack4        & 0xFF;
+    uint8_t b1 = (pack4 >> 8 ) & 0xFF;
+    uint8_t b2 = (pack4 >> 16) & 0xFF;
+    uint8_t b3 = (pack4 >> 24) & 0xFF;
+    int64_t half_base = byte_idx << 1;
+    int block_idx = half_base / blocksize;
+    int group_idx = block_idx / group_size;
+    __half scale = __hadd(__hmul(code2[absmax_q[block_idx]], absmax2[group_idx]), __float2half(offset));
+    __half h[8];
+    h[0]   = __hmul(NF4_LUT_HALF[(b0)>>4], scale); 
+    h[1] = __hmul(NF4_LUT_HALF[(b0)&0xF], scale);
+    h[2]   = __hmul(NF4_LUT_HALF[(b1)>>4], scale); 
+    h[3] = __hmul(NF4_LUT_HALF[(b1)&0xF], scale);
+    h[4]   = __hmul(NF4_LUT_HALF[(b2)>>4], scale); 
+    h[5] = __hmul(NF4_LUT_HALF[(b2)&0xF], scale);
+    h[6]   = __hmul(NF4_LUT_HALF[(b3)>>4], scale); 
+    h[7] = __hmul(NF4_LUT_HALF[(b3)&0xF], scale);
+
+    uint4 out_pack;
+    reinterpret_cast<__half*>(&out_pack)[0] = h[0];
+    reinterpret_cast<__half*>(&out_pack)[1] = h[1];
+    reinterpret_cast<__half*>(&out_pack)[2] = h[2];
+    reinterpret_cast<__half*>(&out_pack)[3] = h[3];
+    reinterpret_cast<__half*>(&out_pack)[4] = h[4];
+    reinterpret_cast<__half*>(&out_pack)[5] = h[5];
+    reinterpret_cast<__half*>(&out_pack)[6] = h[6];
+    reinterpret_cast<__half*>(&out_pack)[7] = h[7];
+
+    ((uint4*)(output + half_base))[0] = out_pack;
+}
+__global__ void nf4_dequant_v6(const uint8_t *__restrict__ packed,
                                const uint8_t *__restrict__ absmax_q,
-                               const __half *__restrict__ absmax2,
-                               const __half *__restrict__ code2, float offset,
+                               const __half *__restrict__ absmax2, float offset,
                                int64_t total_half_elements, int blocksize,
-                               int group_size, __half2 *__restrict__ output) {
-  int64_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-  if (tid >= total_half_elements)
+                               int group_size, __half *__restrict__ output) {
+  int tid = blockIdx.x * blockDim.x + threadIdx.x;
+  int64_t total_bytes = total_half_elements >> 1; // 2 half / byte
+  int64_t byte_idx = (int64_t)tid * 4;
+  if (byte_idx >= total_bytes)
     return;
+  uint32_t pack4 = ((const uint32_t *)packed)[tid];
+  uint8_t b0 = pack4 & 0xFF;
+  uint8_t b1 = (pack4 >> 8) & 0xFF;
+  uint8_t b2 = (pack4 >> 16) & 0xFF;
+  uint8_t b3 = (pack4 >> 24) & 0xFF;
+  int64_t half_base = byte_idx << 1;
+  int block_idx = half_base / blocksize;
+  int group_idx = block_idx / group_size;
+  __half scale =
+      __hadd(__hmul(CODE2_LUT[absmax_q[block_idx]], absmax2[group_idx]),
+             __float2half(offset));
+  __half h[8];
+  h[0] = __hmul(NF4_LUT_HALF[(b0) >> 4], scale);
+  h[1] = __hmul(NF4_LUT_HALF[(b0) & 0xF], scale);
+  h[2] = __hmul(NF4_LUT_HALF[(b1) >> 4], scale);
+  h[3] = __hmul(NF4_LUT_HALF[(b1) & 0xF], scale);
+  h[4] = __hmul(NF4_LUT_HALF[(b2) >> 4], scale);
+  h[5] = __hmul(NF4_LUT_HALF[(b2) & 0xF], scale);
+  h[6] = __hmul(NF4_LUT_HALF[(b3) >> 4], scale);
+  h[7] = __hmul(NF4_LUT_HALF[(b3) & 0xF], scale);
 
-  uint8_t val = packed[tid];
+  uint4 out_pack;
+  reinterpret_cast<__half *>(&out_pack)[0] = h[0];
+  reinterpret_cast<__half *>(&out_pack)[1] = h[1];
+  reinterpret_cast<__half *>(&out_pack)[2] = h[2];
+  reinterpret_cast<__half *>(&out_pack)[3] = h[3];
+  reinterpret_cast<__half *>(&out_pack)[4] = h[4];
+  reinterpret_cast<__half *>(&out_pack)[5] = h[5];
+  reinterpret_cast<__half *>(&out_pack)[6] = h[6];
+  reinterpret_cast<__half *>(&out_pack)[7] = h[7];
 
-  int64_t idx = tid << 1;
-  int64_t block_idx = idx / blocksize;
-  int64_t group_idx = block_idx / group_size;
-
-  // 计算 scale
-  __half s1 = code2[absmax_q[block_idx]];
-  __half s2 = absmax2[group_idx];
-  __half scale = __hadd(__hmul(s1, s2), __float2half(offset));
-
-  // 解量化
-  __half v1 = __hmul(__float2half(NF4_LUT[val >> 4]), scale);
-  __half v2 = __hmul(__float2half(NF4_LUT[val & 0x0F]), scale);
-
-  output[tid] = __halves2half2(v1, v2);
+  ((uint4 *)(output + half_base))[0] = out_pack;
 }
-
-// ============================================================
 // 读取权重文件
-// ============================================================
 int read_weight_file(const char *filename, int64_t *rows, int64_t *cols,
                      int *blocksize, uint8_t **packed, uint8_t **absmax_q,
                      __half **absmax2, __half **code2, float *offset) {
 
   FILE *fp = fopen(filename, "rb");
   if (!fp) {
-    fprintf(stderr, "❌ 无法打开文件: %s\n", filename);
+    fprintf(stderr, "无法打开文件: %s\n", filename);
     return -1;
   }
 
@@ -111,7 +157,7 @@ int read_weight_file(const char *filename, int64_t *rows, int64_t *cols,
   int64_t num_blocks = (total_elements + *blocksize - 1) / *blocksize;
   int64_t num_groups = (num_blocks + 255) / 256;
 
-  printf("\n📊 文件信息:\n");
+  printf("\n 文件信息:\n");
   printf("  矩阵: %ld x %ld\n", *rows, *cols);
   printf("  总元素数: %ld\n", total_elements);
   printf("  blocksize: %d\n", *blocksize);
@@ -126,7 +172,7 @@ int read_weight_file(const char *filename, int64_t *rows, int64_t *cols,
   *code2 = (__half *)malloc(256 * sizeof(__half));
 
   if (!*packed || !*absmax_q || !*absmax2 || !*code2) {
-    fprintf(stderr, "❌ 主机内存分配失败\n");
+    fprintf(stderr, " 主机内存分配失败\n");
     fclose(fp);
     return -1;
   }
@@ -139,47 +185,41 @@ int read_weight_file(const char *filename, int64_t *rows, int64_t *cols,
   fread(offset, sizeof(float), 1, fp);
 
   fclose(fp);
-  printf("✅ 文件读取成功\n");
+  printf(" 文件读取成功\n");
   return 0;
 }
 
-// ============================================================
-// 保存解量化后的权重（自动保存到cuda_results目录）
-// ============================================================
+// 保存解量化后的权重（自动保存到musa_results目录）
 void save_dequantized_weight(const char *filename, __half *weight,
                              int64_t total_elements) {
-  // 确保cuda_results目录存在
-  ensure_directory_exists("cuda_results");
+  ensure_directory_exists("../musa_results");
 
   // 构建完整路径
   char full_path[512];
-  snprintf(full_path, sizeof(full_path), "cuda_results/%s", filename);
+  snprintf(full_path, sizeof(full_path), "../musa_results/%s", filename);
 
   FILE *fp = fopen(full_path, "wb");
   if (!fp) {
-    fprintf(stderr, "❌ 无法创建输出文件: %s\n", full_path);
+    fprintf(stderr, " 无法创建输出文件: %s\n", full_path);
     return;
   }
 
   fwrite(weight, sizeof(__half), total_elements, fp);
   fclose(fp);
 
-  printf("✅ 已保存解量化结果: %s (%.2f MB)\n", full_path,
+  printf(" 已保存解量化结果: %s (%.2f MB)\n", full_path,
          (total_elements * sizeof(__half)) / (1024.0 * 1024.0));
 }
 
-// ============================================================
 // 计时器 (毫秒)
-// ============================================================
 double get_time_ms() {
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_sec * 1000.0 + tv.tv_usec / 1000.0;
 }
 
-// ============================================================
+
 // 计算有效内存带宽
-// ============================================================
 double calculate_bandwidth(int64_t total_elements, double time_ms) {
   // 输入数据大小
   int64_t input_bytes = (total_elements + 1) / 2; // packed
@@ -196,9 +236,7 @@ double calculate_bandwidth(int64_t total_elements, double time_ms) {
   return (total_bytes / (1024.0 * 1024.0 * 1024.0)) / (time_ms / 1000.0);
 }
 
-// ============================================================
-// 主函数
-// ============================================================
+
 int main(int argc, char **argv) {
 
   if (argc != 2) {
@@ -211,14 +249,13 @@ int main(int argc, char **argv) {
   const char *input_file = argv[1];
 
   // 确保输出目录存在
-  ensure_directory_exists("cuda_results");
+  ensure_directory_exists("../musa_results");
 
   // 初始化 LUT
-  printf("\n🔄 初始化 NF4 LUT...\n");
   init_nf4_lut();
 
   // 读取权重文件
-  printf("\n📖 读取权重文件: %s\n", input_file);
+  printf("\n 读取权重文件: %s\n", input_file);
   int64_t rows, cols;
   int blocksize;
   uint8_t *h_packed, *h_absmax_q;
@@ -237,69 +274,68 @@ int main(int argc, char **argv) {
   int64_t num_blocks = (total_elements + blocksize - 1) / blocksize;
   int64_t num_groups = (num_blocks + 255) / 256;
 
-  printf("\n📈 计算参数:\n");
+  printf("\n 计算参数:\n");
   printf("  total_elements: %ld\n", total_elements);
   printf("  num_units: %ld\n", num_units);
   printf("  num_blocks: %ld\n", num_blocks);
   printf("  num_groups: %ld\n", num_groups);
 
   // 分配 GPU 内存
-  printf("\n🔄 分配 GPU 内存...\n");
+  printf("\n 分配 MUSA 内存...\n");
   uint8_t *d_packed, *d_absmax_q;
   __half *d_absmax2, *d_code2, *d_output;
 
-  CUDA_CHECK(cudaMalloc(&d_packed, num_units));
-  CUDA_CHECK(cudaMalloc(&d_absmax_q, num_blocks));
-  CUDA_CHECK(cudaMalloc(&d_absmax2, num_groups * sizeof(__half)));
-  CUDA_CHECK(cudaMalloc(&d_code2, 256 * sizeof(__half)));
-  CUDA_CHECK(cudaMalloc(&d_output, total_elements * sizeof(__half)));
+  MUSA_CHECK(musaMalloc(&d_packed, num_units));
+  MUSA_CHECK(musaMalloc(&d_absmax_q, num_blocks));
+  MUSA_CHECK(musaMalloc(&d_absmax2, num_groups * sizeof(__half)));
+  MUSA_CHECK(musaMalloc(&d_code2, 256 * sizeof(__half)));
+  MUSA_CHECK(musaMalloc(&d_output, total_elements * sizeof(__half)));
 
   // 拷贝数据到 GPU
-  printf("🔄 拷贝数据到 GPU...\n");
-  CUDA_CHECK(cudaMemcpy(d_packed, h_packed, num_units, cudaMemcpyHostToDevice));
-  CUDA_CHECK(
-      cudaMemcpy(d_absmax_q, h_absmax_q, num_blocks, cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(d_absmax2, h_absmax2, num_groups * sizeof(__half),
-                        cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(d_code2, h_code2, 256 * sizeof(__half),
-                        cudaMemcpyHostToDevice));
+  printf(" 拷贝数据到 MUSA 设备...\n");
+  MUSA_CHECK(musaMemcpy(d_packed, h_packed, num_units, musaMemcpyHostToDevice));
+  MUSA_CHECK(musaMemcpy(d_absmax_q, h_absmax_q, num_blocks, musaMemcpyHostToDevice));
+  MUSA_CHECK(musaMemcpy(d_absmax2, h_absmax2, num_groups * sizeof(__half),
+                        musaMemcpyHostToDevice));
+  MUSA_CHECK(musaMemcpy(d_code2, h_code2, 256 * sizeof(__half),
+                        musaMemcpyHostToDevice));
+  MUSA_CHECK(musaMemcpyToSymbol(CODE2_LUT, h_code2, 256 * sizeof(__half)));
 
   // 分配主机输出内存
   __half *h_output = (__half *)malloc(total_elements * sizeof(__half));
   if (!h_output) {
-    fprintf(stderr, "❌ 主机输出内存分配失败\n");
+    fprintf(stderr, " 主机输出内存分配失败\n");
     return -1;
   }
 
   // 配置内核启动参数
   int threads = 256;
-  int blocks = (num_units + threads - 1) / threads;
+  int64_t total_bytes = total_elements >> 1;
+  int blocks = (total_bytes/4 + threads - 1) / threads;
 
-  printf("\n🚀 内核配置:\n");
+  printf("\n 内核配置:\n");
   printf("  blocks: %d\n", blocks);
   printf("  threads per block: %d\n", threads);
   printf("  总线程数: %d\n", blocks * threads);
 
   // 预热 (5次)
-  printf("\n🔥 预热 (5次)...\n");
+  printf("\n 预热 (5次)...\n");
   for (int i = 0; i < 5; i++) {
-    nf4_dequant_v2<<<blocks, threads>>>(d_packed, d_absmax_q, d_absmax2,
-                                        d_code2, offset, num_units, blocksize,
-                                        256, (__half2 *)d_output);
+    nf4_dequant_v6<<<blocks, threads>>>(d_packed, d_absmax_q, d_absmax2, offset, total_elements, blocksize,
+                                        256, d_output);
   }
-  CUDA_CHECK(cudaDeviceSynchronize());
+  MUSA_CHECK(musaDeviceSynchronize());
 
   // 正式测试 (100次)
-  printf("⏱️  性能测试 (100次迭代)...\n");
+  printf("  性能测试 (100次迭代)...\n");
   double start_time = get_time_ms();
 
   for (int i = 0; i < 100; i++) {
-    nf4_dequant_v2<<<blocks, threads>>>(d_packed, d_absmax_q, d_absmax2,
-                                        d_code2, offset, num_units, blocksize,
-                                        256, (__half2 *)d_output);
+    nf4_dequant_v6<<<blocks, threads>>>(d_packed, d_absmax_q, d_absmax2, offset, total_elements, blocksize,
+                                        256, d_output);
   }
 
-  CUDA_CHECK(cudaDeviceSynchronize());
+  MUSA_CHECK(musaDeviceSynchronize());
   double end_time = get_time_ms();
 
   double total_time = end_time - start_time;
@@ -309,17 +345,17 @@ int main(int argc, char **argv) {
   double bandwidth = calculate_bandwidth(total_elements, avg_time_ms);
 
   // 拷贝结果回主机
-  printf("🔄 拷贝结果回主机...\n");
-  CUDA_CHECK(cudaMemcpy(h_output, d_output, total_elements * sizeof(__half),
-                        cudaMemcpyDeviceToHost));
+  printf(" 拷贝结果回主机...\n");
+  MUSA_CHECK(musaMemcpy(h_output, d_output, total_elements * sizeof(__half),
+                        musaMemcpyDeviceToHost));
 
   // 生成输出文件名
   char output_file[256];
   snprintf(output_file, sizeof(output_file), "dequant_%ldx%ld_bs%d.fp16", rows,
            cols, blocksize);
 
-  // 保存解量化结果（自动保存到cuda_results目录）
-  printf("\n💾 保存解量化结果...\n");
+  // 保存解量化结果（自动保存到musa_results目录）
+  printf("\n 保存解量化结果...\n");
   save_dequantized_weight(output_file, h_output, total_elements);
 
   // 生成性能日志文件名
@@ -337,13 +373,12 @@ int main(int argc, char **argv) {
   printf("核函数执行时间: %.4f ms\n", avg_time_ms);
   printf("有效内存带宽: %.2f GB/s\n", bandwidth);
   printf("\n");
-  printf("输出文件: cuda_results/%s\n", output_file);
-  printf("日志文件: cuda_results/%s\n", log_file);
+  printf("输出文件: musa_results/%s\n", output_file);
+  printf("日志文件: musa_results/%s\n", log_file);
 
-
-  // 保存性能日志（也保存到cuda_results目录）
+  // 保存性能日志（也保存到musa_results目录）
   char log_path[512];
-  snprintf(log_path, sizeof(log_path), "cuda_results/%s", log_file);
+  snprintf(log_path, sizeof(log_path), "../musa_results/%s", log_file);
 
   FILE *log_fp = fopen(log_path, "w");
   if (log_fp) {
@@ -354,24 +389,24 @@ int main(int argc, char **argv) {
     fprintf(log_fp, "total_elements=%ld\n", total_elements);
     fprintf(log_fp, "kernel_time_ms=%.4f\n", avg_time_ms);
     fprintf(log_fp, "bandwidth_gbps=%.2f\n", bandwidth);
-    fprintf(log_fp, "output_file=cuda_results/%s\n", output_file);
+    fprintf(log_fp, "output_file=musa_results/%s\n", output_file);
     fclose(log_fp);
-    printf("✅ 性能日志已保存到: %s\n", log_path);
+    printf(" 性能日志已保存到: %s\n", log_path);
   }
 
-  // 清理
   free(h_packed);
   free(h_absmax_q);
   free(h_absmax2);
   free(h_code2);
   free(h_output);
 
-  cudaFree(d_packed);
-  cudaFree(d_absmax_q);
-  cudaFree(d_absmax2);
-  cudaFree(d_code2);
-  cudaFree(d_output);
+  musaFree(d_packed);
+  musaFree(d_absmax_q);
+  musaFree(d_absmax2);
+  musaFree(d_code2);
+  musaFree(d_output);
 
-  printf("\n✅ 测试完成!\n\n");
+  printf("\n 测试完成!\n\n");
   return 0;
 }
+

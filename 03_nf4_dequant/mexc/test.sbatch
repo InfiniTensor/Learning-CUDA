@@ -10,7 +10,10 @@
 #SBATCH --mem=256G                       # 请求的内存
 #SBATCH --time=00:20:00                  # 运行时间上限
 
-# 需要用到计算资源的命令
-# 推荐使用 srun 启动主程序，自动绑定资源
-mcc vectorAdd.mu -o vectorAdd -lmusart
-srun ./vectorAdd
+
+
+
+
+for f in ../weight_data/*.bin; do
+    srun ./nf4_musa "$f"
+done

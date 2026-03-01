@@ -177,11 +177,11 @@ def benchmark():
     print("\n======== NF4 Dequant Benchmark ========\n")
     print(df.to_string(index=False))
 
-    df.to_csv("nf4_benchmark.csv", index=False)
-    print("\n结果已保存到 nf4_benchmark.csv")
+    # df.to_csv("nf4_benchmark.csv", index=False)
+    # print("\n结果已保存到 nf4_benchmark.csv")
 
-    # ---------------- 曲线图 ----------------
-    plot_speedup(df)
+    # # ---------------- 曲线图 ----------------
+    # plot_speedup(df)
 
 
 # =========================================================
