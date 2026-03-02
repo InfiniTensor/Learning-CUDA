@@ -6,6 +6,12 @@
 #include <omp.h>
 #include <string>
 #include <vector>
+#include <cstring> // For memchr
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 #define MATCH_SCORE 2
 #define MISMATCH_SCORE -1
@@ -29,63 +35,117 @@ struct KmerPos {
 
 void load_reference(const std::string &filename, std::vector<std::string> &names, std::string &concat_seq,
                     std::vector<size_t> &offsets) {
-    std::ifstream file(filename);
-    if (!file.is_open())
-        exit(1);
-    std::string line, name, seq;
-    bool is_fastq = false;
+    int fd = open(filename.c_str(), O_RDONLY);
+    if (fd == -1) exit(1);
+    
+    struct stat sb;
+    if (fstat(fd, &sb) == -1) exit(1);
+    size_t size = sb.st_size;
+    
+    const char* mapped_ptr = static_cast<const char*>(mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0));
+    if (mapped_ptr == MAP_FAILED) exit(1);
+    close(fd);
 
-    if (std::getline(file, line)) {
-        if (line[0] == '@')
-            is_fastq = true;
-        name = line.substr(1);
-    }
+    concat_seq.reserve(size); 
+    
+    const char* ptr = mapped_ptr;
+    const char* end = ptr + size;
+    bool is_fastq = (ptr < end && *ptr == '@');
 
-    while (std::getline(file, line)) {
+    while (ptr < end) {
         if (is_fastq) {
-            seq = line;
-            std::getline(file, line);
-            std::getline(file, line);
+            const char* name_end = (const char*)memchr(ptr, '\n', end - ptr);
+            if (!name_end) name_end = end;
+            std::string name(ptr + 1, name_end - (ptr + 1));
+            if (!name.empty() && name.back() == '\r') name.pop_back();
+            ptr = name_end + (name_end < end ? 1 : 0);
+
+            if (ptr >= end) break;
+            const char* seq_end = (const char*)memchr(ptr, '\n', end - ptr);
+            if (!seq_end) seq_end = end;
+            std::string seq(ptr, seq_end - ptr);
+            if (!seq.empty() && seq.back() == '\r') seq.pop_back();
+            ptr = seq_end + (seq_end < end ? 1 : 0);
+
             names.push_back(name);
             offsets.push_back(concat_seq.size());
             concat_seq += seq;
-            if (std::getline(file, line))
-                name = line.substr(1);
+
+            ptr = (const char*)memchr(ptr, '\n', end - ptr);
+            if (ptr) ptr++; else break;
+            ptr = (const char*)memchr(ptr, '\n', end - ptr);
+            if (ptr) ptr++; else break;
         } else {
-            if (line[0] == '>') {
+            if (*ptr == '>') {
+                const char* name_end = (const char*)memchr(ptr, '\n', end - ptr);
+                if (!name_end) name_end = end;
+                std::string name(ptr + 1, name_end - (ptr + 1));
+                if (!name.empty() && name.back() == '\r') name.pop_back();
                 names.push_back(name);
                 offsets.push_back(concat_seq.size());
-                concat_seq += seq;
-                name = line.substr(1);
-                seq = "";
+                ptr = name_end + (name_end < end ? 1 : 0);
             } else {
-                seq += line;
+                const char* seq_end = (const char*)memchr(ptr, '\n', end - ptr);
+                if (!seq_end) seq_end = end;
+                size_t seq_len = seq_end - ptr;
+                if (seq_len > 0 && *(seq_end - 1) == '\r') seq_len--;
+                concat_seq.append(ptr, seq_len);
+                ptr = seq_end + (seq_end < end ? 1 : 0);
             }
         }
     }
-    if (!is_fastq && !name.empty()) {
-        names.push_back(name);
-        offsets.push_back(concat_seq.size());
-        concat_seq += seq;
-    }
+    munmap((void*)mapped_ptr, size);
 }
 
 void load_reads(const std::string &filename, std::vector<Read> &reads) {
-    std::ifstream file(filename);
-    if (!file.is_open())
-        exit(1);
-    std::string line;
-    while (std::getline(file, line)) {
-        if (line.empty())
+    int fd = open(filename.c_str(), O_RDONLY);
+    if (fd == -1) exit(1);
+    
+    struct stat sb;
+    if (fstat(fd, &sb) == -1) exit(1);
+    size_t size = sb.st_size;
+    
+    const char* mapped_ptr = static_cast<const char*>(mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0));
+    if (mapped_ptr == MAP_FAILED) exit(1);
+    close(fd);
+
+    reads.reserve(size / 150); 
+
+    const char* ptr = mapped_ptr;
+    const char* end = ptr + size;
+
+    while (ptr < end) {
+        if (*ptr != '@') {
+            ptr = (const char*)memchr(ptr, '\n', end - ptr);
+            if (ptr) ptr++; else break;
             continue;
+        }
+
         Read r;
-        r.name = line.substr(1);
-        std::getline(file, r.seq);
-        std::getline(file, line);
-        std::getline(file, line);
-        reads.push_back(r);
+        const char* name_end = (const char*)memchr(ptr, '\n', end - ptr);
+        if (!name_end) name_end = end;
+        r.name.assign(ptr + 1, name_end - (ptr + 1));
+        if (!r.name.empty() && r.name.back() == '\r') r.name.pop_back();
+        ptr = name_end + (name_end < end ? 1 : 0);
+        
+        if (ptr >= end) break;
+
+        const char* seq_end = (const char*)memchr(ptr, '\n', end - ptr);
+        if (!seq_end) seq_end = end;
+        r.seq.assign(ptr, seq_end - ptr);
+        if (!r.seq.empty() && r.seq.back() == '\r') r.seq.pop_back();
+        ptr = seq_end + (seq_end < end ? 1 : 0);
+
+        ptr = (const char*)memchr(ptr, '\n', end - ptr);
+        if (ptr) ptr++; else break;
+        ptr = (const char*)memchr(ptr, '\n', end - ptr);
+        if (ptr) ptr++; else break;
+
+        reads.push_back(std::move(r));
     }
+    munmap((void*)mapped_ptr, size);
 }
+
 
 inline uint8_t char2val_cpu(char c) { return (c >> 1) & 0x03; }
 
