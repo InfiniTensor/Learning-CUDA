@@ -135,7 +135,7 @@ def compare_all():
             line = (f"| {row['shape']} | {row['blocksize']} | "
                    f"{row['bnb_time_ms']:.4f} | {row['musa_time_ms']:.4f} | "
                    f"{row['speedup']:.2f} | {row['mae']:.8f} | {row['mse']:.8f} | "
-                   f"{row['max_diff']:.8f} | {row['bnb_error']:.8f} |")
+                   f"{row['max_diff']:.8f} | ")
             f.write(line + '\n')
     
     print(f" Markdown表格已保存到: {md_file}")
