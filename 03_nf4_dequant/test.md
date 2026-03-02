@@ -6,3 +6,13 @@
 进行测试
 编译命令：nvcc --shared -o libnf4_cuda.so nf4_cuda.cu -Xcompiler -fPIC
 提供给python调用
+
+# ncu使用
+TMPDIR=$HOME ncu \
+-k nf4_dequant_v8 \
+--launch-skip 10 \
+--launch-count 1 \
+--set full \
+-o nf4_profile \
+./nf4_dequant_cuda ../weight_data/weight_8192x8192_bs64.bin
+

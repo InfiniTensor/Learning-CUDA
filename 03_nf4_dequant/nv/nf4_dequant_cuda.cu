@@ -52,10 +52,10 @@ void init_nf4_lut() {
 __global__ void nf4_dequant_v6(const uint8_t *__restrict__ packed,
                                const uint8_t *__restrict__ absmax_q,
                                const __half *__restrict__ absmax2, float offset,
-                               int64_t total_half_elements, int blocksize,
+                               int64_t total_elements, int blocksize,
                                int group_size, __half *__restrict__ output) {
   int tid = blockIdx.x * blockDim.x + threadIdx.x;
-  int64_t total_bytes = total_half_elements >> 1; // 2 half / byte
+  int64_t total_bytes = total_elements >> 1; // 2 half / byte
   int64_t byte_idx = (int64_t)tid * 4;
   if (byte_idx >= total_bytes)
     return;
@@ -307,7 +307,7 @@ int main(int argc, char **argv) {
   double bandwidth = calculate_bandwidth(total_elements, avg_time_ms);
 
   // 拷贝结果回主机
-  printf("🔄 拷贝结果回主机...\n");
+  printf(" 拷贝结果回主机...\n");
   CUDA_CHECK(cudaMemcpy(h_output, d_output, total_elements * sizeof(__half),
                         cudaMemcpyDeviceToHost));
 
