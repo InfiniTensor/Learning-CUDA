@@ -1,13 +1,13 @@
 Shape,Blocksize,BnB Time (ms),Total Elements,Weight File,BnB Output File
-256x256,64,0.1167,65536,weight_data/weight_256x256_bs64.bin,bnb_results/bnb_256x256_bs64.fp16
-256x256,128,0.1057,65536,weight_data/weight_256x256_bs128.bin,bnb_results/bnb_256x256_bs128.fp16
-512x512,64,0.1173,262144,weight_data/weight_512x512_bs64.bin,bnb_results/bnb_512x512_bs64.fp16
-512x512,128,0.0870,262144,weight_data/weight_512x512_bs128.bin,bnb_results/bnb_512x512_bs128.fp16
-1024x1024,64,0.0892,1048576,weight_data/weight_1024x1024_bs64.bin,bnb_results/bnb_1024x1024_bs64.fp16
-1024x1024,128,0.0945,1048576,weight_data/weight_1024x1024_bs128.bin,bnb_results/bnb_1024x1024_bs128.fp16
-2048x2048,64,0.1530,4194304,weight_data/weight_2048x2048_bs64.bin,bnb_results/bnb_2048x2048_bs64.fp16
-2048x2048,128,0.0822,4194304,weight_data/weight_2048x2048_bs128.bin,bnb_results/bnb_2048x2048_bs128.fp16
-4096x4096,64,0.1937,16777216,weight_data/weight_4096x4096_bs64.bin,bnb_results/bnb_4096x4096_bs64.fp16
-4096x4096,128,0.2048,16777216,weight_data/weight_4096x4096_bs128.bin,bnb_results/bnb_4096x4096_bs128.fp16
-8192x8192,64,0.7504,67108864,weight_data/weight_8192x8192_bs64.bin,bnb_results/bnb_8192x8192_bs64.fp16
-8192x8192,128,0.7373,67108864,weight_data/weight_8192x8192_bs128.bin,bnb_results/bnb_8192x8192_bs128.fp16
+256x256,64,0.1006,65536,weight_data/weight_256x256_bs64.bin,bnb_results/bnb_256x256_bs64.fp16
+256x256,128,0.0964,65536,weight_data/weight_256x256_bs128.bin,bnb_results/bnb_256x256_bs128.fp16
+512x512,64,0.0926,262144,weight_data/weight_512x512_bs64.bin,bnb_results/bnb_512x512_bs64.fp16
+512x512,128,0.0807,262144,weight_data/weight_512x512_bs128.bin,bnb_results/bnb_512x512_bs128.fp16
+1024x1024,64,0.0841,1048576,weight_data/weight_1024x1024_bs64.bin,bnb_results/bnb_1024x1024_bs64.fp16
+1024x1024,128,0.0834,1048576,weight_data/weight_1024x1024_bs128.bin,bnb_results/bnb_1024x1024_bs128.fp16
+2048x2048,64,0.0971,4194304,weight_data/weight_2048x2048_bs64.bin,bnb_results/bnb_2048x2048_bs64.fp16
+2048x2048,128,0.1238,4194304,weight_data/weight_2048x2048_bs128.bin,bnb_results/bnb_2048x2048_bs128.fp16
+4096x4096,64,0.2058,16777216,weight_data/weight_4096x4096_bs64.bin,bnb_results/bnb_4096x4096_bs64.fp16
+4096x4096,128,0.2026,16777216,weight_data/weight_4096x4096_bs128.bin,bnb_results/bnb_4096x4096_bs128.fp16
+7000x7000,64,0.6488,49000000,weight_data/weight_7000x7000_bs64.bin,bnb_results/bnb_7000x7000_bs64.fp16
+7000x7000,128,0.5989,49000000,weight_data/weight_7000x7000_bs128.bin,bnb_results/bnb_7000x7000_bs128.fp16

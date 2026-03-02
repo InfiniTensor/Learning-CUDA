@@ -153,9 +153,7 @@ def generate_and_test(rows, cols, blocksize, group_size=256,
     bnb_file = f"{bnb_dir}/bnb_{rows}x{cols}_bs{blocksize}.fp16"
     save_bnb_output(bnb_file, bnb_output, rows, cols)
     
-    # 4. 保存原始权重（用于验证）
-    orig_file = f"{bnb_dir}/original_{rows}x{cols}_bs{blocksize}.fp16"
-    save_bnb_output(orig_file, weight, rows, cols)
+
     
     return {
         'shape': f"{rows}x{cols}",
@@ -164,7 +162,6 @@ def generate_and_test(rows, cols, blocksize, group_size=256,
         'blocksize': blocksize,
         'weight_file': weight_file,
         'bnb_file': bnb_file,
-        'original_file': orig_file,
         'bnb_time_ms': bnb_time,
         'total_elements': total
     }
@@ -182,7 +179,7 @@ def generate_all():
         (1024, 1024),
         (2048, 2048),
         (4096, 4096),
-        (8192, 8192),
+        (7000, 7000),
     ]
 
     blocksizes = [64, 128]

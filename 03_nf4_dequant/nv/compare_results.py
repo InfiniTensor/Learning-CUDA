@@ -63,13 +63,6 @@ def compare_all():
         bnb_data_np = np.fromfile(bnb_file, dtype=np.float16)
         bnb_tensor = torch.from_numpy(bnb_data_np)
 
-        # 原始权重误差（可选）
-        bnb_error = 0
-        orig_file = BNB_DIR / f"original_{shape}_bs{blocksize}.fp16"
-        if orig_file.exists():
-            orig_data = np.fromfile(orig_file, dtype=np.float16)
-            orig_tensor = torch.from_numpy(orig_data)
-            bnb_error = torch.mean(torch.abs(orig_tensor - bnb_tensor)).item()
 
 
         # 误差计算
@@ -105,7 +98,6 @@ def compare_all():
             'mae': mae,
             'mse': mse,
             'max_diff': max_diff,
-            'bnb_error': bnb_error
         })
 
     print("="*80)
