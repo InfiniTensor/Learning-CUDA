@@ -222,7 +222,7 @@ int main() {
         for (size_t i = 0; i + KMER_SIZE <= concat_ref.length(); i += 1) {
             kmer_list.push_back({pack_16mer(concat_ref.c_str() + i), (int)i});
         }
-        std::sort(kmer_list.begin(), kmer_list.end());
+        __gnu_parallel::sort(kmer_list.begin(), kmer_list.end());
     }
 
     size_t ref_encoded_size = (concat_ref.length() + 15) / 16;
@@ -240,39 +240,51 @@ int main() {
     std::vector<int> h_candidate_pos;
     std::vector<int> h_candidate_read_idx;
 
-    for (int i = 0; i < num_reads; ++i) {
-        int rlen = std::min((int)reads[i].seq.length(), MAX_READ_LEN);
-        h_read_lengths[i] = rlen;
+    // Parallelize seed matching
+    #pragma omp parallel
+    {
+        std::vector<int> local_cands_pos;
+        std::vector<int> local_cands_idx;
 
-        uint32_t *read_ptr = h_reads_packed.data() + i * (MAX_READ_LEN / 16);
-        encode_sequence_cpu(reads[i].seq, read_ptr);
+        #pragma omp for schedule(dynamic, 100)
+        for (int i = 0; i < num_reads; ++i) {
+            int rlen = std::min((int)reads[i].seq.length(), MAX_READ_LEN);
+            h_read_lengths[i] = rlen;
 
-        std::vector<int> cands;
-        
-        // Find seeds using binary search
-        for (int offset = 0; offset <= rlen - KMER_SIZE; offset += 2) {
-            uint32_t seed = pack_16mer(reads[i].seq.c_str() + offset);
-            KmerPos target = {seed, 0};
-            auto it = std::lower_bound(kmer_list.begin(), kmer_list.end(), target);
-            
-            int count = 0;
-            // Limit to max 100 hits per kmer to mimic previous behavior
-            while (it != kmer_list.end() && it->kmer == seed && count < 100) {
-                int ref_window_start = std::max(0, it->pos - offset - 50);
-                cands.push_back(ref_window_start);
-                ++it;
-                ++count;
+            uint32_t *read_ptr = h_reads_packed.data() + i * (MAX_READ_LEN / 16);
+            encode_sequence_cpu(reads[i].seq, read_ptr);
+
+            std::vector<int> cands;
+            for (int offset = 0; offset <= rlen - KMER_SIZE; offset += 2) {
+                uint32_t seed = pack_16mer(reads[i].seq.c_str() + offset);
+                KmerPos target = {seed, 0};
+                auto it = std::lower_bound(kmer_list.begin(), kmer_list.end(), target);
+                
+                int count = 0;
+                while (it != kmer_list.end() && it->kmer == seed && count < 100) {
+                    int ref_window_start = std::max(0, it->pos - offset - 50);
+                    cands.push_back(ref_window_start);
+                    ++it;
+                    ++count;
+                }
+            }
+
+            std::sort(cands.begin(), cands.end());
+            int last_added = -1000;
+            for (int pos : cands) {
+                if (pos > last_added + 50) {
+                    local_cands_pos.push_back(pos);
+                    local_cands_idx.push_back(i);
+                    last_added = pos;
+                }
             }
         }
 
-        std::sort(cands.begin(), cands.end());
-        int last_added = -1000;
-        for (int pos : cands) {
-            if (pos > last_added + 50) {
-                h_candidate_pos.push_back(pos);
-                h_candidate_read_idx.push_back(i);
-                last_added = pos;
-            }
+        // Merge thread-local results
+        #pragma omp critical
+        {
+            h_candidate_pos.insert(h_candidate_pos.end(), local_cands_pos.begin(), local_cands_pos.end());
+            h_candidate_read_idx.insert(h_candidate_read_idx.end(), local_cands_idx.begin(), local_cands_idx.end());
         }
     }
 
