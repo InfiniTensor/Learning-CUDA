@@ -262,6 +262,7 @@ __global__ void sw_extend_batched_kernel(const uint32_t *ref_packed, size_t ref_
 }
 
 int main() {
+    cudaFree(0); 
     std::string ref_file = "reference.fasta";
     std::string reads_file = "reads.fastq";
     std::ofstream out_file("results.txt");
@@ -329,7 +330,7 @@ int main() {
                 }
             }
 
-            std::sort(cands.begin(), cands.end());
+            __gnu_parallel::sort(cands.begin(), cands.end());
             int last_added = -1000;
             for (int pos : cands) {
                 if (pos > last_added + 50) {
