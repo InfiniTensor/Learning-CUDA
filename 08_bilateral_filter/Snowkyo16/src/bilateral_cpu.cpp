@@ -1,4 +1,4 @@
-#include "bilateral_filter.h"
+#include "bilateral_filter.cuh"
 #include <cmath>
 #include <algorithm>
 
@@ -7,7 +7,7 @@
 // 参考：Tomasi & Manduchi 1998 - Section 2
 // https://users.soe.ucsc.edu/~manduchi/Papers/ICCV98.pdf
 // ============================================================
-Image bilateral_filter_cpu(const Image& input, const FilterParams& params) {
+Image bilateral_filter_cpu_v0(const Image& input, const FilterParams& params) {
     int w = input.width;
     int h = input.height;
     int c = input.channels;
