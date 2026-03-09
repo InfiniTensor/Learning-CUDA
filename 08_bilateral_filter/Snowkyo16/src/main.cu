@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     if (argc < 4) {
         cerr << "用法: " << argv[0]
              << " <输入图像> <参数文件> <输出目录> [版本]" << endl;
-        cerr << "版本：v0 / v1/ all (默认 all) " << endl;
+        cerr << "版本: v0 / v1/ v2/ all (默认 all) " << endl;
         return 1;
     }
 
@@ -34,11 +34,11 @@ int main(int argc, char* argv[]) {
     string filename = get_filename(input_path);
     string basename = filename;
     size_t dot_pos = basename.rfind('.');
-    string ext = ".png";
+    // 输出统一用 .png(无损)，避免JPEG压缩引入误差
     if (dot_pos != string::npos) {
-        ext = basename.substr(dot_pos);
         basename = basename.substr(0, dot_pos);
     }
+    string ext = ".png";
     string image_dir = output_dir + "/images";
 
     // 加载输入
@@ -48,11 +48,9 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     Image input = load_image(input_path);
-
     FilterParams params = load_params(param_path);
 
-    // 首次CUDA调用会触发上下文初始化
-    // 提前做一次，避免计入V1的计时
+    // 首次CUDA调用会触发上下文初始化，提前做一次，避免计入V1的计时
     cudaFree(0);
 
     cout << endl;
@@ -77,6 +75,12 @@ int main(int argc, char* argv[]) {
     if (mode == "v1" || mode == "all") {
         results.push_back(run_version("v1_naive", input, params,
                                       bilateral_filter_gpu_v1, image_dir, 
+                                      basename, ext));
+    }
+
+    if (mode == "v2" || mode == "all") {
+        results.push_back(run_version("v2_smem", input, params,
+                                      bilateral_filter_gpu_v2, image_dir,
                                       basename, ext));
     }
 

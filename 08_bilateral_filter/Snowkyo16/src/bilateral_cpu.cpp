@@ -2,11 +2,7 @@
 #include <cmath>
 #include <algorithm>
 
-// ============================================================
 // CPU 双边滤波实现
-// 参考：Tomasi & Manduchi 1998 - Section 2
-// https://users.soe.ucsc.edu/~manduchi/Papers/ICCV98.pdf
-// ============================================================
 Image bilateral_filter_cpu_v0(const Image& input, const FilterParams& params) {
     int w = input.width;
     int h = input.height;
@@ -43,10 +39,15 @@ Image bilateral_filter_cpu_v0(const Image& input, const FilterParams& params) {
             // 遍历邻域窗口
             for (int dy = -r; dy <= r; dy++) {
                 for (int dx = -r; dx <= r; dx++) {
+                    // 圆形窗口：跳过角落像素，与OpenCV一致
+                    if(dx * dx + dy * dy > r * r) {
+                        continue;
+                    }
+
                     int qx = x + dx;
                     int qy = y + dy;
 
-                    // 边界处理：跳过越界像素（clamp 策略）
+                    // 边界处理：跳过越界像素
                     if (qx < 0 || qx >= w || qy < 0 || qy >= h) {
                         continue;
                     }
@@ -61,19 +62,19 @@ Image bilateral_filter_cpu_v0(const Image& input, const FilterParams& params) {
                     // 计算空间距离的平方
                     float spatial_dist_sq = (float)(dx * dx + dy * dy);
 
-                    // 计算颜色差异的平方
-                    // 对于多通道图像，取各通道差的平方和
-                    float color_diff_sq = 0.0f;
+                    // 计算颜色差异：L1范数，与OpenCV一致
+                    // OpenCV使用|dR|+|dG|+|dB|的平方作为指数
+                    float color_diff_l1 = 0.0f;
                     for (int ch = 0; ch < c; ch++) {
                         float diff = p_color[ch] - q_color[ch];
-                        color_diff_sq += diff * diff;
+                        color_diff_l1 += fabsf(diff);
                     }
 
                     // 计算空间权重
                     float w_spatial = expf(-spatial_dist_sq / spatial_denom);
 
                     // 计算颜色权重
-                    float w_color = expf(-color_diff_sq / color_denom);
+                    float w_color = expf(-color_diff_l1 * color_diff_l1/ color_denom);
 
                     // 综合权重 = 空间权重 × 颜色权重
                     float weight = w_spatial * w_color;

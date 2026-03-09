@@ -2,11 +2,11 @@
 OpenCV 双边滤波对比验证脚本
 
 用法:
-  python3 scripts/compare_opencv.py <输入图像> <你的输出图像> [参数文件]
+  python3 scripts/compare_opencv.py <输入图像> <输出图像> [参数文件]
 
 示例:
-  python3 scripts/compare_opencv.py test_images/lena.png output/images/lena_cpu.png
-  python3 scripts/compare_opencv.py test_images/lena.png output/images/lena_cpu.png params.txt
+  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v2_smem.png
+  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v2_smem.png params.txt
 
 功能:
   计算MAE 和 PSNR
@@ -61,8 +61,8 @@ def compute_psnr(img1, img2):
 
 def main():
     if len(sys.argv) < 3:
-        print(f"用法: {sys.argv[0]} <输入图像> <你的输出图像> [参数文件]")
-        print(f"示例: {sys.argv[0]} test_images/lena.png output/images/lena_cpu.png")
+        print(f"用法: {sys.argv[0]} <输入图像> <输出图像> [参数文件]")
+        print(f"示例: {sys.argv[0]} test_images/yosemite.jpg output/images/yosemite_v2_smem.png")
         sys.exit(1)
 
     input_path = sys.argv[1]
@@ -85,7 +85,7 @@ def main():
         print(f"错误: 无法读取输入图像 {input_path}")
         sys.exit(1)
     if your_output is None:
-        print(f"错误: 无法读取你的输出图像 {your_output_path}")
+        print(f"错误: 无法读取输出图像 {your_output_path}")
         sys.exit(1)
 
     # OpenCV bilateralFilter
