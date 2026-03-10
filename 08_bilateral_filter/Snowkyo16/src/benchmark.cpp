@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <chrono>
 #include <cmath>
+#include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -13,30 +15,81 @@ using namespace std;
 VersionResult run_version(const string& name, const Image& input, 
                           const FilterParams& params, FilterFunc func,
                           const string& image_dir, const string& basename,
-                          const string& ext) {
+                          const string& ext, int num_runs) {
     cout << endl;
     cout << "  [" << name << "]" << endl;
 
-    // 计时
-    auto t0 = chrono::high_resolution_clock::now();
-    Image output = func(input, params);
-    auto t1 = chrono::high_resolution_clock::now();
+    Image output;
 
-    double ms = chrono::duration<double, milli>(t1 - t0).count();
+    if (num_runs <= 1) {
+        // 单次运行，无预热
+        auto t0 = chrono::high_resolution_clock::now();
+        output = func(input, params);
+        auto t1 = chrono::high_resolution_clock::now();
+
+        double ms = chrono::duration<double, milli>(t1 - t0).count();
+        double megapixels = (double)(input.width * input.height) / 1e6;
+        double throughput = megapixels / (ms / 1000.0);
+        double megapixels_4k = 3840.0 * 2160.0 / 1e6;
+        double fps_4k = throughput / megapixels_4k;  // 等效4K帧率
+
+        cout << fixed << setprecision(2);
+        cout << "  处理时间:      " << ms << " ms" << endl;
+        cout << "  吞吐量:        " << throughput << " MPixels/s" << endl;
+        cout << "  等效4K帧率:    " << fps_4k << " fps" << endl;
+
+        // 保存图片
+        string out_path = image_dir + "/" + basename + "_" + name + ext;
+        save_image(out_path, output);
+
+        return {name, ms, move(output)};
+    }
+
+    // 多次运行：1次预热+num_runs次计时
+    // 预热
+    cout << "  预热中..." << endl;
+    output = func(input, params);
+
+    // 计时运行
+    double total_ms = 0.0;
+    double min_ms = 1e9;
+    double max_ms = 0.0;
+
+    for (int i = 0; i < num_runs; i++) {
+        // 静默wrapper内部的cout(Kernel时间等)
+        ostringstream devnull;
+        streambuf* orig = cout.rdbuf(devnull.rdbuf());
+
+        auto t0 = chrono::high_resolution_clock::now();
+        Image tmp = func(input, params);
+        auto t1 = chrono::high_resolution_clock::now();
+
+        // 恢复 cout
+        cout.rdbuf(orig);
+
+        double ms = chrono::duration<double, milli>(t1 - t0).count();
+        total_ms += ms;
+        min_ms = min(min_ms, ms);
+        max_ms = max(max_ms, ms);
+    }
+    double avg_ms = total_ms / num_runs;
     double megapixels = (double)(input.width * input.height) / 1e6;
-    double throughput = megapixels / (ms / 1000.0);
-    double fps = 1000.0 / ms;
+    double throughput = megapixels / (avg_ms / 1000.0);
+    double megapixels_4k = 3840.0 * 2160.0 / 1e6;
+    double fps_4k = throughput / megapixels_4k;  // 等效4K帧率
 
     cout << fixed << setprecision(2);
-    cout << "  处理时间:      " << ms << " ms" << endl;
+    cout << "  运行次数:      " << num_runs << " (+ 1 次预热)" << endl;
+    cout << "  平均处理时间:  " << avg_ms << " ms" 
+         << " [min=" << min_ms << ", max=" << max_ms  << "]" << endl;
     cout << "  吞吐量:        " << throughput << " MPixels/s" << endl;
-    cout << "  FPS:           " << fps << " fps" << endl;
+    cout << "  等效4K帧率:    " << fps_4k << " fps" << endl;
 
-    // 保存图片
+    // 保存图片 (用预热轮的输出)
     string out_path = image_dir + "/" + basename + "_" + name + ext;
     save_image(out_path, output);
 
-    return {name, ms, move(output)};
+    return {name, avg_ms, move(output)};
 }
 
 // 打印汇总对比表 
@@ -70,22 +123,26 @@ void print_summary(const vector<VersionResult>& results, int width, int height) 
     cout << endl;
     cout << "  [性能对比]" << endl;
     cout << fixed << setprecision(2);
-    cout << "  " << string(50, '-') << endl;
+    double megapixels_4k = 3840 * 2160.0 / 1e6;
+    cout << "  " << string(66, '-') << endl;
     cout << "  " << left << setw(16) << "版本"
          << right << setw(12) << "耗时(ms)"
-         << setw(16) << "吞吐(MP/s)"
+         << setw(17) << "吞吐量(MP/s)"
+         << setw(18) << "等效4K帧率"
          << setw(13) << "加速比" << endl;
-    cout << "  " << string(50, '-') << endl;
+    cout << "  " << string(66, '-') << endl;
 
     for (const auto& r : results) {
         double throughput = megapixels / (r.time_ms / 1000.0);
+        double fps_4k = throughput / megapixels_4k;
         double speedup = base_ms / r.time_ms;
         cout << "  " << left << setw(15) << r.name
              << right << setw(9) << r.time_ms
              << setw(13) << throughput
+             << setw(10) << fps_4k << " fps"
              << setw(10) << speedup << "x" << endl;
     }
-    cout << "  " << string(50, '-') << endl;
+    cout << "  " << string(66, '-') << endl;
 
     // 4K 60fps 目标 (基于吞吐量对比，与图像尺寸无关)
     // 4K = 3840x2160 = 8.29 MPixels, 60fps需要497.66MPixels/s

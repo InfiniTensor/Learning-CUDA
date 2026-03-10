@@ -12,3 +12,7 @@ Image bilateral_filter_gpu_v1(const Image& input, const FilterParams& params);
 
 // V2: GPU Shared Memory 优化，Tiling + Halo协作加载
 Image bilateral_filter_gpu_v2(const Image& input, const FilterParams& params);
+
+// V3: GPU 常量内存LUT + __expf快速数学 + 循环展开
+void bilateral_filter_gpu_v3_init(const FilterParams& params);  // LUT上传
+Image bilateral_filter_gpu_v3(const Image& input, const FilterParams& params);

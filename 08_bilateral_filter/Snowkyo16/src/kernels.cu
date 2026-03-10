@@ -97,8 +97,78 @@ __global__ void bilateral_filter_kernel_v1(
     }
 }
 
-// V2: Shared Memory 双边滤波 Kernel
+// V1 包装函数：CPU 端调用，负责内存管理和 kernel 启动
+Image bilateral_filter_gpu_v1(const Image& input, const FilterParams& params) {
+    int w = input.width;
+    int h = input.height;
+    int c = input.channels;
+    size_t img_size = (size_t)w * h * c * sizeof(uint8_t);
 
+    // 预计算高斯分母
+    float spatial_denom = 2.0f * params.sigma_spatial * params.sigma_spatial;
+    float color_denom = 2.0f * params.sigma_color * params.sigma_color;
+
+    // step 1: 在GPU上分配内存
+    uint8_t* d_input = nullptr;
+    uint8_t* d_output = nullptr;
+    RUNTIME_CHECK(cudaMalloc(&d_input, img_size));
+    RUNTIME_CHECK(cudaMalloc(&d_output, img_size));
+
+    // step 2: 从CPU ——> GPU
+    RUNTIME_CHECK(cudaMemcpy(d_input, input.data.data(), img_size,
+                             cudaMemcpyHostToDevice));
+
+    // step 3: 配置kernel启动参数
+    dim3 block(16, 16);
+    dim3 grid((w + block.x - 1) / block.x,
+              (h + block.y - 1) / block.y);
+
+    // 精确测量kernel执行时间
+    cudaEvent_t start, stop;
+    RUNTIME_CHECK(cudaEventCreate(&start));
+    RUNTIME_CHECK(cudaEventCreate(&stop));
+    RUNTIME_CHECK(cudaEventRecord(start));
+    
+    // 启动kernel
+    bilateral_filter_kernel_v1<<<grid, block>>>(
+        d_input, d_output,
+        w, h, c,
+        params.radius,
+        spatial_denom, color_denom
+    );
+
+    RUNTIME_CHECK(cudaEventRecord(stop));
+    RUNTIME_CHECK(cudaEventSynchronize(stop));
+
+    // 打印kernel纯计算时间
+    float kernel_ms = 0.0f;
+    RUNTIME_CHECK(cudaEventElapsedTime(&kernel_ms, start, stop));
+    cout << "  Kernel时间:    " << kernel_ms << " ms" << endl;
+
+    RUNTIME_CHECK(cudaEventDestroy(start));
+    RUNTIME_CHECK(cudaEventDestroy(stop));
+
+    // 检查kernel是否启动成功
+    RUNTIME_CHECK(cudaGetLastError());
+
+    // step 4: 把结果从GPU ——> CPU 
+    Image output;
+    output.width = w;
+    output.height = h;
+    output.channels = c;
+    output.data.resize(w * h * c);
+    RUNTIME_CHECK(cudaMemcpy(output.data.data(), d_output, img_size,
+                             cudaMemcpyDeviceToHost));
+
+    // step 5: 释放GPU内存 
+    RUNTIME_CHECK(cudaFree(d_input));
+    RUNTIME_CHECK(cudaFree(d_output));
+
+    return output;
+}
+
+
+// V2: Shared Memory 双边滤波 Kernel
 // block 大小常量（与V1一致）
 #define BLOCK_SIZE 16
 
@@ -227,76 +297,6 @@ __global__ void bilateral_filter_kernel_v2(
     }
 }
 
-// V1 包装函数：CPU 端调用，负责内存管理和 kernel 启动
-Image bilateral_filter_gpu_v1(const Image& input, const FilterParams& params) {
-    int w = input.width;
-    int h = input.height;
-    int c = input.channels;
-    size_t img_size = (size_t)w * h * c * sizeof(uint8_t);
-
-    // 预计算高斯分母
-    float spatial_denom = 2.0f * params.sigma_spatial * params.sigma_spatial;
-    float color_denom = 2.0f * params.sigma_color * params.sigma_color;
-
-    // step 1: 在GPU上分配内存
-    uint8_t* d_input = nullptr;
-    uint8_t* d_output = nullptr;
-    RUNTIME_CHECK(cudaMalloc(&d_input, img_size));
-    RUNTIME_CHECK(cudaMalloc(&d_output, img_size));
-
-    // step 2: 从CPU ——> GPU
-    RUNTIME_CHECK(cudaMemcpy(d_input, input.data.data(), img_size,
-                             cudaMemcpyHostToDevice));
-
-    // step 3: 配置kernel启动参数
-    dim3 block(16, 16);
-    dim3 grid((w + block.x - 1) / block.x,
-              (h + block.y - 1) / block.y);
-
-    // 精确测量kernel执行时间
-    cudaEvent_t start, stop;
-    RUNTIME_CHECK(cudaEventCreate(&start));
-    RUNTIME_CHECK(cudaEventCreate(&stop));
-    RUNTIME_CHECK(cudaEventRecord(start));
-    
-    // 启动kernel
-    bilateral_filter_kernel_v1<<<grid, block>>>(
-        d_input, d_output,
-        w, h, c,
-        params.radius,
-        spatial_denom, color_denom
-    );
-
-    RUNTIME_CHECK(cudaEventRecord(stop));
-    RUNTIME_CHECK(cudaEventSynchronize(stop));
-
-    // 打印kernel纯计算时间
-    float kernel_ms = 0.0f;
-    RUNTIME_CHECK(cudaEventElapsedTime(&kernel_ms, start, stop));
-    cout << "  Kernel时间:    " << kernel_ms << " ms" << endl;
-
-    RUNTIME_CHECK(cudaEventDestroy(start));
-    RUNTIME_CHECK(cudaEventDestroy(stop));
-
-    // 检查kernel是否启动成功
-    RUNTIME_CHECK(cudaGetLastError());
-
-    // step 4: 把结果从GPU ——> CPU 
-    Image output;
-    output.width = w;
-    output.height = h;
-    output.channels = c;
-    output.data.resize(w * h * c);
-    RUNTIME_CHECK(cudaMemcpy(output.data.data(), d_output, img_size,
-                             cudaMemcpyDeviceToHost));
-
-    // step 5: 释放GPU内存 
-    RUNTIME_CHECK(cudaFree(d_input));
-    RUNTIME_CHECK(cudaFree(d_output));
-
-    return output;
-}
-
 // V2 包装函数：与V1结构相同，增加shared memory大小计算
 Image bilateral_filter_gpu_v2(const Image& input, const FilterParams& params) {
     int w = input.width;
@@ -370,3 +370,235 @@ Image bilateral_filter_gpu_v2(const Image& input, const FilterParams& params) {
 
     return output;
 }
+
+
+// V3: 常量内存LUT + __expf + #pragma unroll
+#define MAX_RADIUS 16
+#define MAX_DIAMETER (2 * MAX_RADIUS + 1)
+__constant__ float d_spatial_LUT[MAX_DIAMETER * MAX_DIAMETER];  // 只读常量内存
+
+__global__ void bilateral_filter_kernel_v3(
+    const uint8_t* input,
+    uint8_t* output,
+    int width,
+    int height,
+    int channels,
+    int radius,
+    float color_denom  // 预计算颜色分母，空间分母已在LUT中
+) {
+    // step 1: 计算输出像素坐标
+    int x = blockIdx.x * BLOCK_SIZE + threadIdx.x;
+    int y = blockIdx.y * BLOCK_SIZE + threadIdx.y;
+
+    // tile尺寸 = block尺寸 + 两侧halo
+    int tile_w = BLOCK_SIZE + 2 * radius;
+    int tile_h = BLOCK_SIZE + 2 * radius;
+
+    // step 2: shared memory协作加载
+    extern __shared__ uint8_t smem[];
+
+    int tid = threadIdx.y * BLOCK_SIZE + threadIdx.x;
+    int num_threads = BLOCK_SIZE * BLOCK_SIZE;
+    int tile_size = tile_w * tile_h * channels;
+
+    int tile_origin_x = blockIdx.x * BLOCK_SIZE - radius;
+    int tile_origin_y = blockIdx.y * BLOCK_SIZE - radius;
+
+    for (int i = tid; i < tile_size; i += num_threads) {
+        int ch = i % channels;
+        int tx = (i / channels) % tile_w;
+        int ty = (i / channels) / tile_w;
+
+        int gx = tile_origin_x + tx;
+        int gy = tile_origin_y + ty;
+
+        gx = min(max(gx, 0), width - 1);
+        gy = min(max(gy, 0), height - 1);
+
+        smem[i] = input[(gy * width + gx) * channels + ch];
+    }
+
+    __syncthreads();
+
+    // step 3: 边界保护
+    if (x > width || y >= height) {
+        return;
+    }
+
+    // step 4:  从shared memory读中心像素
+    int sx = threadIdx.x + radius;
+    int sy = threadIdx.y + radius;
+
+    float p_color[3];
+    for (int ch = 0; ch < channels; ch++) {
+        p_color[ch] = (float)smem[(sy * tile_w + sx) * channels + ch];
+    }
+
+    // step 5: 邻域遍历（V3 优化版）----
+    float sum_value[3] = {0.0f, 0.0f, 0.0f};
+    float sum_weight = 0.0f;
+
+    int diameter = 2 * radius + 1;
+
+    for (int dy = -radius; dy <= radius; dy++) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            // 【优化1】从常量内存查表获取空间权重
+            // LUT 中圆形窗口外的值为 -1，直接跳过
+            float w_spatial = d_spatial_LUT[(dy + radius) * diameter + (dx + radius)];
+            if (w_spatial <= 0.0f) {
+                continue;  // 圆形窗口外，跳过
+            }
+
+            // 边界检查
+            int gqx = x + dx;
+            int gqy = y + dy;
+            if (gqx < 0 || gqx >= width || gqy < 0 || gqy >= height) {
+                continue;
+            }
+
+            // 从 shared memory 读邻域像素
+            int qsx = sx + dx;
+            int qsy = sy + dy;
+
+            float q_color[3];
+            #pragma unroll 3
+            for (int ch = 0; ch < 3; ch++) {
+                q_color[ch] = (float)smem[(qsy * tile_w + qsx) * channels + ch];
+            }
+
+            // 【优化3】通道循环展开计算 L1 颜色差异
+            float color_diff_l1 = 0.0f;
+            #pragma unroll 3
+            for (int ch = 0; ch < 3; ch++) {
+                color_diff_l1 += fabsf(p_color[ch] - q_color[ch]);
+            }
+
+            // 【优化2】__expf 快速数学计算颜色权重
+            float w_color = __expf(-color_diff_l1 * color_diff_l1 / color_denom);
+            float weight = w_spatial * w_color;
+
+            // 累加
+            sum_weight += weight;
+            #pragma unroll 3
+            for (int ch = 0; ch < 3; ch++) {
+                sum_value[ch] += weight * q_color[ch];
+            }
+        }
+    }
+
+    // 归一化并写回全局内存
+    int out_idx = (y * width + x) * channels;
+    for (int ch = 0; ch < channels; ch++) {
+        float val = sum_value[ch] / sum_weight;
+        val = fminf(255.0f, fmaxf(0.0f, roundf(val)));
+        output[out_idx + ch] = (uint8_t)val;
+    }
+}
+
+// V3 初始化函数：预计算空间权重LUT并上传到常量内存
+// 只需在参数变化时调用一次，不计入每帧耗时
+void bilateral_filter_gpu_v3_init(const FilterParams& params) {
+    int r = params.radius;
+    int diameter = 2 * r + 1;
+
+    // CPU 端预计算空间权重 LUT
+    float spatial_denom = 2.0f * params.sigma_spatial * params.sigma_spatial;
+    float h_spatial_LUT[MAX_DIAMETER * MAX_DIAMETER];
+
+    for (int dy = -r; dy <= r; dy++) {
+        for (int dx = -r; dx <= r; dx++) {
+            int idx = (dy + r) * diameter + (dx + r);
+            int dist_sq = dx * dx + dy * dy;
+
+            if (dist_sq > r * r) {
+                h_spatial_LUT[idx] = -1.0f;
+            } else {
+                h_spatial_LUT[idx] = expf(-(float)dist_sq / spatial_denom);
+            }
+        }
+    }
+
+    // 写入 GPU 常量内存
+    size_t lut_bytes = (size_t)diameter * diameter * sizeof(float);
+    RUNTIME_CHECK(cudaMemcpyToSymbol(d_spatial_LUT, h_spatial_LUT, lut_bytes));
+}
+
+// V3 包装函数，纯滤波，LUT已由init函数上传
+Image bilateral_filter_gpu_v3(const Image& input, const FilterParams& params) {
+    int w = input.width;
+    int h = input.height;
+    int c = input.channels;
+    size_t img_size = (size_t)w * h * c * sizeof(uint8_t);
+    int r = params.radius;
+
+    float color_denom = 2.0f * params.sigma_color * params.sigma_color;
+
+    //分配device内存
+    uint8_t* d_input = nullptr;
+    uint8_t* d_output = nullptr;
+    RUNTIME_CHECK(cudaMalloc(&d_input, img_size));
+    RUNTIME_CHECK(cudaMalloc(&d_output, img_size));
+
+    RUNTIME_CHECK(cudaMemcpy(d_input, input.data.data(), img_size,
+                             cudaMemcpyHostToDevice));
+
+    // 配置kernel启动参数
+    dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    dim3 grid((w + BLOCK_SIZE - 1) / BLOCK_SIZE,
+              (h + BLOCK_SIZE - 1) / BLOCK_SIZE);
+
+    int tile_w = BLOCK_SIZE + 2 * r;
+    int tile_h = BLOCK_SIZE + 2 * r;
+    size_t smem_size = (size_t)tile_w * tile_h * c * sizeof(uint8_t);
+    int diameter = 2 * r + 1;
+    size_t lut_bytes = (size_t)diameter * diameter * sizeof(float);
+    cout << "  LUT 大小:      " << diameter << "x" << diameter
+         << " = " << lut_bytes << " bytes" << endl;
+    cout << "  Shared Memory: " << smem_size << " bytes/block ("
+         << tile_w << "x" << tile_h << "x" << c << ")" << endl;
+
+    // CUDA Event 计时
+    cudaEvent_t start, stop;
+    RUNTIME_CHECK(cudaEventCreate(&start));
+    RUNTIME_CHECK(cudaEventCreate(&stop));
+
+    RUNTIME_CHECK(cudaEventRecord(start));
+
+    // 启动 V3 kernel,不再传 spatial_denom
+    bilateral_filter_kernel_v3<<<grid, block, smem_size>>>(
+        d_input, d_output,
+        w, h, c,
+        r,
+        color_denom
+    );
+
+    RUNTIME_CHECK(cudaEventRecord(stop));
+    RUNTIME_CHECK(cudaEventSynchronize(stop));
+
+    float kernel_ms = 0.0f;
+    RUNTIME_CHECK(cudaEventElapsedTime(&kernel_ms, start, stop));
+    cout << "  Kernel 时间:   " << kernel_ms << " ms" << endl;
+
+    RUNTIME_CHECK(cudaEventDestroy(start));
+    RUNTIME_CHECK(cudaEventDestroy(stop));
+
+    RUNTIME_CHECK(cudaGetLastError());
+
+    // 拷回结果
+    Image output;
+    output.width = w;
+    output.height = h;
+    output.channels = c;
+    output.data.resize(w * h * c);
+    RUNTIME_CHECK(cudaMemcpy(output.data.data(), d_output, img_size,
+                             cudaMemcpyDeviceToHost));
+
+    RUNTIME_CHECK(cudaFree(d_input));
+    RUNTIME_CHECK(cudaFree(d_output));
+
+    return output;
+}
+
+
+
+

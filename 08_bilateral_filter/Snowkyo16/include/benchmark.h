@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// 滤波函数统一签名（CPU 和 GPU 版本共用）
+// 滤波函数统一签名
 using FilterFunc = function<Image(const Image&, const FilterParams&)>;
 
 // 单个版本的运行结果
@@ -23,7 +23,7 @@ struct VersionResult {
 VersionResult run_version(const string& name, const Image& input, 
                           const FilterParams& params, FilterFunc func, 
                           const string& image_dir, const string& basename, 
-                          const string& ext);
+                          const string& ext, int num_runs = 1);
 
 // 打印汇总对比表 + 一致性验证
 void print_summary(const vector<VersionResult>& results, int width, int height);

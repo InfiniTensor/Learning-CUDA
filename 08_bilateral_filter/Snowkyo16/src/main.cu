@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     if (argc < 4) {
         cerr << "用法: " << argv[0]
              << " <输入图像> <参数文件> <输出目录> [版本]" << endl;
-        cerr << "版本: v0 / v1/ v2/ all (默认 all) " << endl;
+        cerr << "版本: v0 / v1/ v2/ v3/ all (默认 all) " << endl;
         return 1;
     }
 
@@ -65,6 +65,7 @@ int main(int argc, char* argv[]) {
 
     // 按版本执行
     vector<VersionResult> results;
+    int gpu_runs = 10;  // GPU版本：1次预热 + 10次计时取平均
 
     if (mode == "v0" || mode == "all") {
         results.push_back(run_version("v0_cpu", input, params, 
@@ -75,13 +76,20 @@ int main(int argc, char* argv[]) {
     if (mode == "v1" || mode == "all") {
         results.push_back(run_version("v1_naive", input, params,
                                       bilateral_filter_gpu_v1, image_dir, 
-                                      basename, ext));
+                                      basename, ext, gpu_runs));
     }
 
     if (mode == "v2" || mode == "all") {
         results.push_back(run_version("v2_smem", input, params,
                                       bilateral_filter_gpu_v2, image_dir,
-                                      basename, ext));
+                                      basename, ext, gpu_runs));
+    }
+
+    if (mode == "v3" || mode == "all") {
+        bilateral_filter_gpu_v3_init(params);  // LUT上传，不计入每帧耗时
+        results.push_back(run_version("v3_constmem", input, params,
+                                      bilateral_filter_gpu_v3, image_dir,
+                                      basename, ext, gpu_runs));
     }
 
     print_summary(results, input.width, input.height);
