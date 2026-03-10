@@ -1,0 +1,3 @@
+radius = 5
+sigma_spatial = 3.0
+sigma_color = 30.0
