@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_4096x4096_bs64.bin
+rows=4096
+cols=4096
+blocksize=64
+total_elements=16777216
+kernel_time_ms=0.0735
+bandwidth_gbps=534.60
+output_file=mx_results/dequant_4096x4096_bs64.fp16

@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_2048x2048_bs64.bin
+rows=2048
+cols=2048
+blocksize=64
+total_elements=4194304
+kernel_time_ms=0.0281
+bandwidth_gbps=349.12
+output_file=mx_results/dequant_2048x2048_bs64.fp16

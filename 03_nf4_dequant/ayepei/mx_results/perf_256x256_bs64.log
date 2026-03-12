@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_256x256_bs64.bin
+rows=256
+cols=256
+blocksize=64
+total_elements=65536
+kernel_time_ms=0.0094
+bandwidth_gbps=16.44
+output_file=mx_results/dequant_256x256_bs64.fp16

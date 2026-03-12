@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_512x512_bs128.bin
+rows=512
+cols=512
+blocksize=128
+total_elements=262144
+kernel_time_ms=0.0028
+bandwidth_gbps=221.24
+output_file=cuda_results/dequant_512x512_bs128.fp16

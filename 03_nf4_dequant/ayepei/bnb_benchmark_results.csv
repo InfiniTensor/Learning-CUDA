@@ -1,0 +1,21 @@
+Shape,Blocksize,BnB Time (ms),Total Elements,Weight File,BnB Output File
+256x256,64,0.1144,65536,weight_data/weight_256x256_bs64.bin,bnb_results/bnb_256x256_bs64.fp16
+256x256,128,0.1064,65536,weight_data/weight_256x256_bs128.bin,bnb_results/bnb_256x256_bs128.fp16
+512x512,64,0.1010,262144,weight_data/weight_512x512_bs64.bin,bnb_results/bnb_512x512_bs64.fp16
+512x512,128,0.0977,262144,weight_data/weight_512x512_bs128.bin,bnb_results/bnb_512x512_bs128.fp16
+1024x1024,64,0.0960,1048576,weight_data/weight_1024x1024_bs64.bin,bnb_results/bnb_1024x1024_bs64.fp16
+1024x1024,128,0.0912,1048576,weight_data/weight_1024x1024_bs128.bin,bnb_results/bnb_1024x1024_bs128.fp16
+2048x2048,64,0.0910,4194304,weight_data/weight_2048x2048_bs64.bin,bnb_results/bnb_2048x2048_bs64.fp16
+2048x2048,128,0.0925,4194304,weight_data/weight_2048x2048_bs128.bin,bnb_results/bnb_2048x2048_bs128.fp16
+4096x4096,64,0.0891,16777216,weight_data/weight_4096x4096_bs64.bin,bnb_results/bnb_4096x4096_bs64.fp16
+4096x4096,128,0.0905,16777216,weight_data/weight_4096x4096_bs128.bin,bnb_results/bnb_4096x4096_bs128.fp16
+8192x8192,64,0.0918,67108864,weight_data/weight_8192x8192_bs64.bin,bnb_results/bnb_8192x8192_bs64.fp16
+8192x8192,128,0.0912,67108864,weight_data/weight_8192x8192_bs128.bin,bnb_results/bnb_8192x8192_bs128.fp16
+16384x16384,64,0.3074,268435456,weight_data/weight_16384x16384_bs64.bin,bnb_results/bnb_16384x16384_bs64.fp16
+16384x16384,128,0.2973,268435456,weight_data/weight_16384x16384_bs128.bin,bnb_results/bnb_16384x16384_bs128.fp16
+3421x3146,64,0.0925,10762466,weight_data/weight_3421x3146_bs64.bin,bnb_results/bnb_3421x3146_bs64.fp16
+3421x3146,128,0.0904,10762466,weight_data/weight_3421x3146_bs128.bin,bnb_results/bnb_3421x3146_bs128.fp16
+6578x1236,64,0.0895,8130408,weight_data/weight_6578x1236_bs64.bin,bnb_results/bnb_6578x1236_bs64.fp16
+6578x1236,128,0.0876,8130408,weight_data/weight_6578x1236_bs128.bin,bnb_results/bnb_6578x1236_bs128.fp16
+7000x7000,64,0.0909,49000000,weight_data/weight_7000x7000_bs64.bin,bnb_results/bnb_7000x7000_bs64.fp16
+7000x7000,128,0.0939,49000000,weight_data/weight_7000x7000_bs128.bin,bnb_results/bnb_7000x7000_bs128.fp16
