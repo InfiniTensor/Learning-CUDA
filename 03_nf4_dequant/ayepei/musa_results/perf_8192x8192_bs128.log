@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_8192x8192_bs128.bin
+rows=8192
+cols=8192
+blocksize=128
+total_elements=67108864
+kernel_time_ms=0.7425
+bandwidth_gbps=211.76
+output_file=musa_results/dequant_8192x8192_bs128.fp16

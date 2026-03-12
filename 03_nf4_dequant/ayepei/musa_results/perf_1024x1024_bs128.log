@@ -1,0 +1,8 @@
+input_file=../weight_data/weight_1024x1024_bs128.bin
+rows=1024
+cols=1024
+blocksize=128
+total_elements=1048576
+kernel_time_ms=0.0139
+bandwidth_gbps=176.89
+output_file=musa_results/dequant_1024x1024_bs128.fp16
