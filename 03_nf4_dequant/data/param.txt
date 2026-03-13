@@ -1,0 +1,6 @@
+blocksize = 64
+groupsize = 256
+compute_type = "bf16"
+target_gpu = "T4"
+rows = 32768
+cols = 32768
