@@ -2,9 +2,13 @@
 #include "utils.cuh"
 
 #include <cmath>
+#include <cstring>
 #include <iostream>
 
 using namespace std;
+
+// block 大小常量
+#define BLOCK_SIZE 16
 
 // V1: Naive CUDA 双边滤波 Kernel
 __global__ void bilateral_filter_kernel_v1(
@@ -169,9 +173,6 @@ Image bilateral_filter_gpu_v1(const Image& input, const FilterParams& params) {
 
 
 // V2: Shared Memory 双边滤波 Kernel
-// block 大小常量（与V1一致）
-#define BLOCK_SIZE 16
-
 __global__ void bilateral_filter_kernel_v2(
     const uint8_t* input,
     uint8_t* output,
@@ -253,7 +254,7 @@ __global__ void bilateral_filter_kernel_v2(
             // 边界检查：跳过越界像素
             int gqx = x + dx;
             int gqy = y + dy;
-            if (gqx < 0 || gqx >= width || gqy < 0 || gqy > height) {
+            if (gqx < 0 || gqx >= width || gqy < 0 || gqy >= height) {
                 continue;
             }
             
@@ -384,25 +385,26 @@ __global__ void bilateral_filter_kernel_v3(
     int height,
     int channels,
     int radius,
-    float color_denom  // 预计算颜色分母，空间分母已在LUT中
+    float color_denom , // 预计算颜色分母，空间分母已在LUT中
+    int y_offset  // strip 起始行偏移(V4 strea用， V3传0)
 ) {
     // step 1: 计算输出像素坐标
-    int x = blockIdx.x * BLOCK_SIZE + threadIdx.x;
-    int y = blockIdx.y * BLOCK_SIZE + threadIdx.y;
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y + y_offset;
 
     // tile尺寸 = block尺寸 + 两侧halo
-    int tile_w = BLOCK_SIZE + 2 * radius;
-    int tile_h = BLOCK_SIZE + 2 * radius;
+    int tile_w = blockDim.x + 2 * radius;
+    int tile_h = blockDim.y + 2 * radius;
 
     // step 2: shared memory协作加载
     extern __shared__ uint8_t smem[];
 
-    int tid = threadIdx.y * BLOCK_SIZE + threadIdx.x;
-    int num_threads = BLOCK_SIZE * BLOCK_SIZE;
+    int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    int num_threads = blockDim.x * blockDim.y;
     int tile_size = tile_w * tile_h * channels;
 
-    int tile_origin_x = blockIdx.x * BLOCK_SIZE - radius;
-    int tile_origin_y = blockIdx.y * BLOCK_SIZE - radius;
+    int tile_origin_x = blockIdx.x * blockDim.x - radius;
+    int tile_origin_y = blockIdx.y * blockDim.y + y_offset - radius;
 
     for (int i = tid; i < tile_size; i += num_threads) {
         int ch = i % channels;
@@ -421,7 +423,7 @@ __global__ void bilateral_filter_kernel_v3(
     __syncthreads();
 
     // step 3: 边界保护
-    if (x > width || y >= height) {
+    if (x >= width || y >= height) {
         return;
     }
 
@@ -569,7 +571,8 @@ Image bilateral_filter_gpu_v3(const Image& input, const FilterParams& params) {
         d_input, d_output,
         w, h, c,
         r,
-        color_denom
+        color_denom,
+        0  // y_offset = 0 (V3处理全图)
     );
 
     RUNTIME_CHECK(cudaEventRecord(stop));
@@ -600,5 +603,186 @@ Image bilateral_filter_gpu_v3(const Image& input, const FilterParams& params) {
 }
 
 
+// V4: Pinned Memory + CUDA Streams流水线
+static uint8_t* d_v4_input  = nullptr;  // 预分配的输入 buffer(device)
+static uint8_t* d_v4_output = nullptr;  // 预分配的输出 buffer(device)
+static uint8_t* h_v4_pinned_in = nullptr;  // pinned host 输入缓冲
+static uint8_t* h_v4_pinned_out =  nullptr;  // pinned host 输出缓冲
+static size_t   d_v4_buf_size = 0;      // 当前 buffer 大小（字节）
+
+#define V4_BLOCK_SIZE 32  // 可独立调优
+#define V4_NUM_STREAMS 4  // CUDA Streams：多路流水线
+static cudaStream_t v4_streams[V4_NUM_STREAMS];
+
+
+// V4初始化：上传LUT + 预分配 device/pinned buffer + 创建streams
+void bilateral_filter_gpu_v4_init(const Image& input, const FilterParams& params) {
+    // 1. 上传空间权重LUT复用V3
+    bilateral_filter_gpu_v3_init(params);
+
+    // 2. 预分配 device buffer
+    size_t img_size = (size_t)input.width * input.height * input.channels * sizeof(uint8_t);
+
+    // 如果已经分配过且大小足够，跳过
+    if (d_v4_input != nullptr && d_v4_buf_size >= img_size) {
+        cout << "  Buffer 复用:   " << d_v4_buf_size << " bytes (已分配)" << endl;
+        return;
+    }
+
+    // 释放旧buffer
+    if (d_v4_input != nullptr) {
+        RUNTIME_CHECK(cudaFree(d_v4_input));
+        RUNTIME_CHECK(cudaFree(d_v4_output));
+    }
+
+    // 分配新buffer(device + pinned host)
+    RUNTIME_CHECK(cudaMalloc(&d_v4_input, img_size));
+    RUNTIME_CHECK(cudaMalloc(&d_v4_output, img_size));
+    RUNTIME_CHECK(cudaHostAlloc(&h_v4_pinned_in, img_size, cudaHostAllocDefault));
+    RUNTIME_CHECK(cudaHostAlloc(&h_v4_pinned_out, img_size, cudaHostAllocDefault));
+    d_v4_buf_size = img_size;
+
+    cout << "  Buffer 预分配: " << img_size << " bytes x 2 (device)" << endl;
+    cout << "  Pinned Memory: " << img_size << " bytes x 2 (host)" << endl;
+
+    // 3. 创建CUDA Streams
+    for (int i = 0; i < V4_NUM_STREAMS; i++) {
+        RUNTIME_CHECK(cudaStreamCreate(&v4_streams[i]));
+    }
+    cout << "  CUDA Streams: " << V4_NUM_STREAMS << " 路流水线"  << endl;
+}
+
+
+// V4清理：释放device/pinned buffer + 销毁streams
+
+void bilateral_filter_gpu_v4_cleanup() {
+    if (d_v4_input != nullptr) {
+        // 销毁 streams
+        for (int i =0; i < V4_NUM_STREAMS; i++) {
+            RUNTIME_CHECK(cudaStreamDestroy(v4_streams[i]));
+        }
+        RUNTIME_CHECK(cudaFree(d_v4_input));
+        RUNTIME_CHECK(cudaFree(d_v4_output));
+        RUNTIME_CHECK(cudaFreeHost(h_v4_pinned_in));
+        RUNTIME_CHECK(cudaFreeHost(h_v4_pinned_out));
+        d_v4_input = nullptr;
+        d_v4_output = nullptr;
+        h_v4_pinned_in = nullptr;
+        h_v4_pinned_out = nullptr;
+        d_v4_buf_size = 0;
+    }
+}
+
+// V4 每帧滤波：stream流水线
+Image bilateral_filter_gpu_v4(const Image& input, const FilterParams& params) {
+    int w = input.width;
+    int h = input.height;
+    int c = input.channels;
+    size_t img_size = (size_t)w * h * c * sizeof(uint8_t);
+    int r = params.radius;
+
+    float color_denom = 2.0f * params.sigma_color * params.sigma_color;
+
+    // 1. CPU -> pinned buffer
+    memcpy(h_v4_pinned_in, input.data.data(), img_size);
+    
+    // 2. H2D: pinned -> devive 异步
+    RUNTIME_CHECK(cudaMemcpyAsync(d_v4_input, h_v4_pinned_in, img_size,
+                             cudaMemcpyHostToDevice, v4_streams[0]));
+
+    // H2D 完成事件：其他stream需要等待H2D完成才能启动kernel
+    cudaEvent_t h2d_done;
+    RUNTIME_CHECK(cudaEventCreate(&h2d_done));
+    RUNTIME_CHECK(cudaEventRecord(h2d_done, v4_streams[0]));
+
+    // 3. kernel配置
+    dim3 block(V4_BLOCK_SIZE, V4_BLOCK_SIZE);
+    int tile_w = V4_BLOCK_SIZE + 2 * r;
+    int tile_h = V4_BLOCK_SIZE + 2 * r;
+    size_t smem_size = (size_t)tile_w * tile_h * c * sizeof(uint8_t);
+    int diameter = 2 * r + 1;
+    size_t lut_bytes = (size_t)diameter * diameter * sizeof(float);
+    cout << "  LUT 大小:      " << diameter << "x" << diameter
+         << " = " << lut_bytes << " bytes" << endl;
+    cout << "  Shared Memory: " << smem_size << " bytes/block ("
+         << tile_w << "x" << tile_h << "x" << c << ")" << endl;
+
+    // 4. 分strip启动kernel + D2H
+    // 计算每个strip的高度，对齐到V4_BLOCK_SIZE
+    int strip_h = (h + V4_NUM_STREAMS - 1) / V4_NUM_STREAMS;
+    strip_h = ((strip_h + V4_BLOCK_SIZE -  1) / V4_BLOCK_SIZE) * V4_BLOCK_SIZE;
+
+    cout << "  Strip 高度:     " << strip_h << " row x " << V4_NUM_STREAMS
+         << " strips" << endl;
+
+    // Kernel计时：从第一个kernel开始到最后一个D2H完成
+    cudaEvent_t start, stop;
+    RUNTIME_CHECK(cudaEventCreate(&start));
+    RUNTIME_CHECK(cudaEventCreate(&stop));
+
+    // start记录在stream[0] (H2D完成后)
+    RUNTIME_CHECK(cudaStreamWaitEvent(v4_streams[0], h2d_done));
+    RUNTIME_CHECK(cudaEventRecord(start, v4_streams[0]));
+
+    int last_stream = 0;
+    for (int s = 0; s < V4_NUM_STREAMS; s++) {
+        int y_start = s * strip_h;
+        if (y_start >= h) break;
+        int y_end = min(y_start + strip_h, h);
+        int actual_h = y_end - y_start;
+
+        cudaStream_t stream =v4_streams[s];
+        // 确保 H2D 完成后再启动 kernel
+        RUNTIME_CHECK(cudaStreamWaitEvent(stream, h2d_done));
+
+        // 启动 kernel：只处理本 strip 的行
+        dim3 grid_s((w + V4_BLOCK_SIZE - 1) / V4_BLOCK_SIZE,
+                    (actual_h + V4_BLOCK_SIZE - 1) / V4_BLOCK_SIZE);
+
+        bilateral_filter_kernel_v3<<<grid_s, block, smem_size, stream>>>(
+            d_v4_input, d_v4_output,
+            w, h, c, r, color_denom,
+            y_start     // y_offset: 本 strip 的起始行
+        );
+
+        // D2H：只拷回本 strip 的输出行（同一 stream，自动排在 kernel 之后）
+        size_t strip_offset = (size_t)y_start * w * c;
+        size_t strip_bytes = (size_t)actual_h * w * c;
+        RUNTIME_CHECK(cudaMemcpyAsync(
+            h_v4_pinned_out + strip_offset,
+            d_v4_output + strip_offset,
+            strip_bytes,
+            cudaMemcpyDeviceToHost,
+            stream
+        ));
+
+        last_stream = s;
+    }
+
+    // stop 记录在最后一个活跃的 stream
+    RUNTIME_CHECK(cudaEventRecord(stop, v4_streams[last_stream]));
+
+    // 5. 等待所有 stream 完成
+    RUNTIME_CHECK(cudaDeviceSynchronize());
+
+    float pipeline_ms = 0.0f;
+    RUNTIME_CHECK(cudaEventElapsedTime(&pipeline_ms, start, stop));
+    cout << "  Pipeline 时间: " << pipeline_ms << " ms (kernel + D2H 重叠)" << endl;
+
+    RUNTIME_CHECK(cudaEventDestroy(start));
+    RUNTIME_CHECK(cudaEventDestroy(stop));
+    RUNTIME_CHECK(cudaEventDestroy(h2d_done));
+    RUNTIME_CHECK(cudaGetLastError());
+
+    // 6. pinned -> output
+    Image output;
+    output.width = w;
+    output.height = h;
+    output.channels = c;
+    output.data.resize(w * h * c);
+    memcpy(output.data.data(), h_v4_pinned_out, img_size);
+
+    return output;
+}
 
 

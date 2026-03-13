@@ -16,3 +16,8 @@ Image bilateral_filter_gpu_v2(const Image& input, const FilterParams& params);
 // V3: GPU 常量内存LUT + __expf快速数学 + 循环展开
 void bilateral_filter_gpu_v3_init(const FilterParams& params);  // LUT上传
 Image bilateral_filter_gpu_v3(const Image& input, const FilterParams& params);
+
+// V4: Pinned Memory + CUDA Streams 流水线，预分配 Device Buffer
+void bilateral_filter_gpu_v4_init(const Image& input, const FilterParams& params);  // LUT + buffer + pinned + streams 初始化
+Image bilateral_filter_gpu_v4(const Image& input, const FilterParams& params);
+void bilateral_filter_gpu_v4_cleanup();  // 释放 buffer、pinned memory、销毁 streams

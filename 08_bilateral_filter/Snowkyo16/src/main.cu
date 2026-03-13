@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     if (argc < 4) {
         cerr << "用法: " << argv[0]
              << " <输入图像> <参数文件> <输出目录> [版本]" << endl;
-        cerr << "版本: v0 / v1/ v2/ v3/ all (默认 all) " << endl;
+        cerr << "版本: v0 / v1/ v2/ v3/ v4/ all (默认 all) " << endl;
         return 1;
     }
 
@@ -90,6 +90,15 @@ int main(int argc, char* argv[]) {
         results.push_back(run_version("v3_constmem", input, params,
                                       bilateral_filter_gpu_v3, image_dir,
                                       basename, ext, gpu_runs));
+    }
+
+    if (mode == "v4" || mode == "all") {
+        cout << endl << "  [v4_stream 初始化]" << endl;
+        bilateral_filter_gpu_v4_init(input, params);  // LUT + buffer预分配
+        results.push_back(run_version("v4_stream", input, params,
+                                      bilateral_filter_gpu_v4,image_dir,
+                                      basename, ext, gpu_runs));
+        bilateral_filter_gpu_v4_cleanup();  // 释放预分配buffer
     }
 
     print_summary(results, input.width, input.height);

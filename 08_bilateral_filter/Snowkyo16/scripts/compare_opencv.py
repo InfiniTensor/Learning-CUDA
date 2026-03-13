@@ -5,8 +5,8 @@ OpenCV 双边滤波对比验证脚本
   python3 scripts/compare_opencv.py <输入图像> <输出图像> [参数文件]
 
 示例:
-  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v3_constmem.png
-  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v3_constmem.png params.txt
+  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v4_stream.png
+  python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v4_stream.png params.txt
 
 功能:
   计算MAE 和 PSNR
