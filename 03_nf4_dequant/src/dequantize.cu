@@ -1,0 +1,109 @@
+#include "dequantize.c.h"
+
+// 1. NF4 常量表 (Constant Memory)
+__constant__ float c_nf4_table[16] = {
+    -1.0f, -0.6961928f, -0.52507305f, -0.3949171f, 
+    -0.28444138f, -0.18477343f, -0.091050036f, 0.0f, 
+    0.07958029f, 0.1609302f, 0.2461123f, 0.33791524f, 
+    0.44070983f, 0.562617f, 0.72295684f, 1.0f
+};
+
+// 2. Kernel 函数实现
+__global__ void dequantize_nf4_kernel(
+    const uint8_t* __restrict__ packed_weights, 
+    const uint8_t* __restrict__ absmax_q, 
+    const uint16_t* __restrict__ absmax2, 
+    const uint16_t* __restrict__ code2, 
+    float offset, 
+    __nv_bfloat16* __restrict__ output,
+    int64_t total_elements, 
+    int blocksize) 
+{
+    // 3. 核心计算逻辑
+    // 每个线程处理 1 个 uint8_t (即 2 个 4-bit 权重)
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    
+    // 边界检查：直接限制线程读取 packed_weights 的范围
+    if (tid >= (total_elements + 1) / 2) {
+        return;
+    }
+
+    // 全局权重的起始索引
+    int64_t weight_idx = (int64_t)tid * 2;
+
+    // 读取 1 字节并解码高/低 4 位
+    uint8_t packed = packed_weights[tid];
+    uint8_t idx0 = packed >> 4;           // 高 4 位对应第一个权重
+    uint8_t idx1 = packed & 0x0F;         // 低 4 位对应第二个权重
+
+    // 为 w0 计算缩放因子
+    int block_id0 = weight_idx / blocksize;
+    int group_id0 = block_id0 / 256;
+
+    __half code2_half0 = *reinterpret_cast<const __half*>(&code2[absmax_q[block_id0]]);
+    __half absmax2_half0 = *reinterpret_cast<const __half*>(&absmax2[group_id0]);
+    float S1_0 = (__half2float(code2_half0) * __half2float(absmax2_half0)) + offset;
+
+    // 为 w1 计算缩放因子 (注意防范 weight_idx + 1 越界)
+    float S1_1 = 0.0f;
+    if (weight_idx + 1 < total_elements) {
+        int block_id1 = (weight_idx + 1) / blocksize;
+        int group_id1 = block_id1 / 256;
+        __half code2_half1 = *reinterpret_cast<const __half*>(&code2[absmax_q[block_id1]]);
+        __half absmax2_half1 = *reinterpret_cast<const __half*>(&absmax2[group_id1]);
+        S1_1 = (__half2float(code2_half1) * __half2float(absmax2_half1)) + offset;
+    }
+
+    // 查表并解量化
+    float w0 = c_nf4_table[idx0] * S1_0;
+    float w1 = c_nf4_table[idx1] * S1_1;
+
+    // 4. 向量化写入 (Packed Store) 与尾部边界处理
+    // 转换为 __nv_bfloat16
+    __nv_bfloat16 bf16_w0 = __float2bfloat16(w0);
+    __nv_bfloat16 bf16_w1 = __float2bfloat16(w1);
+
+    if (weight_idx + 1 < total_elements) {
+        // 正常情况：包含 2 个有效权重 (偶数个)，使用向量化写入
+        __nv_bfloat162 packed_bf162 = __halves2bfloat162(bf16_w0, bf16_w1);
+        
+        // 强转为 uint32_t 进行一次 32-bit 合并访存写入
+        // 注意：输出指针强转。tid 刚好是 32-bit 元素的正确索引
+        reinterpret_cast<uint32_t*>(output)[tid] = *reinterpret_cast<uint32_t*>(&packed_bf162);
+    } else {
+        // 尾部边界处理：总元素数是奇数，并且这是最后一个单元素
+        // 退化为标量写入，避免越界访问
+        output[weight_idx] = bf16_w0;
+    }
+}
+
+// Host 启动函数
+void launch_dequantize_nf4(
+    const uint8_t* d_packed_weights, 
+    const uint8_t* d_absmax_q, 
+    const uint16_t* d_absmax2, 
+    const uint16_t* d_code2, 
+    float offset, 
+    __nv_bfloat16* d_output, 
+    int64_t total_elements, 
+    int blocksize,
+    cudaStream_t stream)
+{
+    // 每个线程处理 2 个元素，因此总线程数 = ceil(total_elements / 2)
+    int64_t num_threads = (total_elements + 1) / 2;
+    
+    // 配置 Block 和 Grid 维度
+    int threads_per_block = 256;
+    int blocks_per_grid = (num_threads + threads_per_block - 1) / threads_per_block;
+
+    dequantize_nf4_kernel<<<blocks_per_grid, threads_per_block, 0, stream>>>(
+        d_packed_weights,
+        d_absmax_q,
+        d_absmax2,
+        d_code2,
+        offset,
+        d_output,
+        total_elements,
+        blocksize
+    );
+}
