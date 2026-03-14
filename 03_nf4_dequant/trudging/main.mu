@@ -1,0 +1,243 @@
+#include "src/weights_loader.h"
+#include "src/dequantize.m.h"
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <fstream>
+#include <cmath>
+#include <string>
+#include <musa_fp16.h>
+#include <musa_bf16.h>
+
+// 辅助宏：用于检查 MUSA 错误
+#define CHECK_CUDA(call)                                                 \
+    do {                                                                 \
+        musaError_t err = call;                                          \
+        if (err != musaSuccess) {                                        \
+            std::cerr << "MUSA error at " << __FILE__ << ":" << __LINE__ \
+                      << " code=" << err << " \"" << musaGetErrorString(err) << "\"" << std::endl; \
+            exit(EXIT_FAILURE);                                          \
+        }                                                                \
+    } while (0)
+
+template <typename T>
+float to_float(T val);
+
+template <>
+float to_float<__musa_bfloat16>(__musa_bfloat16 val) {
+    return __musa_bfloat162float(val);
+}
+
+template <>
+float to_float<__half>(__half val) {
+    return __half2float(val);
+}
+
+template <typename T>
+void run_benchmark_and_check(QuantizedWeights& gt_weights,
+                             const std::vector<uint16_t>& h_ground_truth,
+                             int64_t total_elements,
+                             int blocksize,
+                             const uint8_t* d_packed_weights,
+                             const uint8_t* d_absmax_q,
+                             const uint16_t* d_absmax2,
+                             const uint16_t* d_code2)
+{
+    // 2. 显存分配
+    T* d_output = nullptr;
+    CHECK_CUDA(musaMalloc(&d_output, total_elements * sizeof(T)));
+
+    // 3. 性能测速 (MUSA Events)
+    musaEvent_t start, stop;
+    CHECK_CUDA(musaEventCreate(&start));
+    CHECK_CUDA(musaEventCreate(&stop));
+
+    std::cout << "\nStarting Warmup..." << std::endl;
+    for (int i = 0; i < 10; ++i) {
+        launch_dequantize_nf4<T>(
+            d_packed_weights, d_absmax_q, d_absmax2, d_code2,
+            gt_weights.offset, d_output, total_elements, blocksize, nullptr
+        );
+    }
+    CHECK_CUDA(musaDeviceSynchronize());
+
+    std::cout << "Starting Profiling..." << std::endl;
+    int num_runs = 100;
+
+    CHECK_CUDA(musaEventRecord(start));
+    for (int i = 0; i < num_runs; ++i) {
+        launch_dequantize_nf4<T>(
+            d_packed_weights, d_absmax_q, d_absmax2, d_code2,
+            gt_weights.offset, d_output, total_elements, blocksize, nullptr
+        );
+    }
+    CHECK_CUDA(musaEventRecord(stop));
+    CHECK_CUDA(musaEventSynchronize(stop));
+
+    float total_ms = 0.0f;
+    CHECK_CUDA(musaEventElapsedTime(&total_ms, start, stop));
+    float avg_time_ms = total_ms / num_runs;
+
+    // 4. 有效内存带宽计算
+    double total_bytes = gt_weights.packed_size
+                       + gt_weights.num_blocks
+                       + (gt_weights.num_groups * 2.0)
+                       + (256.0 * 2.0)
+                       + (total_elements * sizeof(T));
+
+    double bandwidth_GBs = (total_bytes / 1e9) / (avg_time_ms / 1000.0);
+
+    std::cout << "\n--- Performance Results ---" << std::endl;
+    std::cout << "Average Execution Time: " << std::fixed << std::setprecision(4) << avg_time_ms << " ms" << std::endl;
+    std::cout << "Effective Bandwidth:    " << std::setprecision(2) << bandwidth_GBs << " GB/s" << std::endl;
+
+    // Requirement 4: Speedup log
+    float baseline_ms = 2.15f;
+    std::cout << "Speedup vs bitsandbytes: " << std::fixed << std::setprecision(2) << (baseline_ms / avg_time_ms) << " x" << std::endl;
+
+    // 5. 精度验证 (MAE)
+    std::cout << "\n--- Accuracy Verification ---" << std::endl;
+    std::vector<T> h_output_test(total_elements);
+    CHECK_CUDA(musaMemcpy(h_output_test.data(), d_output, total_elements * sizeof(T), musaMemcpyDeviceToHost));
+
+    double total_error = 0.0;
+    float max_error = 0.0f;
+
+    for (int64_t i = 0; i < total_elements; ++i) {
+        __half gt_half;
+        memcpy(&gt_half, &h_ground_truth[i], sizeof(uint16_t));
+        float gt_val = __half2float(gt_half);
+
+        float out_val = to_float<T>(h_output_test[i]);
+
+        float err = std::abs(gt_val - out_val);
+        total_error += err;
+        if (err > max_error) {
+            max_error = err;
+        }
+    }
+
+    double mae = total_error / total_elements;
+    std::cout << "Calculated elements: " << total_elements << std::endl;
+    std::cout << "Mean Absolute Error (MAE): " << std::scientific << mae << std::endl;
+    std::cout << "Max Absolute Error (MaxAE): " << max_error << std::endl;
+
+    if (mae < 1e-2) {
+         std::cout << "=> Accuracy Check PASSED!" << std::endl;
+    } else {
+         std::cout << "=> Accuracy Check WARNING (MAE might be high)" << std::endl;
+    }
+
+    // Requirement 3: Output file writing
+    std::string out_file = "output_weights.bin";
+    std::ofstream f_out(out_file, std::ios::binary);
+    if (f_out.is_open()) {
+        f_out.write(reinterpret_cast<const char*>(h_output_test.data()), total_elements * sizeof(T));
+        f_out.close();
+        std::cout << "Saved dequantized weights to " << out_file << std::endl;
+    } else {
+        std::cerr << "Failed to write " << out_file << "!" << std::endl;
+    }
+
+    // 6. 资源释放
+    CHECK_CUDA(musaEventDestroy(start));
+    CHECK_CUDA(musaEventDestroy(stop));
+    CHECK_CUDA(musaFree(d_output));
+}
+
+int main(int argc, char** argv) {
+    std::cout << "Starting NF4 Dequantization Kernel Test..." << std::endl;
+
+    // Requirement 2: Read params.txt to get compute_type
+    std::string compute_type = "bf16"; // default
+    std::ifstream f_params("params.txt");
+    if (f_params.is_open()) {
+        std::string line;
+        while (std::getline(f_params, line)) {
+            if (line.find("compute_type=") != std::string::npos) {
+                compute_type = line.substr(line.find("=") + 1);
+                // remove any carriage return \r if exists
+                if (!compute_type.empty() && compute_type.back() == '\r') {
+                    compute_type.pop_back();
+                }
+            }
+        }
+        f_params.close();
+    } else {
+        std::cout << "Warning: Could not open params.txt. Defaulting to bf16." << std::endl;
+    }
+    std::cout << "Compute Type is set to: " << compute_type << std::endl;
+
+    // 1. 读取量化权重文件
+    std::string weights_file = "test_weights.bin";
+    std::string gt_file = "ground_truth.bin";
+
+    std::cout << "Loading weights from " << weights_file << "..." << std::endl;
+    QuantizedWeights gt_weights;
+    try {
+        gt_weights = load_weights(weights_file);
+    } catch (const std::exception& e) {
+        std::cerr << "Failed to load weights: " << e.what() << std::endl;
+        return -1;
+    }
+
+    int64_t num_rows = gt_weights.num_rows;
+    int64_t num_cols = gt_weights.num_cols;
+    int blocksize = gt_weights.block_size;
+
+    int64_t total_elements = num_rows * num_cols;
+    int64_t num_blocks = gt_weights.num_blocks;
+    int64_t num_groups = gt_weights.num_groups;
+    int64_t packed_size = gt_weights.packed_size;
+
+    std::cout << "Configuration:" << std::endl;
+    std::cout << "  Matrix: " << num_rows << " x " << num_cols << " (" << total_elements << " elements)" << std::endl;
+    std::cout << "  Blocksize: " << blocksize << std::endl;
+    std::cout << "  Num Blocks: " << num_blocks << std::endl;
+    std::cout << "  Num Groups: " << num_groups << std::endl;
+    std::cout << "  Packed Size: " << packed_size << " bytes" << std::endl;
+
+    // 读取 Ground Truth
+    std::cout << "Loading ground truth from " << gt_file << "..." << std::endl;
+    std::vector<uint16_t> h_ground_truth(total_elements); // store as fp16 bits
+    std::ifstream f_gt(gt_file, std::ios::binary);
+    if (!f_gt.is_open()) {
+        std::cerr << "Failed to open " << gt_file << std::endl;
+        return -1;
+    }
+    f_gt.read(reinterpret_cast<char*>(h_ground_truth.data()), total_elements * sizeof(uint16_t));
+    f_gt.close();
+
+    uint8_t *d_packed_weights, *d_absmax_q;
+    uint16_t *d_absmax2, *d_code2;
+
+    CHECK_CUDA(musaMalloc(&d_packed_weights, packed_size * sizeof(uint8_t)));
+    CHECK_CUDA(musaMalloc(&d_absmax_q, num_blocks * sizeof(uint8_t)));
+    CHECK_CUDA(musaMalloc(&d_absmax2, num_groups * sizeof(uint16_t)));
+    CHECK_CUDA(musaMalloc(&d_code2, 256 * sizeof(uint16_t)));
+
+    CHECK_CUDA(musaMemcpy(d_packed_weights, gt_weights.packed_weights.get(), packed_size * sizeof(uint8_t), musaMemcpyHostToDevice));
+    CHECK_CUDA(musaMemcpy(d_absmax_q, gt_weights.absmax_q.get(), num_blocks * sizeof(uint8_t), musaMemcpyHostToDevice));
+    CHECK_CUDA(musaMemcpy(d_absmax2, gt_weights.absmax2.get(), num_groups * sizeof(uint16_t), musaMemcpyHostToDevice));
+    CHECK_CUDA(musaMemcpy(d_code2, gt_weights.code2.get(), 256 * sizeof(uint16_t), musaMemcpyHostToDevice));
+
+    if (compute_type == "fp16") {
+        run_benchmark_and_check<__half>(
+            gt_weights, h_ground_truth, total_elements, blocksize,
+            d_packed_weights, d_absmax_q, d_absmax2, d_code2
+        );
+    } else {
+        run_benchmark_and_check<__musa_bfloat16>(
+            gt_weights, h_ground_truth, total_elements, blocksize,
+            d_packed_weights, d_absmax_q, d_absmax2, d_code2
+        );
+    }
+
+    CHECK_CUDA(musaFree(d_packed_weights));
+    CHECK_CUDA(musaFree(d_absmax_q));
+    CHECK_CUDA(musaFree(d_absmax2));
+    CHECK_CUDA(musaFree(d_code2));
+
+    std::cout << "\nDone!" << std::endl;
+    return 0;
+}
