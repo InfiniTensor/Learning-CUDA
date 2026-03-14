@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <cuda_runtime.h>
+#include <musa_runtime.h>
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
@@ -368,7 +368,7 @@ extern "C" __global__ void sw_extend_wavefront_kernel(const uint32_t *ref_packed
 }
 
 int main() {
-    cudaFree(0);
+        musaFree(0);
 
     std::string ref_file = "reference.fasta";
     std::string reads_file = "reads.fastq";
@@ -378,24 +378,26 @@ int main() {
     std::vector<size_t> ref_offsets;
     std::string concat_ref;
 
-    load_reference(ref_file, ref_names, concat_ref, ref_offsets);
+        load_reference(ref_file, ref_names, concat_ref, ref_offsets);
 
-    concat_ref.append(100, 'N');
+        concat_ref.append(100, 'N');
 
     std::vector<Read> reads;
-    load_reads(reads_file, reads);
+        load_reads(reads_file, reads);
 
     int num_reads = reads.size();
 
     size_t ref_encoded_size = (concat_ref.length() + 15) / 16;
     uint32_t *h_ref_packed = new uint32_t[ref_encoded_size];
 
-    encode_sequence_cpu(concat_ref, h_ref_packed);
+        encode_sequence_cpu(concat_ref, h_ref_packed);
 
     uint32_t *d_ref_packed;
-    cudaMalloc(&d_ref_packed, ref_encoded_size * sizeof(uint32_t));
+        musaMalloc(&d_ref_packed, ref_encoded_size * sizeof(uint32_t));
+    
 
-    cudaMemcpy(d_ref_packed, h_ref_packed, ref_encoded_size * sizeof(uint32_t), cudaMemcpyHostToDevice);
+        musaMemcpy(d_ref_packed, h_ref_packed, ref_encoded_size * sizeof(uint32_t), musaMemcpyHostToDevice);
+    
 
     std::vector<uint32_t> h_reads_packed(num_reads * (MAX_READ_LEN / 16), 0);
     std::vector<int> h_read_lengths(num_reads, 0);
@@ -504,18 +506,18 @@ int main() {
     int *d_read_lengths, *d_candidate_read_idx, *d_out_scores;
     int64_t *d_candidate_pos, *d_out_best_pos;
 
-    cudaMalloc(&d_reads_packed, h_reads_packed.size() * sizeof(uint32_t));
-    cudaMalloc(&d_read_lengths, num_reads * sizeof(int));
-    cudaMalloc(&d_candidate_pos, total_candidates * sizeof(int64_t));
-    cudaMalloc(&d_candidate_read_idx, total_candidates * sizeof(int));
-    cudaMalloc(&d_out_scores, total_candidates * sizeof(int));
-    cudaMalloc(&d_out_best_pos, total_candidates * sizeof(int64_t));
+    musaMalloc(&d_reads_packed, h_reads_packed.size() * sizeof(uint32_t));
+    musaMalloc(&d_read_lengths, num_reads * sizeof(int));
+    musaMalloc(&d_candidate_pos, total_candidates * sizeof(int64_t));
+    musaMalloc(&d_candidate_read_idx, total_candidates * sizeof(int));
+    musaMalloc(&d_out_scores, total_candidates * sizeof(int));
+    musaMalloc(&d_out_best_pos, total_candidates * sizeof(int64_t));
 
-    cudaMemcpy(d_reads_packed, h_reads_packed.data(), h_reads_packed.size() * sizeof(uint32_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_read_lengths, h_read_lengths.data(), num_reads * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_candidate_pos, h_candidate_pos.data(), total_candidates * sizeof(int64_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_candidate_read_idx, h_candidate_read_idx.data(), total_candidates * sizeof(int),
-               cudaMemcpyHostToDevice);
+    musaMemcpy(d_reads_packed, h_reads_packed.data(), h_reads_packed.size() * sizeof(uint32_t), musaMemcpyHostToDevice);
+    musaMemcpy(d_read_lengths, h_read_lengths.data(), num_reads * sizeof(int), musaMemcpyHostToDevice);
+    musaMemcpy(d_candidate_pos, h_candidate_pos.data(), total_candidates * sizeof(int64_t), musaMemcpyHostToDevice);
+    musaMemcpy(d_candidate_read_idx, h_candidate_read_idx.data(), total_candidates * sizeof(int),
+               musaMemcpyHostToDevice);
 
     int blockSize = 128; // 4 Warps per Block
     // Total threads needed = total_candidates * 32
@@ -529,12 +531,12 @@ int main() {
         d_ref_packed, concat_ref.length() - 100, d_reads_packed, d_read_lengths, d_candidate_pos, d_candidate_read_idx,
         total_candidates, d_out_scores, d_out_best_pos);
 
-    cudaDeviceSynchronize();
+    musaDeviceSynchronize();
 
     std::vector<int> h_out_scores(total_candidates);
     std::vector<int64_t> h_out_best_pos(total_candidates);
-    cudaMemcpy(h_out_scores.data(), d_out_scores, total_candidates * sizeof(int), cudaMemcpyDeviceToHost);
-    cudaMemcpy(h_out_best_pos.data(), d_out_best_pos, total_candidates * sizeof(int64_t), cudaMemcpyDeviceToHost);
+    musaMemcpy(h_out_scores.data(), d_out_scores, total_candidates * sizeof(int), musaMemcpyDeviceToHost);
+    musaMemcpy(h_out_best_pos.data(), d_out_best_pos, total_candidates * sizeof(int64_t), musaMemcpyDeviceToHost);
 
     std::vector<int> best_score_per_read(num_reads, -1);
     std::vector<int64_t> best_pos_per_read(num_reads, -1);
@@ -560,13 +562,13 @@ int main() {
         }
     }
 
-    cudaFree(d_ref_packed);
-    cudaFree(d_reads_packed);
-    cudaFree(d_read_lengths);
-    cudaFree(d_candidate_pos);
-    cudaFree(d_candidate_read_idx);
-    cudaFree(d_out_scores);
-    cudaFree(d_out_best_pos);
+    musaFree(d_ref_packed);
+    musaFree(d_reads_packed);
+    musaFree(d_read_lengths);
+    musaFree(d_candidate_pos);
+    musaFree(d_candidate_read_idx);
+    musaFree(d_out_scores);
+    musaFree(d_out_best_pos);
     delete[] h_ref_packed;
 
     return 0;
