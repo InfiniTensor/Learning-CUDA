@@ -1,15 +1,10 @@
 # *********************************************************************
 # 双边滤波 CUDA 项目 - Makefile
-# Targets:
-#   make build                          : 仅编译
-#   make run                            : 运行（默认 MODE=all）
-#   make run MODE=v0                    : 只跑 CPU 版本
-#   make run MODE=v1                    : 只跑 GPU V1
-#   make run INPUT=test_images/xxx.png  : 指定输入图片
-#   make clean                          : 清理临时文件
 #
-# GPU 选择（多卡环境下指定空闲 GPU）:
-#   CUDA_VISIBLE_DEVICES=2 make run
+# 平台选择:
+#   PLATFORM=nvidia make build          : NVIDIA A100 GPU（默认）
+#   PLATFORM=metax  make build          : MetaX C500 GPU
+#
 # *********************************************************************
 
 # -------------------------------
@@ -22,8 +17,11 @@ INCLUDE         := -I include
 ifeq ($(PLATFORM),nvidia)
     CC              := /usr/local/cuda/bin/nvcc
     CFLAGS          += -arch=sm_80 -DPLATFORM_NVIDIA
+else ifeq ($(PLATFORM),metax)
+    CC              := /opt/maca/mxgpu_llvm/bin/mxcc
+    CFLAGS          += -DPLATFORM_METAX
 else
-    $(error 仅支持 nvidia 平台)
+    $(error 仅支持 nvidia/ metax 平台)
 endif
 
 # 目录定义
@@ -33,9 +31,9 @@ OUTPUT_DIR      := output
 # 可执行文件
 TARGET          := $(BUILD_DIR)/bilateral_filter
 
-# 目标文件：主程序 + CPU代码 + GPU kernel + 工具
+# 目标文件
 MAIN_OBJ        := $(BUILD_DIR)/main.o
-CU_OBJS 		:= $(BUILD_DIR)/kernels.o
+CU_OBJS         := $(BUILD_DIR)/kernels.o
 CPP_OBJS   		:= $(BUILD_DIR)/bilateral_cpu.o $(BUILD_DIR)/image_io.o $(BUILD_DIR)/params.o $(BUILD_DIR)/benchmark.o 
 ALL_OBJS 		:= $(MAIN_OBJ) $(CU_OBJS) $(CPP_OBJS)
 
@@ -85,12 +83,18 @@ $(TARGET): $(ALL_OBJS)
 	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) -o $@ $^
 
-# 编译.cu 文件 (main.cu, kernels.cu)
+# GPU 源文件编译规则（根据平台选择 .cu 或 .maca）
+ifeq ($(PLATFORM),metax)
+$(BUILD_DIR)/%.o: src/%.maca
+	@mkdir -p $(BUILD_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+else
 $(BUILD_DIR)/%.o: src/%.cu
 	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+endif
 
-# 编译 .cpp 文件
+# 共享：从 .cpp 编译
 $(BUILD_DIR)/%.o: src/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@

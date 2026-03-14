@@ -5,8 +5,10 @@
 ```
 Snowkyo16/
 ├── src/
-│   ├── main.cu              # 主程序入口，版本调度器
-│   ├── kernels.cu           # V1-V4 GPU kernel 及 wrapper 实现
+│   ├── main.cu              # 主程序入口，版本调度器（NVIDIA A100）
+│   ├── main.maca            # 主程序入口，版本调度器（MetaX C500）
+│   ├── kernels.cu           # V1-V4 GPU kernel 及 wrapper 实现 （NVIDIA A100）
+│   ├── kernels.maca         # V5 GPU kernel 及 wrapper 实现（MetaX C500）
 │   ├── bilateral_cpu.cpp    # V0 CPU 基线实现
 │   ├── image_io.cpp         # 图像读写（基于 stb_image）
 │   ├── params.cpp           # 滤波参数解析
@@ -36,36 +38,42 @@ Snowkyo16/
 | v2_smem | GPU Shared Memory Tiling | `v2` |
 | v3_constmem | GPU Constant Memory LUT | `v3` |
 | v4_stream | GPU Pinned Memory Stream Pipeline | `v4` |
+| v5_metax | MetaX C500 MACA 移植（基于 V4 流水线） | `v5`（仅 MACA 平台） |
 | all | 跑所有版本 + 性能对比表 | `all`（默认） |
 
 
 ## 编译与运行
 
+### NVIDIA A100 平台
+
 ```bash
-# 清理
+# 清理 
 make clean
 
-# 仅编译
+# 编译 
 make build
 
-# 运行（默认跑全部版本 或 设置all)
-make run test_images/yosemite.jpg
-make run test_images/yosemite.jpg MODE=all
+# 运行
+make run INPUT=test_images/yosemite.jpg
+make run INPUT=test_images/yosemite.jpg MODE=v4
 
-# 运行（可以指定空闲 GPU）
-CUDA_VISIBLE_DEVICES=6 make run test_images/yosemite.jpg
-
-# 只跑 CPU 版本（不需要 GPU）
-make run test_images/yosemite.jpg MODE=v0
-
-# 只跑 GPU V1/V2/V3 版本
-make run test_images/yosemite.jpg MODE=v1
-make run test_images/yosemite.jpg MODE=v2
-make run test_images/yosemite.jpg MODE=v3
-make run test_images/yosemite.jpg MODE=v4
-
+# 指定空闲 GPU
+CUDA_VISIBLE_DEVICES=6 make run INPUT=test_images/yosemite.jpg
 ```
 
+### MetaX C500 平台（MACA）
+
+```bash
+# 清理
+PLATFORM=metax make clean
+
+# 编译
+PLATFORM=metax make build
+
+# 运行
+PLATFORM=metax make run MODE=all INPUT=test_images/yosemite.jpg
+PLATFORM=metax make run MODE=v5 INPUT=test_images/yosemite.jpg
+```
 
 ## OpenCV 对比验证
 
@@ -82,6 +90,8 @@ python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemit
 python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v3_constmem.png
 
 python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v4_stream.png
+
+python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v5_metax.png
 ```
 
 

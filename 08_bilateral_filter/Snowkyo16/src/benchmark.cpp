@@ -42,7 +42,7 @@ VersionResult run_version(const string& name, const Image& input,
         string out_path = image_dir + "/" + basename + "_" + name + ext;
         save_image(out_path, output);
 
-        return {name, ms, move(output)};
+        return {name, ms, std::move(output)};
     }
 
     // 多次运行：1次预热+num_runs次计时
@@ -89,7 +89,7 @@ VersionResult run_version(const string& name, const Image& input,
     string out_path = image_dir + "/" + basename + "_" + name + ext;
     save_image(out_path, output);
 
-    return {name, avg_ms, move(output)};
+    return {name, avg_ms, std::move(output)};
 }
 
 // 打印汇总对比表 
