@@ -5,9 +5,9 @@
 ```
 Snowkyo16/
 ├── src/
-│   ├── main.cu              # 主程序入口，版本调度器（NVIDIA A100）
+│   ├── main.cu              # 主程序入口，版本调度器（NVIDIA A100 / Iluvatar BI100）
 │   ├── main.maca            # 主程序入口，版本调度器（MetaX C500）
-│   ├── kernels.cu           # V1-V4 GPU kernel 及 wrapper 实现 （NVIDIA A100）
+│   ├── kernels.cu           # V1-V4 GPU kernel 及 wrapper 实现 （NVIDIA A100 / Iluvatar BI100）
 │   ├── kernels.maca         # V5 GPU kernel 及 wrapper 实现（MetaX C500）
 │   ├── bilateral_cpu.cpp    # V0 CPU 基线实现
 │   ├── image_io.cpp         # 图像读写（基于 stb_image）
@@ -59,6 +59,20 @@ make run INPUT=test_images/yosemite.jpg MODE=v4
 
 # 指定空闲 GPU
 CUDA_VISIBLE_DEVICES=6 make run INPUT=test_images/yosemite.jpg
+```
+
+### Iluvatar BI-V100 平台
+
+```bash
+# 清理
+PLATFORM=iluvatar make clean
+
+# 编译
+PLATFORM=iluvatar make build
+
+# 运行
+PLATFORM=iluvatar make run INPUT=test_images/yosemite.jpg
+PLATFORM=iluvatar make run INPUT=test_images/yosemite.jpg MODE=v4
 ```
 
 ### MetaX C500 平台（MACA）

@@ -3,6 +3,7 @@
 #
 # 平台选择:
 #   PLATFORM=nvidia make build          : NVIDIA A100 GPU（默认）
+#   PLATFORM=iluvatar make build        : Iluvatar BI-V100 GPU
 #   PLATFORM=metax  make build          : MetaX C500 GPU
 #
 # *********************************************************************
@@ -17,11 +18,15 @@ INCLUDE         := -I include
 ifeq ($(PLATFORM),nvidia)
     CC              := /usr/local/cuda/bin/nvcc
     CFLAGS          += -arch=sm_80 -DPLATFORM_NVIDIA
+else ifeq ($(PLATFORM),iluvatar)
+    CC              := clang++
+    CFLAGS          += -DPLATFORM_ILUVATAR --cuda-path=/usr/local/corex
+    LDFLAGS         := -L/usr/local/corex/lib -lcudart
 else ifeq ($(PLATFORM),metax)
     CC              := /opt/maca/mxgpu_llvm/bin/mxcc
     CFLAGS          += -DPLATFORM_METAX
 else
-    $(error 仅支持 nvidia/ metax 平台)
+    $(error 仅支持 nvidia/iluvtar/metax 平台)
 endif
 
 # 目录定义
@@ -81,7 +86,7 @@ clean:
 # 链接
 $(TARGET): $(ALL_OBJS)
 	@mkdir -p $(BUILD_DIR)
-	@$(CC) $(CFLAGS) -o $@ $^
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # GPU 源文件编译规则（根据平台选择 .cu 或 .maca）
 ifeq ($(PLATFORM),metax)

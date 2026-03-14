@@ -721,7 +721,7 @@ Image bilateral_filter_gpu_v4(const Image& input, const FilterParams& params) {
     RUNTIME_CHECK(cudaEventCreate(&stop));
 
     // start记录在stream[0] (H2D完成后)
-    RUNTIME_CHECK(cudaStreamWaitEvent(v4_streams[0], h2d_done));
+    RUNTIME_CHECK(cudaStreamWaitEvent(v4_streams[0], h2d_done, 0));
     RUNTIME_CHECK(cudaEventRecord(start, v4_streams[0]));
 
     int last_stream = 0;
@@ -733,7 +733,7 @@ Image bilateral_filter_gpu_v4(const Image& input, const FilterParams& params) {
 
         cudaStream_t stream =v4_streams[s];
         // 确保 H2D 完成后再启动 kernel
-        RUNTIME_CHECK(cudaStreamWaitEvent(stream, h2d_done));
+        RUNTIME_CHECK(cudaStreamWaitEvent(stream, h2d_done, 0));
 
         // 启动 kernel：只处理本 strip 的行
         dim3 grid_s((w + V4_BLOCK_SIZE - 1) / V4_BLOCK_SIZE,
