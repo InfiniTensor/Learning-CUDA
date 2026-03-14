@@ -13,52 +13,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
-#ifdef USE_NVTX
-#include <nvToolsExt.h>
-#endif
-
-struct ScopedTimer {
-    const char *name;
-    std::chrono::high_resolution_clock::time_point t0;
-    ScopedTimer(const char *n) : name(n), t0(std::chrono::high_resolution_clock::now()) {
-#ifdef USE_NVTX
-        nvtxRangePushA(name);
-#endif
-    }
-    ~ScopedTimer() {
-        auto t1 = std::chrono::high_resolution_clock::now();
-        double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-        std::fprintf(stderr, "[TIMER][CPU] %s: %.3f ms\n", name, ms);
-#ifdef USE_NVTX
-        nvtxRangePop();
-#endif
-    }
-};
-
-struct ScopedCudaEventTimer {
-    const char *name;
-    cudaEvent_t ev0{}, ev1{};
-    ScopedCudaEventTimer(const char *n) : name(n) {
-#ifdef USE_NVTX
-        nvtxRangePushA(name);
-#endif
-        cudaEventCreate(&ev0);
-        cudaEventCreate(&ev1);
-        cudaEventRecord(ev0);
-    }
-    ~ScopedCudaEventTimer() {
-        cudaEventRecord(ev1);
-        cudaEventSynchronize(ev1);
-        float ms = 0.0f;
-        cudaEventElapsedTime(&ms, ev0, ev1);
-        std::fprintf(stderr, "[TIMER][GPU] %s: %.3f ms\n", name, ms);
-        cudaEventDestroy(ev0);
-        cudaEventDestroy(ev1);
-#ifdef USE_NVTX
-        nvtxRangePop();
-#endif
-    }
-};
 
 #define MATCH_SCORE 2
 #define MISMATCH_SCORE -1
@@ -414,12 +368,7 @@ extern "C" __global__ void sw_extend_wavefront_kernel(const uint32_t *ref_packed
 }
 
 int main() {
-    ScopedTimer t_all("main_total");
-
-    {
-        ScopedTimer t("cuda_warmup");
         cudaFree(0);
-    }
 
     std::string ref_file = "reference.fasta";
     std::string reads_file = "reads.fastq";
@@ -429,42 +378,26 @@ int main() {
     std::vector<size_t> ref_offsets;
     std::string concat_ref;
 
-    {
-        ScopedTimer t("load_reference");
         load_reference(ref_file, ref_names, concat_ref, ref_offsets);
-    }
 
-    {
-        ScopedTimer t("append_ref_padding");
         concat_ref.append(100, 'N');
-    }
 
     std::vector<Read> reads;
-    {
-        ScopedTimer t("load_reads");
         load_reads(reads_file, reads);
-    }
 
     int num_reads = reads.size();
 
     size_t ref_encoded_size = (concat_ref.length() + 15) / 16;
     uint32_t *h_ref_packed = new uint32_t[ref_encoded_size];
 
-    {
-        ScopedTimer t("encode_reference_cpu");
         encode_sequence_cpu(concat_ref, h_ref_packed);
-    }
 
     uint32_t *d_ref_packed;
-    {
-        ScopedCudaEventTimer t("cuda_malloc_ref");
         cudaMalloc(&d_ref_packed, ref_encoded_size * sizeof(uint32_t));
-    }
+    
 
-    {
-        ScopedCudaEventTimer t("h2d_ref_copy");
         cudaMemcpy(d_ref_packed, h_ref_packed, ref_encoded_size * sizeof(uint32_t), cudaMemcpyHostToDevice);
-    }
+    
 
     std::vector<uint32_t> h_reads_packed(num_reads * (MAX_READ_LEN / 16), 0);
     std::vector<int> h_read_lengths(num_reads, 0);
