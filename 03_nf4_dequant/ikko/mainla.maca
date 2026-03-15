@@ -1,0 +1,224 @@
+#include <mcr/mc_runtime.h>
+#include <common/maca_fp16.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <cstring>
+#include <cmath>
+#include <cstdint>
+#include <cstdlib>
+#include <chrono>
+#include <unistd.h>
+
+#if !defined(PLATFORM_METAX)
+#define PLATFORM_METAX
+#endif
+#include "../tester/utils.h"
+
+__constant__ float NF4_LUT[16] = {
+    -1.0f,
+    -0.6961928009986877f,
+    -0.5250730514526367f,
+    -0.39491748809814453f,
+    -0.28444138169288635f,
+    -0.18477343022823334f,
+    -0.09105003625154495f,
+    0.0f,
+    0.07958029955625534f,
+    0.16093020141124725f,
+    0.24611230194568634f,
+    0.33791524171829224f,
+    0.44070982933044434f,
+    0.5626170039176941f,
+    0.7229568362236023f,
+    1.0f
+};
+
+__global__ void nf4_decode_kernel_fp16(
+    const uint8_t* __restrict__ packed_weights,
+    const uint8_t* __restrict__ absmax_q,
+    const half* __restrict__ absmax2,
+    const half* __restrict__ code2,
+    float offset,
+    half* __restrict__ output,
+    int64_t num_elements,
+    int blocksize,
+    int group_size) {
+    int64_t tid = static_cast<int64_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+    int64_t stride = static_cast<int64_t>(gridDim.x) * blockDim.x;
+    int64_t total_bytes = (num_elements + 1) / 2;
+    int bytes_per_block = blocksize / 2;
+
+    for (int64_t byte_idx = tid; byte_idx < total_bytes; byte_idx += stride) {
+        uint8_t packed = packed_weights[byte_idx];
+        uint8_t idx_hi = (packed >> 4) & 0x0F;
+        uint8_t idx_lo = packed & 0x0F;
+
+        int block_id = static_cast<int>(byte_idx / bytes_per_block);
+        int group_id = block_id / group_size;
+
+        float a2 = __half2float(absmax2[group_id]);
+        float c2 = __half2float(code2[absmax_q[block_id]]);
+        float real_absmax = a2 * c2 + offset;
+
+        float v0 = NF4_LUT[idx_hi] * real_absmax;
+        float v1 = NF4_LUT[idx_lo] * real_absmax;
+
+        int64_t out_idx = byte_idx * 2;
+        if (out_idx < num_elements) {
+            output[out_idx] = __float2half(v0);
+        }
+        if (out_idx + 1 < num_elements) {
+            output[out_idx + 1] = __float2half(v1);
+        }
+    }
+}
+
+int main(int argc, char** argv) {
+    std::string input_file = "03_nf4_dequant/ikko/data/weight_data.bin";
+    std::string output_file = "03_nf4_dequant/ikko/output_fp16_maca.bin";
+
+    if (argc >= 2) {
+        if (std::strcmp(argv[1], "fp16") != 0) {
+            std::cerr << "Warning: mainla.maca currently supports fp16 only, got '" << argv[1]
+                      << "'. Continue with fp16 output." << std::endl;
+        }
+    }
+    if (argc >= 3) {
+        output_file = argv[2];
+    }
+
+    std::ifstream infile(input_file, std::ios::binary);
+    if (!infile) {
+        char cwd[4096];
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            std::cerr << "CWD: " << cwd << std::endl;
+        }
+        std::cerr << "Error: Cannot open input file: " << input_file << std::endl;
+        std::string fallback_file = "03_nf4_dequant/ikko/data/weight_data.bin";
+        infile.open(fallback_file, std::ios::binary);
+        if (!infile) {
+            std::cerr << "Error: Cannot open fallback input file: " << fallback_file << std::endl;
+            return 1;
+        }
+        input_file = fallback_file;
+    }
+
+    int64_t num_rows = 0;
+    int64_t num_cols = 0;
+    int32_t blocksize = 0;
+    infile.read(reinterpret_cast<char*>(&num_rows), sizeof(int64_t));
+    infile.read(reinterpret_cast<char*>(&num_cols), sizeof(int64_t));
+    infile.read(reinterpret_cast<char*>(&blocksize), sizeof(int32_t));
+
+    std::streampos data_start = infile.tellg();
+    infile.seekg(0, std::ios::end);
+    int64_t file_size = static_cast<int64_t>(infile.tellg());
+    infile.seekg(data_start, std::ios::beg);
+
+    int64_t num_elements = num_rows * num_cols;
+    int64_t num_blocks = (num_elements + blocksize - 1) / blocksize;
+
+    size_t size_packed = static_cast<size_t>((num_elements + 1) / 2);
+    size_t size_absmax_q = static_cast<size_t>(num_blocks) * sizeof(uint8_t);
+    size_t size_code2 = 256 * sizeof(half);
+    size_t size_absmax2 = 0;
+    int64_t num_groups = 0;
+
+    int64_t header_size = static_cast<int64_t>(sizeof(int64_t) * 2 + sizeof(int32_t));
+    int64_t remaining = file_size - header_size -
+                        static_cast<int64_t>(size_packed + size_absmax_q + size_code2 + sizeof(float));
+    if (remaining > 0 && (remaining % static_cast<int64_t>(sizeof(half)) == 0)) {
+        num_groups = remaining / static_cast<int64_t>(sizeof(half));
+    } else {
+        num_groups = (num_blocks + 255) / 256;
+    }
+    size_absmax2 = static_cast<size_t>(num_groups) * sizeof(half);
+
+    std::vector<uint8_t> h_packed(size_packed);
+    std::vector<uint8_t> h_absmax_q(static_cast<size_t>(num_blocks));
+    std::vector<half> h_absmax2(static_cast<size_t>(num_groups));
+    std::vector<half> h_code2(256);
+    float offset = 0.0f;
+
+    infile.read(reinterpret_cast<char*>(h_packed.data()), size_packed);
+    infile.read(reinterpret_cast<char*>(h_absmax_q.data()), size_absmax_q);
+    infile.read(reinterpret_cast<char*>(h_absmax2.data()), size_absmax2);
+    infile.read(reinterpret_cast<char*>(h_code2.data()), size_code2);
+    infile.read(reinterpret_cast<char*>(&offset), sizeof(float));
+    infile.close();
+
+    uint8_t* d_packed = nullptr;
+    uint8_t* d_absmax_q = nullptr;
+    half* d_absmax2 = nullptr;
+    half* d_code2 = nullptr;
+    half* d_output = nullptr;
+
+    RUNTIME_CHECK(mcMalloc(&d_packed, size_packed));
+    RUNTIME_CHECK(mcMalloc(&d_absmax_q, size_absmax_q));
+    RUNTIME_CHECK(mcMalloc(&d_absmax2, size_absmax2));
+    RUNTIME_CHECK(mcMalloc(&d_code2, size_code2));
+    RUNTIME_CHECK(mcMalloc(&d_output, static_cast<size_t>(num_elements) * sizeof(half)));
+
+    RUNTIME_CHECK(mcMemcpy(d_packed, h_packed.data(), size_packed, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemcpy(d_absmax_q, h_absmax_q.data(), size_absmax_q, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemcpy(d_absmax2, h_absmax2.data(), size_absmax2, mcMemcpyHostToDevice));
+    RUNTIME_CHECK(mcMemcpy(d_code2, h_code2.data(), size_code2, mcMemcpyHostToDevice));
+
+    dim3 block_dim(256);
+    int64_t total_bytes = (num_elements + 1) / 2;
+    int grid_x = 4096;
+    int64_t max_grid = (total_bytes + block_dim.x - 1) / block_dim.x;
+    if (grid_x > max_grid) {
+        grid_x = static_cast<int>(max_grid);
+    }
+    if (grid_x < 1) {
+        grid_x = 1;
+    }
+    dim3 grid_dim(grid_x);
+
+    int group_size = static_cast<int>((num_blocks + num_groups - 1) / num_groups);
+
+    nf4_decode_kernel_fp16<<<grid_dim, block_dim>>>(
+        d_packed, d_absmax_q, d_absmax2, d_code2, offset, d_output, num_elements, blocksize, group_size);
+    RUNTIME_CHECK(mcGetLastError());
+    RUNTIME_CHECK(mcDeviceSynchronize());
+
+    const int iters = 100;
+    auto t0 = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < iters; ++i) {
+        nf4_decode_kernel_fp16<<<grid_dim, block_dim>>>(
+            d_packed, d_absmax_q, d_absmax2, d_code2, offset, d_output, num_elements, blocksize, group_size);
+    }
+    RUNTIME_CHECK(mcGetLastError());
+    RUNTIME_CHECK(mcDeviceSynchronize());
+    auto t1 = std::chrono::high_resolution_clock::now();
+
+    double milliseconds = std::chrono::duration<double, std::milli>(t1 - t0).count() / static_cast<double>(iters);
+
+    std::vector<half> h_output(static_cast<size_t>(num_elements));
+    RUNTIME_CHECK(mcMemcpy(h_output.data(), d_output, static_cast<size_t>(num_elements) * sizeof(half), mcMemcpyDeviceToHost));
+
+    double total_io_bytes = static_cast<double>(size_packed + size_absmax_q + size_absmax2 + size_code2) +
+                            static_cast<double>(num_elements * sizeof(half));
+    double bandwidth = total_io_bytes / (milliseconds / 1000.0) / 1e9;
+
+    std::cout << "grid_x: " << grid_x << std::endl;
+    std::cout << "Kernel Time: " << milliseconds << " ms" << std::endl;
+    std::cout << "Effective Bandwidth (approx): " << bandwidth << " GB/s" << std::endl;
+    std::cout << "Output dtype: fp16" << std::endl;
+
+    std::ofstream outfile(output_file, std::ios::binary);
+    outfile.write(reinterpret_cast<char*>(h_output.data()), static_cast<std::streamsize>(num_elements * sizeof(half)));
+    outfile.close();
+    std::cout << "Output written to " << output_file << std::endl;
+
+    RUNTIME_CHECK(mcFree(d_packed));
+    RUNTIME_CHECK(mcFree(d_absmax_q));
+    RUNTIME_CHECK(mcFree(d_absmax2));
+    RUNTIME_CHECK(mcFree(d_code2));
+    RUNTIME_CHECK(mcFree(d_output));
+
+    return 0;
+}

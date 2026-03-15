@@ -1,0 +1,5 @@
+.venv/
+*.pyc
+*.sqlite
+*.nsys-rep
+*.bin
