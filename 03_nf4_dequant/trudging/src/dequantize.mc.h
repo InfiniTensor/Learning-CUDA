@@ -1,7 +1,7 @@
 #pragma once
 
-#include <maca_runtime.h>
-#include <common/maca_bf16.h>
+#include <mcr/mc_runtime.h>
+/* #include <common/maca_bfloat16.h> */
 #include <common/maca_fp16.h>
 #include <cstdint>
 

@@ -8,50 +8,28 @@
 #include <cmath>
 #include <cstdint>
 #include <stdexcept>
-#if defined(PLATFORM_METAX)
-    #include <mcr/mc_runtime.h>
-    
-    #define CUDA_MALLOC_HOST mcMallocHost
-    #define CUDA_FREE_HOST mcFreeHost
-    #define CUDA_SUCCESS mcSuccess
-    #define CUDA_GET_ERROR_STRING mcGetErrorString
-    #define CUDA_ERROR_T mcError_t
-#elif defined(PLATFORM_MOORE)
-    #include <musa_runtime.h>
-    #define CUDA_MALLOC_HOST musaMallocHost
-    #define CUDA_FREE_HOST musaFreeHost
-    #define CUDA_SUCCESS musaSuccess
-    #define CUDA_GET_ERROR_STRING musaGetErrorString
-    #define CUDA_ERROR_T musaError_t
-#else
-    #include <cuda_runtime.h>
-    #define CUDA_MALLOC_HOST cudaMallocHost
-    #define CUDA_FREE_HOST cudaFreeHost
-    #define CUDA_SUCCESS cudaSuccess
-    #define CUDA_GET_ERROR_STRING cudaGetErrorString
-    #define CUDA_ERROR_T cudaError_t
-#endif
+#include <cuda_runtime.h>
 
-// Custom deleter
+// ×Ô¶¨ÒåÉ¾³ıÆ÷£¬ÓÃÓÚ std::unique_ptr ¹ÜÀí cudaMallocHost ·ÖÅäµÄÄÚ´æ
 struct CudaHostDeleter {
     void operator()(void* ptr) const {
         if (ptr) {
-            CUDA_FREE_HOST(ptr);
+            cudaFreeHost(ptr);
         }
     }
 };
 
-// åˆ«åå®šä¹‰ï¼Œæ–¹ä¾¿ä½¿ç”¨
+// ±ğÃû¶¨Òå£¬·½±ãÊ¹ÓÃ
 template <typename T>
 using start_pinned_ptr = std::unique_ptr<T[], CudaHostDeleter>;
 
-// è¾…åŠ©å‡½æ•°ï¼šåˆ†é… pinned memory
+// ¸¨Öúº¯Êı£º·ÖÅä pinned memory
 template <typename T>
 start_pinned_ptr<T> allocate_pinned(size_t count) {
     void* ptr = nullptr;
-    CUDA_ERROR_T err = CUDA_MALLOC_HOST(&ptr, count * sizeof(T));
-    if (err != CUDA_SUCCESS) {
-        throw std::runtime_error(std::string("CUDA_MALLOC_HOST failed: ") + CUDA_GET_ERROR_STRING(err));
+    cudaError_t err = cudaMallocHost(&ptr, count * sizeof(T));
+    if (err != cudaSuccess) {
+        throw std::runtime_error(std::string("cudaMallocHost failed: ") + cudaGetErrorString(err));
     }
     return start_pinned_ptr<T>(static_cast<T*>(ptr));
 }
@@ -65,13 +43,13 @@ struct QuantizedWeights {
     size_t num_groups;
     size_t packed_size;
 
-    // ä½¿ç”¨æ™ºèƒ½æŒ‡é’ˆç®¡ç†çš„ Pinned Memory æ•°ç»„
+    // Ê¹ÓÃÖÇÄÜÖ¸Õë¹ÜÀíµÄ Pinned Memory Êı×é
     start_pinned_ptr<uint8_t> packed_weights;
     start_pinned_ptr<uint8_t> absmax_q;
     start_pinned_ptr<uint16_t> absmax2;
     start_pinned_ptr<uint16_t> code2;
     
-    float offset; // å•ä¸ª float å€¼
+    float offset; // µ¥¸ö float Öµ
 };
 
 inline QuantizedWeights load_weights(const std::string& filename) {
@@ -82,39 +60,39 @@ inline QuantizedWeights load_weights(const std::string& filename) {
 
     QuantizedWeights w;
 
-    // 1. è¯»å–å¤´éƒ¨
+    // 1. ¶ÁÈ¡Í·²¿
     if (!file.read(reinterpret_cast<char*>(&w.num_rows), sizeof(w.num_rows))) throw std::runtime_error("Failed to read num_rows");
     if (!file.read(reinterpret_cast<char*>(&w.num_cols), sizeof(w.num_cols))) throw std::runtime_error("Failed to read num_cols");
     if (!file.read(reinterpret_cast<char*>(&w.block_size), sizeof(w.block_size))) throw std::runtime_error("Failed to read block_size");
 
-    // 2. è®¡ç®—å„éƒ¨åˆ†å¤§å°
-    // æ³¨æ„ï¼šè¿™é‡Œå‡è®¾ num_rows * num_cols æ˜¯å¶æ•°ï¼Œæˆ–è€…æŒ‰ç…§ (N*M)/2 å‘ä¸‹å–æ•´ã€‚
-    // å¦‚æœæ˜¯ 4-bit é‡åŒ–ï¼Œé€šå¸¸ä½ éœ€è¦ç¡®ä¿æ€»å…ƒç´ ä¸ªæ•°æ˜¯å¶æ•°ï¼Œæˆ–è€…å¤„ç†å°¾éƒ¨ paddingã€‚
+    // 2. ¼ÆËã¸÷²¿·Ö´óĞ¡
+    // ×¢Òâ£ºÕâÀï¼ÙÉè num_rows * num_cols ÊÇÅ¼Êı£¬»òÕß°´ÕÕ (N*M)/2 ÏòÏÂÈ¡Õû¡£
+    // Èç¹ûÊÇ 4-bit Á¿»¯£¬Í¨³£ÄãĞèÒªÈ·±£×ÜÔªËØ¸öÊıÊÇÅ¼Êı£¬»òÕß´¦ÀíÎ²²¿ padding¡£
     w.packed_size = (w.num_rows * w.num_cols) / 2;
     
     // num_blocks = ceil(num_rows * num_cols / blocksize)
     w.num_blocks = (w.num_rows * w.num_cols + w.block_size - 1) / w.block_size;
     
     // num_groups = ceil(num_blocks / 256)
-    // æ ¹æ®æ‚¨çš„è¦æ±‚ï¼šblock_size_2 ä¸ºå›ºå®š 256
-    // æ³¨ï¼šåŸé—®é¢˜ä¸­æåˆ° "absmax2: ... é•¿åº¦ä¸º num_groups (å‡è®¾å›ºå®šä¸º 256)" 
-    // ä½†åç»­è¿½é—®æŒ‡å‡ºåº”ä¸ºè®¡ç®—å€¼ã€‚æ­¤å¤„æŒ‰è¿½é—®é€»è¾‘è®¡ç®— num_groupsã€‚
-    // å¦‚æœ "å‡è®¾å›ºå®šä¸º 256" æŒ‡çš„æ˜¯ group_sizeï¼Œåˆ™å¦‚ä¸‹è®¡ç®—ï¼š
+    // ¸ù¾İÄúµÄÒªÇó£ºblock_size_2 Îª¹Ì¶¨ 256
+    // ×¢£ºÔ­ÎÊÌâÖĞÌáµ½ "absmax2: ... ³¤¶ÈÎª num_groups (¼ÙÉè¹Ì¶¨Îª 256)" 
+    // µ«ºóĞø×·ÎÊÖ¸³öÓ¦Îª¼ÆËãÖµ¡£´Ë´¦°´×·ÎÊÂß¼­¼ÆËã num_groups¡£
+    // Èç¹û "¼ÙÉè¹Ì¶¨Îª 256" Ö¸µÄÊÇ group_size£¬ÔòÈçÏÂ¼ÆËã£º
     size_t group_size = 256;
     w.num_groups = (w.num_blocks + group_size - 1) / group_size;
 
-    // 3. åˆ†é… Pinned Memory
+    // 3. ·ÖÅä Pinned Memory
     try {
         w.packed_weights = allocate_pinned<uint8_t>(w.packed_size);
         w.absmax_q = allocate_pinned<uint8_t>(w.num_blocks);
         w.absmax2 = allocate_pinned<uint16_t>(w.num_groups);
-        w.code2 = allocate_pinned<uint16_t>(256); // å›ºå®š 256 å…ƒç´ 
+        w.code2 = allocate_pinned<uint16_t>(256); // ¹Ì¶¨ 256 ÔªËØ
     } catch (const std::exception& e) {
         file.close();
         throw;
     }
 
-    // 4. è¯»å–æ•°æ®æ•°ç»„
+    // 4. ¶ÁÈ¡Êı¾İÊı×é
     auto read_array = [&](char* dst, size_t size, const char* name) {
         file.read(dst, size);
         if (file.gcount() != static_cast<std::streamsize>(size)) {
@@ -127,12 +105,12 @@ inline QuantizedWeights load_weights(const std::string& filename) {
     read_array(reinterpret_cast<char*>(w.absmax2.get()), w.num_groups * sizeof(uint16_t), "absmax2");
     read_array(reinterpret_cast<char*>(w.code2.get()), 256 * sizeof(uint16_t), "code2");
 
-    // 5. è¯»å– offset
+    // 5. ¶ÁÈ¡ offset
     if (!file.read(reinterpret_cast<char*>(&w.offset), sizeof(w.offset))) {
         throw std::runtime_error("Failed to read offset");
     }
 
-    // 6. æ£€æŸ¥æ˜¯å¦è¿˜æœ‰å‰©ä½™æ•°æ®ï¼ˆå¯é€‰ï¼Œè§†æ–‡ä»¶æ ¼å¼ä¸¥æ ¼ç¨‹åº¦è€Œå®šï¼‰
+    // 6. ¼ì²éÊÇ·ñ»¹ÓĞÊ£ÓàÊı¾İ£¨¿ÉÑ¡£¬ÊÓÎÄ¼ş¸ñÊ½ÑÏ¸ñ³Ì¶È¶ø¶¨£©
     if (file.peek() != EOF) {
         std::cerr << "Warning: Extra data found at the end of the file " << filename << std::endl;
     }

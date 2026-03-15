@@ -5,7 +5,7 @@ template <typename T>
 __device__ inline T float2T(float v);
 
 template <>
-__device__ inline __nv_bfloat16 float2T<__nv_bfloat16>(float v) {
+__device__ inline __maca_bfloat16 float2T<__maca_bfloat16>(float v) {
     return __float2bfloat16(v);
 }
 
@@ -14,9 +14,9 @@ __device__ inline __half float2T<__half>(float v) {
     return __float2half_rn(v);
 }
 
-// 针对 __nv_bfloat16 的特化向量化打包
-__device__ inline uint32_t pack_two_elements(__nv_bfloat16 w0, __nv_bfloat16 w1) {
-    __nv_bfloat162 packed = __halves2bfloat162(w0, w1);
+// 针对 __maca_bfloat16 的特化向量化打包
+__device__ inline uint32_t pack_two_elements(__maca_bfloat16 w0, __maca_bfloat16 w1) {
+    __maca_bfloat162 packed = __halves2bfloat162(w0, w1);
     return *reinterpret_cast<uint32_t*>(&packed);
 }
 
@@ -136,9 +136,9 @@ void launch_dequantize_nf4(
 }
 
 // 显式实例化模板
-template void launch_dequantize_nf4<__nv_bfloat16>(
+template void launch_dequantize_nf4<__maca_bfloat16>(
     const uint8_t*, const uint8_t*, const uint16_t*, const uint16_t*,
-    float, __nv_bfloat16*, int64_t, int, mcStream_t);
+    float, __maca_bfloat16*, int64_t, int, mcStream_t);
 
 template void launch_dequantize_nf4<__half>(
     const uint8_t*, const uint8_t*, const uint16_t*, const uint16_t*,
