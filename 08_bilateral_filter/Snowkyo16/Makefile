@@ -5,6 +5,7 @@
 #   PLATFORM=nvidia make build          : NVIDIA A100 GPU（默认）
 #   PLATFORM=iluvatar make build        : Iluvatar BI-V100 GPU
 #   PLATFORM=metax  make build          : MetaX C500 GPU
+#   PLATFORM=moore  make build          : Moore Threads S5000 GPU
 #
 # *********************************************************************
 
@@ -13,6 +14,7 @@
 # -------------------------------
 PLATFORM        ?= nvidia
 CFLAGS          := -std=c++17 -O2
+LDFLAGS			:= 
 INCLUDE         := -I include
 
 ifeq ($(PLATFORM),nvidia)
@@ -25,8 +27,13 @@ else ifeq ($(PLATFORM),iluvatar)
 else ifeq ($(PLATFORM),metax)
     CC              := /opt/maca/mxgpu_llvm/bin/mxcc
     CFLAGS          += -DPLATFORM_METAX
+else ifeq ($(PLATFORM),moore)
+    MUSA_HOME       ?= /usr/local/musa
+    CC              := $(MUSA_HOME)/bin/mcc
+    CFLAGS          += -DPLATFORM_MOORE
+    LDFLAGS         += -L$(MUSA_HOME)/lib -lmusart -L/usr/lib/gcc/x86_64-linux-gnu/11 -lstdc++
 else
-    $(error 仅支持 nvidia/iluvtar/metax 平台)
+    $(error 仅支持 nvidia / iluvatar / metax / moore 平台)
 endif
 
 # 目录定义
@@ -86,11 +93,15 @@ clean:
 # 链接
 $(TARGET): $(ALL_OBJS)
 	@mkdir -p $(BUILD_DIR)
-	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ 
 
-# GPU 源文件编译规则（根据平台选择 .cu 或 .maca）
+# GPU 源文件编译规则（根据平台选择 .cu / .maca / .mu）
 ifeq ($(PLATFORM),metax)
 $(BUILD_DIR)/%.o: src/%.maca
+	@mkdir -p $(BUILD_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+else ifeq ($(PLATFORM),moore)
+$(BUILD_DIR)/%.o: src/%.mu
 	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 else

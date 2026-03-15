@@ -7,8 +7,10 @@ Snowkyo16/
 ├── src/
 │   ├── main.cu              # 主程序入口，版本调度器（NVIDIA A100 / Iluvatar BI100）
 │   ├── main.maca            # 主程序入口，版本调度器（MetaX C500）
+│   ├── main.mu              # 主程序入口，版本调度器（Moore Threads S5000）
 │   ├── kernels.cu           # V1-V4 GPU kernel 及 wrapper 实现 （NVIDIA A100 / Iluvatar BI100）
 │   ├── kernels.maca         # V5 GPU kernel 及 wrapper 实现（MetaX C500）
+│   ├── kernels.mu           # V6 GPU kernel 及 wrapper 实现（Moore Threads S5000）
 │   ├── bilateral_cpu.cpp    # V0 CPU 基线实现
 │   ├── image_io.cpp         # 图像读写（基于 stb_image）
 │   ├── params.cpp           # 滤波参数解析
@@ -39,6 +41,7 @@ Snowkyo16/
 | v3_constmem | GPU Constant Memory LUT | `v3` |
 | v4_stream | GPU Pinned Memory Stream Pipeline | `v4` |
 | v5_metax | MetaX C500 MACA 移植（基于 V4 流水线） | `v5`（仅 MACA 平台） |
+| v6_moore | Moore Threads S5000 MUSA 移植（基于 V4 流水线） | `v6`（仅 MUSA 平台） |
 | all | 跑所有版本 + 性能对比表 | `all`（默认） |
 
 
@@ -85,8 +88,22 @@ PLATFORM=metax make clean
 PLATFORM=metax make build
 
 # 运行
-PLATFORM=metax make run MODE=all INPUT=test_images/yosemite.jpg
-PLATFORM=metax make run MODE=v5 INPUT=test_images/yosemite.jpg
+PLATFORM=metax make run INPUT=test_images/yosemite.jpg MODE=all
+PLATFORM=metax make run INPUT=test_images/yosemite.jpg MODE=v5
+```
+
+### Moore Threads S5000 平台（MUSA）
+
+```bash
+# 清理 
+PLATFORM=moore make clean
+
+# 编译 
+PLATFORM=moore make build
+
+# 运行
+PLATFORM=moore make run INPUT=test_images/yosemite.jpg MODE=all
+PLATFORM=moore make run INPUT=test_images/yosemite.jpg MODE=v6
 ```
 
 ## OpenCV 对比验证
@@ -106,6 +123,8 @@ python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemit
 python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v4_stream.png
 
 python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v5_metax.png
+
+python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v6_moore.png
 ```
 
 

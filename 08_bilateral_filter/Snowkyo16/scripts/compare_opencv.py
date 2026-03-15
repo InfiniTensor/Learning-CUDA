@@ -9,7 +9,7 @@ OpenCV 双边滤波对比验证脚本
   python3 scripts/compare_opencv.py test_images/yosemite.jpg output/images/yosemite_v4_stream.png params.txt
 
 功能:
-  计算MAE 和 PSNR
+  计算 MAE 和 PSNR
 """
 
 import cv2

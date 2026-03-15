@@ -22,7 +22,12 @@ void bilateral_filter_gpu_v4_init(const Image& input, const FilterParams& params
 Image bilateral_filter_gpu_v4(const Image& input, const FilterParams& params);
 void bilateral_filter_gpu_v4_cleanup();  // 释放 buffer、pinned memory、销毁 streams
 
-// V5: Metax C500(MACA)平台适配，Pinned Memory + Streams 流水线
+// V5: Metax C500(MACA) 平台适配，Pinned Memory + Streams 流水线
 void bilateral_filter_gpu_v5_init(const Image& input, const FilterParams& params);  // LUT + buffer + pinned + stream初始化
 Image bilateral_filter_gpu_v5(const Image& input, const FilterParams& params);
 void bilateral_filter_gpu_v5_cleanup();  // 释放buffer、pinned memory、销毁 streams
+
+// V6: Moore Threads S5000(MUSA) 平台适配，Pinned Memory + Streams 流水线
+void bilateral_filter_gpu_v6_init(const Image& input, const FilterParams& params);  // LUT + buffer + pinned + streams 初始化
+Image bilateral_filter_gpu_v6(const Image& input, const FilterParams& params);
+void bilateral_filter_gpu_v6_cleanup();  // 释放 buffer、pinned memory、销毁 streams
