@@ -1,0 +1,14 @@
+# 双边滤波参数配置文件
+
+# 窗口半径，实际窗口大小为 (2*radius+1)^2
+radius = 5
+
+# 空间域标准差
+sigma_spatial = 3.0
+
+# 颜色域标准差（对于8位图像，范围0-255）
+sigma_color = 30.0
+
+# 是否启用自适应半径选择：根据图像噪声自动调整滤波半径
+# 可选值: true / false
+use_adaptive_radius = false
