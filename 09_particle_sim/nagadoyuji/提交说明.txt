@@ -1,0 +1,6 @@
+提交要求（Learning-CUDA 仓库）：
+1. Fork Learning-CUDA 的 2025-winter-project 分支（若仓库以该分支为准，否则按项目文档使用 project 等分支）。
+2. 将本目录（09_particle_sim/nagadoyuji/）下的全部内容放入你 fork 的仓库对应路径：/<选题>/<你的ID>/ 即 09_particle_sim/nagadoyuji/。
+3. 通过 PR 提交。
+
+本目录已包含：完整程序源码、示例数据、可视化与验证脚本、README、总结报告（总结报告.md）。无临时测试代码，命名与格式已统一，关键处已加注释。代码格式化可执行 make format（需安装 clang-format）。
