@@ -1,0 +1,143 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "conda-release",
+      "displayName": "Conda Release",
+      "description": "Configure a Release build in an activated Conda environment.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/conda-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CUDAToolkit_ROOT": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4",
+        "CMAKE_PREFIX_PATH": "$env{CONDA_PREFIX}"
+      },
+      "environment": {
+        "PATH": "$env{CONDA_PREFIX}/bin:$penv{PATH}",
+        "CPATH": "$env{CONDA_PREFIX}/include:$penv{CPATH}",
+        "LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:$penv{LIBRARY_PATH}",
+        "LD_LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:/usr/lib/wsl/lib:$penv{LD_LIBRARY_PATH}",
+        "CUDA_HOME": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4"
+      }
+    },
+    {
+      "name": "conda-debug",
+      "displayName": "Conda Debug",
+      "description": "Configure a Debug build in an activated Conda environment.",
+      "inherits": "conda-release",
+      "binaryDir": "${sourceDir}/build/conda-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CUDAToolkit_ROOT": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4",
+        "CMAKE_PREFIX_PATH": "$env{CONDA_PREFIX}"
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test-conda-correctness",
+      "displayName": "Run correctness tests",
+      "configurePreset": "conda-release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 1
+      },
+      "filter": {
+        "include": {
+          "label": "correctness"
+        }
+      },
+      "environment": {
+        "PATH": "$env{CONDA_PREFIX}/bin:$penv{PATH}",
+        "CPATH": "$env{CONDA_PREFIX}/include:$penv{CPATH}",
+        "LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:$penv{LIBRARY_PATH}",
+        "LD_LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:/usr/lib/wsl/lib:$penv{LD_LIBRARY_PATH}",
+        "CUDA_HOME": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4"
+      }
+    },
+    {
+      "name": "test-conda-performance",
+      "displayName": "Run performance benchmark",
+      "configurePreset": "conda-release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 1
+      },
+      "filter": {
+        "include": {
+          "label": "performance"
+        }
+      },
+      "environment": {
+        "PATH": "$env{CONDA_PREFIX}/bin:$penv{PATH}",
+        "CPATH": "$env{CONDA_PREFIX}/include:$penv{CPATH}",
+        "LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:$penv{LIBRARY_PATH}",
+        "LD_LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:/usr/lib/wsl/lib:$penv{LD_LIBRARY_PATH}",
+        "CUDA_HOME": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4"
+      }
+    },
+    {
+      "name": "test-conda-all",
+      "displayName": "Run all CTest tests",
+      "configurePreset": "conda-release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 1
+      },
+      "environment": {
+        "PATH": "$env{CONDA_PREFIX}/bin:$penv{PATH}",
+        "CPATH": "$env{CONDA_PREFIX}/include:$penv{CPATH}",
+        "LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:$penv{LIBRARY_PATH}",
+        "LD_LIBRARY_PATH": "$env{CONDA_PREFIX}/lib:/usr/lib/wsl/lib:$penv{LD_LIBRARY_PATH}",
+        "CUDA_HOME": "$env{CONDA_PREFIX}",
+        "OpenCV_DIR": "$env{CONDA_PREFIX}/lib/cmake/opencv4"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-conda-release",
+      "displayName": "Build Conda Release",
+      "configurePreset": "conda-release"
+    },
+    {
+      "name": "build-conda-debug",
+      "displayName": "Build Conda Debug",
+      "configurePreset": "conda-debug"
+    },
+    {
+      "name": "build-test-correctness",
+      "displayName": "Build test_correctness",
+      "configurePreset": "conda-release",
+      "targets": [
+        "test_correctness"
+      ]
+    },
+    {
+      "name": "build-test-performance",
+      "displayName": "Build test_performance",
+      "configurePreset": "conda-release",
+      "targets": [
+        "test_performance"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+# ninja log v7
+3	225	1773564738627201677	CMakeFiles/bilateral_filter.dir/src/metrics.cpp.o	8fa559955a914ab4
+4	229	1773564738627201677	CMakeFiles/test_correctness.dir/src/metrics.cpp.o	f85da7147ab98fc5
+3	401	1773564738627201677	CMakeFiles/test_correctness.dir/test/test_correctness.cpp.o	8b079f6205514c2a
+4	470	1773564738627201677	CMakeFiles/test_performance.dir/test/test_performance.cpp.o	2854e6f0a05c2bc8
+405	591	1773564739031198091	CMakeFiles/test_performance.dir/src/metrics.cpp.o	95d19b130e8d0fc9
+2	1968	1773564738627201677	CMakeFiles/bilateral_filter.dir/src/reference.cpp.o	c2d103b6a05a3c3f
+4	2004	1773564738627201677	CMakeFiles/test_correctness.dir/src/reference.cpp.o	9d447d7213d5e6e7
+2	2054	1773564738627201677	CMakeFiles/bilateral_filter.dir/src/io.cpp.o	4abe2da84b72e48a
+229	2133	1773564738855199653	CMakeFiles/test_performance.dir/src/reference.cpp.o	84d515c7d1ef4dd9
+3	2162	1773564738627201677	CMakeFiles/test_correctness.dir/src/io.cpp.o	f9a430fc9bf6244b
+226	2208	1773564738851199688	CMakeFiles/test_performance.dir/src/io.cpp.o	1a98c94d07bb3c94
+5	3128	1773564738631201641	CMakeFiles/test_performance.dir/src/bilateral_filter.cu.o	7325907243128c3e
+3	3132	1773564738627201677	CMakeFiles/test_correctness.dir/src/bilateral_filter.cu.o	c670f2f165be05ae
+2	3132	1773564738627201677	CMakeFiles/bilateral_filter.dir/src/bilateral_filter.cu.o	85bc60fdacd5e374
+3132	3182	1773564741755173910	CMakeFiles/test_correctness.dir/cmake_device_link.o	3c60f23f528236b
+3128	3183	1773564741751173945	CMakeFiles/test_performance.dir/cmake_device_link.o	959f1b5a9762f1f7
+1	3292	1773564738627201677	CMakeFiles/bilateral_filter.dir/src/main.cu.o	3ee1262267863a4b
+3292	3345	1773564741915172488	CMakeFiles/bilateral_filter.dir/cmake_device_link.o	93c2a1140a654a6e
+3182	3375	1773564741807173448	test_correctness	3a064eb69ab0c5b0
+3183	3379	1773564741807173448	test_performance	f44ee17220362917
+3345	3435	1773564741971171992	bilateral_filter	507a6e0a69813547

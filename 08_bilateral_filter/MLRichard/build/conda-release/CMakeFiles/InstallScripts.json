@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

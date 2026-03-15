@@ -1,0 +1,54 @@
+Start testing: Mar 15 16:52 CST
+----------------------------------------------------------
+1/2 Testing: correctness
+1/2 Test: correctness
+Command: "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/test_correctness"
+Directory: /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release
+"correctness" start time: Mar 15 16:52 CST
+Output:
+----------------------------------------------------------
+[naive_gray] W=512 H=512 C=1  MAE=0.7235  PSNR=48.84 dB  PASS
+[naive_rgb] W=512 H=512 C=3  MAE=0.4779  PSNR=51.52 dB  PASS
+[shared_gray] W=512 H=512 C=1  MAE=0.7651  PSNR=47.62 dB  PASS
+[shared_rgb] W=512 H=512 C=3  MAE=0.4920  PSNR=50.86 dB  PASS
+[adaptive_rgb] W=512 H=512 C=3  MAE=0.7010  PSNR=47.41 dB  PASS
+All tests passed!
+<end of output>
+Test time =   0.37 sec
+----------------------------------------------------------
+Test Passed.
+"correctness" end time: Mar 15 16:52 CST
+"correctness" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: performance
+2/2 Test: performance
+Command: "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/test_performance"
+Directory: /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release
+"performance" start time: Mar 15 16:52 CST
+Output:
+----------------------------------------------------------
+=== Bilateral Filter Benchmark ===
+
+[naive_512_rgb       ] 512x512 C=3  GPU=0.33ms  Throughput=805.9MPix/s  CPU=19.1ms  Speedup=58.8x  MAE=0.4780  PSNR=51.52dB
+[shared_512_rgb      ] 512x512 C=3  GPU=0.28ms  Throughput=941.9MPix/s  CPU=3.4ms  Speedup=12.2x  MAE=0.4922  PSNR=50.83dB
+[adaptive_512_rgb    ] 512x512 C=3  GPU=0.81ms  Throughput=322.9MPix/s  CPU=26.3ms  Speedup=32.4x  MAE=0.7032  PSNR=47.37dB
+[naive_4K_rgb        ] 3840x2160 C=3  GPU=7.54ms  Throughput=1100.3MPix/s  CPU=124.8ms  Speedup=16.6x  MAE=0.4735  PSNR=51.64dB
+[shared_4K_rgb       ] 3840x2160 C=3  GPU=5.98ms  Throughput=1386.2MPix/s  CPU=150.9ms  Speedup=25.2x  MAE=0.4762  PSNR=51.50dB
+[adaptive_4K_rgb     ] 3840x2160 C=3  GPU=5.99ms  Throughput=1385.3MPix/s  CPU=114.7ms  Speedup=19.2x  MAE=0.6957  PSNR=47.54dB
+<end of output>
+Test time =   1.94 sec
+----------------------------------------------------------
+Test Passed.
+"performance" end time: Mar 15 16:52 CST
+"performance" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Mar 15 16:52 CST
+
+benchmark =   1.94 sec*proc
+
+correctness =   0.37 sec*proc
+
+performance =   1.94 sec*proc
+

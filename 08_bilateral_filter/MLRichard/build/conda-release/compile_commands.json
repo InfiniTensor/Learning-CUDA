@@ -1,0 +1,92 @@
+[
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/home/richard/miniconda3/envs/bilateral-cuda124/bin/nvcc -forward-unknown-to-host-compiler -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_75,code=[compute_75,sm_75]\" \"--generate-code=arch=compute_80,code=[compute_80,sm_80]\" \"--generate-code=arch=compute_86,code=[compute_86,sm_86]\" \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -x cu -rdc=true -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/main.cu -o CMakeFiles/bilateral_filter.dir/src/main.cu.o",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/main.cu",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/bilateral_filter.dir/src/main.cu.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/home/richard/miniconda3/envs/bilateral-cuda124/bin/nvcc -forward-unknown-to-host-compiler -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_75,code=[compute_75,sm_75]\" \"--generate-code=arch=compute_80,code=[compute_80,sm_80]\" \"--generate-code=arch=compute_86,code=[compute_86,sm_86]\" \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -x cu -rdc=true -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu -o CMakeFiles/bilateral_filter.dir/src/bilateral_filter.cu.o",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/bilateral_filter.dir/src/bilateral_filter.cu.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/bilateral_filter.dir/src/io.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/bilateral_filter.dir/src/io.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/bilateral_filter.dir/src/reference.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/bilateral_filter.dir/src/reference.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/bilateral_filter.dir/src/metrics.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/bilateral_filter.dir/src/metrics.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_correctness.dir/test/test_correctness.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/test/test_correctness.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/test/test_correctness.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_correctness.dir/test/test_correctness.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/home/richard/miniconda3/envs/bilateral-cuda124/bin/nvcc -forward-unknown-to-host-compiler -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_75,code=[compute_75,sm_75]\" \"--generate-code=arch=compute_80,code=[compute_80,sm_80]\" \"--generate-code=arch=compute_86,code=[compute_86,sm_86]\" \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -x cu -rdc=true -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu -o CMakeFiles/test_correctness.dir/src/bilateral_filter.cu.o",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_correctness.dir/src/bilateral_filter.cu.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_correctness.dir/src/io.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_correctness.dir/src/io.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_correctness.dir/src/reference.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_correctness.dir/src/reference.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_correctness.dir/src/metrics.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_correctness.dir/src/metrics.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_performance.dir/test/test_performance.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/test/test_performance.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/test/test_performance.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_performance.dir/test/test_performance.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/home/richard/miniconda3/envs/bilateral-cuda124/bin/nvcc -forward-unknown-to-host-compiler -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_75,code=[compute_75,sm_75]\" \"--generate-code=arch=compute_80,code=[compute_80,sm_80]\" \"--generate-code=arch=compute_86,code=[compute_86,sm_86]\" \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -x cu -rdc=true -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu -o CMakeFiles/test_performance.dir/src/bilateral_filter.cu.o",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/bilateral_filter.cu",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_performance.dir/src/bilateral_filter.cu.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_performance.dir/src/io.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/io.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_performance.dir/src/io.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_performance.dir/src/reference.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/reference.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_performance.dir/src/reference.cpp.o"
+},
+{
+  "directory": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release",
+  "command": "/usr/bin/c++ -I/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src -isystem /home/richard/miniconda3/envs/bilateral-cuda124/include/opencv4 -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/test_performance.dir/src/metrics.cpp.o -c /home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "file": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/src/metrics.cpp",
+  "output": "/home/richard/2026/Learning-CUDA/08_bilateral_filter/MLRichard/build/conda-release/CMakeFiles/test_performance.dir/src/metrics.cpp.o"
+}
+]
