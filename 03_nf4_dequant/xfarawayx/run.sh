@@ -33,11 +33,13 @@ BUILD_DIR="${KERNEL_DIR}/build"
 DATA_DIR="${PROJ_DIR}/data"
 
 # ---------- 自动查找 Python ----------
-# 优先使用 venv (含所需依赖), 再回退到系统 python3
-if [ -x "${PROJ_DIR}/.venv/bin/python" ]; then
+# 优先使用环境变量 PYTHON，其次使用 venv (含所需依赖)，再回退到系统 python3
+if [ -n "${PYTHON:-}" ] && [ -x "${PYTHON}" ]; then
+    : # 使用用户提供的 PYTHON
+elif [ -x "${PROJ_DIR}/.venv/bin/python" ]; then
     PYTHON="${PROJ_DIR}/.venv/bin/python"
-elif [ -x "~/.venv/bin/python" ]; then
-    PYTHON="~/.venv/bin/python"
+elif [ -n "${HOME:-}" ] && [ -x "${HOME}/.venv/bin/python" ]; then
+    PYTHON="${HOME}/.venv/bin/python"
 elif command -v python3 &>/dev/null; then
     PYTHON="$(command -v python3)"
 else
