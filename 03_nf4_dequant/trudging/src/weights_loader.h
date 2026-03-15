@@ -8,13 +8,35 @@
 #include <cmath>
 #include <cstdint>
 #include <stdexcept>
-#include <cuda_runtime.h>
+#if defined(PLATFORM_METAX)
+    #include <maca_runtime.h>
+    #include <maca_runtime_api.h>
+    #define CUDA_MALLOC_HOST mcMallocHost
+    #define CUDA_FREE_HOST mcFreeHost
+    #define CUDA_SUCCESS mcSuccess
+    #define CUDA_GET_ERROR_STRING mcGetErrorString
+    #define CUDA_ERROR_T mcError_t
+#elif defined(PLATFORM_MOORE)
+    #include <musa_runtime.h>
+    #define CUDA_MALLOC_HOST musaMallocHost
+    #define CUDA_FREE_HOST musaFreeHost
+    #define CUDA_SUCCESS musaSuccess
+    #define CUDA_GET_ERROR_STRING musaGetErrorString
+    #define CUDA_ERROR_T musaError_t
+#else
+    #include <cuda_runtime.h>
+    #define CUDA_MALLOC_HOST cudaMallocHost
+    #define CUDA_FREE_HOST cudaFreeHost
+    #define CUDA_SUCCESS cudaSuccess
+    #define CUDA_GET_ERROR_STRING cudaGetErrorString
+    #define CUDA_ERROR_T cudaError_t
+#endif
 
-// 自定义删除器，用于 std::unique_ptr 管理 cudaMallocHost 分配的内存
+// Custom deleter
 struct CudaHostDeleter {
     void operator()(void* ptr) const {
         if (ptr) {
-            cudaFreeHost(ptr);
+            CUDA_FREE_HOST(ptr);
         }
     }
 };
@@ -27,9 +49,9 @@ using start_pinned_ptr = std::unique_ptr<T[], CudaHostDeleter>;
 template <typename T>
 start_pinned_ptr<T> allocate_pinned(size_t count) {
     void* ptr = nullptr;
-    cudaError_t err = cudaMallocHost(&ptr, count * sizeof(T));
-    if (err != cudaSuccess) {
-        throw std::runtime_error(std::string("cudaMallocHost failed: ") + cudaGetErrorString(err));
+    CUDA_ERROR_T err = CUDA_MALLOC_HOST(&ptr, count * sizeof(T));
+    if (err != CUDA_SUCCESS) {
+        throw std::runtime_error(std::string("CUDA_MALLOC_HOST failed: ") + CUDA_GET_ERROR_STRING(err));
     }
     return start_pinned_ptr<T>(static_cast<T*>(ptr));
 }
