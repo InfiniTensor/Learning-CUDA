@@ -1,0 +1,3 @@
+blocksize=64
+compute_type=fp16
+target_gpu=4060
