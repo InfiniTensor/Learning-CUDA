@@ -24,8 +24,8 @@ template <typename T>
 float to_float(T val);
 
 template <>
-float to_float<__musa_bfloat16>(__musa_bfloat16 val) {
-    return __musa_bfloat162float(val);
+float to_float<__mt_bfloat16>(__mt_bfloat16 val) {
+    return float(val);
 }
 
 template <>
@@ -227,7 +227,7 @@ int main(int argc, char** argv) {
             d_packed_weights, d_absmax_q, d_absmax2, d_code2
         );
     } else {
-        run_benchmark_and_check<__musa_bfloat16>(
+        run_benchmark_and_check<__mt_bfloat16>(
             gt_weights, h_ground_truth, total_elements, blocksize,
             d_packed_weights, d_absmax_q, d_absmax2, d_code2
         );

@@ -5,7 +5,7 @@ template <typename T>
 __device__ inline T float2T(float v);
 
 template <>
-__device__ inline __musa_bfloat16 float2T<__musa_bfloat16>(float v) {
+__device__ inline __mt_bfloat16 float2T<__mt_bfloat16>(float v) {
     return __float2bfloat16(v);
 }
 
@@ -14,10 +14,11 @@ __device__ inline __half float2T<__half>(float v) {
     return __float2half_rn(v);
 }
 
-// 针对 __musa_bfloat16 的特化向量化打包
-__device__ inline uint32_t pack_two_elements(__musa_bfloat16 w0, __musa_bfloat16 w1) {
-    __musa_bfloat162 packed = __halves2musa_bfloat162(w0, w1);
-    return *reinterpret_cast<uint32_t*>(&packed);
+// 针对 __mt_bfloat16 的特化向量化打包
+__device__ inline uint32_t pack_two_elements(__mt_bfloat16 w0, __mt_bfloat16 w1) {
+    uint16_t u0 = *reinterpret_cast<uint16_t*>(&w0);
+    uint16_t u1 = *reinterpret_cast<uint16_t*>(&w1);
+    return (static_cast<uint32_t>(u1) << 16) | u0;
 }
 
 // 针对 __half (fp16) 的特化向量化打包
@@ -136,9 +137,9 @@ void launch_dequantize_nf4(
 }
 
 // 显式实例化模板
-template void launch_dequantize_nf4<__musa_bfloat16>(
+template void launch_dequantize_nf4<__mt_bfloat16>(
     const uint8_t*, const uint8_t*, const uint16_t*, const uint16_t*,
-    float, __musa_bfloat16*, int64_t, int, musaStream_t);
+    float, __mt_bfloat16*, int64_t, int, musaStream_t);
 
 template void launch_dequantize_nf4<__half>(
     const uint8_t*, const uint8_t*, const uint16_t*, const uint16_t*,
