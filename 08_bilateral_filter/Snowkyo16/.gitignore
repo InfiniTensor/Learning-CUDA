@@ -1,0 +1,8 @@
+# 编译产物
+build/
+
+# 运行输出
+output/
+
+# 系统文件
+.DS_Store

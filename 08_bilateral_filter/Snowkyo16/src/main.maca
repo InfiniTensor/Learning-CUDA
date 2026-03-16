@@ -1,0 +1,92 @@
+#include "image_io.h"
+#include "params.h"
+#include "bilateral_filter.cuh"
+#include "benchmark.h"
+
+#include <mcr/mc_runtime.h>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// 从文件路径中提取文件名（不含目录）
+string get_filename(const string& path) {
+    size_t pos = path.find_last_of("/\\");
+    if (pos == string::npos) return path;
+    return path.substr(pos + 1);
+}
+
+// 主程序 —— 版本调度器（MetaX C500 平台）
+// 用法: ./bilateral_filter <输入图像> <参数文件> <输出目录> [版本]
+// 版本: v0 / v5 / all（默认 all）
+int main(int argc, char* argv[]) {
+    if (argc < 4) {
+        cerr << "用法: " << argv[0]
+             << " <输入图像> <参数文件> <输出目录> [版本]" << endl;
+        cerr << "版本: v0 / v5 / all（默认 all）" << endl;
+        return 1;
+    }
+
+    string input_path = argv[1];
+    string param_path = argv[2];
+    string output_dir = argv[3];
+    string mode = (argc > 4) ? argv[4] : "all";
+
+    // 解析文件名
+    string filename = get_filename(input_path);
+    string basename = filename;
+    size_t dot_pos = basename.rfind('.');
+    // 输出统一用 .png（无损），避免 JPEG 压缩引入误差
+    if (dot_pos != string::npos) {
+        basename = basename.substr(0, dot_pos);
+    }
+    string ext = ".png";
+    string image_dir = output_dir + "/images";
+
+    // 加载输入
+    cout << "========================================" << endl;
+    cout << "  双边滤波 — 运行模式: " << mode << endl;
+    cout << "  平台: MetaX C500 (MACA)" << endl;
+    cout << "========================================" << endl;
+
+    Image input = load_image(input_path);
+    FilterParams params = load_params(param_path);
+
+    // GPU 上下文预热
+    mcFree(0);
+
+    cout << endl;
+    cout << "  [参数]" << endl;
+    cout << "  图像尺寸:      " << input.width << " x " << input.height
+         << " (" << input.channels << " 通道)" << endl;
+    cout << "  窗口半径:      " << params.radius
+         << " (窗口大小 " << 2 * params.radius + 1
+         << "x" << 2 * params.radius + 1 << ")" << endl;
+    cout << "  sigma_spatial: " << params.sigma_spatial << endl;
+    cout << "  sigma_color:   " << params.sigma_color << endl;
+
+    // 按版本执行 
+    vector<VersionResult> results;
+    int gpu_runs = 10;  // GPU 版本：1 次预热 + 10 次计时取平均
+
+    if (mode == "v0" || mode == "all")
+        results.push_back(run_version("v0_cpu", input, params,
+                                      bilateral_filter_cpu_v0, image_dir, basename, ext));
+
+    if (mode == "v5" || mode == "all") {
+        cout << endl << "  [v5_metax 初始化]" << endl;
+        bilateral_filter_gpu_v5_init(input, params);
+        results.push_back(run_version("v5_metax", input, params,
+                                      bilateral_filter_gpu_v5, image_dir, basename, ext, gpu_runs));
+        bilateral_filter_gpu_v5_cleanup();
+    }
+
+    // 汇总 
+    print_summary(results, input.width, input.height);
+
+    cout << endl;
+    cout << "========================================" << endl;
+
+    return 0;
+}
