@@ -314,7 +314,7 @@ ADAPTIVE mode (lowest MAE for RGB):
 - Platform: NVIDIA Jetson AGX Thor (R38.2.1)
 - GPU: NVIDIA Thor (Blackwell, sm_110)
 - Compiler: g++ (C++17, -O3), nvcc (CUDA 13.0)
-- OpenCV: 4.x (CPU only, no CUDA modules)
+- OpenCV: 4.x (with CUDA modules, cv::cuda::bilateralFilter available)
 
 ### Filter Parameters
 
@@ -330,44 +330,55 @@ Benchmark methodology: 5 warmup runs + 50 timed runs.
 
 #### 4K RGB (3840×2160×3)
 
-| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
-|----------------|-----------|----------|-------------------|-----|:----------:|
-| **SEP_FP16** | **3.03 ± 0.08** | **2.97** | **2741** | **0.46** | **28.0x** |
-| SEPARABLE | 3.10 ± 0.12 | 3.02 | 2673 | 0.45 | 27.2x |
-| FUSED | 3.98 ± 0.05 | 3.96 | 2083 | 0.45 | 21.1x |
-| TEMPLATE | 5.50 ± 0.07 | 5.47 | 1508 | 0.60 | 15.3x |
-| ADAPTIVE | 6.16 ± 0.06 | 6.13 | 1346 | 0.40 | 13.7x |
-| STANDARD | 9.30 ± 0.01 | 9.28 | 892 | 0.48 | 9.1x |
-| OpenCV CPU | ~84 | ~83 | ~99 | — | 1.0x |
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU | vs OCV CUDA |
+|----------------|-----------|----------|-------------------|-----|:----------:|:-----------:|
+| **SEP_FP16** | **4.51 ± 3.04** | **2.93** | **2838** | **0.46** | **74.8x** | **4.23x** |
+| SEPARABLE | 3.22 ± 1.01 | 2.97 | 2577 | 0.45 | 101.7x | 8.11x |
+| FUSED | 4.46 ± 1.35 | 3.92 | 1858 | 0.45 | 63.6x | 4.38x |
+| TEMPLATE | 5.45 ± 0.02 | 5.43 | 1522 | 0.60 | 15.0x | 2.23x |
+| STANDARD | 9.43 ± 0.13 | 9.27 | 880 | 0.48 | 34.8x | 2.51x |
+| ADAPTIVE | 7.25 ± 2.15 | 6.07 | 1144 | 0.40 | 43.3x | 3.20x |
+| **OpenCV CUDA** | 12.14 ± 0.52 | 10.98 | 683 | 0.00 | — | 1.00x |
+| OpenCV CPU | 81.95 ± 0.93 | 80.94 | 101 | — | 1.0x | — |
 
 #### 4K Grayscale (3840×2160×1)
 
-| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
-|----------------|-----------|----------|-------------------|-----|:----------:|
-| **SEP_FP16** | **1.40 ± 0.13** | **1.30** | **5915** | **0.12** | **39.2x** |
-| SEPARABLE | 1.42 ± 0.02 | 1.40 | 5849 | 0.15 | 37.3x |
-| FUSED | 1.72 ± 0.23 | 1.60 | 4809 | 0.15 | 30.9x |
-| TEMPLATE | 3.53 ± 0.11 | 3.46 | 2348 | 0.61 | 15.0x |
-| STANDARD | 4.35 ± 0.07 | 4.33 | 1906 | 0.61 | 12.2x |
-| OpenCV CPU | ~53 | ~52 | ~157 | — | 1.0x |
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU | vs OCV CUDA |
+|----------------|-----------|----------|-------------------|-----|:----------:|:-----------:|
+| **SEP_FP16** | **1.40 ± 0.10** | **1.28** | **5944** | **0.12** | **36.9x** | **5.62x** |
+| SEPARABLE | 1.48 ± 0.10 | 1.39 | 5622 | 0.15 | 34.8x | 5.38x |
+| FUSED | 1.80 ± 0.16 | 1.60 | 4615 | 0.15 | 28.6x | 4.47x |
+| TEMPLATE | 3.51 ± 0.09 | 3.46 | 2365 | 0.61 | 24.0x | 2.26x |
+| STANDARD | 4.37 ± 0.08 | 4.33 | 1900 | 0.61 | 11.9x | 1.78x |
+| ADAPTIVE | 5.85 ± 0.12 | 5.76 | 1419 | 0.61 | 8.8x | 1.34x |
+| **OpenCV CUDA** | 7.92 ± 0.47 | 7.57 | 1047 | 0.00 | — | 1.00x |
+| OpenCV CPU | 84.23 ± 28.58 | 51.01 | 98 | — | 1.0x | — |
 
 #### 1080p RGB (1920×1080×3)
 
-| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
-|----------------|-----------|----------|-------------------|-----|:----------:|
-| **SEP_FP16** | **0.88 ± 0.10** | **0.77** | **2351** | **0.46** | **31.4x** |
-| SEPARABLE | 0.85 ± 0.09 | 0.77 | 2434 | 0.45 | 32.6x |
-| TEMPLATE | 1.54 ± 0.12 | 1.41 | 1344 | 0.61 | 17.9x |
-| OpenCV CPU | ~28 | ~27 | ~75 | — | 1.0x |
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU | vs OCV CUDA |
+|----------------|-----------|----------|-------------------|-----|:----------:|:-----------:|
+| **SEP_FP16** | **0.79 ± 0.01** | **0.78** | **2618** | **0.46** | **47.3x** | **5.84x** |
+| SEPARABLE | 1.02 ± 1.02 | 0.77 | 2025 | 0.45 | 36.6x | 4.46x |
+| FUSED | 1.04 ± 0.01 | 1.03 | 2002 | 0.45 | 25.9x | 3.44x |
+| TEMPLATE | 2.60 ± 0.83 | 1.63 | 798 | 0.61 | 14.6x | 1.82x |
+| STANDARD | 2.50 ± 0.16 | 2.38 | 831 | 0.48 | 12.0x | 1.75x |
+| ADAPTIVE | 2.15 ± 1.39 | 1.57 | 965 | 0.41 | 14.5x | 1.64x |
+| **OpenCV CUDA** | 4.93 ± 4.93 | 3.03 | 420 | 0.00 | — | 1.00x |
+| OpenCV CPU | 58.35 ± 13.55 | 32.33 | 36 | — | 1.0x | — |
 
 #### 1080p Grayscale (1920×1080×1)
 
-| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU |
-|----------------|-----------|----------|-------------------|-----|:----------:|
-| **SEP_FP16** | **0.40 ± 0.01** | **0.36** | **5139** | **0.12** | **38.8x** |
-| SEPARABLE | 0.46 ± 0.08 | 0.40 | 4521 | 0.15 | 34.2x |
-| TEMPLATE | 0.97 ± 0.10 | 0.90 | 2129 | 0.61 | 16.0x |
-| OpenCV CPU | ~16 | ~14 | ~130 | — | 1.0x |
+| Implementation | Time (ms) | Min (ms) | Throughput (MP/s) | MAE | vs OCV CPU | vs OCV CUDA |
+|----------------|-----------|----------|-------------------|-----|:----------:|:-----------:|
+| **SEP_FP16** | **0.36 ± 0.01** | **0.35** | **5790** | **0.12** | **59.5x** | **10.90x** |
+| SEPARABLE | 1.25 ± 1.05 | 0.36 | 1665 | 0.15 | 17.1x | 2.40x |
+| FUSED | 1.85 ± 1.09 | 0.45 | 1119 | 0.15 | 12.0x | 1.65x |
+| TEMPLATE | 1.09 ± 0.69 | 0.91 | 1904 | 0.61 | 23.3x | 2.89x |
+| STANDARD | 1.51 ± 1.21 | 1.11 | 1369 | 0.61 | 12.0x | 2.67x |
+| ADAPTIVE | 1.71 ± 0.86 | 1.48 | 1211 | 0.61 | 14.8x | 1.59x |
+| **OpenCV CUDA** | 3.91 ± 4.07 | 2.13 | 531 | 0.00 | — | 1.00x |
+| OpenCV CPU | 38.10 ± 8.04 | 20.88 | 54 | — | 1.0x | — |
 
 ### Opt G/H/I/K/N ncu Verification
 
@@ -397,19 +408,26 @@ Benchmark methodology: 5 warmup runs + 50 timed runs.
 | Platform | GPU | Arch | CUDA Time (ms) | Throughput (MP/s) |
 |----------|-----|------|----------------|-------------------|
 | Desktop (WSL2) | RTX 4060 | sm_89 (Ada) | 5.61 | 1478 |
-| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **5.47** | **1508** |
+| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **5.43** | **1522** |
 
 ### Cross-Platform Comparison (4K RGB, SEPARABLE mode, best variant)
 
 | Platform | GPU | Arch | Mode | CUDA Time (ms) | Throughput (MP/s) |
 |----------|-----|------|------|----------------|-------------------|
 | Desktop (WSL2) | RTX 4060 | sm_89 (Ada) | SEPARABLE | 5.41 | 1532 |
-| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **SEP_FP16** | **2.97** | **2741** |
+| **Jetson AGX Thor** | **Thor** | **sm_110 (Blackwell)** | **SEP_FP16** | **2.93** | **2838** |
 
-> SEPARABLE_FP16 on Thor vs SEPARABLE on RTX 4060: **1.82x faster**, benefiting from
+### Cross-Platform Comparison (vs OpenCV CUDA)
+
+| Platform | GPU | Best CUDA Mode | Min (ms) | OCV CUDA Min (ms) | vs OCV CUDA |
+|----------|-----|----------------|:--------:|:------------------:|:-----------:|
+| Desktop (WSL2) | RTX 4060 | SEPARABLE | 5.41 | 11.36 | **2.10x** |
+| **Jetson AGX Thor** | **Thor** | **SEP_FP16** | **2.93** | **10.98** | **3.74x** |
+
+> SEPARABLE_FP16 on Thor vs SEPARABLE on RTX 4060: **1.85x faster**, benefiting from
 > Opt H (SoA coalescing), Opt K (occupancy 97.5%), Opt N (FP16 intermediate),
-> and 32MB L2 cache (vs 24MB).
+> and 32MB L2 cache (vs 24MB). Both platforms significantly outperform OpenCV CUDA.
 
 ---
 
-*Last updated: 2026-02-27 (Opt G/H/I/K/N + Opt L/M/N2 experiments: FP16 intermediate, fused H+V, FP16 compute)*
+*Last updated: 2026-02-27 (重新编译 OpenCV with CUDA; 全部模式含 OpenCV CUDA 基准对比)*
