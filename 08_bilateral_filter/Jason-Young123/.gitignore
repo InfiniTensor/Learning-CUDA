@@ -1,0 +1,8 @@
+/obj/
+/useful/
+/useless/
+/analysis/
+/runTester
+/tmp_env/
+/result/
+init.mk
