@@ -548,7 +548,7 @@ __syncthreads();
   - **RGB图像：**全部测试半径下，**MAE <= 1e-5**；
   - **Gray图像：**当测试半径 > 2时，**MAE <= 1e-5**；当半径 <= 2时，可能由于算法差异，**MAE ≈ 0.5**；
 
- - **吞吐量与加速比：**
+ - **吞吐量与加速比（均和Opencv的bilateralFilter对照）：**
    - **Nvidia平台：**峰值吞吐量 **3254.41MP/s (Gray)** 和 **1650.54MP/s (RGB)**，峰值加速比 **4.27553x (Gray)** 和 **17.9033x (RGB)** 
    - **Moore平台：**峰值吞吐量 **12522.78MP/s (Gray)** 和 **4833.82MP/s (RGB)**，峰值加速比 **11.8315x (Gray)** 和 **30.1175x (RGB)** 
    - **Metax平台：**峰值吞吐量 **9551.09MP/s (Gray)** 和 **4361.43MP/s (RGB)**，峰值加速比 **2.80345x  (Gray)** 和 **21.1496x (RGB)** 
@@ -650,7 +650,7 @@ __syncthreads();
 
 ### 3.2 吞吐量
 
-​	基于4K UHD图像测试集，各平台吞吐量分析如下；其中用红线标注出了**4K fps**所对应的吞吐量（~ 497.7 MP/s）:
+​	基于4K UHD图像测试集，各平台吞吐量分析如下；其中用红线标注出了**4K 60fps**所对应的吞吐量（~ 497.7 MP/s）:
 
 
 
@@ -808,6 +808,20 @@ __syncthreads();
 
   <div align="center">     <img src="./pic/r8_rgb.png" width="100%" /> </div>
 
+​	
+
+​	GPU Throughput：
+
+<div align="center">     <img src="./pic/gpu_throughput_rgb.png" width="80%" /> </div>
+
+​	
+
+​	Roofline：
+
+<div align="center">     <img src="./pic/roofline_rgb.png" width="80%" /> </div>
+
+
+
 ​	汇编细节：
 
 <div align="center">     <img src="./pic/r8_detail1.png" width="80%" /> </div>
@@ -820,6 +834,8 @@ __syncthreads();
 
 ​	由总览可知，主要待优化点在于 **非合并的全局访存**（Uncoalesced Global Access），总预期提速效果约 **19.39%**；根据汇编结果，这一瓶颈来自于代码中短字节加载指令如`LDG.E Rxx`等，而其产生根本原因在于：myPixel为4 byte结构体，而GPU硬件最多可以一次性加载16 byte；为最大限度利用带宽，编译器尝试将内层循环进行步长为4的展开、以期一次性加载更多数据（如利用`LDG.E.128`一次加载4 x 4 byte = 16 byte）以便批量处理，但实际核函数内循环的处理逻辑是针对单一像素点进行的，因此`LDG.E.128`的尝试失败了，回滚到4次分立的普通加载`LDG.E`， 也就未能最大程度利用访存带宽。
 
+​	由GPU Throughput和Roofline图可知，双边滤波算法属于明显的计算受限（Compute-Bound）类型，计算强度（Arithmetic Intensity）**超过100 Flop/Byte**、Performance**超过1e+12 Flop/s**；且当前版本的实现已经较为充分地利用了计算吞吐量（**接近90%**）。
+
 ​	此外根据汇编结果，`MUFU.SQRT`指令前后存在较多warp stalling，这是因为在进行循环边界 $bound\_j$ 计算时涉及开方运算，其时间成本较高、对相关硬件单元的占用导致了线程阻塞。该问题可以通过 **[2.3](#target2)** 中所述LUT方案解决，但考虑到需支持任意滤波半径，为避免LUT过大，最终还是采用了直接开方计算。
 
 
@@ -829,6 +845,20 @@ __syncthreads();
   总览：
 
   <div align="center">     <img src="./pic/r8_gray.png" width="100%" /> </div>
+
+​	
+
+​	GPU Throughput：
+
+<div align="center">     <img src="./pic/gpu_throughput_gray.png" width="80%" /> </div>
+
+
+
+​	Roofline：
+
+<div align="center">     <img src="./pic/roofline_gray.png" width="80%" /> </div>
+
+
 
 ​	汇编细节：
 
@@ -841,6 +871,8 @@ __syncthreads();
 
 
 ​	和RGB图像一样，主要待优化点仍在于 **非合并的全局访存**（Uncoalesced Global Access），预期提速效果约 **34.94%**；此外指出的待优化点 **L1 缓存/纹理缓存全局加载/存储访问模式** （L1TEX Global Load/Store Access Pattern）也和非合并访存相关，预期提速效果分别约 **22.24%** 和 **16.71%**。这里主要原因同上，在于汇编生成了一系列分立的短字节加载指令如`LDG.E.U8`等，而未能利用更高效的向量化加载；由于Gray图每个像素只占用1 byte且核函数循环针对单一像素点进行，因此访存总线带宽相较RGB图而言更低、预期提速更高。
+
+​	同RGB图，GPU Throughput和Roofline显示为明显的计算受限（Compute-Bound）类型，且由于Gray通道数更少，其计算强度更高（**超过1000 Flop/Byte**），计算吞吐量利用率也更高（**超90%**）。
 
 ​	此外同RGB图，`MUFU.SQRT`也带来了较大的warp stalling，其原因和解决方法不再赘述。
 
