@@ -314,8 +314,8 @@ void nf4_dequant_warp8_batch32_two_phase(const QuantState& quant_state, __half* 
     CUDA_CHECK(cudaFree(unpacked_weights_s));
 }
 
-void nf4_dequant_warp8_batch32_one_phase(const QuantState& quant_state, __half* output) {
-    constexpr int PROCESS_SIZE = 32;
+void nf4_dequant_warp8_batch8_one_phase(const QuantState& quant_state, __half* output) {
+    constexpr int PROCESS_SIZE = 8;
 
     uint8_t* absmax_q_s;
     __half* code2_s;

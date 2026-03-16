@@ -10,9 +10,9 @@
 int main() {
     int row = 10000;
     int col = 10000;
-    std::string file_prefix = std::string("/home/flashzxi/CLionProjects/Learning-CUDA/03_nf4_dequant/flashzxi/test/data/nf4_") + std::to_string(row) + "x" + std::to_string(col) + "_fp16";
+    std::string file_prefix = std::string("/home/core_dump/Learning-CUDA/03_nf4_dequant/flashzxi/nf4_") + std::to_string(row) + "x" + std::to_string(col) + "_fp16";
     auto conf = parse_quant_state(file_prefix  + ".bin",
-        "/home/flashzxi/CLionProjects/Learning-CUDA/03_nf4_dequant/flashzxi/test/conf/blocksize64_fp16_T4.ini",
+        "/home/core_dump/Learning-CUDA/03_nf4_dequant/flashzxi/test/conf/blocksize64_fp16_T4.ini",
         file_prefix + "_w_dequant.bin");
 
     // conf.print();
@@ -25,7 +25,7 @@ int main() {
 
     std::cout << std::endl;
     __half* ans = new __half[conf.num_elements];
-    nf4_dequant_warp8_batch32_one_phase(conf, ans);
+    nf4_dequant_warp8_batch8_one_phase(conf, ans);
 
     float max_diff = 0.f;
     for (int i = 0; i < conf.num_rows; i++) {

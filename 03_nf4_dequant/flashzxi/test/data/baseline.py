@@ -130,8 +130,8 @@ def save_dequant_result(path: str, deq: torch.Tensor, shape, out_dtype=torch.flo
 
 if __name__ == "__main__":
     torch.manual_seed(0)
-    torch.manual_seed(1234)              # CPU RNG
-    torch.cuda.manual_seed_all(1234)     # 所有 GPU RNG（单卡也可用）
+    torch.manual_seed(1234)
+    torch.cuda.manual_seed_all(1234)
     row = 10000
     col = 10000
     W = torch.randn(row, col, device="cuda", dtype=torch.float16)
