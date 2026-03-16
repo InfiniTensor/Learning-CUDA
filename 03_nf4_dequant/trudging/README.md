@@ -1,6 +1,7 @@
 ﻿# NF4 Dequantization - Multi-Platform Support (NVIDIA & 国产芯片)
 
-具体报告于nf4_report中, 这是一个实现了 QLoRA 4-bit NormalFloat (NF4) 动态反量化算子的项目。
+具体报告于nf4_report中
+这是一个实现了 QLoRA 4-bit NormalFloat (NF4) 动态反量化算子的项目。
 当前工程不仅支持原生 NVIDIA GPU，还成功适配了国内主流的三大算力平台：
 - **NVIDIA (NVIDIA GPU)**
 - **Iluvatar (天数智芯)**
