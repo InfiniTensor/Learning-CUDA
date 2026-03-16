@@ -25,6 +25,8 @@ Snowkyo16/
 │   └── stb_image_write.h    # 第三方：图像编码
 ├── scripts/
 │   └── compare_opencv.py    # OpenCV 对比验证脚本
+├—— lab_report.pdf           # 实验报告
+├—— assets/                  # 实验截图
 ├── test_images/             # 测试图像
 ├── params.txt               # 默认滤波参数
 ├── Makefile                 # 编译构建
@@ -150,18 +152,39 @@ nsys stats output/v4_yosemite.nsys-rep
 CUDA_VISIBLE_DEVICES=6 sudo ncu \
     --kernel-name bilateral_filter_kernel_v3 \
     --launch-skip 1 --launch-count 1 \
-    ./build/bilateral_filter test_images/yosemite.jpg config/default.txt output v3
+    ./build/bilateral_filter test_images/yosemite.jpg params.txt output v3
 
 # 分析 V4 的4个 strip kernel
 CUDA_VISIBLE_DEVICES=6 sudo ncu \
     --kernel-name bilateral_filter_kernel_v3 \
     --launch-skip 1 --launch-count 4 \
-    ./build/bilateral_filter test_images/yosemite.jpg config/default.txt output v4
+    ./build/bilateral_filter test_images/yosemite.jpg params.txt output v4
 
 # 导出报告文件（可用 Nsight Compute GUI 打开）
 CUDA_VISIBLE_DEVICES=6 sudo ncu \
+    --set full \
     --kernel-name bilateral_filter_kernel_v3 \
-    --launch-skip 1 --launch-count 1 \
-    -o output/ncu_v3_report \
-    ./build/bilateral_filter test_images/yosemite.jpg config/default.txt output v3
+    --launch-skip 1 --launch-count 4 \
+    -o output/ncu_v4_stream_report \
+    ./build/bilateral_filter test_images/yosemite.jpg params.txt output v4
 ```
+
+#### ncu 性能分析图（V4 Stream，NVIDIA A100）
+
+**GPU Speed Of Light — Throughput Chart**
+
+![GPU Throughput Chart](assets/ncu_ui/ncu_throughput.png)
+
+**GPU Speed Of Light — Roofline**
+
+![Roofline Analysis](assets/ncu_ui/ncu_roofline.png)
+
+**Memory Workload Analysis**
+
+![Memory Workload](assets/ncu_ui/ncu_memory.png)
+
+## 各版本输出效果对比
+
+从图中可以看出，所有版本（V0–V4）的输出图像与 OpenCV 参考结果在视觉上一致，无可察觉差异。双边滤波成功保留了图像的边缘细节（如树木轮廓、岩石纹理），同时有效平滑了噪声区域（如天空的颜色渐变）。这验证了本项目实现的正确性——所有优化版本（V2 Shared Memory、V3 ConstantMemory、V4 Stream 流水线）在追求性能的同时，保持了算法的数值精度和视觉质量。
+
+![各版本双边滤波输出效果对比](assets/bf_version.png)
