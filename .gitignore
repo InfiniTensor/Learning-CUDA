@@ -1,0 +1,12 @@
+# 构建与运行产物（不提交）
+*.exe
+*.lib
+*.exp
+*.obj
+*.o
+*.bin
+*.nsys-rep
+*.sqlite
+# 脚本生成的数据（可用 generate_particles.py 重新生成）
+data/particles_1k.txt
+data/particles_10k.txt

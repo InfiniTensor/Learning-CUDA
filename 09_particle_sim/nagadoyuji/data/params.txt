@@ -1,0 +1,3 @@
+dt = 1e-10                # 时间步长（秒）
+num_steps = 10000         # 总步数
+record_interval = 100     # 每多少步记录一次位置
