@@ -1,0 +1,4 @@
+*.o
+test_kernels
+*.ncu-rep
+flash_attention_*.txt
