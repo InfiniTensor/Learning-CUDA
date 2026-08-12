@@ -2,6 +2,7 @@
 #include <cuda_fp16.h>
 #include <cfloat>
 #include <cmath>
+#include <math_constants.h>
 
 #include "../tester/utils.h"
 
