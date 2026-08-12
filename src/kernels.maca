@@ -1,55 +1,321 @@
+// final submission
 #include <vector>
+#include <cmath>
 #include <common/maca_fp16.h>
 
 #include "../tester/utils.h"
 
-/**
- * @brief Computes RMSNorm over the last dimension of a 2D tensor.
- *
- * The input is a row-major matrix with shape [rows, hidden_dim]. For each row
- * i and column j:
- *
- *   output[i, j] = input[i, j] * rsqrt(mean(input[i, :]^2) + eps) * weight[j]
- *
- * The output vector is preallocated with rows * hidden_dim elements.
- *
- * @tparam T Data type of input, weight, and output tensors.
- * @param[in] h_input Flattened input matrix of shape [rows, hidden_dim].
- * @param[in] h_weight Per-column scale vector of shape [hidden_dim].
- * @param[out] h_output Flattened output matrix of shape [rows, hidden_dim].
- * @param[in] rows Number of rows/tokens.
- * @param[in] hidden_dim Size of the normalized dimension.
- * @param[in] eps Numerical stability epsilon.
- */
-template <typename T>
-void rmsNorm(const std::vector<T>& h_input, const std::vector<T>& h_weight,
-              std::vector<T>& h_output, size_t rows, size_t hidden_dim,
-              float eps) {
-  // TODO: Implement the rmsNorm function
+#ifndef CHECK_MC
+#define CHECK_MC(call) do { \
+    mcError_t err = call; \
+    if(err != mcSuccess) { \
+        printf("MC Error at %s:%d - %s\n", __FILE__, __LINE__, mcGetErrorString(err)); \
+        exit(EXIT_FAILURE); \
+    } \
+} while(0)
+#endif
+
+// Warp 级别的求和规约
+__inline__ __device__ float warpReduceSum(float val) {
+    for (int offset = 16; offset > 0; offset /= 2) {
+        val += __shfl_down_sync(0xffffffff, val, offset);
+    }
+    return val;
 }
 
-/**
- * @brief Computes flash attention for given query, key, and value tensors.
- * 
- * @tparam T Data type (float) for input/output tensors
- * @param[in] h_q Query tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] h_k Key tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[in] h_v Value tensor of shape [batch_size, src_seq_len, kv_heads, head_dim]
- * @param[out] h_o Output attention tensor of shape [batch_size, tgt_seq_len, query_heads, head_dim]
- * @param[in] batch_size Batch dimension size
- * @param[in] target_seq_len Target sequence length
- * @param[in] src_seq_len Source sequence length  
- * @param[in] query_heads Number of query attention heads
- * @param[in] kv_heads Number of key/value heads (supports grouped query attention)
- * @param[in] head_dim Dimension size of each attention head
- * @param[in] is_causal Whether to apply causal masking
- */
+// Block 级别的求和规约
+__inline__ __device__ float blockReduceSum(float val) {
+    static __shared__ float shared[32]; 
+    int lane = threadIdx.x % 32; 
+    int wid = threadIdx.x / 32;  
+
+    val = warpReduceSum(val);
+
+    if (lane == 0) {
+        shared[wid] = val;
+    }
+    __syncthreads(); 
+
+    val = (threadIdx.x < (blockDim.x / 32)) ? shared[lane] : 0.0f;
+    
+    if (wid == 0) {
+        val = warpReduceSum(val); 
+    }
+
+    return val;
+}
+
+// *********************************************************************
+// RMSNorm Kernel (优化版)
+// *********************************************************************
 template <typename T>
-void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
-                    const std::vector<T>& h_v, std::vector<T>& h_o,
-                    int batch_size, int target_seq_len, int src_seq_len, 
-                    int query_heads, int kv_heads, int head_dim, bool is_causal) {       
-  // TODO: Implement the flash attention function
+__global__ void rmsNormKernel(
+    const T* __restrict__ input,
+    const T* __restrict__ weight,
+    T* __restrict__ output,
+    int rows,
+    int hidden_dim,
+    float eps
+)
+{
+    int row = blockIdx.x;
+    if(row >= rows) return;
+
+    float sum = 0.0f;
+    for(int col = threadIdx.x; col < hidden_dim; col += blockDim.x)
+    {
+        float value = static_cast<float>(input[row * hidden_dim + col]);
+        sum += value * value;
+    }
+
+    float total_sum = blockReduceSum(sum);
+
+    __shared__ float s_scale;
+    if (threadIdx.x == 0)
+    {
+        s_scale = rsqrtf(total_sum / hidden_dim + eps);
+    }
+    __syncthreads(); 
+
+    float scale = s_scale;
+
+    for(int col = threadIdx.x; col < hidden_dim; col += blockDim.x)
+    {
+        float value = static_cast<float>(input[row * hidden_dim + col]);
+        float w = static_cast<float>(weight[col]);
+        output[row * hidden_dim + col] = static_cast<T>(value * scale * w);
+    }
+}
+
+template <typename T>
+void rmsNorm(
+    const std::vector<T>& h_input,
+    const std::vector<T>& h_weight,
+    std::vector<T>& h_output,
+    size_t rows,
+    size_t hidden_dim,
+    float eps
+)
+{
+    T* d_input;
+    T* d_weight;
+    T* d_output;
+
+    size_t input_bytes = rows * hidden_dim * sizeof(T);
+    size_t weight_bytes = hidden_dim * sizeof(T);
+    h_output.resize(rows * hidden_dim); 
+
+    CHECK_MC(mcMalloc(&d_input, input_bytes));
+    CHECK_MC(mcMalloc(&d_output, input_bytes));
+    CHECK_MC(mcMalloc(&d_weight, weight_bytes));
+
+    CHECK_MC(mcMemcpy(d_input, h_input.data(), input_bytes, mcMemcpyHostToDevice));
+    CHECK_MC(mcMemcpy(d_weight, h_weight.data(), weight_bytes, mcMemcpyHostToDevice));
+
+    dim3 grid(rows);
+    dim3 block(256);
+
+    rmsNormKernel<T><<<grid, block>>>(
+        d_input, d_weight, d_output, rows, hidden_dim, eps
+    );
+
+    CHECK_MC(mcGetLastError());
+    CHECK_MC(mcDeviceSynchronize());
+
+    CHECK_MC(mcMemcpy(h_output.data(), d_output, input_bytes, mcMemcpyDeviceToHost));
+
+    CHECK_MC(mcFree(d_input));
+    CHECK_MC(mcFree(d_weight));
+    CHECK_MC(mcFree(d_output));
+}
+
+// *********************************************************************
+// flashAttention 
+// ********************************************************************
+
+#define LAYOUT_BHSD 0
+
+#if LAYOUT_BHSD
+#define QO_OFFSET(b,s,h,d) ((((b)*query_heads+(h))*target_seq_len+(s))*head_dim+(d))
+#define KV_OFFSET(b,s,h,d) ((((b)*kv_heads+(h))*src_seq_len+(s))*head_dim+(d))
+#else
+#define QO_OFFSET(b,s,h,d) ((((b)*target_seq_len+(s))*query_heads+(h))*head_dim+(d))
+#define KV_OFFSET(b,s,h,d) ((((b)*src_seq_len+(s))*kv_heads+(h))*head_dim+(d))
+#endif
+
+template<typename T>
+__global__ void flashAttentionKernel(
+    const T* __restrict__ q,
+    const T* __restrict__ k,
+    const T* __restrict__ v,
+    T* __restrict__ o,
+
+    int batch_size,
+    int target_seq_len,
+    int src_seq_len,
+
+    int query_heads,
+    int kv_heads,
+
+    int head_dim,
+
+    bool is_causal
+)
+{
+    int total = batch_size * target_seq_len * query_heads;
+    int gtid = blockIdx.x * blockDim.x + threadIdx.x;
+    if(gtid >= total)
+        return;
+
+    int q_head_idx = gtid % query_heads;
+    int rem = gtid / query_heads;
+    int t_idx = rem % target_seq_len;
+    int b_idx = rem / target_seq_len;
+
+    // GQA 映射
+    int kv_head_idx = q_head_idx / (query_heads / kv_heads);
+
+    float scale = __frcp_rn(sqrtf((float)head_dim));
+
+    float q_buf[256];
+    float o_buf[256];
+
+    int qo_base = QO_OFFSET(b_idx, t_idx, q_head_idx, 0);
+
+    for(int d = 0; d < head_dim; d++)
+        q_buf[d] = (float)q[qo_base + d];
+
+    for(int d = 0; d < head_dim; d++)
+        o_buf[d] = 0.0f;
+
+    // =====================================================
+    // 用 -INFINITY 和 s_idx > t_idx
+    // =====================================================
+    float global_max = -INFINITY;
+    for(int s_idx = 0; s_idx < src_seq_len; s_idx++)
+    {
+        if(is_causal && s_idx > t_idx)
+            continue;
+
+        int kv_base = KV_OFFSET(b_idx, s_idx, kv_head_idx, 0);
+
+        float score = 0.0f;
+        for(int d = 0; d < head_dim; d++)
+            score = fmaf(q_buf[d], (float)k[kv_base + d], score);
+
+        global_max = fmaxf(global_max, score * scale);
+    }
+
+    // =====================================================
+    //  s_idx > t_idx
+    // =====================================================
+    float sum = 0.0f;
+    for(int s_idx = 0; s_idx < src_seq_len; s_idx++)
+    {
+        if(is_causal && s_idx > t_idx)
+            continue;
+
+        int kv_base = KV_OFFSET(b_idx, s_idx, kv_head_idx, 0);
+
+        float score = 0.0f;
+        for(int d = 0; d < head_dim; d++)
+            score = fmaf(q_buf[d], (float)k[kv_base + d], score);
+
+        sum += expf(score * scale - global_max);
+    }
+
+    float inv_sum = (sum != 0.0f) ? __frcp_rn(sum) : 0.0f;
+
+    // =====================================================
+    // 用 s_idx > t_idx
+    // =====================================================
+    for(int s_idx = 0; s_idx < src_seq_len; s_idx++)
+    {
+        if(is_causal && s_idx > t_idx)
+            continue;
+
+        int kv_base = KV_OFFSET(b_idx, s_idx, kv_head_idx, 0);
+
+        float score = 0.0f;
+        for(int d = 0; d < head_dim; d++)
+            score = fmaf(q_buf[d], (float)k[kv_base + d], score);
+
+        float prob = expf(score * scale - global_max);
+        float factor = inv_sum * prob;
+
+        for(int d = 0; d < head_dim; d++)
+            o_buf[d] = fmaf(factor, (float)v[kv_base + d], o_buf[d]);
+    }
+
+    // Write O
+    for(int d = 0; d < head_dim; d++)
+        o[qo_base + d] = (T)o_buf[d];
+}
+
+template<typename T>
+void flashAttention(
+    const std::vector<T>& h_q,
+    const std::vector<T>& h_k,
+    const std::vector<T>& h_v,
+    std::vector<T>& h_o,
+
+    int batch_size,
+    int target_seq_len,
+    int src_seq_len,
+
+    int query_heads,
+    int kv_heads,
+
+    int head_dim,
+
+    bool is_causal
+)
+{
+    T *d_q;
+    T *d_k;
+    T *d_v;
+    T *d_o;
+
+    size_t q_size = h_q.size() * sizeof(T);
+    size_t k_size = h_k.size() * sizeof(T);
+    size_t v_size = h_v.size() * sizeof(T);
+    h_o.resize(h_q.size());
+
+    CHECK_MC(mcMalloc(&d_q, q_size));
+    CHECK_MC(mcMalloc(&d_k, k_size));
+    CHECK_MC(mcMalloc(&d_v, v_size));
+    CHECK_MC(mcMalloc(&d_o, q_size));
+
+    CHECK_MC(mcMemcpy(d_q, h_q.data(), q_size, mcMemcpyHostToDevice));
+    CHECK_MC(mcMemcpy(d_k, h_k.data(), k_size, mcMemcpyHostToDevice));
+    CHECK_MC(mcMemcpy(d_v, h_v.data(), v_size, mcMemcpyHostToDevice));
+
+    int total = batch_size * target_seq_len * query_heads;
+
+    dim3 block(256);
+    dim3 grid((total + block.x - 1) / block.x);
+
+    flashAttentionKernel<T><<<grid, block>>>(
+        d_q, d_k, d_v, d_o,
+        batch_size, target_seq_len, src_seq_len,
+        query_heads, kv_heads,
+        head_dim,
+        is_causal
+    );
+
+    mcError_t err = mcGetLastError();
+    if(err != mcSuccess)
+    {
+        printf("FlashAttention kernel error: %s\n", mcGetErrorString(err));
+    }
+
+    CHECK_MC(mcDeviceSynchronize());
+    CHECK_MC(mcMemcpy(h_o.data(), d_o, q_size, mcMemcpyDeviceToHost));
+
+    CHECK_MC(mcFree(d_q));
+    CHECK_MC(mcFree(d_k));
+    CHECK_MC(mcFree(d_v));
+    CHECK_MC(mcFree(d_o));
 }
 
 // *********************************************************************
