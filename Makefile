@@ -98,6 +98,6 @@ $(TARGET): $(STUDENT_OBJ) $(TEST_OBJ)
 	$(CC) $(CFLAGS) $(PLATFORM_DEFINE) -o $@ $^ $(EXTRA_LIBS)
 
 # Generate src object: Compile kernels.cu (triggers template instantiation)
-$(STUDENT_OBJ): $(STUDENT_SRC)
+$(addsuffix .o,$(basename $(STUDENT_SRC))): $(STUDENT_SRC)
 	@echo "=== Compiling student code ($(STUDENT_SRC)) ==="
 	$(CC) $(CFLAGS) $(PLATFORM_DEFINE) -c $< -o $@
