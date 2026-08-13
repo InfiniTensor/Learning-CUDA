@@ -4,6 +4,7 @@
 #include "../tester/utils.h"
 
 /**
+<<<<<<< HEAD
  * @brief Computes RMSNorm over the last dimension of a 2D tensor.
  *
  * The input is a row-major matrix with shape [rows, hidden_dim]. For each row
@@ -26,6 +27,25 @@ void rmsNorm(const std::vector<T>& h_input, const std::vector<T>& h_weight,
               std::vector<T>& h_output, size_t rows, size_t hidden_dim,
               float eps) {
   // TODO: Implement the rmsNorm function
+=======
+ * @brief Computes the trace of a matrix.
+ *
+ * The trace of a matrix is defined as the sum of its diagonal elements.
+ * This function expects a flattened row-major matrix stored in a
+ * std::vector. If the matrix is not square, the trace will sum up
+ * elements along the main diagonal up to the smaller of rows or cols.
+ *
+ * @tparam T The numeric type of matrix elements (e.g., float, int).
+ * @param h_input A flattened matrix of size rows * cols.
+ * @param rows Number of rows in the matrix.
+ * @param cols Number of columns in the matrix.
+ * @return The trace (sum of diagonal values) of the matrix.
+ */
+template <typename T>
+T trace(const std::vector<T>& h_input, size_t rows, size_t cols) {
+  // TODO: Implement the trace function
+  return T(-1);
+>>>>>>> fcdc822 (feat.: add 2025_winter assignment)
 }
 
 /**
@@ -49,17 +69,25 @@ void flashAttention(const std::vector<T>& h_q, const std::vector<T>& h_k,
                     const std::vector<T>& h_v, std::vector<T>& h_o,
                     int batch_size, int target_seq_len, int src_seq_len, 
                     int query_heads, int kv_heads, int head_dim, bool is_causal) {       
+<<<<<<< HEAD
   // TODO: Implement the flash attention function
+=======
+>>>>>>> fcdc822 (feat.: add 2025_winter assignment)
 }
 
 // *********************************************************************
 // Explicit Template Instantiations (REQUIRED FOR LINKING WITH TESTER.O)
 // DO NOT MODIFY THIS SECTION
 // *********************************************************************
+<<<<<<< HEAD
 template void rmsNorm<float>(const std::vector<float>&, const std::vector<float>&,
   std::vector<float>&, size_t, size_t, float);
 template void rmsNorm<half>(const std::vector<half>&, const std::vector<half>&,
   std::vector<half>&, size_t, size_t, float);
+=======
+template int trace<int>(const std::vector<int>&, size_t, size_t);
+template float trace<float>(const std::vector<float>&, size_t, size_t);
+>>>>>>> fcdc822 (feat.: add 2025_winter assignment)
 template void flashAttention<float>(const std::vector<float>&, const std::vector<float>&,
   const std::vector<float>&, std::vector<float>&,
   int, int, int, int, int, int, bool);
