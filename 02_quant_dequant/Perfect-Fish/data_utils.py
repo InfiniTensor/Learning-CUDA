@@ -24,7 +24,7 @@ def _cast(data, dtype):
 # 随机矩阵
 def gen_random(rows, cols, dtype = "fp32"):
     rr = random.Random(0)
-    data = [[rr.random()*2 - 1 for _ in range(cols) for _ in range(rows)]]
+    data = [[rr.random() * 2 - 1 for _ in range(cols)] for _ in range(rows)]
     return _cast(data, dtype)
 
 

@@ -1,0 +1,6 @@
+max_abs_error = 0.166761674
+mae = 0.0428926549
+mse = 0.00337540351
+compression_ratio = 5.3333
+quant_time_s = 0.00237702394
+dequant_time_S = 0.0211630077

@@ -1,4 +1,4 @@
-'''定义输入输出文件的格式'''
+'''处理一些输入输出文件，以及保存'''
 
 import struct
 
@@ -47,11 +47,14 @@ def error(original, dequant):
         sum_sq += d * d
     return max_abs, sum_abs / n, sum_sq / n
 
-def save_error(path, max_abs, mae, mse, compression, t0, t1, t2):
+def save_error(path, max_abs, mae, mse, compression, t1, t2):
     with open(path, "w", encoding="utf-8") as f:
         f.write("max_abs_error = %.9g\n" % max_abs)
         f.write("mae = %.9g\n" % mae)
         f.write("mse = %.9g\n" % mse)
         f.write("compression_ratio = %.4f\n" % compression)
-        f.write("quant_time_s = %.9g\n" % (t1 - t0))
-        f.write("dequant_time_S = %.9g\n" % (t2 - t1))
+        f.write("quant_time_s = %.9g\n" % t1)
+        f.write("dequant_time_S = %.9g\n" % t2)
+
+def read_matrix_file(path):
+    pass

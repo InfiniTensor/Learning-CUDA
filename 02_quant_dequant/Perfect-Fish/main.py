@@ -6,6 +6,7 @@ import data_utils as du
 import io_utils as iu
 import time
 import quant_cpu as qc
+import quant_cuda as qg
 
 def make_matrix(matrix, rows, cols, dtype):
     if matrix == "random": return du.gen_random(rows, cols, dtype)
@@ -13,13 +14,24 @@ def make_matrix(matrix, rows, cols, dtype):
     if matrix == "outlier": return du.gen_outlier(rows, cols, dtype)
     raise ValueError(f"未知矩阵类型：{matrix}")
 
+def compare(packed, scales, dequant, packed_cuda, scales_cuda, dequant_cuda):
+    if packed == packed_cuda:
+        print(f"cuda packed: 字节完全一致 ({len(packed_cuda)} 字节)")
+    else:
+        n = min(len(packed_cuda), len(packed))
+        diff = sum (1 for i in range(n) if packed[i] != packed_cuda[i])
+        print(f"cuda packed 前 {n} 字节中 {diff} 处不同")
+
+    d = max(abs(a-b) for a, b in zip(scales, scales_cuda))
+    print("cuda scales: %s   最大差 %.3e" % ("PASS" if d <= 1e-6 else "FAIL", d))
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--matrix", choices=["random", "normal", "outlier"], help="生成三种矩阵", default="random")
-    parser.add_argument("--rows", default=256)
-    parser.add_argument("--cols", default=256)
+    parser.add_argument("--rows", type=int, default=4096)
+    parser.add_argument("--cols", type=int, default=4096)
     parser.add_argument("--dtype", choices=["fp32", "fp16"], default="fp32")
-    parser.add_argument("--config", default="configs/nvfp4_block.txt", help="量化参数文件")
+    parser.add_argument("--config", default="configs/mxfp8_block.txt", help="量化参数文件")
     args = parser.parse_args()
 
     outputs = "outputs"
@@ -44,6 +56,7 @@ def main():
     rounding = cfg.get("rounding")
     output_type = cfg.get("output_type")
 
+    # ========== cpu端，主要是用来进行对比的 ================
     # 量化
     t0 = time.perf_counter()
     packed, scales = qc.quant(data, format, block_size, scale_mode, rounding)
@@ -61,7 +74,18 @@ def main():
 
     # 保存
     iu.save_file(os.path.join(outputs, "quantized.bin"), scales, packed, rows, cols, block_size, format)
-    iu.write_matrix_file(dequant, os.path.join(outputs, "dequant,bin"), rows, cols, output_type)
-    iu.save_error(os.path.join(outputs, f"report_{format}.log"), max_abs, mae, mse, compression, t0, t1, t2)
+    iu.write_matrix_file(dequant, os.path.join(outputs, "dequant.bin"), rows, cols, output_type)
+    iu.save_error(os.path.join(outputs, f"report_{format}.log"), max_abs, mae, mse, compression, t1-t0, t2-t1)
+
+    # =========== cuda端 =============================
+    packed_cuda, scales_cuda, dequant_cuda, t3, t4 = qg.quant_dequant(vals, rows, cols, format, scale_mode, block_size, output_type)
+    max_abs, mae, mse = iu.error(vals, dequant_cuda)
+    iu.save_error(os.path.join(outputs, f"report_{format}_gpu.log"), max_abs, mae, mse, compression, t3, t4)
+    # 比较一下两端的结果
+    compare(packed, scales, dequant, packed_cuda, scales_cuda, dequant_cuda)
+    
+    iu.save_file(os.path.join(outputs, "quantized_cuda.bin"), scales_cuda, packed_cuda, rows, cols, block_size, format)
+    iu.write_matrix_file(dequant_cuda, os.path.join(outputs, "dequantized_cuda.bin"), rows, cols, output_type)
+
 
 if __name__ == "__main__": main()
