@@ -1,19 +1,19 @@
 import quant_common as qc
 import random
 
-def quant(data, format, block_size, scale_mode, rounding, seed = 2026):
-    rows, cols = len(data), len(data[0])
+def quant(data, rows, cols, format, block_size, scale_mode, rounding, seed = 2026):
     codes = []
     scales = []
 
     global_scale = None
     if scale_mode == "tensor":
-        gmax = max(abs(x) for row in data for x in row)
+        gmax = max(abs(x) for x in data)
         global_scale = gmax / qc.MAX_FENMU[format] if gmax > 0 else 1.0
 
     for r in range(rows):
         for b in range(0, cols, block_size):
-            blk = data[r][b:block_size+b]
+            start = r*cols + b
+            blk = data[start:start+block_size]
 
             if scale_mode == "block":
                 bmax = max(abs(x) for x in blk)
