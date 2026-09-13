@@ -1,0 +1,6 @@
+dt = 0.01
+record_interval = 1
+G = 0.1559
+num_steps = 1000
+softening = 1.0
+integrator = leapfrog

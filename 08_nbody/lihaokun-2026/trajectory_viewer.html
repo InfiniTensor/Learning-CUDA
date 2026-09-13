@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>N-body · 轨迹检查器</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,"Microsoft YaHei",sans-serif;background:#090e18;color:#e9f0fa}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,.file{border:1px solid #33425a;background:#182338;border-radius:7px;color:#e5edfa;padding:8px 12px;cursor:pointer}button:hover,.file:hover{background:#24344f}button:disabled{opacity:.45;cursor:default}button.primary{background:#21746a;border-color:#359488}.file input{display:none}header{padding:16px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #283248}header h1{font-size:18px;margin:0;font-weight:650}header span{font-size:12px;color:#9aaec9}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:calc(100vh - 65px);min-height:650px}main{display:flex;flex-direction:column;min-width:0}.toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px;align-items:center}.toolbar small{color:#a0b0c7;margin-left:auto}.scene{position:relative;flex:1;min-height:320px;background:radial-gradient(ellipse at center,#121f33,#080e19 75%);overflow:hidden}#view{width:100%;height:100%;display:block;touch-action:none}#empty{position:absolute;inset:20%;display:grid;place-content:center;text-align:center;pointer-events:none;color:#aabbcf;line-height:1.8}#empty strong{font-size:24px;color:white}#hud{position:absolute;left:20px;top:14px;white-space:pre-line;line-height:1.7;font:12px ui-monospace,monospace;pointer-events:none;color:#b9cada}#axisLegend{position:absolute;bottom:14px;left:20px;color:#a8bdd4;font-size:12px;pointer-events:none}#selectedLabel{position:absolute;pointer-events:none;color:#ffe598;font-size:12px;white-space:nowrap}.timeline{padding:16px 20px 22px;border-top:1px solid #283248;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}.timeline input{width:100%;accent-color:#6bd6c1}.timeline .sub{grid-column:1/-1;color:#91a4be;font-size:12px}aside{border-left:1px solid #283248;background:#101827;padding:20px;overflow:auto}aside h2{font-size:14px;margin:0 0 12px}section{padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid #2a3448}section:last-child{border:0}.row{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap}label{font-size:12px;color:#b7c6d9}input[type=number],select{background:#080f1c;border:1px solid #33425a;border-radius:5px;color:white;padding:7px;width:96px}input[type=range]{accent-color:#67d7c4}.small{font-size:12px;line-height:1.7;color:#a5b6ce}.status{padding:10px;border:1px solid #665437;background:#292315;border-radius:6px;color:#e8cc8a;font-size:12px;line-height:1.7;white-space:pre-line}.status.ok{border-color:#346657;background:#162c27;color:#8ce0ba}.status.fail{border-color:#8d4a56;background:#351c25;color:#ffabb7}#stats{font:12px/1.8 ui-monospace,monospace;white-space:pre-wrap;margin:12px 0;color:#c8d6e9}#plot{width:100%;height:170px;background:#0a1220;border-radius:6px}#notice{font-size:12px;color:#e2c38c;white-space:pre-line;line-height:1.7}#fileName{word-break:break-all}a{color:#82d6e0}kbd{border:1px solid #41516a;border-radius:3px;padding:1px 4px}#legend{font-size:11px;line-height:1.9;color:#b0c0d7}@media(max-width:850px){.layout{grid-template-columns:1fr;height:auto}main{height:75vh;min-height:500px}aside{border-left:0}header{flex-wrap:wrap}}
+</style>
+<header><h1>N-body <span>轨迹检查器</span></h1><span>真实坐标 · 自由缩放 · 单粒子路径</span><label class="file">打开轨迹 BIN<input id="bin" type="file" accept=".bin"></label><button id="demo">查看解析示例</button></header>
+<div class="layout"><main>
+<div class="toolbar"><button id="three">三维</button><button id="xy">XY</button><button id="xz">XZ</button><button id="reset">全景</button><button id="fit" class="primary">放大选中路径</button><small>拖动旋转 · 滚轮缩放 · Shift 拖动平移 · 单击选点</small></div>
+<div class="scene"><canvas id="view" aria-label="三维粒子轨迹，可通过鼠标旋转、缩放并选择粒子"></canvas><div id="empty"><strong>从轨迹文件开始</strong><p>打开 CUDA 输出的 BIN。全部粒子可按 ID 查看。<br>文件仅在当前浏览器中读取，不上传服务器。</p></div><div id="hud"></div><div id="selectedLabel"></div><div id="axisLegend">X 红 · Y 绿 · Z 蓝　|　正交相机，坐标比例 1:1:1</div></div>
+<div class="timeline"><button id="play">播放</button><input id="frame" aria-label="轨迹记录" type="range" min="0" max="0" value="0" step="1"><output id="time">record 0</output><div class="sub">播放到末尾自动停止。显示原始记录，不插值、不放大位移。选中路径的灰线为完整轨迹，亮线为已走过部分。</div></div>
+</main><aside>
+<section><h2>数据与验证</h2><div id="fileName" class="small">尚未加载文件</div><div class="row"><label class="file">对象类别 TXT<input id="objects" type="file" accept=".txt"></label><label class="file">模拟参数 TXT<input id="params" type="file" accept=".txt"></label></div><label class="file">加载验证 JSON<input id="report" type="file" accept=".json"></label><p id="validation" class="status">未验证：动画能播放不代表 CUDA 轨迹正确。</p><div id="notice"></div></section>
+<section><h2>检查一个粒子</h2><div class="row"><label for="particle">粒子 ID</label><input id="particle" type="number" min="0" value="0" step="1"><button id="select">选择</button><button id="fastest">最大位移</button></div><div id="stats">选择粒子后显示位置和位移。</div><canvas id="plot" aria-label="选中粒子的 x、y、z 相对初始位置随记录变化"></canvas><p class="small">上图：Δx 红、Δy 绿、Δz 蓝。局部坐标减去初始位置，仍使用输入长度单位；没有乘以位移放大系数。</p></section>
+<section><h2>显示设置</h2><div class="row"><label for="rate">记录 / 秒</label><input id="rate" type="number" value="25" min="1" max="1000"></div><div class="row"><label for="recordDt">每条记录的时间</label><input id="recordDt" type="number" min="0" step="any" placeholder="未提供"></div><div class="row"><label for="pointSize">粒子大小</label><input id="pointSize" type="range" min="1" max="8" step=".25" value="2.5"></div><label><input id="isolate" type="checkbox"> 只显示选中粒子和它的路径</label><div id="legend"></div><p class="small">浏览器 WebGL 使用本地可用的图形设备；A800 上的 CUDA 模拟与 Matplotlib 视频导出仍独立保留。</p></section>
+</aside></div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const styles={black_hole:[1,.94,.45],neutron_star_white_dwarf:[.45,.86,1],star:[1,.65,.3],planet:[.3,.85,.6],asteroid:[.65,.75,.9]};
+const S={data:null,file:null,N:0,R:0,frame:0,selected:0,playing:false,mode:'3d',az:.6,el:.5,
+  center:[0,0,0],half:1,extent:1,dirty:true,loading:false,types:[],colors:null,positions:null,report:null,sha:null,generation:0,fastest:0,displacements:null};
+const canvas=$('view'),gl=canvas.getContext('webgl',{alpha:true,antialias:true,preserveDrawingBuffer:true});
+function message(text){$('notice').textContent=text;}
+function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
+let program,positionBuffer,colorBuffer,loc;
+if(!gl){message('此浏览器未提供 WebGL。请在支持 WebGL 的桌面浏览器中打开。');$('play').disabled=true;}
+else{
+ program=gl.createProgram();
+ gl.attachShader(program,shader(gl.VERTEX_SHADER,`attribute vec3 aPosition;attribute vec3 aColor;uniform mat3 uRotation;uniform vec3 uScale;uniform float uSize;varying vec3 vColor;void main(){vec3 p=uRotation*aPosition;gl_Position=vec4(p*uScale,1.);gl_PointSize=uSize;vColor=aColor;}`));
+ gl.attachShader(program,shader(gl.FRAGMENT_SHADER,`precision mediump float;varying vec3 vColor;uniform float uRound;uniform float uAlpha;void main(){float a=uAlpha;if(uRound>.5){float d=length(gl_PointCoord-vec2(.5))*2.;if(d>1.)discard;a*=1.-smoothstep(.5,1.,d);}gl_FragColor=vec4(vColor,a);}`));
+ gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));gl.useProgram(program);
+ loc={p:gl.getAttribLocation(program,'aPosition'),c:gl.getAttribLocation(program,'aColor'),rotation:gl.getUniformLocation(program,'uRotation'),scale:gl.getUniformLocation(program,'uScale'),size:gl.getUniformLocation(program,'uSize'),round:gl.getUniformLocation(program,'uRound'),alpha:gl.getUniformLocation(program,'uAlpha')};
+ positionBuffer=gl.createBuffer();colorBuffer=gl.createBuffer();gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+}
+function xyz(id,frame){const i=(id*S.R+frame)*3;return [S.data[i],S.data[i+1],S.data[i+2]];}
+function basis(){if(S.mode==='xy')return [[1,0,0],[0,1,0],[0,0,1]];if(S.mode==='xz')return [[1,0,0],[0,0,1],[0,-1,0]];
+ const a=S.az,e=S.el;return [[Math.cos(a),-Math.sin(a),0],[-Math.sin(e)*Math.sin(a),-Math.sin(e)*Math.cos(a),Math.cos(e)],[Math.cos(e)*Math.sin(a),Math.cos(e)*Math.cos(a),Math.sin(e)]];}
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const norm=a=>Math.hypot(...a);
+function project(p){const b=basis(),d=p.map((v,i)=>v-S.center[i]),aspect=canvas.width/canvas.height;return [(dot(b[0],d)/(S.half*aspect)+1)*canvas.clientWidth/2,(1-dot(b[1],d)/S.half)*canvas.clientHeight/2];}
+function rotationUniform(){const b=basis();return new Float32Array([b[0][0],b[1][0],b[2][0],b[0][1],b[1][1],b[2][1],b[0][2],b[1][2],b[2][2]]);}
+function draw(points,mode,color,size=1,alpha=1,perParticle=false){
+ gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);gl.bufferData(gl.ARRAY_BUFFER,points,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(loc.p);gl.vertexAttribPointer(loc.p,3,gl.FLOAT,false,0,0);
+ if(perParticle){gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer);gl.enableVertexAttribArray(loc.c);gl.vertexAttribPointer(loc.c,3,gl.FLOAT,false,0,0);}else{gl.disableVertexAttribArray(loc.c);gl.vertexAttrib3f(loc.c,...color);}
+ gl.uniform1f(loc.size,size);gl.uniform1f(loc.round,mode===gl.POINTS?1:0);gl.uniform1f(loc.alpha,alpha);gl.drawArrays(mode,0,points.length/3);
+}
+function relative(p){return p.map((v,i)=>v-S.center[i]);}
+function drawScene(){if(!gl||!S.data||S.loading)return;const dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
+ if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+ gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniformMatrix3fv(loc.rotation,false,rotationUniform());
+ gl.uniform3f(loc.scale,1/(S.half*w/h),1/S.half,1/Math.max(S.extent*100,norm(S.center)*4,1));
+ // World axes are reference geometry, not particle motion.
+ const origin=relative([0,0,0]);for(let axis=0;axis<3;axis++){const p=[0,0,0];p[axis]=S.extent*.8;draw(new Float32Array([...origin,...relative(p)]),gl.LINES,[[.72,.32,.38],[.32,.65,.48],[.35,.55,.9]][axis],1,.55);}
+ if(!$('isolate').checked){for(let i=0;i<S.N;i++){const p=xyz(i,S.frame);const at=i*3;for(let k=0;k<3;k++)S.positions[at+k]=p[k]-S.center[k];}
+   draw(S.positions,gl.POINTS,[1,1,1],Number($('pointSize').value)*dpr,.8,true);}
+ const path=new Float32Array(S.R*3);for(let f=0;f<S.R;f++)path.set(relative(xyz(S.selected,f)),f*3);
+ draw(path,gl.LINE_STRIP,[.46,.55,.67],1,.55);draw(path.subarray(0,(S.frame+1)*3),gl.LINE_STRIP,[.32,.93,.79],1,1);
+ draw(path.subarray(0,3),gl.POINTS,[.55,.7,.9],7*dpr,1);draw(path.subarray(S.frame*3,S.frame*3+3),gl.POINTS,[1,.87,.45],11*dpr,1);
+ const p=xyz(S.selected,S.frame),screen=project(p),label=$('selectedLabel');label.textContent=`#${S.selected}`;label.style.left=`${screen[0]+10}px`;label.style.top=`${screen[1]-18}px`;label.style.display=screen[0]>=0&&screen[0]<=canvas.clientWidth&&screen[1]>=0&&screen[1]<=canvas.clientHeight?'block':'none';
+ const dt=Number($('recordDt').value);$('time').textContent=`${S.frame+1} / ${S.R}${dt>0?' · t='+format(S.frame*dt):''}`;
+ $('frame').value=S.frame;const first=xyz(S.selected,0),delta=p.map((v,i)=>v-first[i]);
+ $('stats').textContent=`ID ${S.selected} · ${S.types[S.selected]}\nx ${format(p[0])}\ny ${format(p[1])}\nz ${format(p[2])}\n距初始位置 ${format(norm(delta))}\n全程最大位移 ${format(S.displacements[S.selected])}`;
+ $('hud').textContent=`${S.mode==='3d'?'3D':S.mode.toUpperCase()} · ${S.N.toLocaleString()} particles\n视野高度 ${format(2*S.half)} 输入长度单位\n选中 #${S.selected} · 无位移放大`;
+ drawPlot();S.dirty=false;
+}
+function format(n){return Number.isFinite(n)?Number(n).toPrecision(7):'非有限';}
+function drawPlot(){const c=$('plot'),r=c.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.round(170*dpr);const ctx=c.getContext('2d');ctx.scale(dpr,dpr);const w=r.width,h=170,L=46,T=12,B=24;
+ ctx.clearRect(0,0,w,h);if(!S.data)return;const origin=xyz(S.selected,0);let max=0;for(let f=0;f<S.R;f++)for(let k=0;k<3;k++)max=Math.max(max,Math.abs(xyz(S.selected,f)[k]-origin[k]));max=Math.max(max,1e-12)*1.1;
+ const px=f=>L+(w-L-8)*f/Math.max(1,S.R-1),py=v=>T+(h-T-B)*(1-v/max)/2;
+ ctx.strokeStyle='#32415a';ctx.beginPath();ctx.moveTo(L,py(0));ctx.lineTo(w-6,py(0));ctx.stroke();ctx.font='10px sans-serif';ctx.fillStyle='#9caec7';ctx.fillText(max.toExponential(1),1,T+5);ctx.fillText((-max).toExponential(1),1,h-B);ctx.fillText('0',L,h-5);ctx.fillText(String(S.R-1),w-38,h-5);
+ ['#ee7b89','#67d5a1','#80afff'].forEach((color,k)=>{ctx.strokeStyle=color;ctx.beginPath();for(let f=0;f<S.R;f++){const x=px(f),y=py(xyz(S.selected,f)[k]-origin[k]);f?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();});
+ ctx.strokeStyle='#f8dc89';ctx.beginPath();ctx.moveTo(px(S.frame),T);ctx.lineTo(px(S.frame),h-B);ctx.stroke();
+}
+function overview(){S.center=S.bounds[0].map((v,k)=>(v+S.bounds[1][k])/2);S.half=S.extent*1.18*Math.max(1,canvas.clientHeight/Math.max(1,canvas.clientWidth));S.dirty=true;}
+function fitPath(){if(!S.data||S.loading)return;let low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];for(let f=0;f<S.R;f++){const p=xyz(S.selected,f);for(let k=0;k<3;k++){low[k]=Math.min(low[k],p[k]);high[k]=Math.max(high[k],p[k]);}}
+ S.center=low.map((v,k)=>(v+high[k])/2);const aspect=canvas.clientWidth/Math.max(1,canvas.clientHeight),b=basis();let half=0;for(let f=0;f<S.R;f++){const d=relative(xyz(S.selected,f));half=Math.max(half,Math.abs(dot(b[0],d))/Math.max(.01,aspect),Math.abs(dot(b[1],d)));}S.half=Math.max(half*1.25,S.extent*1e-8,1e-9);S.dirty=true;
+ message(S.displacements[S.selected]===0?'该粒子在所有记录中位置相同。检查验证报告；相机放大不能创造运动。':'已按所选粒子的完整真实路径设置固定视野。按“全景”返回。');}
+function selectParticle(id){if(!S.data||S.loading)return;if(!Number.isInteger(id)||id<0||id>=S.N){message(`粒子 ID 必须为 0 到 ${S.N-1}`);return;}S.selected=id;$('particle').value=id;S.dirty=true;}
+function updateColors(){S.colors=new Float32Array(S.N*3);for(let i=0;i<S.N;i++)S.colors.set(styles[S.types[i]]||styles.asteroid,i*3);if(gl){gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer);gl.bufferData(gl.ARRAY_BUFFER,S.colors,gl.STATIC_DRAW);}const types=[...new Set(S.types)];$('legend').textContent=types.map(t=>`${t}: ${S.types.filter(v=>v===t).length}`).join(' · ');S.dirty=true;}
+async function loadBuffer(buffer,file=null){const generation=++S.generation;S.playing=false;$('play').textContent='播放';const head=new DataView(buffer);if(buffer.byteLength<8)throw Error('BIN 文件头不足 8 字节');const n=head.getInt32(0,true),records=head.getInt32(4,true);if(n<=0||records<=0||8+n*records*12!==buffer.byteLength)throw Error('BIN 尺寸不匹配，应为 int32 P,R + float32[P,R,xyz]');
+ // Explicit LE check; mainstream browsers are LE but do not silently misread BE.
+ if(new Uint8Array(new Uint32Array([1]).buffer)[0]!==1)throw Error('当前浏览器字节序不受支持');
+ S.loading=true;$('validation').className='status';$('validation').textContent='未验证：正在加载新的轨迹文件。';S.data=null;S.positions=null;S.file=file;S.sha=null;S.report=null;S.N=n;S.R=records;S.data=new Float32Array(buffer,8);S.frame=0;S.types=Array(n).fill('asteroid');S.positions=new Float32Array(n*3);S.displacements=new Float64Array(n);$('recordDt').value='';
+ let low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity],fastest=0;message('正在扫描全部坐标与运动范围…');await new Promise(r=>setTimeout(r,0));
+ for(let i=0;i<n;i++){const first=xyz(i,0);for(let f=0;f<records;f++){const p=xyz(i,f);if(!p.every(Number.isFinite)){S.loading=false;S.data=null;throw Error(`非有限坐标：粒子 ${i}，记录 ${f}`);}for(let k=0;k<3;k++){low[k]=Math.min(low[k],p[k]);high[k]=Math.max(high[k],p[k]);}S.displacements[i]=Math.max(S.displacements[i],norm(p.map((v,k)=>v-first[k])));}
+   if(S.displacements[i]>S.displacements[fastest])fastest=i;if(i%1024===0){await new Promise(r=>setTimeout(r,0));if(generation!==S.generation)return;}}
+ S.loading=false;S.fastest=fastest;S.bounds=[low,high];S.extent=Math.max(norm(high.map((v,k)=>(v-low[k])/2)),1e-6);S.mode='3d';S.az=.6;S.el=.5;overview();updateColors();selectParticle(fastest);
+ $('empty').style.display='none';$('frame').max=records-1;$('particle').max=n-1;$('fileName').textContent=file?`${file.name} · ${(buffer.byteLength/1048576).toFixed(1)} MiB · ${n} 粒子 / ${records} 记录`:'解析圆轨道示例 · 不是 CUDA 输出';
+ $('validation').className='status';$('validation').textContent='未验证：动画能播放不代表 CUDA 轨迹正确。';
+ const sorted=Array.from(S.displacements).sort((a,b)=>a-b);message(`全程位移中位数 ${format(sorted[Math.floor(n/2)])}；建议点击“放大选中路径”查看单粒子运动。`);S.dirty=true;
+}
+$('bin').onchange=async e=>{try{const file=e.target.files[0];if(!file)return;S.playing=false;message('正在读取 BIN…');await loadBuffer(await file.arrayBuffer(),file);}catch(err){message(String(err));}};
+$('objects').onchange=async e=>{try{if(!S.data)throw Error('先加载 BIN');const rows=(await e.target.files[0].text()).trim().split(/\r?\n/).slice(1);if(rows.length!==S.N)throw Error('对象数量不匹配');const names=Array(S.N),seen=new Set;for(const row of rows){const [idText,type]=row.trim().split(/\s+/),id=Number(idText);if(!Number.isInteger(id)||id<0||id>=S.N||seen.has(id)||!styles[type])throw Error('对象表的 ID 或类别无效');names[id]=type;seen.add(id);}S.types=names;updateColors();message('类别已加载。');}catch(err){message(String(err));}};
+$('params').onchange=async e=>{try{const text=await e.target.files[0].text(),v={};for(const raw of text.split(/\r?\n/)){const line=raw.split('#')[0].trim();if(!line)continue;const eq=line.indexOf('=');if(eq>=0)v[line.slice(0,eq).trim()]=line.slice(eq+1).trim();}const dt=Number(v.dt)*Number(v.record_interval);if(!(dt>0&&Number.isFinite(dt)))throw Error('参数文件缺少有效 dt / record_interval');$('recordDt').value=dt;S.dirty=true;message('已加载记录时间，单位沿用输入案例。');}catch(err){message(String(err));}};
+$('report').onchange=async e=>{try{if(!S.file)throw Error('先加载真实 BIN 文件');const generation=S.generation,report=JSON.parse(await e.target.files[0].text());if(report.schema!=='nbody-validation-v1'||!report.trajectory_sha256)throw Error('验证报告缺少版本或轨迹 SHA256');if(!crypto.subtle)throw Error('浏览器未提供 SHA256 API；请用受支持的本地浏览器打开');$('validation').textContent='正在核对整个 BIN 的 SHA256…';const digest=await crypto.subtle.digest('SHA-256',S.data.buffer);if(generation!==S.generation)return;const sha=Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');if(sha!==report.trajectory_sha256)throw Error('报告对应的 BIN 与当前文件不同，不能沿用验证结论');S.report=report;const full=report.status==='PASS',sampled=report.status==='PASS_SAMPLED';$('validation').className='status'+(full?' ok':sampled?'':' fail');$('validation').textContent=`${full?'CPU 全体回放通过':sampled?'抽样回放通过（非全体验证）':'验证未通过'}\nSHA256 匹配\n${report.scope||''}`;if(report.params)$('recordDt').value=report.params.dt*report.params.record_interval;S.dirty=true;}catch(err){$('validation').className='status fail';$('validation').textContent=String(err);}};
+$('demo').onclick=async()=>{try{const n=256,r=151,buffer=new ArrayBuffer(8+n*r*12),head=new DataView(buffer);head.setInt32(0,n,true);head.setInt32(4,r,true);const data=new Float32Array(buffer,8);for(let i=0;i<n;i++){const radius=.7+1.8*i/(n-1),phi=i*2.399963;for(let f=0;f<r;f++){const angle=phi+f*.04/Math.pow(radius,1.5),at=(i*r+f)*3;data[at]=radius*Math.cos(angle);data[at+1]=radius*Math.sin(angle);data[at+2]=.05*radius*Math.sin(angle+i);}}await loadBuffer(buffer);$('recordDt').value=.04;message('这是解析生成的交互示例，用于熟悉操作，不是 CUDA 正确性验证结果。');}catch(err){message(String(err));}};
+$('play').onclick=()=>{if(!S.data)return;if(S.frame>=S.R-1)S.frame=0;S.playing=!S.playing;$('play').textContent=S.playing?'暂停':'播放';S.dirty=true;};
+$('frame').oninput=e=>{S.frame=Number(e.target.value);S.playing=false;$('play').textContent='播放';S.dirty=true;};
+$('select').onclick=()=>selectParticle(Number($('particle').value));$('particle').onkeydown=e=>{if(e.key==='Enter')selectParticle(Number(e.target.value));};$('fastest').onclick=()=>selectParticle(S.fastest);
+$('fit').onclick=fitPath;$('reset').onclick=()=>{if(S.data)overview();};for(const [id,mode] of [['three','3d'],['xy','xy'],['xz','xz']])$(id).onclick=()=>{S.mode=mode;S.dirty=true;};
+for(const id of ['pointSize','isolate','recordDt'])$(id).oninput=()=>{S.dirty=true;};
+let dragging=null;canvas.onpointerdown=e=>{if(!S.data)return;dragging={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,shift:e.shiftKey||e.button===2};canvas.setPointerCapture(e.pointerId);};
+canvas.onpointermove=e=>{if(!dragging)return;const dx=e.clientX-dragging.x,dy=e.clientY-dragging.y;dragging.x=e.clientX;dragging.y=e.clientY;if(dragging.shift){const b=basis(),scale=2*S.half/Math.max(1,canvas.clientHeight);for(let k=0;k<3;k++)S.center[k]+=-dx*scale*b[0][k]+dy*scale*b[1][k];}else if(S.mode==='3d'){S.az+=dx*.007;S.el=Math.max(-1.5,Math.min(1.5,S.el+dy*.007));}S.dirty=true;};
+canvas.onpointerup=e=>{if(!dragging)return;const click=Math.hypot(e.clientX-dragging.startX,e.clientY-dragging.startY)<4&&!dragging.shift;dragging=null;if(click){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=14,id=-1;for(let i=0;i<S.N;i++){if($('isolate').checked&&i!==S.selected)continue;const p=project(xyz(i,S.frame)),d=Math.hypot(p[0]-x,p[1]-y);if(d<best){best=d;id=i;}}if(id>=0)selectParticle(id);}};
+canvas.onpointercancel=()=>{dragging=null;};canvas.oncontextmenu=e=>e.preventDefault();canvas.onwheel=e=>{if(!S.data)return;e.preventDefault();S.half=Math.max(S.extent*1e-9,Math.min(S.extent*1e4,S.half*Math.exp(e.deltaY*.001)));S.dirty=true;};
+window.onresize=()=>{S.dirty=true;};let last=0,accumulator=0;function tick(now){const elapsed=Math.min((now-last)/1000,.2);last=now;if(S.playing&&S.data){const rate=Number($('rate').value);accumulator+=elapsed*(Number.isFinite(rate)?Math.max(1,Math.min(1000,rate)):25);const step=Math.floor(accumulator);if(step){accumulator-=step;S.frame=Math.min(S.R-1,S.frame+step);S.dirty=true;if(S.frame===S.R-1){S.playing=false;$('play').textContent='播放';}}}else accumulator=0;if(S.dirty)drawScene();requestAnimationFrame(tick);}requestAnimationFrame(tick);
+</script>
+</html>

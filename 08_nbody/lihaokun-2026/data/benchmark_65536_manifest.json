@@ -1,0 +1,34 @@
+{
+  "case": "benchmark_65536",
+  "expected_records": 1001,
+  "generator_sha256": "61502a34c493ac39555c37a2507e8721ab7ea5d4a531b89c074ac962984f85b7",
+  "parameters": {
+    "G": "0.1559",
+    "dt": "0.01",
+    "integrator": "leapfrog",
+    "num_steps": "1000",
+    "record_interval": "1",
+    "softening": "1.0"
+  },
+  "particle_count": 65536,
+  "population_counts": {
+    "asteroid": 54919,
+    "black_hole": 1,
+    "neutron_star_white_dwarf": 131,
+    "planet": 9830,
+    "star": 655
+  },
+  "python_version": "3.10.20",
+  "seed": 43,
+  "sha256": {
+    "benchmark_65536_objects.txt": "6f453a4c29084b65ff7ab31bdc3c04bbb191d3f1cd61a2b58c69025da481f0e8",
+    "benchmark_65536_params.txt": "88473f42ac289562503a60a97a68a1182cbccdfd24ccb828913cf12db39f85ec",
+    "benchmark_65536_particles.txt": "f78cb49e8f347b4ecf237be18867cb8c66a19221908766b5b5b23fa5028df082"
+  },
+  "units": {
+    "mass": "Msun",
+    "position": "ly",
+    "time": "Myr",
+    "velocity": "ly/Myr"
+  }
+}

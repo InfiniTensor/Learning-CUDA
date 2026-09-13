@@ -1,0 +1,5 @@
+# Core numerical and visualization dependencies
+numpy==1.26.4
+matplotlib==3.8.4
+Pillow==10.4.0
+torch==2.6.0

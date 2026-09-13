@@ -1,0 +1,89 @@
+{
+  "schema": "nbody-validation-v1",
+  "trajectory": "results/benchmark_4096.bin",
+  "trajectory_sha256": "a74043c82bde0d77965c20956f1ade97a0b9746f6471adae8ed911b391b8c312",
+  "particles_sha256": "c427c98b92b181cd874658302b105eaa566e92b4820ac87f9c1d97a87ff38f62",
+  "params_sha256": "88473f42ac289562503a60a97a68a1182cbccdfd24ccb828913cf12db39f85ec",
+  "params": {
+    "dt": 0.009999999776482582,
+    "num_steps": 1000,
+    "record_interval": 1,
+    "G": 0.1559000015258789,
+    "softening": 1.0,
+    "integrator": "leapfrog"
+  },
+  "particles": 4096,
+  "records": 1001,
+  "checks": [
+    {
+      "name": "shape",
+      "passed": true,
+      "expected": [
+        1001,
+        4096,
+        3
+      ],
+      "actual": [
+        1001,
+        4096,
+        3
+      ]
+    },
+    {
+      "name": "initial_coordinates",
+      "passed": true
+    },
+    {
+      "name": "finite_coordinates_all_records",
+      "passed": true
+    },
+    {
+      "name": "center_of_mass_linear_motion",
+      "passed": true,
+      "max_error": 6.417627862224374e-08,
+      "tolerance": 0.10004512578953915
+    },
+    {
+      "name": "cpu_trajectory_replay",
+      "passed": true,
+      "max_error": 0.0020007947077374426,
+      "worst_error_to_tolerance_ratio": 0.11873797731467697,
+      "worst_record": 4,
+      "worst_particle_id": 716
+    }
+  ],
+  "motion": {
+    "max_displacement": 300.1467201257428,
+    "median_max_displacement": 46.71337699261125,
+    "fully_static_transitions": 0,
+    "fastest_particle_id": 947
+  },
+  "scope": "sampled CPU replay conditioned on recorded source positions",
+  "reference_particle_ids": [
+    2243,
+    947,
+    855,
+    3472,
+    979,
+    999,
+    2100,
+    2939,
+    716,
+    2057,
+    245,
+    2649,
+    1780,
+    183,
+    2242,
+    2571
+  ],
+  "atol": 2e-05,
+  "motion_rtol": 0.002,
+  "limitations": [
+    "Unselected particle trajectories are not independently replayed.",
+    "Recorded source fields may share errors; this is not a full all-body correctness proof.",
+    "Global exact energy is not checked at this scale."
+  ],
+  "status": "PASS_SAMPLED",
+  "elapsed_sec": 3.8100901750003686
+}
