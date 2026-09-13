@@ -12,8 +12,8 @@
 - 批量查询、K=1/10/50/100、CPU 参考实现、结果/性能/质量日志；
 - 主机与 GPU 正确性测试。
 
-同一份源码可在 **NVIDIA CUDA**、**天数智芯 Iluvatar CoreX** 与 **沐曦 MetaX
-（MACA）** 三个平台构建与运行：
+程序可在 **NVIDIA CUDA**、**天数智芯 Iluvatar CoreX** 与 **沐曦 MetaX（MACA）**
+三个平台构建与运行：
 
 | 平台 | 构建方式 | 验证情况 |
 | --- | --- | --- |
@@ -21,9 +21,9 @@
 | 天数智芯 CoreX | `make -f Makefile.corex`（clang `-x ivcore`） | MR-V100（IX-ML 4.4.0）上全部通过 |
 | 沐曦 MetaX | `make -f Makefile.maca`（`cucc` + `-lmcblas`） | MXC500（MACA 3.5.3）上全部通过 |
 
-三平台最近一次回归均通过（`test_host` + `test_gpu` 全部 PASS，端到端 bench 正常），
-且共用同一份源码——平台差异只体现在构建脚本与少量编译期分支上，检索算法与 kernel
-完全一致。代表性结果见文末与 [REPORT.md](REPORT.md)。
+三平台最近一次回归均通过（`test_host` + `test_gpu` 全部 PASS，端到端 bench 正常）。
+三平台使用同一套检索算法与 kernel 实现，差异仅体现为构建脚本与少量编译期分支。
+代表性结果见文末与 [REPORT.md](REPORT.md)。
 
 验证日期：NVIDIA / CoreX 为 2026-09-07，沐曦 MetaX 为 2026-09-13。
 
@@ -39,6 +39,7 @@
 ├── src/                    # 主机侧实现与 CLI
 ├── cuda/engine.cu          # 全部 CUDA kernel、IVF/PQ 构建与检索
 ├── tests/                  # test_host / test_gpu
+├── tools/probe/            # 设备能力探测（atomicAdd / double 精度）
 ├── python/                 # 数据生成与实验调度
 ├── data/                   # 生成的二进制向量库/查询/参数
 ├── docs/
@@ -75,8 +76,7 @@ export LD_LIBRARY_PATH=/usr/local/corex/lib64:/usr/local/corex/lib
 ./build_corex/test_gpu                # GPU 集成测试
 ```
 
-适配过程中发现并解决的平台差异（代码保持同一份，按
-`-DVSEARCH_COREX=1` 在编译期适配）：
+适配过程中发现并解决的平台差异（按 `-DVSEARCH_COREX=1` 在编译期适配）：
 
 1. **64 位 `atomicAdd` 静默失效**：CoreX 设备端不实现 `atomicAdd(unsigned long
    long*, ...)`，调用不报错但计数保持 0，导致倒排表/聚类计数全为 0。引擎改为
@@ -88,7 +88,7 @@ export LD_LIBRARY_PATH=/usr/local/corex/lib64:/usr/local/corex/lib
    放大到绝对误差数百），而 float 完全符合 IEEE。CoreX 构建下距离内核改用 float
    累计；NVIDIA 构建保持 double 累计不变。
 4. **PTX 内联汇编不可用**：`mov.b32` 寄存器约束在 ivcore 后端分配失败，改为标准
-   CUDA 位转换内建 `__float_as_int` / `__int_as_float`（两平台均可）。
+   CUDA 位转换内建 `__float_as_int` / `__int_as_float`（各平台均可）。
 
 CoreX（MR-V100，32 GB）实测见下方「天数智芯实测结果」。
 
@@ -106,10 +106,10 @@ export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib
 ./build_maca/test_gpu               # GPU 集成测试
 ```
 
-**该平台不需要修改任何源码**：与天数智芯 CoreX 不同，沐曦的设备端
-`atomicAdd(unsigned long long*)` 与 double 累加均正常（实测 64 位原子计数正确、
-double 长求和与主机结果完全一致），因此引擎沿用 NVIDIA 路径（double 累计、
-64 位原子计数），仅新增构建脚本即可跑通全部测试与 bench。
+沐曦的设备端 `atomicAdd(unsigned long long*)` 与 double 累加均正常（实测 64 位
+原子计数正确、double 长求和与主机结果一致），因此距离累计使用 double、倒排计数
+使用 64 位原子，与 NVIDIA 平台的计算路径相同；该平台只需新增构建脚本即可跑通
+全部测试与 bench。
 
 沐曦（MXC500）实测见下方「沐曦 MetaX 实测结果」。
 
@@ -223,8 +223,8 @@ CPU 单线程暴力参考（100 query）约 7.4 s；GPU exact 同子集约 67 ms
 | ivf_pq16 + rerank | 213 | 21.8 | 45792 | 2.59 | 3.68 | 0.012 | 397× |
 
 该组数据与 CoreX 使用同一生成参数（100 个高斯簇、scale 0.10），因此 Flat 召回
-（≈0.986）与 PQ 低召回（≈0.012，ADC 量化限制）在双平台一致，证明差异来自数据
-与量化率而非平台实现。
+（≈0.986）与 PQ 低召回（≈0.012，ADC 量化限制）在三平台一致，说明差异来自数据
+与量化率，而非平台实现。
 
 ## 天数智芯实测结果（Iluvatar MR-V100，300k×128，nq=1000，topK=100）
 
@@ -248,7 +248,7 @@ recall≈0.01。小规模紧致数据（40k×32、100 个分离簇）上 PQ 的 
 ## 沐曦 MetaX 实测结果（MXC500，300k×128，nq=1000，topK=100）
 
 主机测试 5/5 通过、GPU 集成测试全部通过（exact 与 CPU 参考逐条一致、IVF-Flat
-recall=1.0、IVF-PQ 返回合法 id、索引保存/加载 round-trip 一致），无需改动源码。
+recall=1.0、IVF-PQ 返回合法 id、索引保存/加载 round-trip 一致）。
 
 | mode | build ms | search ms | QPS | P50 ms | P99 ms | recall@100 | 加速比 vs CPU |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -261,7 +261,7 @@ CPU 参考为单线程暴力精确检索（200 query 子集约 7.5–8.6 s）。
 32/64 → 1.000，与 NVIDIA / CoreX 在相同生成参数下的曲线一致；完整 21 组
 nprobe×batch 数据见 [outputs_maca/experiment_summary.csv](outputs_maca/experiment_summary.csv)。
 
-### 三平台对比（同一份源码，300k×128，nprobe=16）
+### 三平台对比（300k×128，nprobe=16）
 
 | 平台 | GPU | exact QPS | ivf_flat QPS | recall@100 | ivf_pq QPS |
 | --- | --- | --- | --- | --- | --- |
