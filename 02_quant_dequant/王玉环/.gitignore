@@ -1,0 +1,9 @@
+build/
+__pycache__/
+*.pyc
+*.so
+*.o
+*.ncu-rep
+outputs/
+inputs/
+*.egg-info/
