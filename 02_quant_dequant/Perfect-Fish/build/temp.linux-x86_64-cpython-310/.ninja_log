@@ -1,5 +1,0 @@
-# ninja log v7
-0	32011	1789023640471350881	/home/wyh/codes/Learning-CUDA/02_quant_dequant/Perfect-Fish/build/temp.linux-x86_64-cpython-310/cuda/nvfp4.o	7c687d42dca49324
-8	31854	1789024049609673605	/home/wyh/codes/Learning-CUDA/02_quant_dequant/Perfect-Fish/build/temp.linux-x86_64-cpython-310/cuda/nvfp4.o	43b9bcf022de6adf
-8	32258	1789038125368803933	/home/wyh/codes/Learning-CUDA/02_quant_dequant/Perfect-Fish/build/temp.linux-x86_64-cpython-310/cuda/nvfp4.o	43b9bcf022de6adf
-1	30988	1789038159192282922	/home/wyh/codes/Learning-CUDA/02_quant_dequant/Perfect-Fish/build/temp.linux-x86_64-cpython-310/cuda/mxfp8.o	10e94692f47e6d42

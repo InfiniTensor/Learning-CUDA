@@ -1,7 +1,0 @@
-max_abs_error = 0.166651964
-mae = 0.0428849731
-mse = 0.00337539172
-compression_ratio = 5.3333
-quant_time_s = 3.82738455
-dequant_time_S = 2.57401958
-quant_bandwidth_gbps = 0.0208
