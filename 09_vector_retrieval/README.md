@@ -47,15 +47,15 @@
 ├── python/                 # 数据生成与实验调度
 ├── data/                   # 生成的二进制向量库/查询/参数
 ├── docs/
-├── outputs/                # NVIDIA 平台产物（报告 §7.3 表 1-4）
-├── outputs_corex/          # 天数智芯平台产物（报告 §7.4 表 5-6）
-├── outputs_maca/           # 沐曦平台产物（报告 §7.5 表 7-8）
-└── outputs_musa/           # 摩尔线程平台产物（报告 §7.6 表 9-10）
+├── outputs/                # NVIDIA 平台产物（报告 7.3 节的表 1-4）
+├── outputs_corex/          # 天数智芯平台产物（报告 7.4 节的表 5-6）
+├── outputs_maca/           # 沐曦平台产物（报告 7.5 节的表 7-8）
+└── outputs_musa/           # 摩尔线程平台产物（报告 7.6 节的表 9-10）
 ```
 
 每个 `outputs*/` 目录的组织方式一致：根目录放单次 bench 的 `perf.log` /
 `quality.log`，`sweep/` 放 nprobe × batch 扫描结果，另外各自附带
-`experiment_summary.csv`。四个平台的对应关系与数据来源见报告 §11.2。
+`experiment_summary.csv`。四个平台的对应关系与数据来源见报告 11.2 节。
 
 ## 构建（以 NVIDIA 平台为示例）
 

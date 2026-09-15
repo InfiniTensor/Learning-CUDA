@@ -1,16 +1,16 @@
 # 实验产物（NVIDIA 平台）
 
-本目录保存 NVIDIA（RTX 4090）平台的实验日志与结果样例，对应报告 §7.3 的表 1-4。
+本目录保存 NVIDIA（RTX 4090）平台的实验日志与结果样例，对应报告 7.3 节的表 1-4。
 另外三个平台的产物分别在：
 
 | 目录 | 平台 | 对应报告章节 |
 | --- | --- | --- |
-| `outputs/`（本目录） | NVIDIA RTX 4090 | §7.3 表 1-4 |
-| `outputs_corex/` | 天数智芯 MR-V100 | §7.4 表 5-6 |
-| `outputs_maca/` | 沐曦 MetaX MXC500 | §7.5 表 7-8 |
-| `outputs_musa/` | 摩尔线程 MUSA | §7.6 表 9-10 |
+| `outputs/`（本目录） | NVIDIA RTX 4090 | 7.3 节的表 1-4 |
+| `outputs_corex/` | 天数智芯 MR-V100 | 7.4 节的表 5-6 |
+| `outputs_maca/` | 沐曦 MetaX MXC500 | 7.5 节的表 7-8 |
+| `outputs_musa/` | 摩尔线程 MUSA | 7.6 节的表 9-10 |
 
-四平台横向对比见报告 §7.7 表 11；内核耗时剖析见 §8 与
+四平台横向对比见报告 7.7 节的表 11；内核耗时剖析见第 8 章与
 [PROFILING.md](PROFILING.md)。
 
 ## 目录结构
@@ -18,7 +18,7 @@
 ```text
 outputs/
 ├── README.md                  本说明
-├── PROFILING.md               Nsight Systems kernel 占比分析（报告 §8）
+├── PROFILING.md               Nsight Systems kernel 占比分析（报告第 8 章）
 ├── experiment_summary.csv     1e6 数据组的 nprobe × batch 扫描汇总（表 2）
 ├── exact_perf.log             exact bench 性能
 ├── ivf_flat_perf.log          IVF-Flat 性能
@@ -36,8 +36,8 @@ outputs/
 
 | 位置 | 数据规模 | 参数 | 对应报告 |
 | --- | --- | --- | --- |
-| 根目录日志、`sweep/`、`indexes/`、`retrieval_results/` | 1e6×128，nq=1000 | nlist=4096，nprobe=16，topK=100，pq_m=16 | §7.3 表 1-3 |
-| `nvidia_300k_regression/` | 300k×128，nq=1000 | nlist=1024，nprobe=16，topK=100（与另两个平台同参数同种子） | §7.3 表 4 |
+| 根目录日志、`sweep/`、`indexes/`、`retrieval_results/` | 1e6×128，nq=1000 | nlist=4096，nprobe=16，topK=100，pq_m=16 | 7.3 节的表 1-3 |
+| `nvidia_300k_regression/` | 300k×128，nq=1000 | nlist=1024，nprobe=16，topK=100（与另两个平台同参数同种子） | 7.3 节的表 4 |
 
 ## 复现
 

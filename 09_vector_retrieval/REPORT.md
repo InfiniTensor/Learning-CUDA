@@ -29,7 +29,7 @@
 | 沐曦 | MetaX MXC500 32 GB | MACA 3.5.3（`cucc` + `mcblas`） | 构建、主机/GPU 测试、300k 基准 + 21 组扫描 |
 | 摩尔线程 | MUSA 5.1.0 环境 | MUSA 5.1.0（`mcc -x musa` + `mublas`） | 构建、主机/GPU 测试、300k 基准 + 21 组扫描 |
 
-主要结果（300k×128，nq=1000，topK=100，nprobe=16，详见 §7）：
+主要结果（300k×128，nq=1000，topK=100，nprobe=16，详见第 7 章）：
 
 | 平台 | exact QPS | ivf_flat QPS | ivf_flat recall@100 | ivf_pq QPS |
 | --- | --- | --- | --- | --- |
@@ -40,7 +40,7 @@
 
 四套平台上，精确检索的 id 与 CPU 参考逐位一致，IVF-Flat 在 nprobe=32 时
 recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据集上约 0.012，
-原因见 §7.8）。
+原因见 7.8 节）。
 
 ## 2. 实验目标与范围
 
@@ -57,7 +57,7 @@ recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据�
 
 实验范围与边界：
 
-* 数据为合成数据（生成方式见 §5.1），不涉及真实业务语料；
+* 数据为合成数据（生成方式见 5.1 节），不涉及真实业务语料；
 * 召回率基准是 GPU 精确检索结果，不是解析式 ground truth；
 * CPU 基线是单线程暴力检索，仅用于给出量级参照，不等价于经过优化的 CPU 检索库；
 * 性能数字为单次运行结果，用于平台间量级对比，未做多轮统计与方差分析。
@@ -86,7 +86,7 @@ recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据�
 天数智芯与沐曦提供 CUDA 兼容头文件与 CUB 实现，因此程序中的 `cub::DeviceScan`、
 `cub::DeviceSegmentedRadixSort` 与 cuBLAS 调用无需替换；摩尔线程使用 MUSA 原生
 API 与 MUSA 版 CUB，通过 `-DVSEARCH_MUSA=1` 的名称映射复用同一套实现。各平台的
-构建命令见 §5.4。
+构建命令见 5.4 节。
 
 ### 3.3 平台能力探测
 
@@ -99,7 +99,7 @@ API 与 MUSA 版 CUB，通过 `-DVSEARCH_MUSA=1` 的名称映射复用同一套�
 | device 端 double 长求和（128 维） | 与主机结果偏差约 1e-4 相对量级 | 与主机 double 结果一致（偏差 0） | 与主机 double 结果一致（偏差 0） |
 | PTX 内联汇编 `asm("mov.b32 ...")` | 后端寄存器分配失败，编译报错 | 未使用（改用内建函数后不再依赖） | 未使用 |
 
-对应的处理方式见 §7.2。
+对应的处理方式见 7.2 节。
 
 ## 4. 系统实现
 
@@ -131,7 +131,7 @@ outputs_musa/              摩尔线程平台 perf/quality 日志与扫描汇总
 
 向量库/查询按行主序加载。文件头定义见 README。内部统一转成 `fp32` 并放到对齐内存，
 因此 fp16 文件也能直接获得相同的精确检索语义；fp16 的价值体现在“原始数据减少 2 倍
-带宽/容量”，后续可用 half2 张量化作为内存受限优化（见 §12）。
+带宽/容量”，后续可用 half2 张量化作为内存受限优化（见第 12 章）。
 
 #### 4.2.2 度量
 
@@ -140,7 +140,7 @@ outputs_musa/              摩尔线程平台 perf/quality 日志与扫描汇总
   差分求和避免了“范数相减”在大数值下抵消导致的精度损失，也让 CoreX 的 float
   路径与 CPU 参考保持同一累加语义。
   （中心挑选等只需要相对次序的场景仍使用
-  `||q - c||² = ||q||² + ||c||² - 2 q·c` 的预计算范数形式，见 §4.4.3 / §4.5.3。）
+  `||q - c||² = ||q||² + ||c||² - 2 q·c` 的预计算范数形式，见 4.4.3 节 / 4.5.3 节。）
 - **inner product**：输出原始点积，越大越相似。
 - **cosine**：读取时把库向量与查询归一化，再按 `1 - q·x` 输出 cosine 距离。
 
@@ -284,7 +284,7 @@ CLI/配置任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可
 
 实验数据由 `python/gen_dataset.py` 生成，方法为“高斯簇 + 扰动”：先随机生成若干
 簇心，每条库向量取一个簇心并叠加正态噪声；查询向量取若干库向量的扰动副本，因此
-每条查询都存在明确的近邻结构。文件格式为 §4.2.1 定义的二进制容器。
+每条查询都存在明确的近邻结构。文件格式为 4.2.1 节 定义的二进制容器。
 
 本报告使用两组数据：
 
@@ -327,7 +327,7 @@ CPU 基线仅作量级参照：它是单线程、未向量化的实现，不等�
 
 每个平台按相同的五步执行：**构建 → 正确性测试 → 生成数据集 → 三种模式基准 →
 nprobe × batch 扫描**。下面以 **NVIDIA 平台**为例给出完整命令；其余平台的构建
-入口与库路径差异见 §7.1，只需替换第 1、2 步对应的命令，后续步骤一致。
+入口与库路径差异见 7.1 节，只需替换第 1、2 步对应的命令，后续步骤一致。
 
 ```bash
 # 1) 构建
@@ -349,7 +349,7 @@ python python/gen_dataset.py --out data \
     --params=data/params.txt --search_mode=exact \
     --perf_log_path=outputs/exact_perf.log \
     --quality_log_path=outputs/exact_quality.log
-# ivf_flat / ivf_pq 同理，仅替换 --search_mode 与输出文件名，完整命令见 §11.1
+# ivf_flat / ivf_pq 同理，仅替换 --search_mode 与输出文件名，完整命令见 11.1 节
 
 # 5) nprobe × batch 扫描
 python python/run_experiments.py --vsearch ./build/vsearch \
@@ -390,7 +390,7 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 - **id**：GPU exact 与 CPU 参考逐位相同，测试与 bench 均校验；
 - **距离**：GPU 与 CPU 的距离差在容差内。NVIDIA 与沐曦的 device 端 double 精度
   正常，使用 1e-4 相对容差；天数智芯 CoreX 的 device double 存在精度损失，其构建
-  改用 float 累计距离，测试容差相应放宽到 2e-3（依据见 §3.3 的探测数据）。
+  改用 float 累计距离，测试容差相应放宽到 2e-3（依据见 3.3 节的探测数据）。
 
 ### 6.4 索引持久化
 
@@ -399,7 +399,7 @@ id 序列（`test_gpu` 的 round-trip 用例），说明索引序列化格式自
 
 ## 7. 性能实验结果
 
-本章数据由 `vsearch bench` 生成，数据集与参数见 §5.1，指标定义见 §5.2。每张表
+本章数据由 `vsearch bench` 生成，数据集与参数见 5.1 节，指标定义见 5.2 节。每张表
 下方注明对应的原始日志文件，可据此逐项核对。
 
 ### 7.1 构建与运行方式
@@ -409,12 +409,12 @@ id 序列（`test_gpu` 的 round-trip 用例），说明索引序列化格式自
 
 | 平台 | 构建入口 | 编译 `.cu` | 数学库 | 运行时库路径 | 需定义的宏 |
 | --- | --- | --- | --- | --- | --- |
-| NVIDIA | `CMakeLists.txt` | `nvcc`（CUDA 12.x） | cuBLAS（CUDA Toolkit 自带） | CUDA Toolkit 默认 | — |
+| NVIDIA（示例） | `CMakeLists.txt` | `nvcc`（CUDA 12.x） | cuBLAS（CUDA Toolkit 自带） | CUDA Toolkit 默认 | — |
 | 天数智芯 CoreX | `Makefile.corex` | CoreX clang 18（`-x ivcore`） | CoreX cuBLAS 兼容层 | `/usr/local/corex/lib64`、`/usr/local/corex/lib` | `VSEARCH_COREX=1` |
 | 沐曦 MetaX | `Makefile.maca` | `cucc`（nvcc 风格 wrapper） | `libmcblas.so` | `/opt/maca/lib`、`/opt/maca/tools/cu-bridge/lib` | — |
 | 摩尔线程 MUSA | `Makefile.musa` | `mcc -x musa`（clang 14 前端） | `libmublas.so` | `/usr/local/musa/lib`、`/usr/local/musa/lib64` | `VSEARCH_MUSA=1` |
 
-#### 7.1.1 NVIDIA
+#### 7.1.1 NVIDIA（示例平台）
 
 环境要求：CMake ≥ 3.18、CUDA Toolkit（本实验为 12.0 / 12.8）、支持 C++17 的主机
 编译器。构建命令：
@@ -491,7 +491,7 @@ CUDA，mcc 会走 CUDA 前端并报找不到 CUDA 安装），并链接 `-lmusar
 
 ### 7.2 平台差异与处理方式
 
-§3.3 的探测结果对应的处理如下：
+3.3 节的探测结果对应的处理如下：
 
 | 差异 | 影响 | 处理方式 |
 | --- | --- | --- |
@@ -609,7 +609,7 @@ IVF-Flat recall≈1.0。
 
 ### 7.6 摩尔线程 MUSA 结果
 
-构建方式见 §7.1.4；测试结果与四个平台的对比分别见表 9、表 10 与表 11。
+构建方式见 7.1.4 节；测试结果与四个平台的对比分别见表 9、表 10 与表 11。
 
 **表 9：摩尔线程 MUSA，300k×128，nq=1000，topK=100，nprobe=16**
 
@@ -723,7 +723,7 @@ CPU 参考的 id 逐位一致。这满足题目对“精确检索结果需与 CP
 IVF-Flat 只扫描 `nprobe/nlist` 比例的候选：1e6 数据、nlist=4096、nprobe=16 时理论
 候选约为全库的 0.4%，实测 QPS 相对 exact 提升约 30 倍；300k 数据、nlist=1024、
 nprobe=16 时提升约 24 倍（表 4、7）。IVF-PQ 进一步把候选打分从读原始向量改为读
-压缩码与距离表，在 300k 数据上与 IVF-Flat 吞吐相当，但代价是召回率（§7.8）。
+压缩码与距离表，在 300k 数据上与 IVF-Flat 吞吐相当，但代价是召回率（7.8 节）。
 
 四平台吞吐排序为 NVIDIA > 沐曦 > 天数智芯 > 摩尔线程。需要注意沐曦本次只启用了
 MXC500 的一个 SGPU 分片（mx-smi 显示 50% 规格），并非整卡；天数智芯与摩尔线程的
@@ -746,7 +746,7 @@ MXC500 的一个 SGPU 分片（mx-smi 显示 50% 规格），并非整卡；天�
 ### 9.4 量化误差
 
 IVF-PQ 在本数据组上的低召回（0.012）经离线核对确认来自 8 bit×16 子空间的量化
-误差量级与近邻距离量级相当（§7.8），而非编码或打分实现错误。若要在此类数据上
+误差量级与近邻距离量级相当（7.8 节），而非编码或打分实现错误。若要在此类数据上
 使用 PQ，需要提高码率（增大 `pq_m`、使用更多码字或残差量化）或扩大精排窗口。
 
 ### 9.5 实验局限
@@ -824,11 +824,11 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 
 ### 11.3 结果核验方式
 
-1. **正确性**：直接运行 `test_host` 与 `test_gpu`（§11.1 步骤 1-4），
+1. **正确性**：直接运行 `test_host` 与 `test_gpu`（11.1 节步骤 1-4），
    `test_gpu` 内部会把 GPU exact 与 CPU 参考逐条比对。
-2. **性能/召回**：按 §5.4 的命令重跑 bench，得到的 `perf.log` 与 `quality.log`
-   可与 §7 各表逐项对照；表下方均标注了对应的日志文件。
-3. **平台差异**：§3.3 的两项设备能力探测可用最小程序复现，代码与各平台编译命令
+2. **性能/召回**：按 5.4 节的命令重跑 bench，得到的 `perf.log` 与 `quality.log`
+   可与第 7 章各表逐项对照；表下方均标注了对应的日志文件。
+3. **平台差异**：3.3 节的两项设备能力探测可用最小程序复现，代码与各平台编译命令
    见 [tools/probe/device_probe.cu](tools/probe/device_probe.cu) 与
    [tools/probe/README.md](tools/probe/README.md)。
 
