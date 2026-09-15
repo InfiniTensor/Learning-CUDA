@@ -44,7 +44,7 @@ nsys stats --report cuda_gpu_sum prof/nsys_pq.nsys-rep
 | Kernel | GPU 时间占比 | 平均耗时 |
 | --- | ---: | ---: |
 | `exactKeysKernel`（全量打分） | 74.9% | 49.2 ms |
-| CUB segmented radix sort（两级内核） | 23.1% | ~1.3-1.6 ms/instance |
+| CUB segmented radix sort（两级内核） | 23.1% | 约 1.3-1.6 ms/instance |
 | H2D 查询/键上传等 | 1.9% | 24 μs avg |
 | `decodeTopKeysKernel` | <0.1% | 1.6 μs |
 
@@ -72,7 +72,7 @@ nsys stats --report cuda_gpu_sum prof/nsys_pq.nsys-rep
 | `ivfCenterKeysKernel` | 0.32 ms | query 到中心 |
 | `pqTableKernel` | 5.4 μs | 128 query × 16×256 ADC 表 |
 | `pqPackKeysKernel` | 0.126 ms | ADC 候选打分 |
-| CUB segmented sort（ADC 粗排） | 数十 μs~1.4 ms | 与数据量相关 |
+| CUB segmented sort（ADC 粗排） | 数十 μs 至 1.4 ms | 与数据量相关 |
 | `rerankPrepKernel` | 0.33 ms | 取 ADC top-256 |
 | `ivfFlatKeysKernel`（精排） | 0.08 ms | 只重算 top-256 |
 | `decodeVariableTopKernel` | 1.2 μs | 结果写出 |
