@@ -325,34 +325,40 @@ CPU 基线仅作量级参照：它是单线程、未向量化的实现，不等�
 
 ### 5.4 实验流程与命令
 
-每个平台按以下顺序执行（示例为沐曦，其余平台替换构建命令与库路径即可）：
+每个平台按相同的五步执行：**构建 → 正确性测试 → 生成数据集 → 三种模式基准 →
+nprobe × batch 扫描**。下面以 **NVIDIA 平台**为例给出完整命令；其余平台的构建
+入口与库路径差异见 §7.1，只需替换第 1、2 步对应的命令，后续步骤一致。
 
 ```bash
 # 1) 构建
-make -f Makefile.maca -j
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=89
+cmake --build build -j
 
 # 2) 正确性测试
-export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
-./build_maca/test_host
-./build_maca/test_gpu
+./build/test_host
+./build/test_gpu
 
-# 3) 生成数据集
-/opt/conda/bin/python python/gen_dataset.py --out data_maca \
+# 3) 生成数据集（300k×128，与其余平台同参数、同随机种子）
+python python/gen_dataset.py --out data \
     --n 300000 --dim 128 --nq 1000 --top-k 100 --metric l2 \
     --clusters 100 --vector-scale 0.10 --query-scale 0.02 \
     --nlist 1024 --nprobe 16
 
 # 4) 三种模式的端到端基准（每次 bench 先跑 GPU exact 作为召回基准）
-./build_maca/vsearch bench --vectors=data_maca/vectors.bin \
-    --queries=data_maca/queries.bin --params=data_maca/params.txt \
-    --search_mode=exact --perf_log_path=outputs_maca/exact_perf.log
-# ivf_flat / ivf_pq 同理，完整命令见 §11
+./build/vsearch bench --vectors=data/vectors.bin --queries=data/queries.bin \
+    --params=data/params.txt --search_mode=exact \
+    --perf_log_path=outputs/exact_perf.log \
+    --quality_log_path=outputs/exact_quality.log
+# ivf_flat / ivf_pq 同理，仅替换 --search_mode 与输出文件名，完整命令见 §11.1
 
 # 5) nprobe × batch 扫描
-/opt/conda/bin/python python/run_experiments.py --vsearch ./build_maca/vsearch \
-    --data data_maca --mode ivf_flat --nprobe-list 1,2,4,8,16,32,64 \
-    --batch-list 32,128,512 --out-dir outputs_maca
+python python/run_experiments.py --vsearch ./build/vsearch \
+    --data data --mode ivf_flat --nprobe-list 1,2,4,8,16,32,64 \
+    --batch-list 32,128,512 --out-dir outputs
 ```
+
+各平台的数据生成脚本与扫描脚本完全相同；若某平台自带 Python 环境（如沐曦使用
+`/opt/conda/bin/python`），仅需替换解释器路径。
 
 ## 6. 正确性验证结果
 
@@ -398,7 +404,47 @@ id 序列（`test_gpu` 的 round-trip 用例），说明索引序列化格式自
 
 ### 7.1 构建与运行方式
 
-#### 7.1.1 天数智芯 CoreX
+四个平台使用同一份源码，构建入口按平台区分。下表汇总各平台的构建入口与依赖；
+随后以 **NVIDIA 平台作为示例**给出完整构建流程，再给出其余三个平台的对应方式。
+
+| 平台 | 构建入口 | 编译 `.cu` | 数学库 | 运行时库路径 | 需定义的宏 |
+| --- | --- | --- | --- | --- | --- |
+| NVIDIA（示例） | `CMakeLists.txt` | `nvcc`（CUDA 12.x） | cuBLAS（CUDA Toolkit 自带） | CUDA Toolkit 默认 | — |
+| 天数智芯 CoreX | `Makefile.corex` | CoreX clang 18（`-x ivcore`） | CoreX cuBLAS 兼容层 | `/usr/local/corex/lib64`、`/usr/local/corex/lib` | `VSEARCH_COREX=1` |
+| 沐曦 MetaX | `Makefile.maca` | `cucc`（nvcc 风格 wrapper） | `libmcblas.so` | `/opt/maca/lib`、`/opt/maca/tools/cu-bridge/lib` | — |
+| 摩尔线程 MUSA | `Makefile.musa` | `mcc -x musa`（clang 14 前端） | `libmublas.so` | `/usr/local/musa/lib`、`/usr/local/musa/lib64` | `VSEARCH_MUSA=1` |
+
+#### 7.1.1 NVIDIA（示例平台）
+
+环境要求：CMake ≥ 3.18、CUDA Toolkit（本实验为 12.0 / 12.8）、支持 C++17 的主机
+编译器。构建命令：
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=89
+cmake --build build -j
+```
+
+`-DCMAKE_CUDA_ARCHITECTURES` 按实际 GPU 填写（如 RTX 4090 为 `89`，A100 为 `80`）。
+构建产物为 `build/vsearch`、`build/test_host`、`build/test_gpu`，运行测试：
+
+```bash
+./build/test_host
+./build/test_gpu
+```
+
+若目标环境不使用 CMake，也可直接调用 `nvcc` 编译 CUDA 源文件：
+
+```bash
+# 编译 CUDA 源
+nvcc -std=c++17 -O2 -c cuda/engine.cu -Iinclude -o engine.o
+# 主机侧源用系统 C++ 编译器编译后，与 engine.o 一起链接（CUDA 源由 nvcc 编译）
+g++ -std=c++17 -O2 -Iinclude -c src/main.cpp -o main.o
+nvcc main.o engine.o -lcublas -o vsearch
+```
+
+其余三个平台只需替换上述构建命令与运行时库路径，源码与后续测试/基准命令不变。
+
+#### 7.1.2 天数智芯 CoreX
 
 CoreX 的 `/usr/local/corex/bin/nvcc` 只是版本回显 stub，官方未提供 CMake CUDA
 工具链；实际编译器是 CoreX 定制 clang 18（用 `-x ivcore` 编译 `.cu`）。构建使用
@@ -414,7 +460,7 @@ Makefile 对 `.cu` 追加 `-x ivcore --cuda-path=/usr/local/corex
 -DVSEARCH_COREX=1`，并链接 CoreX 自带的 `libcudart` / `libcublas`；CUB 直接使用
 CoreX 提供的实现（已验证可用），未替换 GEMM 或排序后端。
 
-#### 7.1.2 沐曦 MetaX
+#### 7.1.3 沐曦 MetaX
 
 沐曦通过 `cu-bridge` 提供 CUDA 兼容层：编译器为 `cucc`（nvcc 风格 wrapper，内部
 调用 mxgpu_llvm 的 `mxcc`）；头文件位于 `/opt/maca/tools/cu-bridge/include`
@@ -426,6 +472,22 @@ make -f Makefile.maca -j
 export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
 ./build_maca/test_host && ./build_maca/test_gpu
 ```
+
+#### 7.1.4 摩尔线程 MUSA
+
+MUSA 提供原生 API（`musa_runtime.h`、`mublas_v2.h` 以及 MUSA 版 CUB），不提供
+CUDA 兼容头文件，因此 `cuda/engine.cu` 在 `-DVSEARCH_MUSA=1` 时启用一层名称映射
+（`cuda*` → `musa*`、`cublas*` → `mublas*`、`CUBLAS_OP_*` → `MUBLAS_OP_*`）。
+构建使用 [Makefile.musa](Makefile.musa)：
+
+```bash
+make -f Makefile.musa -j
+export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
+./build_musa/test_host && ./build_musa/test_gpu
+```
+
+Makefile 以 `mcc -x musa --musa-path=/usr/local/musa` 编译 `.cu`（若按扩展名推断为
+CUDA，mcc 会走 CUDA 前端并报找不到 CUDA 安装），并链接 `-lmusart -lmublas`。
 
 ### 7.2 平台差异与处理方式
 
@@ -547,23 +609,7 @@ IVF-Flat recall≈1.0。
 
 ### 7.6 摩尔线程 MUSA 结果
 
-#### 7.6.1 构建方式
-
-MUSA 提供原生 API（`musa_runtime.h`、`mublas_v2.h` 以及 CUB for MUSA），不提供
-CUDA 兼容头文件。因此 `cuda/engine.cu` 在 `-DVSEARCH_MUSA=1` 时启用一层名称映射
-（`cuda*` → `musa*`、`cublas*` → `mublas*`、`CUBLAS_OP_*` → `MUBLAS_OP_*`），
-检索算法与 kernel 代码不变。构建使用 [Makefile.musa](Makefile.musa)：
-
-```bash
-make -f Makefile.musa -j
-export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
-./build_musa/test_host && ./build_musa/test_gpu
-```
-
-Makefile 以 `mcc -x musa --musa-path=/usr/local/musa` 编译 `.cu`（若按扩展名推断为
-CUDA，mcc 会走 CUDA 前端并报找不到 CUDA 安装），并链接 `-lmusart -lmublas`。
-
-#### 7.6.2 基准结果
+构建方式见 §7.1.4；测试结果与四个平台的对比分别见表 9、表 10 与表 11。
 
 **表 9：摩尔线程 MUSA，300k×128，nq=1000，topK=100，nprobe=16**
 
