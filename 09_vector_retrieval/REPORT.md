@@ -52,15 +52,15 @@ recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据�
    nprobe 与召回率、吞吐之间的关系如何？
 3. **性能**：在给定数据规模下，各模式的 QPS、P50 / P99 延迟、显存占用，以及相对
    CPU 单线程基线的加速比。
-4. **跨平台可迁移性**：同一程序在三种不同 GPU 软件栈上的构建可行性、正确性表现
+4. **跨平台可迁移性**：同一程序在四种不同 GPU 软件栈上的构建可行性、正确性表现
    与性能差异，以及各平台需要哪些针对性处理。
 
 实验范围与边界：
 
-* 数据为合成数据（生成方式见 5.1 节），不涉及真实业务语料；
-* 召回率基准是 GPU 精确检索结果，不是解析式 ground truth；
-* CPU 基线是单线程暴力检索，仅用于给出量级参照，不等价于经过优化的 CPU 检索库；
-* 性能数字为单次运行结果，用于平台间量级对比，未做多轮统计与方差分析。
+- 数据为合成数据（生成方式见 5.1 节），不涉及真实业务语料；
+- 召回率基准是 GPU 的精确检索结果，而非解析式 ground truth；
+- CPU 基线是单线程暴力检索，仅用于给出量级参照，不等同于经过优化的 CPU 检索库；
+- 性能数字为单次运行结果，用于平台间量级对比，未做多轮统计与方差分析。
 
 ## 3. 实验环境
 
@@ -90,8 +90,8 @@ API 与 MUSA 版 CUB，通过 `-DVSEARCH_MUSA=1` 的名称映射复用同一套�
 
 ### 3.3 平台能力探测
 
-移植前在三台加速卡平台上分别执行了设备能力探测，结果决定各平台是否需要修改计算
-路径（探测程序见 [tools/probe/device_probe.cu](tools/probe/device_probe.cu)）：
+移植前在三台加速卡平台上执行了设备能力探测，并据此决定是否需要调整计算路径
+（探测程序见 [tools/probe/device_probe.cu](tools/probe/device_probe.cu)）：
 
 | 探测项 | 平台 B（天数智芯） | 平台 C（沐曦） | 平台 D（摩尔线程） |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ src/main.cpp               build / search / bench / validate 子命令
 tests/                     test_host.cpp、test_gpu.cu
 tools/probe/               设备能力探测用例（atomicAdd / double 精度）
 python/gen_dataset.py      合成数据与参数文件
-python/run_experiments.py  nprobe x batch 扫描并汇总 CSV
+python/run_experiments.py  nprobe × batch 扫描并汇总 CSV
 CMakeLists.txt             NVIDIA 构建（nvcc）
 Makefile.corex             CoreX 构建（clang -x ivcore，-DVSEARCH_COREX=1）
 Makefile.maca              沐曦构建（cucc + mcblas）
@@ -123,7 +123,8 @@ outputs_maca/              沐曦平台 perf/quality 日志与扫描汇总
 outputs_musa/              摩尔线程平台 perf/quality 日志与扫描汇总
 ```
 
-编译产物为一个静态库和三个可执行文件（`vsearch`、`test_host`、`test_gpu`）。
+构建产物为三个可执行文件（`vsearch`、`test_host`、`test_gpu`）；CMake 构建额外
+生成静态库 `vsearch_core`，其余平台直接由对象文件链接可执行文件。
 
 ### 4.2 向量表示与距离度量
 
@@ -170,9 +171,9 @@ key = rank(score)<<32 | vector_id
 - L2 / cosine（越小越好）：`rank = sortable(score)`；
 - inner product（越大越好）：`rank = ~sortable(score)`。
 
-然后用 `cub::DeviceSegmentedRadixSortKeys` 按 query 做一次分段升序 radix sort，
-低 32 位是 id，因此同分时自动按 id 稳定，GPU 与 CPU 参考结果完全一致。排序后每个
-query 取前 K 个键并解码距离。排序是确定性、精确的，不依赖采样阈值。
+随后用 `cub::DeviceSegmentedRadixSortKeys` 按 query 做一次分段升序 radix sort；
+由于低 32 位是 id，同分时自然按 id 保持稳定顺序，GPU 与 CPU 参考结果完全一致。
+排序后每个 query 取前 K 个键并解码距离。该排序是确定且精确的，不依赖采样阈值。
 
 #### 4.3.3 显存分块
 
@@ -239,14 +240,14 @@ exact 的键数组为 `nq_chunk × N × 16 B`（in/out 两份）。CLI 以
 
 IVF 本身仍用未经压缩的距离挑选倒排桶，兼顾召回与 ADC 的近似性。设计上把“候选
 筛选”和“精排/近似排序”分开；默认会对 ADC 前 `pq_rerank=256` 个候选用原始向量
-精确重排（与 IVF-Flat 共用打分 kernel），把压缩带来的精度损失降到很低。设置
+重新精确打分并排序（与 IVF-Flat 共用打分 kernel），把压缩带来的精度损失降到很低。设置
 `pq_rerank = 0` 可观察纯 ADC 的 recall 与吞吐。
 
 ### 4.6 Top-K、正确性与确定性
 
 #### 4.6.1 支持的 K
 
-CLI/配置任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可直接解码。
+CLI 与配置文件支持任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可直接解码。
 
 #### 4.6.2 正确性策略
 
@@ -293,8 +294,8 @@ CLI/配置任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可
 | `data_ann`（早期） | 1 000 000 | 128 | 1000 | 100 | 自动 | 默认 | 默认 | 4096 | 16 | 16 |
 | 统一复现组 | 300 000 | 128 | 1000 | 100 | 100 | 0.10 | 0.02 | 1024 | 16 | 16 |
 
-其中 300k 数据组在四套平台上使用相同生成参数与相同随机种子（`--seed 2026`）
-生成，用于跨平台比较。其余参数取默认值：`kmeans_iters = 12`、
+其中 300k 数据组在四套平台上使用相同的生成参数与随机种子（`--seed 2026`），
+以保证跨平台结果可比。其余参数取默认值：`kmeans_iters = 12`、
 `kmeans_sample = 65536`、`pq_ks = 256`、`pq_rerank = 256`、
 `ref_query_limit = 200`、`exact_memory_mb = 4096`。
 
@@ -310,7 +311,7 @@ CLI/配置任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可
 - **加速比**：`speedup = cpu_ms / gpu_ms`，两值用同一批 query 子集（默认 200 条）
   测量，避免用全量 GPU 时间除以子集 CPU 时间。
 
-CPU 基线仅作量级参照：它是单线程、未向量化的实现，不等价于优化过的 CPU 检索库。
+CPU 基线仅作量级参照：它是单线程、未向量化的实现，不等同于经过优化的 CPU 检索库。
 
 ### 5.3 测量口径与日志字段
 
@@ -673,7 +674,7 @@ IVF-PQ 均约 0.012。
 
 ## 8. 性能剖析（Nsight Systems）
 
-本次实验使用 Nsight Systems 2024.6.2 对 exact / IVF-Flat / IVF-PQ 三种检索做了
+本次实验使用 Nsight Systems 2024.6.2 对 exact / IVF-Flat / IVF-PQ 三种检索模式做了
 CUDA kernel 时间线分析，完整命令、统计表与结论见
 [outputs/PROFILING.md](outputs/PROFILING.md)。
 
@@ -710,9 +711,9 @@ CPU 参考的 id 逐位一致。这满足题目对“精确检索结果需与 CP
 输出需按距离或相似度排序”的要求。
 
 天数智芯平台的距离容差需要单独说明：该平台 device 端 double 累加存在约 1e-4 的
-相对误差，在 300k 规模下会使距离排序出现错乱。将其距离累计改为 float 后测试稳定
-通过，容差取 2e-3；NVIDIA 与沐曦的构建保持 double 累计，容差取 1e-4。该差异源于
-设备浮点实现，不涉及算法改动。
+相对误差，在 300k 规模下会使距离排序出现错乱。改用 float 累计距离后测试稳定通过，
+容差取 2e-3；NVIDIA、沐曦与摩尔线程的构建保持 double 累计，容差取 1e-4。该差异
+源于设备浮点实现，不涉及算法改动。
 
 ### 9.2 性能
 
@@ -820,7 +821,7 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 
 每组日志均包含 `perf.log`（性能）、`quality.log`（召回与距离误差）与
 `experiment_summary.csv`（nprobe × batch 汇总）。索引文件为 `.idx`，`saveIndex`
-与 `loadIndex` 使用同一格式，可由任一平台生成、在其它平台加载核对。
+与 `loadIndex` 使用同一格式，可由任一平台生成、在其他平台加载核对。
 
 ### 11.3 结果核验方式
 
@@ -832,7 +833,7 @@ python python/run_experiments.py --vsearch ./build/vsearch \
    见 [tools/probe/device_probe.cu](tools/probe/device_probe.cu) 与
    [tools/probe/README.md](tools/probe/README.md)。
 
-代码、测试脚本与数据生成脚本均在仓库内，运行路径不需要手工改动文件格式。
+代码、测试脚本与数据生成脚本均在仓库内，复现时无需手工调整文件格式。
 
 ## 12. 后续工作
 
