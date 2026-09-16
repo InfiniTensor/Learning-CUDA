@@ -1,0 +1,60 @@
+# CMake build directories (including build-* / cmake-build-* at any level)
+/build/
+build-*/
+/out/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+install_manifest.txt
+
+# Compiled binaries and CUDA artifacts
+*.a
+*.dll
+*.exe
+*.exp
+*.ilk
+*.lib
+*.obj
+*.o
+*.pdb
+*.ptx
+*.cubin
+*.fatbin
+
+# IDE and editor settings
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Generated experiment and profiling output
+/results/*
+!/results/.gitkeep
+*.nsys-rep
+*.ncu-rep
+*.sqlite
+
+# Temporary files
+*.log
+*.tmp
+*.py[cod]
+__pycache__/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Agent-managed isolated workspaces
+/.worktrees/
+/.superpowers/
+
+/.workbuddy

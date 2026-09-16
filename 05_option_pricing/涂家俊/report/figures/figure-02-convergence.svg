@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520">
+<title>图 2 欧式与亚式蒙特卡洛收敛（FP32 GPU）</title>
+<desc>标准误随路径数的幂律下降，并与理论 -1/2 斜率对照。</desc>
+<metadata>{&quot;generator&quot;: &quot;scripts/render_final_report_figures.py&quot;, &quot;result_root&quot;: &quot;final-report-20260915&quot;, &quot;sources&quot;: [{&quot;path&quot;: &quot;convergence/european-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;5c324b4265482661e80e23bcffbd8af570e67732da07b03b6e08f082645c4313&quot;}, {&quot;path&quot;: &quot;convergence/asian-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;ae3da223b6ff9db31c5c0e4f60f6d5ad193b65a1eaacbd63a59fe59c4ee82549&quot;}, {&quot;path&quot;: &quot;benchmark/european-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;3722ad2fcb3bf3b9b6d9ad17718602336445778bb9ebbe59a6a662c2e08d0d9b&quot;}, {&quot;path&quot;: &quot;benchmark/asian-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;0154c83bfb0b26dcc7374541cd8db2c1df452f7069ba5d7b1c7d9ba16c945440&quot;}, {&quot;path&quot;: &quot;block-sweep/asian-fp32/block_sweep.csv&quot;, &quot;sha256&quot;: &quot;e463e14b70bfb5a8334fa609e450a132582c83d00d8a7efc36aef60057700dd6&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_kern_sum_cuda_gpu_kern_sum.csv&quot;, &quot;sha256&quot;: &quot;f1af93a6c26adde4c62a99ffbfc2d70460de55c2585e450088b53de60473520c&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_mem_time_sum_cuda_gpu_mem_time_sum.csv&quot;, &quot;sha256&quot;: &quot;2f1fc8fa2953d96432e314f4f274e9fabcca31ce2665fbfbba0ca41332a57437&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_api_sum_cuda_api_sum.csv&quot;, &quot;sha256&quot;: &quot;728c8aeffa4972c0950a5ba94d6b5572576ab85db524266faaa4eaf0cff1d6dc&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/ncu-details.csv&quot;, &quot;sha256&quot;: &quot;10c85cf76b074afd0a58f41f80f19914cd849e5af5f93a9ee9346abb191044a4&quot;}]}</metadata>
+<style>text{font-family:Noto Sans CJK SC,Source Han Sans SC,WenQuanYi Micro Hei,Microsoft YaHei,SimHei,sans-serif}.axis{stroke:#374151;stroke-width:1}.grid{stroke:#e5e7eb;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="250.00" y="68.00" font-size="14" text-anchor="middle" fill="#111827" font-weight="bold">欧式看涨</text>
+<line x1="40.00" y1="400.00" x2="460.00" y2="400.00" class="axis"/>
+<line x1="40.00" y1="90.00" x2="40.00" y2="400.00" class="axis"/>
+<line x1="40.00" y1="90.00" x2="40.00" y2="400.00" class="grid"/>
+<text x="40.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+04</text>
+<line x1="180.00" y1="90.00" x2="180.00" y2="400.00" class="grid"/>
+<text x="180.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+05</text>
+<line x1="320.00" y1="90.00" x2="320.00" y2="400.00" class="grid"/>
+<text x="320.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+06</text>
+<line x1="460.00" y1="90.00" x2="460.00" y2="400.00" class="grid"/>
+<text x="460.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+07</text>
+<line x1="40.00" y1="400.00" x2="460.00" y2="400.00" class="grid"/>
+<text x="32.00" y="404.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">2.2e-03</text>
+<line x1="40.00" y1="322.50" x2="460.00" y2="322.50" class="grid"/>
+<text x="32.00" y="326.50" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">7.5e-03</text>
+<line x1="40.00" y1="245.00" x2="460.00" y2="245.00" class="grid"/>
+<text x="32.00" y="249.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">2.5e-02</text>
+<line x1="40.00" y1="167.50" x2="460.00" y2="167.50" class="grid"/>
+<text x="32.00" y="171.50" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">8.5e-02</text>
+<line x1="40.00" y1="90.00" x2="460.00" y2="90.00" class="grid"/>
+<text x="32.00" y="94.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">2.9e-01</text>
+<text x="250.00" y="442.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">路径数</text>
+<text x="12.00" y="245.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 245.00)">标准误</text>
+<polyline points="40.00,134.30 180.00,208.56 320.00,282.23 460.00,355.70" fill="none" stroke="#2563eb" stroke-width="2.00"/>
+<circle cx="40.00" cy="134.30" r="3" fill="#2563eb"/>
+<circle cx="180.00" cy="208.56" r="3" fill="#2563eb"/>
+<circle cx="320.00" cy="282.23" r="3" fill="#2563eb"/>
+<circle cx="460.00" cy="355.70" r="3" fill="#2563eb"/>
+<polyline points="40.00,134.30 180.00,207.88 320.00,281.46 460.00,355.04" fill="none" stroke="#dc2626" stroke-width="2.00" stroke-dasharray="5,4"/>
+<text x="52.00" y="462.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">拟合斜率 -0.501；理论对照 -0.500</text>
+<text x="52.00" y="478.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">Black–Scholes 参考价 9.4134</text>
+<text x="750.00" y="68.00" font-size="14" text-anchor="middle" fill="#111827" font-weight="bold">亚式看涨</text>
+<line x1="540.00" y1="400.00" x2="960.00" y2="400.00" class="axis"/>
+<line x1="540.00" y1="90.00" x2="540.00" y2="400.00" class="axis"/>
+<line x1="540.00" y1="90.00" x2="540.00" y2="400.00" class="grid"/>
+<text x="540.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+04</text>
+<line x1="680.00" y1="90.00" x2="680.00" y2="400.00" class="grid"/>
+<text x="680.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+05</text>
+<line x1="820.00" y1="90.00" x2="820.00" y2="400.00" class="grid"/>
+<text x="820.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+06</text>
+<line x1="960.00" y1="90.00" x2="960.00" y2="400.00" class="grid"/>
+<text x="960.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+07</text>
+<line x1="540.00" y1="400.00" x2="960.00" y2="400.00" class="grid"/>
+<text x="532.00" y="404.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">1.2e-03</text>
+<line x1="540.00" y1="322.50" x2="960.00" y2="322.50" class="grid"/>
+<text x="532.00" y="326.50" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">4.1e-03</text>
+<line x1="540.00" y1="245.00" x2="960.00" y2="245.00" class="grid"/>
+<text x="532.00" y="249.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">1.4e-02</text>
+<line x1="540.00" y1="167.50" x2="960.00" y2="167.50" class="grid"/>
+<text x="532.00" y="171.50" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">4.6e-02</text>
+<line x1="540.00" y1="90.00" x2="960.00" y2="90.00" class="grid"/>
+<text x="532.00" y="94.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">1.5e-01</text>
+<text x="750.00" y="442.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">路径数</text>
+<text x="12.00" y="245.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 245.00)">标准误</text>
+<polyline points="540.00,134.53 680.00,207.78 820.00,281.60 960.00,355.47" fill="none" stroke="#2563eb" stroke-width="2.00"/>
+<circle cx="540.00" cy="134.53" r="3" fill="#2563eb"/>
+<circle cx="680.00" cy="207.78" r="3" fill="#2563eb"/>
+<circle cx="820.00" cy="281.60" r="3" fill="#2563eb"/>
+<circle cx="960.00" cy="355.47" r="3" fill="#2563eb"/>
+<polyline points="540.00,134.53 680.00,208.49 820.00,282.45 960.00,356.40" fill="none" stroke="#dc2626" stroke-width="2.00" stroke-dasharray="5,4"/>
+<text x="552.00" y="462.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">拟合斜率 -0.498；理论对照 -0.500</text>
+<text x="552.00" y="478.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">亚式无可得解析参考价，不显示参考线</text>
+<text x="500.00" y="500.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">虚线为 -1/2 幂律对照线；数据来源见 SVG metadata。</text>
+</svg>

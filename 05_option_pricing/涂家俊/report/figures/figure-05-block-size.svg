@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="480" viewBox="0 0 860 480">
+<title>图 5 block-size 决策（FP32 亚式，1000 万路径）</title>
+<desc>三个候选的相对变化，仅当双指标均改善至少 5% 才替换基准 256。</desc>
+<metadata>{&quot;generator&quot;: &quot;scripts/render_final_report_figures.py&quot;, &quot;result_root&quot;: &quot;final-report-20260915&quot;, &quot;sources&quot;: [{&quot;path&quot;: &quot;convergence/european-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;5c324b4265482661e80e23bcffbd8af570e67732da07b03b6e08f082645c4313&quot;}, {&quot;path&quot;: &quot;convergence/asian-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;ae3da223b6ff9db31c5c0e4f60f6d5ad193b65a1eaacbd63a59fe59c4ee82549&quot;}, {&quot;path&quot;: &quot;benchmark/european-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;3722ad2fcb3bf3b9b6d9ad17718602336445778bb9ebbe59a6a662c2e08d0d9b&quot;}, {&quot;path&quot;: &quot;benchmark/asian-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;0154c83bfb0b26dcc7374541cd8db2c1df452f7069ba5d7b1c7d9ba16c945440&quot;}, {&quot;path&quot;: &quot;block-sweep/asian-fp32/block_sweep.csv&quot;, &quot;sha256&quot;: &quot;e463e14b70bfb5a8334fa609e450a132582c83d00d8a7efc36aef60057700dd6&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_kern_sum_cuda_gpu_kern_sum.csv&quot;, &quot;sha256&quot;: &quot;f1af93a6c26adde4c62a99ffbfc2d70460de55c2585e450088b53de60473520c&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_mem_time_sum_cuda_gpu_mem_time_sum.csv&quot;, &quot;sha256&quot;: &quot;2f1fc8fa2953d96432e314f4f274e9fabcca31ce2665fbfbba0ca41332a57437&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_api_sum_cuda_api_sum.csv&quot;, &quot;sha256&quot;: &quot;728c8aeffa4972c0950a5ba94d6b5572576ab85db524266faaa4eaf0cff1d6dc&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/ncu-details.csv&quot;, &quot;sha256&quot;: &quot;10c85cf76b074afd0a58f41f80f19914cd849e5af5f93a9ee9346abb191044a4&quot;}]}</metadata>
+<style>text{font-family:Noto Sans CJK SC,Source Han Sans SC,WenQuanYi Micro Hei,Microsoft YaHei,SimHei,sans-serif}.axis{stroke:#374151;stroke-width:1}.grid{stroke:#e5e7eb;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<line x1="110.00" y1="380.00" x2="800.00" y2="380.00" class="axis"/>
+<line x1="110.00" y1="90.00" x2="110.00" y2="380.00" class="axis"/>
+<text x="455.00" y="422.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">block size</text>
+<text x="12.00" y="235.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 235.00)">相对 256 的变化 (%)</text>
+<line x1="110.00" y1="235.00" x2="800.00" y2="235.00" class="axis"/>
+<line x1="110.00" y1="69.27" x2="800.00" y2="69.27" stroke="#6b7280" stroke-width="1.20" stroke-dasharray="4,4"/>
+<text x="116.00" y="64.27" font-size="10" text-anchor="start" fill="#6b7280" font-weight="normal">改善阈值 5%</text>
+<line x1="110.00" y1="400.73" x2="800.00" y2="400.73" stroke="#6b7280" stroke-width="1.20" stroke-dasharray="4,4"/>
+<text x="116.00" y="395.73" font-size="10" text-anchor="start" fill="#6b7280" font-weight="normal">改善阈值 -5%</text>
+<text x="225.00" y="402.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">128</text>
+<rect x="198.00" y="223.45" width="46.00" height="11.55" fill="#d97706" rx="2"/>
+<text x="221.00" y="217.45" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">+0.3%</text>
+<rect x="252.00" y="235.00" width="46.00" height="33.40" fill="#d97706" rx="2"/>
+<text x="275.00" y="229.00" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">-1.0%</text>
+<text x="455.00" y="402.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="bold">256（保留）</text>
+<rect x="428.00" y="235.00" width="46.00" height="0.00" fill="#16a34a" rx="2"/>
+<text x="451.00" y="229.00" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">+0.0%</text>
+<rect x="482.00" y="235.00" width="46.00" height="0.00" fill="#16a34a" rx="2"/>
+<text x="505.00" y="229.00" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">+0.0%</text>
+<text x="685.00" y="402.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">512</text>
+<rect x="658.00" y="127.59" width="46.00" height="107.41" fill="#d97706" rx="2"/>
+<text x="681.00" y="121.59" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">+3.2%</text>
+<rect x="712.00" y="159.73" width="46.00" height="75.27" fill="#d97706" rx="2"/>
+<text x="735.00" y="153.73" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">+2.3%</text>
+<line x1="130.00" y1="118.00" x2="156.00" y2="118.00" stroke="#16a34a" stroke-width="2"/>
+<text x="164.00" y="122.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">保留候选</text>
+<line x1="130.00" y1="136.00" x2="156.00" y2="136.00" stroke="#d97706" stroke-width="2"/>
+<text x="164.00" y="140.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">其他候选</text>
+<line x1="130.00" y1="154.00" x2="156.00" y2="154.00" stroke="#6b7280" stroke-width="2" stroke-dasharray="4,4"/>
+<text x="164.00" y="158.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">±5% 判定阈值</text>
+<text x="430.00" y="430.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">每档左柱为 total 中位数变化，右柱为 compute 中位数变化；仅双指标同时越过 -5% 才替换。</text>
+</svg>
