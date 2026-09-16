@@ -44,7 +44,7 @@ outputs/                   NVIDIA 平台报告、日志与结果样例
 outputs_corex/             CoreX 平台 perf/quality 日志与扫描汇总
 ```
 
-编译对象只有一个静态库和一个 CLI，方便替换评测方要求的文件布局。
+
 
 ## 3. 向量表示与距离度量
 
