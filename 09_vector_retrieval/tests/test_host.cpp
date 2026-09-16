@@ -10,6 +10,7 @@
 
 namespace {
 
+// 极简断言计数器：打印 PASS/FAIL 并累计失败数，main 返回非零表示有失败。
 int failures = 0;
 
 void check(bool ok, const char* what) {
@@ -19,6 +20,12 @@ void check(bool ok, const char* what) {
 
 }  // namespace
 
+// 主机侧单元测试：覆盖
+//   1) fp32 向量文件写入/读回一致；
+//   2) fp16 round-trip 在容差内；
+//   3) 参数文件解析；
+//   4) CPU 参考的确定性 tie-break 与 L2 距离语义。
+// 这些测试不依赖 GPU，可在任何平台先验证主机侧逻辑。
 int main() {
   using namespace vs;
   const std::string base = "";

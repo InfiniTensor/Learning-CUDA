@@ -7,6 +7,7 @@
 namespace vs {
 namespace {
 
+// 去除首尾空白；参数文件允许任意缩进与行内注释。
 std::string trim(const std::string& s) {
   std::size_t b = 0, e = s.size();
   while (b < e && std::isspace(static_cast<unsigned char>(s[b]))) ++b;
@@ -14,6 +15,7 @@ std::string trim(const std::string& s) {
   return s.substr(b, e - b);
 }
 
+// 去掉包裹字符串的成对引号，使 `search_mode = "ivf_flat"` 与不带引号写法等价。
 std::string unquote(const std::string& s) {
   if (s.size() >= 2 && ((s.front() == '"' && s.back() == '"') ||
                         (s.front() == '\'' && s.back() == '\'')))
@@ -21,6 +23,7 @@ std::string unquote(const std::string& s) {
   return s;
 }
 
+// 通用字符串转数值：失败时返回 false，由调用方决定抛错信息。
 template <typename T>
 bool fromString(const std::string& s, T* out) {
   std::istringstream in(s);
@@ -28,6 +31,7 @@ bool fromString(const std::string& s, T* out) {
   return !in.fail();
 }
 
+// 把单个 key=value 应用到 SearchConfig；未知键忽略，便于向前兼容扩展参数。
 void apply(SearchConfig* c, const std::string& keyRaw, const std::string& val) {
   std::string key = keyRaw;
   for (auto& ch : key) ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
@@ -70,6 +74,7 @@ void apply(SearchConfig* c, const std::string& keyRaw, const std::string& val) {
 
 }  // namespace
 
+// 解析参数文本：按行读取 key = value，# 之后视为注释；最后做基本合法性检查。
 SearchConfig parseParamString(const std::string& text) {
   SearchConfig c;
   std::istringstream ss(text);
@@ -90,6 +95,7 @@ SearchConfig parseParamString(const std::string& text) {
   return c;
 }
 
+// 读取并解析参数文件（检索参数文件即此文本格式）。
 SearchConfig parseParamFile(const std::string& path) {
   std::ifstream in(path);
   if (!in) throwRuntime("cannot open parameter file: " + path);

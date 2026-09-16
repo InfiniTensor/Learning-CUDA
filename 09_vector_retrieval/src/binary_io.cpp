@@ -8,6 +8,8 @@
 namespace vs {
 namespace {
 
+// 二进制读写基元：带短读/短写检查，文件头与数据全部使用显式小端序，
+// 保证在 x86 主机（NVIDIA 与 CoreX 平台）之间二进制格式一致。
 void writeBytes(FILE* f, const void* p, std::size_t n) {
   if (fwrite(p, 1, n, f) != n) throwRuntime("binary_io: short write");
 }
@@ -58,6 +60,8 @@ std::string readString(FILE* f) {
   return s;
 }
 
+// float -> IEEE-754 half 的位级转换（含舍入与上下溢处理），
+// 使 fp16 向量库文件在不依赖 GPU 的情况下也能正确生成/回写。
 std::uint16_t halfFromFloat(float f) {
   std::uint32_t u = 0;
   std::memcpy(&u, &f, sizeof(u));
@@ -90,6 +94,8 @@ std::uint16_t halfFromFloat(float f) {
 
 }  // namespace
 
+// IEEE-754 half -> float 的位级解码；fp16 输入统一还原成 fp32 再送 GPU 计算，
+// 因此 fp16 只影响存储/带宽，不影响检索语义。
 float halfBitsToFloat(std::uint16_t h) {
   const std::uint32_t sign = static_cast<std::uint32_t>(h & 0x8000u) << 16;
   const std::uint32_t exp = (h >> 10) & 0x1fu;
@@ -120,6 +126,7 @@ float halfBitsToFloat(std::uint16_t h) {
 
 std::uint16_t floatToHalfBits(float f) { return halfFromFloat(f); }
 
+// 把每行向量归一化到单位长度（cosine 度量专用）；用 double 累加范数以减小误差。
 void normalizeRowsToUnit(float* rows, i64 n, i32 dim) {
   for (i64 i = 0; i < n; ++i) {
     float* r = rows + static_cast<std::size_t>(i) * dim;
@@ -130,10 +137,15 @@ void normalizeRowsToUnit(float* rows, i64 n, i32 dim) {
   }
 }
 
+// 对整库做 cosine 归一化（查询集在 CLI 侧另行调用）。
 void cosineNormalize(Dataset* ds) {
   normalizeRowsToUnit(ds->data.data(), ds->n, ds->dim);
 }
 
+// 读取向量库/查询文件：
+//   头部 = magic + version + n + dim + dtype + metric，
+//   其后是 n×dim 的行主序数值（fp32 或 fp16）。
+// 会校验 magic/version、维度范围和文件规模上限，避免把损坏文件读进内存。
 void readVectorFile(const std::string& path, Dataset* out) {
   FILE* f = std::fopen(path.c_str(), "rb");
   if (!f) throwRuntime("cannot open vector file: " + path);
@@ -174,6 +186,7 @@ void readVectorFile(const std::string& path, Dataset* out) {
   std::fclose(f);
 }
 
+// 写出与 readVectorFile 对称的向量文件（测试与工具链使用）。
 void writeVectorFile(const std::string& path, i64 n, i32 dim, DataType dtype,
                      Metric metric, const float* rowMajor, i64 count) {
   if (count != static_cast<i64>(n) * dim)

@@ -11,6 +11,7 @@
 
 namespace {
 
+// 断言计数器：任何一项失败都会让进程返回非零，便于 CI / 脚本判断。
 int failures = 0;
 
 // CoreX (Iluvatar) devices emulate FP64 with reduced mantissa width, so the
@@ -23,6 +24,9 @@ constexpr double kScoreTol = 2e-3;
 constexpr double kScoreTol = 1e-4;
 #endif
 
+// 分平台的距离容差：NVIDIA 上 GPU 与 CPU 都用 double 累计，可收紧到 1e-4；
+// CoreX 的 device double 精度不足、打分路径改用 float，故放宽到 2e-3。
+// 无论哪种平台，id 都必须与 CPU reference 逐位一致。
 void check(bool ok, const char* what) {
   std::printf("%s %s\n", ok ? "PASS" : "FAIL", what);
   if (!ok) ++failures;
@@ -30,6 +34,12 @@ void check(bool ok, const char* what) {
 
 }  // namespace
 
+// GPU 集成测试：在分簇合成数据上验证
+//   1) exact 的 id/分数与 CPU 参考一致；
+//   2) IVF-Flat 相对 exact 的 recall 达标；
+//   3) IVF-Flat 索引保存->加载后结果可复现（round-trip）；
+//   4) IVF-PQ 返回合法向量 id。
+// 这是发布前在两个平台上都必须通过的核心正确性回归。
 int main() {
   using namespace vs;
   try {

@@ -8,6 +8,7 @@
 namespace vs {
 namespace {
 
+// 线性插值分位数（用于性能日志的 P50/P99）。
 double percentile(std::vector<double> v, double p) {
   if (v.empty()) return 0.0;
   std::sort(v.begin(), v.end());
@@ -18,6 +19,7 @@ double percentile(std::vector<double> v, double p) {
   return v[lo] + (v[hi] - v[lo]) * frac;
 }
 
+// 把字节数格式化为 GB 字符串，写入性能日志的 gpu_used 列。
 std::string gpuBytes(std::size_t b) {
   char buf[64];
   std::snprintf(buf, sizeof(buf), "%.2f", static_cast<double>(b) / (1024.0 * 1024.0 * 1024.0));
@@ -26,6 +28,8 @@ std::string gpuBytes(std::size_t b) {
 
 }  // namespace
 
+// 输出检索结果文件：每个 query 一行，交替给出 Top-K 的 id 与分数。
+// 分数对 L2 为欧氏距离、inner product 为点积、cosine 为 1-cosine。
 void writeResultText(const std::string& path, const SearchResult& r) {
   FILE* f = std::fopen(path.c_str(), "w");
   if (!f) throwRuntime("cannot open result file " + path);
@@ -44,6 +48,8 @@ void writeResultText(const std::string& path, const SearchResult& r) {
   std::fclose(f);
 }
 
+// 输出性能日志：每条记录一行，含 build/search 耗时、QPS、P50/P99、
+// 显存占用、CPU 参考耗时与相对加速比。
 void writePerfLog(const std::string& path, const std::vector<PerfRecord>& rows) {
   FILE* f = std::fopen(path.c_str(), "w");
   if (!f) throwRuntime("cannot open perf log " + path);
@@ -66,6 +72,8 @@ void writePerfLog(const std::string& path, const std::vector<PerfRecord>& rows) 
   std::fclose(f);
 }
 
+// 输出质量日志：以 GPU exact 为 gold 计算 recall@K、平均相对分数误差与
+// 逐 rank 不一致数。pred 与 gold 的 id 逐位相同时才计入 recall。
 void writeQualityLog(const std::string& path, i64 nq, int topK, Metric metric,
                      const SearchResult& pred, const SearchResult& gold,
                      double avgDistanceError, int mismatchedRankCount) {

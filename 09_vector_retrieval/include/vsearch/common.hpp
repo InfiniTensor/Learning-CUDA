@@ -75,7 +75,7 @@ inline i64 nowNanos() {
       .count();
 }
 
-// A small monotonic stopwatch (host wall clock).
+// 主机侧单调计时器（steady_clock），用于各阶段墙钟耗时统计。
 class Timer {
  public:
   Timer() : start_(nowNanos()) {}
@@ -132,6 +132,9 @@ class AlignedAllocator {
 using FloatVec = std::vector<float, AlignedAllocator<float>>;
 
 // Vector collection shared by database and query files.
+//
+// 向量集合：数据库与查询文件共用同一结构。data 始终以 fp32 行主序保存
+// （fp16 输入在读取时转换），便于所有 kernel 使用统一的输入类型。
 struct Dataset {
   i64 n = 0;          // number of rows
   i32 dim = 0;        // vector dimension
@@ -145,6 +148,10 @@ struct Dataset {
 };
 
 // Parameters parsed from the text retrieval-parameter file.
+//
+// 检索参数：来自文本参数文件，也可被命令行覆盖。前几项对应题目要求的
+// top_k / search_mode / batch_size / nlist / nprobe / pq_m；其余为实验扩展项
+// （k-means 采样与迭代、PQ 精排宽度、日志路径、CPU 参考 query 数等）。
 struct SearchConfig {
   int top_k = 10;
   std::string search_mode = "exact";   // exact / ivf_flat / ivf_pq
@@ -155,7 +162,7 @@ struct SearchConfig {
   int pq_ks = 256;
   int pq_rerank = 256;          // top-N candidates rescored exactly after ADC
 
-  // Extension knobs used by the build / benchmark driver.
+  // ---- 构建 k-means 的扩展参数 ----
   int kmeans_iters = 12;
   i64 kmeans_sample = 131072;          // mini-batch used while refining centers
   i64 kmeans_chunk_rows = 16384;       // rows per GEMM chunk during assignment
@@ -163,6 +170,7 @@ struct SearchConfig {
   double kmeans_assign_frac = 0.0;     // optional early stop
   bool cosine_normalize_centers = true;
 
+  // ---- CLI / 驱动使用的路径与开关 ----
   int nthreads = 0;                    // 0 => hardware concurrency
   std::string index_path;              // optional when used by driver
   std::string result_path;

@@ -1,15 +1,35 @@
 #include "vsearch/engine.hpp"
 #include "vsearch/binary_io.hpp"
 
+// ===========================================================================
+// GPU 向量检索引擎实现（单文件）
+//
+// 本文件包含三档检索模式的全部 device kernel 与主机侧编排逻辑：
+//   * exact    —— 全量打分 + 分段 radix sort 归并 Top-K（正确性 baseline）；
+//   * ivf_flat —— 粗聚类倒排 + 候选原始向量精确重打分；
+//   * ivf_pq   —— 倒排 + 乘性量化（PQ）ADC 近似距离，可选精排。
+//
+// 通用设计约定：
+//   1) 打分结果统一编码为 64 位“可排序键”（score 在高 32 位、id 在低 32 位），
+//      借助一次分段 radix sort 同时完成 Top-K 排序与 id tie-break；
+//   2) 倒排表/候选集合都用 exclusive scan 生成连续 arena，避免每 query 一次分配；
+//   3) 所有 kernel 的维度循环按运行期 dim 展开，不把 D 写成模板常量。
+// ===========================================================================
+
 #if defined(VSEARCH_COREX) && !defined(__CUDA_ACC__)
 // Iluvatar CoreX devices emulate IEEE double-precision arithmetic with
 // reduced mantissa width (measured ~1e-4 relative error per long sum), which
 // would corrupt L2 / inner-product distances. NVIDIA builds keep double
 // accumulation for maximum accuracy; CoreX builds accumulate in float, whose
 // arithmetic on CoreX is IEEE-accurate (verified against the CPU reference).
+//
+// 中文说明：天数智芯 CoreX 的 device 端 double 加法精度不足，长求和会产生
+// ~1e-4 相对误差，因此 CoreX 构建统一用 float 累计距离；NVIDIA 构建保持
+// double 累计以最大化精度。二者对上层算法语义一致。
 #define VSEARCH_ACC_FLOAT 1
 #endif
 
+// 距离累加使用的标量类型：NVIDIA 上为 double，CoreX 上为 float。
 #ifdef VSEARCH_ACC_FLOAT
 #define VSEARCH_ACC_TYPE float
 #else
@@ -34,6 +54,8 @@ namespace vs {
 
 namespace {
 
+// CUDA / cuBLAS 调用的统一错误检查宏：失败即抛异常并带上表达式与位置，
+// 便于在无调试器的远端环境快速定位出错调用点。
 #define VSCU_CHECK(expr)                                                     \
   do {                                                                       \
     cudaError_t err = (expr);                                                \
@@ -138,10 +160,15 @@ class TempStore {
 // Score key helpers. Keys are 64-bit so the low 32 bits carry the id and make
 // ties deterministic (smallest id first).
 // ---------------------------------------------------------------------------
+// 距离/相似度 -> 可排序 32 位整数（IEEE-754 total order 映射）：
+//   * 非负数：直接置符号位为 1，保持数值序；
+//   * 负数  ：按位取反，使更小的负数得到更小的无符号序。
+// 这样对 rank 做一次无符号升序排序即等价于按 score 升序排序。
 __device__ __forceinline__ i32 devFloatBits(float v) {
   return __float_as_int(v);
 }
 
+// devSortable 的逆变换：把可排序整数还原为原始浮点 score。
 __device__ __forceinline__ float devBitsToFloat(i32 u) {
   return __int_as_float(u);
 }
@@ -158,6 +185,10 @@ __device__ __forceinline__ float devSortableToFloat(i32 u) {
 
 // smallerBetter=true  -> low key == low score (L2 distance, cosine distance)
 // smallerBetter=false -> low key == high score (inner product)
+//
+// 打包成 64 位键：高 32 位是“排序方向归一化后”的 score rank，低 32 位是向量 id。
+// 由于低 32 位参与比较，score 完全相同时会自动按 id 升序，从而让 GPU 结果与
+// CPU 参考的 tie-break 规则逐位一致（确定性、可复现）。
 __device__ __forceinline__ unsigned long long packKey(float score,
                                                         bool smallerBetter,
                                                         i32 id) {
@@ -169,6 +200,8 @@ __device__ __forceinline__ unsigned long long packKey(float score,
          static_cast<unsigned int>(static_cast<unsigned int>(id));
 }
 
+// 从打包键还原 score：先按排序方向反归一化 rank，再映射回浮点。
+// smallerBetter 必须与 packKey 时一致，否则会把方向搞反。
 __device__ __forceinline__ float unpackScore(unsigned long long key,
                                               bool smallerBetter) {
   const auto hi = static_cast<unsigned int>(key >> 32);
@@ -176,11 +209,13 @@ __device__ __forceinline__ float unpackScore(unsigned long long key,
   return devSortableToFloat(smallerBetter ? rank : ~rank);
 }
 
+// 取出打包键低 32 位的向量 id（行号）。
 __device__ __forceinline__ i32 unpackId(unsigned long long key) {
   return static_cast<i32>(key & 0xffffffffull);
 }
 
 // metric codes: 0 = L2, 1 = inner product, 2 = cosine (distance)
+// 判断该度量是否“越小越好”（L2 平方距离、cosine 距离），用于决定排序方向。
 __device__ __forceinline__ bool metricSmaller(int metricCode) {
   return metricCode == 0 || metricCode == 2;
 }
@@ -189,6 +224,14 @@ __device__ __forceinline__ bool metricSmaller(int metricCode) {
 // Exact search kernels.
 // ---------------------------------------------------------------------------
 // One thread computes one full row distance and writes a packed key.
+//
+// 精确检索打分：网格 (x=向量行分块, y=query)，每个线程负责一整行向量 x[row]
+// 与当前 query 的距离/内积，写完即丢弃中间浮点，只保留 64 位排序键。
+// 关键点：
+//   * L2 直接累加逐维差分平方（避免 ||x||²+||q||²-2·x·q 在大数值下的相消误差，
+//     也保证 CoreX 的 float 路径与 CPU 参考同语义）；
+//   * inner product / cosine 累加点积，cosine 输出 1 - dot；
+//   * queryNorm 形参保留用于接口兼容，L2 分支已不需要它。
 __global__ void exactKeysKernel(const float* __restrict__ x,
                                 const float* __restrict__ queries,
                                 const double* __restrict__ queryNorm,
@@ -221,6 +264,8 @@ __global__ void exactKeysKernel(const float* __restrict__ x,
       packKey(score, metricSmaller(metricCode), static_cast<i32>(row));
 }
 
+// 精确检索结果解码：从每个 query 已排序键段的前 topK 个键中取出 (id, score)。
+// 网格 (x=topK 分块, y=query)。L2 的存储值是平方距离，输出时开根还原欧氏距离。
 __global__ void decodeTopKeysKernel(
     const unsigned long long* __restrict__ sortedKeys, long long itemsPerQuery,
     int nq, int topK, int metricCode, int* __restrict__ ids,
@@ -240,6 +285,9 @@ __global__ void decodeTopKeysKernel(
 // ---------------------------------------------------------------------------
 // IVF kernels
 // ---------------------------------------------------------------------------
+// 计算 query 到全部 nlist 个粗聚类中心的距离并编码成键，供后续分段排序挑选
+// 最近的 nprobe 个桶。此处使用展开式 ||c||² + ||q||² - 2·q·c，因为中心范数可
+// 以预计算复用，只需一次 GEMM 式的点积即可得到相对次序。
 __global__ void ivfCenterKeysKernel(const float* __restrict__ queries,
                                     const double* __restrict__ queryNorm,
                                     const float* __restrict__ centers,
@@ -266,6 +314,8 @@ __global__ void ivfCenterKeysKernel(const float* __restrict__ queries,
       packKey(score, metricSmaller(metricCode), c);
 }
 
+// 取排序后每个 query 键段的前 take 个中心 id，写入 probeIds（按 query 连续排列）。
+// 网格 (x=1, y=query)，一个 block 处理一个 query。
 __global__ void extractFirstKernel(
     const unsigned long long* __restrict__ sorted, long long perQuery,
     int nQuery, int take, int* __restrict__ out) {
@@ -275,6 +325,7 @@ __global__ void extractFirstKernel(
         unpackId(sorted[static_cast<size_t>(qi) * perQuery + j]);
 }
 
+// 统计每个被探测倒排桶的元素个数：probe slot -> 该桶的 (offset[c+1]-offset[c])。
 __global__ void probeCountsKernel(const int* __restrict__ probeIds,
                                   const long long* __restrict__ listOffsets,
                                   int nProbeSlots,
@@ -285,6 +336,8 @@ __global__ void probeCountsKernel(const int* __restrict__ probeIds,
   countsOut[slot] = listOffsets[c + 1] - listOffsets[c];
 }
 
+// 由 probe 前缀和还原每个 query 的候选起始下标：query qi 的候选从
+// probeOffsets[qi*nprobe] 开始，用于后续按 query 划分候选 arena。
 __global__ void queryStartKernel(
     const long long* __restrict__ probeOffsets, int nProbe, int nQuery,
     long long* __restrict__ queryStart) {
@@ -295,6 +348,10 @@ __global__ void queryStartKernel(
 
 // One block per probe slot; a full inverted list is copied to the candidate
 // arena for its query.
+//
+// 候选汇集：一个 block 负责一个 (query, probe) 槽位，把该倒排桶里的全部向量 id
+// 拷贝到该 query 的候选 arena 中（起始位置由 probeOffsets[slot] 给出）。
+// 采用“列表整体拷贝”而非逐元素判定，方便后续按 query 做分段打分与排序。
 __global__ void gatherCandidatesKernel(
     const int* __restrict__ probeIds,
     const long long* __restrict__ probeOffsets,
@@ -311,6 +368,8 @@ __global__ void gatherCandidatesKernel(
     candidatesOut[base + i] = listIds[begin + i];
 }
 
+// 在按 query 递增的 queryStart[] 中二分定位候选下标 p 所属的 query。
+// 返回满足 queryStart[qi] <= p < queryStart[qi+1] 的 qi。
 __device__ __forceinline__ int locateQuery(
     const long long* __restrict__ queryStart, int nQuery, long long p) {
   int lo = 0, hi = nQuery;
@@ -324,6 +383,8 @@ __device__ __forceinline__ int locateQuery(
   return lo - 1;
 }
 
+// IVF-Flat 候选精确重打分：每个线程处理一个候选，先定位它属于哪个 query，
+// 再对原始向量算精确距离/内积并编码为键。distance 计算与 exact 保持一致。
 __global__ void ivfFlatKeysKernel(
     const int* __restrict__ candidates,
     const float* __restrict__ vectors,
@@ -359,6 +420,8 @@ __global__ void ivfFlatKeysKernel(
   keysOut[p] = packKey(score, metricSmaller(metricCode), vid);
 }
 
+// IVF 系列结果解码：候选段长度可变（由 queryStart 给出），只对每个 query 的前
+// topK 个键解码；若该 query 候选不足 topK，则剩余位置由调用方保持默认 -1。
 __global__ void decodeVariableTopKernel(
     const unsigned long long* __restrict__ sorted,
     const long long* __restrict__ queryStart, int nQuery, int topK,
@@ -379,6 +442,8 @@ __global__ void decodeVariableTopKernel(
 
 }  // namespace
 
+// GpuEngine 的 PImpl：持有常驻显存的向量库与索引状态。
+// 构造时把主机侧 dataset 上传到设备；索引相关缓冲在 buildIndex/loadIndex 后有效。
 struct GpuEngine::Impl {
   Impl(const Dataset& dataset, const SearchConfig& conf)
       : cfg(conf), metric(dataset.metric) {
@@ -388,31 +453,33 @@ struct GpuEngine::Impl {
       throwRuntime("engine: empty dataset");
     dim = dataset.dim;
     n = dataset.n;
+    // 向量库常驻显存：一次上传，后续所有 batch 复用。
     x.resize(static_cast<std::size_t>(dataset.n) * dataset.dim);
     VSCU_CHECK(cudaMemcpy(x.get(), dataset.data.data(), x.bytes(),
                           cudaMemcpyHostToDevice));
   }
 
-  SearchConfig cfg;
-  Metric metric;
-  int dim = 0;
-  i64 n = 0;
-  DevMem<float> x;
+  SearchConfig cfg;   // 检索参数（nlist/nprobe/top_k/batch/pq_* 等）
+  Metric metric;      // 度量类型
+  int dim = 0;        // 向量维度
+  i64 n = 0;          // 向量库规模
+  DevMem<float> x;    // [n, dim] 行主序向量库
 
   // Index state (valid after buildIndex or loadIndex).
-  bool hasIndex_ = false;
-  IndexKind indexKind = IndexKind::IvfFlat;
-  int nlist = 0;
-  int pqM = 0;
-  int pqKs = 0;
-  int pqSubDim = 0;
-  DevMem<float> centers;
-  DevMem<float> centerNorm;
-  DevMem<long long> listOffsets;  // nlist+1
-  DevMem<int> listIds;            // n
-  DevMem<unsigned char> pqCodes;  // n*pqM (IVF-PQ)
-  DevMem<float> pqCodebooks;      // pqM*pqKs*pqSubDim
+  bool hasIndex_ = false;                  // 索引是否已构建/加载
+  IndexKind indexKind = IndexKind::IvfFlat;  // IVF-Flat 或 IVF-PQ
+  int nlist = 0;                           // 倒排桶数量
+  int pqM = 0;                             // PQ 子空间数
+  int pqKs = 0;                            // 每个子空间的码字数量
+  int pqSubDim = 0;                        // 每个子空间维度 = dim / pqM
+  DevMem<float> centers;        // [nlist, dim] 粗聚类中心
+  DevMem<float> centerNorm;     // [nlist] 中心平方范数（L2 选桶用）
+  DevMem<long long> listOffsets;  // [nlist+1] 倒排桶前缀和
+  DevMem<int> listIds;            // [n] 倒排表内向量 id
+  DevMem<unsigned char> pqCodes;  // [n, pqM] PQ 压缩码（IVF-PQ）
+  DevMem<float> pqCodebooks;      // [pqM, pqKs, pqSubDim] PQ 码本
 
+  // 索引占用的设备显存字节数，用于性能日志中的 gpu_used 统计。
   std::size_t indexDeviceBytes() const {
     std::size_t b = centers.bytes() + centerNorm.bytes() +
                     listOffsets.bytes() + listIds.bytes();
@@ -420,6 +487,7 @@ struct GpuEngine::Impl {
     return b;
   }
 
+  // 在使用近似检索前校验索引存在且类型匹配（IVF-Flat / IVF-PQ 不可混用）。
   void requireIndex(SearchMode mode) const {
     if (!hasIndex_) throwRuntime("engine: index not built/loaded");
     if (mode == SearchMode::IvfPq && indexKind != IndexKind::IvfPq)
@@ -434,6 +502,7 @@ namespace {
 // ---------------------------------------------------------------------------
 // CUB / k-means support kernels.
 // ---------------------------------------------------------------------------
+// 计算每行向量的平方范数 ||x||²，写成一维数组，供 L2 选桶/分配时复用。
 __global__ void sqNormKernel(const float* __restrict__ rows, long long n,
                              int dim, float* __restrict__ out) {
   const long long i = static_cast<long long>(blockIdx.x) * blockDim.x +
@@ -445,6 +514,8 @@ __global__ void sqNormKernel(const float* __restrict__ rows, long long n,
   out[i] = s;
 }
 
+// 从库中“等间隔”抽取 sampleCount 行作为 k-means 训练子样本，
+// 保证训练集确定、可复现（不使用随机采样）。
 __global__ void gatherEvenSampleKernel(const float* __restrict__ full,
                                        long long fullCount,
                                        long long sampleCount, int dim,
@@ -460,6 +531,8 @@ __global__ void gatherEvenSampleKernel(const float* __restrict__ full,
   for (int d = 0; d < dim; ++d) o[d] = r[d];
 }
 
+// 给定 GEMM 算出的点积矩阵（列主序 dots[local + c*chunkRows]），为每一行挑选
+// 最近中心：dist² = ||x||² + ||c||² - 2·x·c，写回 assign[pid]。
 __global__ void assignNearestDotsKernel(
     const float* __restrict__ dots, long long chunkRows, long long chunkBase,
     int nlist, const float* __restrict__ pointNorm,
@@ -481,6 +554,9 @@ __global__ void assignNearestDotsKernel(
   assignOut[pid] = bestC;
 }
 
+// 按当前分配到各中心累加向量之和与计数（原子累加），用于更新中心。
+// counts 使用 32 位原子，兼容不支持 64 位原子加的设备（如 CoreX）。
+// 注意：本函数在 k-means 迭代与最终全库分配两处复用。
 __global__ void accumulateMiniBatchKernel(
     const float* __restrict__ points, const int* __restrict__ assign,
     long long np, int dim, int nlist, float* __restrict__ sums,
@@ -495,6 +571,7 @@ __global__ void accumulateMiniBatchKernel(
   atomicAdd(&counts[c], 1);
 }
 
+// 把每个中心的累加和除以该中心样本数，得到新的中心均值。
 __global__ void divideCentersKernel(float* __restrict__ sums,
                                     const int* __restrict__ counts,
                                     int nlist, int dim) {
@@ -505,6 +582,7 @@ __global__ void divideCentersKernel(float* __restrict__ sums,
   for (int d = 0; d < dim; ++d) s[d] *= inv;
 }
 
+// cosine 度量下把中心归一化到单位长度，使打分退化为纯内积。
 __global__ void normalizeCenterKernel(float* __restrict__ centers, int nlist,
                                       int dim) {
   const int c = blockIdx.x * blockDim.x + threadIdx.x;
@@ -516,6 +594,7 @@ __global__ void normalizeCenterKernel(float* __restrict__ centers, int nlist,
   for (int d = 0; d < dim; ++d) s[d] /= nrm;
 }
 
+// 处理空桶：若某中心没有任何样本，用确定位置的样本行重新填充，避免退化。
 __global__ void copyFixEmptyCentersKernel(
     const float* __restrict__ sample, long long sampleCount,
     const int* __restrict__ counts, float* __restrict__ centers,
@@ -530,6 +609,7 @@ __global__ void copyFixEmptyCentersKernel(
   for (int d = 0; d < dim; ++d) s[d] = r[d];
 }
 
+// 统计本轮与上轮分配结果不同的样本数，用于提前收敛判定。
 __global__ void assignmentChangedKernel(const int* __restrict__ a,
                                         const int* __restrict__ b, long long n,
                                         int* __restrict__ out) {
@@ -538,11 +618,13 @@ __global__ void assignmentChangedKernel(const int* __restrict__ a,
   if (i < n && a[i] != b[i]) atomicAdd(out, 1);
 }
 
+// 将某批候选的累加缓冲与计数清零（每轮中心更新前调用）。
 void zeroCountsAndSums(float* sums, int* counts, int nlist, int dim) {
   VSCU_CHECK(cudaMemset(sums, 0, static_cast<size_t>(nlist) * dim * sizeof(float)));
   VSCU_CHECK(cudaMemset(counts, 0, static_cast<size_t>(nlist) * sizeof(int)));
 }
 
+// 计算 rows 的平方范数；block 固定 256，让主机侧计算简化为一次 launch。
 void launchSqNorm(const float* rows, long long n, int dim, float* out) {
   const int block = 256;
   const int grid = static_cast<int>((n + block - 1) / block);
@@ -550,6 +632,9 @@ void launchSqNorm(const float* rows, long long n, int dim, float* out) {
   syncCheck();
 }
 
+// 分块 GEMM 求“样本 × 中心”点积，再交给 assignNearestDotsKernel 选最近中心。
+// 采用列主 GEMM（CUBLAS_OP_T × N）使输出按列连续，便于最近中心判定 kernel
+// 合并 ||x||²+||c||²-2·dot；chunkRows 限制单次点积矩阵规模，控制显存峰值。
 void launchAssignment(cublasHandle_t handle, const float* points,
                       long long np, const float* centers, int nlist, int dim,
                       const float* pointNorm, const float* centerNorm,
@@ -570,6 +655,13 @@ void launchAssignment(cublasHandle_t handle, const float* points,
 }
 
 // Build an IVF-Flat center table with a deterministic mini-batch Lloyd loop.
+//
+// 训练 IVF 粗聚类中心（IVF-Flat 与 IVF-PQ 共用的 coarse quantizer）：
+//   1) 用等间隔样本行初始化 nlist 个中心（确定性，避免随机初值影响可复现性）；
+//   2) 每轮：GEMM 分配最近中心 -> 原子累加求和/计数 -> 除以计数得到新中心
+//      -> cosine 时归一化 -> 空桶重填；
+//   3) 若“分配变化比例”低于 kmeans_assign_frac，提前收敛结束。
+// 训练只用 sampleCount 行子样本，最后全库分配在 buildIndex 中单独做一次。
 void lloydMiniBatch(cublasHandle_t handle, const float* sample,
                     long long sampleCount, int dim, int nlist,
                     const SearchConfig& cfg, float* centersOut,
@@ -585,6 +677,7 @@ void lloydMiniBatch(cublasHandle_t handle, const float* sample,
   DevMem<int> changed(1);
   const long long chunk =
       std::min<long long>(cfg.kmeans_chunk_rows, 32768);
+  // 点积中间矩阵：chunk × nlist，按列主序存放（见 assignNearestDotsKernel）。
   DevMem<float> dots(static_cast<size_t>(chunk) * nlist);
 
   // Initialize centers from deterministically spaced sample rows.
@@ -610,6 +703,7 @@ void lloydMiniBatch(cublasHandle_t handle, const float* sample,
   bool converged = false;
   for (int it = 0; it < maxIter && !converged; ++it) {
     launchSqNorm(centersOut, nlist, dim, centerNorm.get());
+    // 保存上一轮分配，用于本轮结束后的收敛判定。
     VSCU_CHECK(cudaMemcpy(assignPrev.get(), assign.get(),
                           assign.bytes(), cudaMemcpyDeviceToDevice));
     launchAssignment(handle, sample, sampleCount, centersOut, nlist, dim,
@@ -640,6 +734,7 @@ void lloydMiniBatch(cublasHandle_t handle, const float* sample,
         cfg.kmeans_seed);
     syncCheck();
 
+    // 提前收敛：变化样本数 <= kmeans_assign_frac * sampleCount 即认为稳定。
     if (cfg.kmeans_assign_frac > 0.0) {
       VSCU_CHECK(cudaMemset(changed.get(), 0, sizeof(int)));
       const int block = 256;
@@ -662,6 +757,7 @@ void lloydMiniBatch(cublasHandle_t handle, const float* sample,
 // ---------------------------------------------------------------------------
 // Inverted-list construction.
 // ---------------------------------------------------------------------------
+// 统计每个粗中心被分配到的向量数量（直方图），作为倒排桶大小的前缀和输入。
 __global__ void histogramClustersKernel(const int* __restrict__ assign,
                                         long long n, int* __restrict__ histOut) {
   const long long p = static_cast<long long>(blockIdx.x) * blockDim.x +
@@ -674,6 +770,9 @@ __global__ void histogramClustersKernel(const int* __restrict__ assign,
 // CoreX (Iluvatar) devices do not implement 64-bit atomicAdd, so the cursor is
 // kept in 32 bits; vector ids are bounded by INT32_MAX by the engine, which
 // also bounds every per-list offset.
+//
+// 中文说明：倒排表的写入游标用 32 位保存（起始位置由 64 位 listOffsets 截断而来），
+// 这样每个桶的原子自增都是 32 位原子操作，规避 CoreX 不支持的 64 位 atomicAdd。
 __global__ void initListCursor32Kernel(
     const long long* __restrict__ listOffsets, int nlist,
     int* __restrict__ cursor32) {
@@ -681,6 +780,7 @@ __global__ void initListCursor32Kernel(
   if (c < nlist) cursor32[c] = static_cast<int>(listOffsets[c]);
 }
 
+// 按分配结果把向量 id 填入倒排表：每个桶用游标原子自增确定写入位置。
 __global__ void fillInvertedListsKernel(
     const int* __restrict__ assign, long long n,
     const long long* __restrict__ listOffsets,
@@ -693,6 +793,7 @@ __global__ void fillInvertedListsKernel(
   listIds[static_cast<size_t>(pos)] = static_cast<int>(p);
 }
 
+// 对直方图求和得到倒排表总元素数（应为 n），用于校验与补充 listOffsets[nlist]。
 __global__ void sumToTotalKernel(const int* __restrict__ in, long long count,
                                  unsigned int* __restrict__ accOut) {
   unsigned int acc = 0;
@@ -702,6 +803,9 @@ __global__ void sumToTotalKernel(const int* __restrict__ in, long long count,
   if (acc != 0) atomicAdd(accOut, acc);
 }
 
+// 构建倒排表并返回元素总数：
+//   histogram(每桶计数) -> exclusive scan(桶起始偏移) -> 补写总量 -> 游标填充。
+// listOffsetsOut 长度 nlist+1，listIdsOut 长度 n；返回值为总向量数（应等于 n）。
 long long buildInvertedLists(const int* assign, long long n, int nlist,
                              TempStore* temp, long long* listOffsetsOut,
                              int* listIdsOut) {
@@ -713,7 +817,7 @@ long long buildInvertedLists(const int* assign, long long n, int nlist,
     histogramClustersKernel<<<grid, block>>>(assign, n, hist.get());
     syncCheck();
   }
-  // Exclusive scan: listOffsetsOut[0..nlist].
+  // 对桶计数做 exclusive scan，得到每个桶的起始偏移 listOffsetsOut[0..nlist]。
   size_t tmpBytes = 0;
   cub::DeviceScan::ExclusiveSum(nullptr, tmpBytes, hist.get(),
                                 listOffsetsOut, nlist, 0);
@@ -721,6 +825,7 @@ long long buildInvertedLists(const int* assign, long long n, int nlist,
   cub::DeviceScan::ExclusiveSum(tmp, tmpBytes, hist.get(), listOffsetsOut,
                                 nlist, 0);
   syncCheck();
+  // 单独求总量并写入 listOffsetsOut[nlist]，便于下方按 n 做一致性校验。
   DevMem<unsigned int> totalDev(1);
   VSCU_CHECK(cudaMemset(totalDev.get(), 0, sizeof(unsigned int)));
   {
@@ -737,6 +842,7 @@ long long buildInvertedLists(const int* assign, long long n, int nlist,
   VSCU_CHECK(cudaMemcpy(listOffsetsOut + nlist, &totalLL, sizeof(totalLL),
                         cudaMemcpyHostToDevice));
   DevMem<int> cursor32(nlist);
+  // 用桶起始偏移初始化 32 位游标，再由 fillInvertedListsKernel 原子自增写入。
   initListCursor32Kernel<<<(nlist + 255) / 256, 256>>>(listOffsetsOut, nlist,
                                                        cursor32.get());
   syncCheck();
@@ -753,6 +859,8 @@ long long buildInvertedLists(const int* assign, long long n, int nlist,
 // ---------------------------------------------------------------------------
 // IVF-PQ kernels and compact k-means used to learn sub-codebooks.
 // ---------------------------------------------------------------------------
+// PQ 子空间 k-means 的分配步骤：为每个子向量找最近码字并累加该码字的和/计数。
+// 与 lloydMiniBatch 思路一致，只是维度更小（subDim）、码字数固定为 pq_ks。
 __global__ void pqAssignKernel(const float* __restrict__ points,
                                long long np, int dims, int ks,
                                const float* __restrict__ centers,
@@ -781,6 +889,8 @@ __global__ void pqAssignKernel(const float* __restrict__ points,
   atomicAdd(&counts[bestC], 1);
 }
 
+// 在单个子空间上训练 PQ 码本（码字数 ks）：初始化 -> 迭代分配/更新 -> 空桶重填。
+// 由 buildIndex 对 m 个子空间各调用一次。
 void pqLloyd(const float* points, long long np, int dims, int ks, int seed,
              int iters, float* centersOut, double* msOut) {
   if (ks > np) throwRuntime("PQ codebook larger than training sample");
@@ -834,6 +944,8 @@ __global__ void gatherSubspaceKernel(const float* __restrict__ full,
   for (int j = 0; j < subDim; ++j) dst[j] = src[j];
 }
 
+// PQ 编码：对库中每个向量按子空间分别找最近码字，输出 n×m 字节的压缩码。
+// 编码误差直接决定 ADC 近似距离的质量，是 PQ 召回的决定性环节。
 __global__ void pqEncodeKernel(const float* __restrict__ full, long long n,
                                int dim, int m, int subDim, int ks,
                                const float* __restrict__ codebooks,
@@ -864,6 +976,9 @@ __global__ void pqEncodeKernel(const float* __restrict__ full, long long n,
   }
 }
 
+// 构建 ADC 距离表：对每个 query、每个子空间，预计算 query 到该子空间全部 ks 个
+// 码字的距离（L2）或点积（inner/cosine）。表布局 [nq, m, ks]，供候选查表累加。
+// 网格 (x=子空间, y=query)，一个 block 用 ks 个线程算一个子空间的距离行。
 __global__ void pqTableKernel(const float* __restrict__ queries, int nq,
                               int dim, int m, int subDim, int ks,
                               const float* __restrict__ codebooks,
@@ -888,6 +1003,8 @@ __global__ void pqTableKernel(const float* __restrict__ queries, int nq,
   tableOut[(static_cast<size_t>(qi) * m + subspace) * ks + c] = acc;
 }
 
+// ADC 打分：每个候选只做 m 次查表累加即得近似距离，再编码为排序键。
+// cosine 距离用 1 - 内积近似；其余与 IVF-Flat 的键格式保持一致。
 __global__ void pqPackKeysKernel(
     const int* __restrict__ candidates,
     const unsigned char* __restrict__ codes,
@@ -909,6 +1026,11 @@ __global__ void pqPackKeysKernel(
 
 // Collect the W best approximate candidates of every query (serial over the
 // small per-batch query count) and compact them for exact rescoring.
+//
+// 精排准备：从每个 query 已按 ADC 排序的键段中取前 rerankWidth 个候选 id，
+// 紧凑写入 rerankCandidates 并记录每 query 的起始偏移 rerankStart。
+// 由于一个 batch 的 query 数较小（≤512），这里由单线程串行完成，逻辑简单且
+// 便于得到确定的紧凑布局。
 __global__ void rerankPrepKernel(
     const unsigned long long* __restrict__ sortedApprox,
     const long long* __restrict__ origStart, int nQuery, int rerankWidth,
@@ -932,6 +1054,9 @@ __global__ void rerankPrepKernel(
 // ---------------------------------------------------------------------------
 // CUB segmented sort wrappers.
 // ---------------------------------------------------------------------------
+// 对“按 query 分段”的 64 位键做一次升序分段 radix sort。
+// offsets 有 numSegments+1 项，给出每段的 [begin, end)；先查临时缓冲大小再执行，
+// 临时显存由 TempStore 复用，避免频繁 cudaMalloc/cudaFree。
 void segmentedRadixSortKeys(TempStore* temp, const unsigned long long* in,
                             unsigned long long* out, const long long* offsets,
                             long long numItems, int numSegments) {
@@ -946,6 +1071,10 @@ void segmentedRadixSortKeys(TempStore* temp, const unsigned long long* in,
   syncCheck();
 }
 
+// 对 length=count 的 64 位数组做 exclusive scan，并把“总和”额外写到 out[count]，
+// 使调用方可以用 out[count] 直接当作候选 arena 的总长度。
+// 注意：CUB 只写 out[0..count-1]，因此这里用 n+1 的临时缓冲再补写总量，
+// 避免越界写，也让行为在不同厂商的 CUB 实现上都一致。
 void exclusiveSum(TempStore* temp, const long long* in, long long* out,
                   long long count) {
   if (count <= 0) return;
@@ -978,6 +1107,8 @@ void exclusiveSum(TempStore* temp, const long long* in, long long* out,
 // ---------------------------------------------------------------------------
 // Search implementation helpers.
 // ---------------------------------------------------------------------------
+// 在主机侧计算每个 query 的平方范数（double 累加，精度最高）。
+// 结果随后上传给 device，供 L2 的展开式选桶（只比较相对次序）使用。
 void hostQueryNorms(const GpuEngine::Impl& im, const float* queries, i64 nq,
                     std::vector<double>* norms) {
   norms->assign(static_cast<size_t>(nq), 0.0);
@@ -990,6 +1121,8 @@ void hostQueryNorms(const GpuEngine::Impl& im, const float* queries, i64 nq,
   }
 }
 
+// 上传一个 query 批次：cosine 时先在主机侧把 query 归一化（与库向量一致），
+// 再连同平方范数一起拷到设备，作为本批次所有 kernel 的输入。
 void uploadQueryBatch(GpuEngine::Impl& im, const float* queries, i64 nq,
                       DevMem<float>* qDev, DevMem<double>* qNormDev) {
   qDev->resize(static_cast<size_t>(nq) * im.dim);
@@ -1009,6 +1142,7 @@ void uploadQueryBatch(GpuEngine::Impl& im, const float* queries, i64 nq,
                         cudaMemcpyHostToDevice));
 }
 
+// Metric 枚举 -> kernel 内使用的度量编号（0=L2, 1=inner product, 2=cosine）。
 int metricCode(Metric m) {
   if (m == Metric::L2) return 0;
   if (m == Metric::InnerProduct) return 1;
@@ -1016,6 +1150,10 @@ int metricCode(Metric m) {
 }
 
 // One exact chunk: nq queries, all n vectors.
+//
+// 精确检索单批：nq 个 query 对全部 n 个向量打分 -> 分段排序 -> 解码 Top-K。
+// keysIn/keysOut 各占 nq×n×8B，是精确检索的主要显存开销，因此 CLI 会按
+// exact_memory_mb 把总 query 数切成若干批调用本函数。
 void exactChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
                 int metricCodeInt, TempStore* temp, i32* idsOut,
                 float* scoresOut) {
@@ -1024,6 +1162,7 @@ void exactChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
   uploadQueryBatch(im, queries, nq, &qDev, &qNormDev);
   const long long items = static_cast<long long>(nq) * im.n;
   DevMem<unsigned long long> keysIn(items), keysOut(items);
+  // 分段排序的分段边界：第 qi 段覆盖 [qi*n, (qi+1)*n)。
   DevMem<long long> offsets(nq + 1);
   for (i64 qi = 0; qi <= nq; ++qi) {
     const long long v = im.n * qi;
@@ -1042,6 +1181,7 @@ void exactChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
   }
   segmentedRadixSortKeys(temp, keysIn.get(), keysOut.get(), offsets.get(),
                          items, static_cast<int>(nq));
+  // 取每段前 topK 个键解码为 (id, score)。
   DevMem<int> dIds(static_cast<size_t>(nq) * topK);
   DevMem<float> dScores(static_cast<size_t>(nq) * topK);
   {
@@ -1058,6 +1198,12 @@ void exactChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
 }
 
 // Returns total number of gathered candidates.
+//
+// IVF 检索的“粗排 + 候选汇集”公共阶段，返回候选总数：
+//   1) 算 query 到全部中心的距离并分段排序，取最近 nprobe 个桶（probeIds）；
+//   2) 统计每个桶大小 -> exclusive scan 得到候选 arena 的写入偏移；
+//   3) 还原每 query 的候选起始（queryStart），把所有命中桶的 id 汇聚到 candidates。
+// 输出的 candidates/queryStart 可直接用于 IVF-Flat 精确重打分或 IVF-PQ 的 ADC。
 long long ivfProbeAndGather(GpuEngine::Impl& im,
                             const float* qDev, const double* qNormDev, i64 nq,
                             int metricCodeInt, int nprobe,
@@ -1066,6 +1212,7 @@ long long ivfProbeAndGather(GpuEngine::Impl& im,
                             DevMem<long long>* queryStart) {
   const long long items = static_cast<long long>(nq) * im.nlist;
   DevMem<unsigned long long> centerKeys(items), centerKeysSorted(items);
+  // 中心打分的分段排序边界：每个 query 一段，长度 nlist。
   DevMem<long long> offsets(nq + 1);
   for (i64 qi = 0; qi <= nq; ++qi) {
     const long long v = static_cast<long long>(im.nlist) * qi;
@@ -1086,6 +1233,7 @@ long long ivfProbeAndGather(GpuEngine::Impl& im,
 
   const long long nSlots = static_cast<long long>(nq) * nprobe;
   probeIds->resize(static_cast<size_t>(nSlots));
+  // 取排序后每段前 nprobe 个中心 id 作为被探测的倒排桶。
   {
     const dim3 grid(1, static_cast<unsigned>(nq));
     extractFirstKernel<<<grid, 256>>>(centerKeysSorted.get(), im.nlist,
@@ -1095,6 +1243,7 @@ long long ivfProbeAndGather(GpuEngine::Impl& im,
   }
 
   DevMem<long long> probeCounts(nSlots), probeOffsets(nSlots + 1);
+  // 每个 probe 槽位对应的桶大小 -> 前缀和 -> 连续候选 arena 偏移。
   {
     const int block = 256;
     probeCountsKernel<<<static_cast<unsigned>((nSlots + block - 1) / block),
@@ -1115,6 +1264,7 @@ long long ivfProbeAndGather(GpuEngine::Impl& im,
                         cudaMemcpyDeviceToHost));
   if (total == 0) return 0;
   candidates->resize(static_cast<size_t>(total));
+  // 一个 block 一个 probe 槽位，把整桶 id 拷贝进候选 arena。
   gatherCandidatesKernel<<<static_cast<unsigned>(nSlots), 256>>>(
       probeIds->get(), probeOffsets.get(), im.listOffsets.get(),
       im.listIds.get(), static_cast<int>(nSlots), candidates->get());
@@ -1122,6 +1272,8 @@ long long ivfProbeAndGather(GpuEngine::Impl& im,
   return total;
 }
 
+// IVF-Flat 单批检索：probe+gather 得到候选后，用原始向量精确重打分并取 Top-K。
+// 与 exact 的区别是只对 candidates（约 nprobe 个桶的并集）打分，而不是全库。
 void ivfFlatChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
                   int metricCodeInt, TempStore* temp, i32* idsOut,
                   float* scoresOut) {
@@ -1164,6 +1316,13 @@ void ivfFlatChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
                         cudaMemcpyDeviceToHost));
 }
 
+// IVF-PQ 单批检索：probe+gather 后用 ADC 距离表近似打分，可选精排。
+//
+// 流程：
+//   1) 建 ADC 表（query × 子空间 × 码字距离）；
+//   2) 对每个候选查表累加得到近似距离并排序，得到 ADC Top-K；
+//   3) 若 pq_rerank > 0：取 ADC 前 rerankWidth 个候选，用原始向量精确重打分后
+//      再排序输出（"粗排 + 精排"，兼顾压缩带来的吞吐与召回）。
 void ivfPqChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
                 int metricCodeInt, TempStore* temp, i32* idsOut,
                 float* scoresOut) {
@@ -1262,6 +1421,7 @@ void ivfPqChunk(GpuEngine::Impl& im, const float* queries, i64 nq, int topK,
 
 namespace {
 
+// 线性插值分位数（p∈[0,1]），用于性能日志里的 P50 / P99 延迟统计。
 double percentileOf(std::vector<double> v, double p) {
   if (v.empty()) return 0.0;
   std::sort(v.begin(), v.end());
@@ -1271,6 +1431,8 @@ double percentileOf(std::vector<double> v, double p) {
   return v[lo] + (v[hi] - v[lo]) * (idx - static_cast<double>(lo));
 }
 
+// 小端序整数的读写工具：索引文件使用机器无关的显式小端布局，便于跨平台
+// （NVIDIA / CoreX）互相加载同一份索引。
 void writeLE32(std::FILE* f, i32 v) {
   unsigned char b[4];
   for (int i = 0; i < 4; ++i)
@@ -1303,6 +1465,7 @@ i64 readLE64(std::FILE* f) {
 constexpr i32 kIndexMagic = 0x58495653;  // "VSIX"
 constexpr i32 kIndexVersion = 1;
 
+// 索引文件读写：带长度校验，短读/短写直接抛异常，避免半截索引被当成有效数据。
 void readAll(FILE* f, void* p, size_t n) {
   if (std::fread(p, 1, n, f) != n) throwRuntime("index read failed");
 }
@@ -1311,6 +1474,7 @@ void writeAll(FILE* f, const void* p, size_t n) {
   if (std::fwrite(p, 1, n, f) != n) throwRuntime("index write failed");
 }
 
+// 把设备数组整体拷回主机 vector（n=0 时不发起 memcpy）。
 template <typename T>
 void copyToHost(const T* dev, std::vector<T>* host, size_t n) {
   host->resize(n);
@@ -1344,6 +1508,12 @@ std::size_t GpuEngine::deviceFreeBytes() {
 
 bool GpuEngine::hasIndex() const { return impl_->hasIndex_; }
 
+// 构建近似索引（IVF-Flat 或 IVF-PQ）。步骤：
+//   1) 抽取确定性子样本；
+//   2) 训练粗聚类中心（IVF-PQ 复用同一套中心）；
+//   3) 全库分配到最近中心并构建倒排表（listOffsets/listIds）；
+//   4) IVF-PQ 额外训练各子空间码本并对全库编码。
+// 返回的 IndexBuildStats 给出训练/分配/PQ 编码与总耗时，供性能日志使用。
 IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
   Impl& im = *impl_;
   if (mode == SearchMode::Exact)
@@ -1391,14 +1561,14 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
     syncCheck();
   }
 
-  // 2. Train centers (IVF partition + IVF-PQ shared coarse index).
+  // 2) 训练粗聚类中心（IVF-Flat 与 IVF-PQ 共用；cosine 时归一化中心）。
   SearchConfig buildCfg = im.cfg;
   buildCfg.cosine_normalize_centers = (im.metric == Metric::Cosine);
   im.centers.resize(static_cast<size_t>(nlist) * im.dim);
   lloydMiniBatch(handle, sample.get(), sampleCount, im.dim, nlist, buildCfg,
                  im.centers.get(), &stats.trainMs);
 
-  // 3. Assign every vector to its nearest center and build inverted lists.
+  // 3) 全库分配到最近中心：先算范数，再分块 GEMM 求点积选桶，最后建倒排表。
   DevMem<float> xNorm(static_cast<size_t>(im.n));
   DevMem<float> cNorm(nlist);
   DevMem<float> dots(static_cast<size_t>(chunkRows) * nlist);
@@ -1413,6 +1583,7 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
     stats.assignMs = assignTimer.ms();
   }
   im.centerNorm.resize(nlist);
+  // 保存中心范数，检索时用于快速计算 query 到中心的距离。
   VSCU_CHECK(cudaMemcpy(im.centerNorm.get(), cNorm.get(), cNorm.bytes(),
                         cudaMemcpyDeviceToDevice));
   im.listOffsets.resize(static_cast<size_t>(nlist) + 1);
@@ -1422,12 +1593,13 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
     const i64 total = buildInvertedLists(assign.get(), im.n, nlist, &temp,
                                          im.listOffsets.get(),
                                          im.listIds.get());
+    // 一致性校验：所有桶的元素总数必须等于库规模，否则倒排表已损坏。
     if (total != im.n)
       throwRuntime("inverted list total mismatch: total=" +
                    std::to_string(total) + " n=" + std::to_string(im.n));
   }
 
-  // 4. Optional PQ encoding.
+  // 4) 可选 PQ：逐子空间训练码本，再对全库编码为 n×m 字节压缩码。
   if (mode == SearchMode::IvfPq) {
     Timer pqTimer;
     const int m = im.pqM;
@@ -1437,6 +1609,7 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
     DevMem<float> subPoints(static_cast<size_t>(sampleCount) * subDim);
     const int block = 256;
     const int grid = static_cast<int>((sampleCount + block - 1) / block);
+    // 对每个子空间分别做一次小维度 k-means，得到该子空间的 ks 个码字。
     for (int s = 0; s < m; ++s) {
       gatherSubspaceKernel<<<grid, block>>>(
           sample.get(), sampleCount, im.dim, subDim, s, subPoints.get());
@@ -1447,6 +1620,7 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
               nullptr);
     }
     im.pqCodes.resize(static_cast<size_t>(im.n) * m);
+    // 用训练好的码本对全库编码（每个子空间取最近码字，存入 1 字节）。
     pqEncodeKernel<<<static_cast<unsigned>((im.n + block - 1) / block),
                      block>>>(im.x.get(), im.n, im.dim, m, subDim, ks,
                               im.pqCodebooks.get(), im.pqCodes.get());
@@ -1461,6 +1635,10 @@ IndexBuildStats GpuEngine::buildIndex(SearchMode mode) {
   return stats;
 }
 
+// 把索引落盘为自描述二进制文件（magic "VSIX" + 版本 + 元数据 + 各段数据）。
+// 头部固定顺序：magic/version/kind/metric/n/dim/nlist/pqM/pqKs/pqSubDim，
+// 之后依次是 centers、centerNorm、listOffsets、listIds，IVF-PQ 再追加
+// pqCodes 与 pqCodebooks。全部使用显式小端序，保证跨平台可读。
 void GpuEngine::saveIndex(const std::string& path) const {
   const Impl& im = *impl_;
   if (!im.hasIndex_) throwRuntime("saveIndex: no index");
@@ -1507,6 +1685,9 @@ void GpuEngine::saveIndex(const std::string& path) const {
   std::fclose(f);
 }
 
+// 从文件加载索引并上传到显存，避免每次查询重新建索引。
+// 头部会校验 magic/version，以及与当前 dataset 的 (n, dim, metric) 是否一致，
+// 不一致直接报错，防止用错索引查询。
 void GpuEngine::loadIndex(const std::string& path) {
   Impl& im = *impl_;
   std::FILE* f = std::fopen(path.c_str(), "rb");
@@ -1524,6 +1705,7 @@ void GpuEngine::loadIndex(const std::string& path) {
     const int pqM = readLE32(f);
     const int pqKs = readLE32(f);
     const int pqSub = readLE32(f);
+    // 索引与数据集必须严格匹配，否则查询结果无意义。
     if (n != im.n || dim != im.dim || met != im.metric || nlist <= 0)
       throwRuntime("index/dataset mismatch: " + path);
 
@@ -1576,6 +1758,14 @@ void GpuEngine::loadIndex(const std::string& path) {
   im.hasIndex_ = true;
 }
 
+// 批量检索统一入口：按 batch_size 把 query 切成若干批，逐批调用对应模式的
+// Exact/IvfFlat/IvfPq chunk 实现，并把每批耗时、P50/P99、QPS、显存占用等
+// 统计写入 SearchStats。保证“批量查询”与“单 query”走同一套 kernel 路径。
+//
+// 关键点：
+//   * Exact 模式无需索引；IVF 模式先校验索引存在且类型匹配；
+//   * Exact 会依据 exact_memory_mb 进一步压缩 batch，避免键数组撑爆显存；
+//   * 每批用 CUDA event 计时，作为延迟分位数样本（而非整段 wall time）。
 void GpuEngine::searchAll(SearchMode mode, const float* queries, i64 nq,
                           int topK, std::vector<i32>* ids, FloatVec* scores,
                           SearchStats* stats, int batchOverride) {
@@ -1590,6 +1780,7 @@ void GpuEngine::searchAll(SearchMode mode, const float* queries, i64 nq,
 
   int batch = batchOverride > 0 ? batchOverride : impl_->cfg.batch_size;
   if (mode == SearchMode::Exact) {
+    // 精确检索的键缓冲为 nq×n×16B（in+out），按显存预算反推单批 query 上限。
     const i64 bytesPerQuery = impl_->n * 32;  // in + out packed keys
     const i64 memBudget = std::max<i64>(1, impl_->cfg.exact_memory_mb) *
                           (1024 * 1024);
@@ -1601,6 +1792,7 @@ void GpuEngine::searchAll(SearchMode mode, const float* queries, i64 nq,
   const int metricCodeInt = metricCode(impl_->metric);
   TempStore temp;
   SearchStats local;
+  // 逐批计时：每个 batch 记录一次 CUDA event 耗时，作为延迟分位数样本。
   cudaEvent_t startEv = nullptr, stopEv = nullptr;
   VSCU_CHECK(cudaEventCreate(&startEv));
   VSCU_CHECK(cudaEventCreate(&stopEv));

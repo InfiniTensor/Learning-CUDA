@@ -140,6 +140,10 @@ vs::PerfRecord makePerf(const std::string& mode, i64 nq, i64 n, int dim,
 
 // Average absolute distance difference for ids present in both result sets,
 // plus the number of rank positions whose ids differ.
+//
+// 质量指标计算：对预测结果与 GPU exact 参考（gold）逐 rank 对比，
+//   * avgError：两边都出现的同一 id 的绝对距离差均值（衡量分数一致性）；
+//   * mismatchRanks：id 逐位不同的位置数（recall 由 1 - mismatch/total 推出）。
 void qualityError(const vs::SearchResult& pred, const vs::SearchResult& gold,
                   double* avgError, int* mismatchRanks) {
   double sum = 0.0;
@@ -163,6 +167,10 @@ void qualityError(const vs::SearchResult& pred, const vs::SearchResult& gold,
   *mismatchRanks = mismatch;
 }
 
+// 自检命令：在内存构造的小规模数据上验证
+//   1) GPU exact 与 CPU 参考的 id 完全一致、分数在容差内；
+//   2) IVF-Flat（nprobe=全部桶）recall 正常、索引可构建。
+// 不需要任何输入文件，适合在陌生环境快速确认 GPU 与工具链可用。
 int validateCommand(const vs::Dataset& ds, i64 nq, const float* queries,
                     int topK, int metricCode) {
   vs::SearchConfig cfg;
@@ -189,6 +197,7 @@ int validateCommand(const vs::Dataset& ds, i64 nq, const float* queries,
     for (int k = 0; k < topK; ++k) {
       const size_t off = static_cast<size_t>(qi) * topK + k;
       const bool idOk = gpuIds[off] == cpuIds[off];
+      // 分数按相对误差比较：id 必须逐位一致，分数允许浮点级偏差。
       const bool scoreOk =
           std::fabs(static_cast<double>(gpuScores[off] - cpuScores[off])) <
           1e-4 *
@@ -231,6 +240,7 @@ int main(int argc, char** argv) {
     std::vector<vs::SearchConfig> cfgs = configFromArgs(a);
     const std::string cmd = a.command;
 
+    // `validate`：完全离线自检，不读取任何数据文件（见 validateCommand）。
     if (cmd == "validate") {
       // Deterministic in-memory dataset; no files required.
       constexpr i64 kN = 5000;
@@ -268,6 +278,7 @@ int main(int argc, char** argv) {
     const std::string indexPath = opt(a, "index", cfg.index_path);
     const int topK = std::min(cfg.top_k, static_cast<int>(ds.n));
 
+    // `build`：只构建并保存近似索引，不做查询。
     if (cmd == "build") {
       if (mode == vs::SearchMode::Exact)
         throwRuntime("'build' requires an approximate search mode");
@@ -282,6 +293,8 @@ int main(int argc, char** argv) {
       return 0;
     }
 
+    // `search` / `bench`：先算 GPU exact 作为基准（和 recall 的 gold）。
+    // bench 额外跑 CPU 单线程精确检索以获得加速比，并输出性能/质量日志。
     if (cmd == "search" || cmd == "bench") {
       const i64 nq = qs.n;
       vs::GpuEngine engine(ds, cfg);
@@ -300,6 +313,8 @@ int main(int argc, char** argv) {
       vs::FloatVec cpuScores;
       vs::SearchStats exactRefStats;
       if (cmd == "bench") {
+        // CPU 参考只跑前 ref_query_limit 个 query（默认 200），控制耗时；
+        // GPU exact 用同一子集重测，保证加速比口径一致。
         cpuMs = vs::cpuExactSearch(ds, refNq, qs.data.data(), topK, &cpuIds,
                                    &cpuScores);
         if (refNq < nq)
@@ -316,6 +331,7 @@ int main(int argc, char** argv) {
         vs::FloatVec scores;
         vs::SearchStats stats;
         if (mode != vs::SearchMode::Exact) {
+          // 优先复用已保存的索引；缺失或强制重建时才重新 buildIndex。
           if (cfg.force_rebuild || indexPath.empty() || !std::ifstream(indexPath).good()) {
             const auto bs = engine.buildIndex(mode);
             std::printf("index built: build_ms=%.1f device_bytes=%zu\n",
@@ -350,6 +366,7 @@ int main(int argc, char** argv) {
       }
 
       // bench: approximate quality + cross-backend speedup log.
+      // gold 始终是 GPU exact 结果，近似检索的 recall/误差都以它为参照。
       const auto gold = toResult(nq, topK, ds.metric, "exact", exactIds,
                                  exactScores);
       std::vector<vs::PerfRecord> perfRows;
