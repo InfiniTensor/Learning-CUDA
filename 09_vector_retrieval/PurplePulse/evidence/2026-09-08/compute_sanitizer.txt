@@ -1,0 +1,3 @@
+========= COMPUTE-SANITIZER
+FP32/FP16 的 CPU/GPU 正确性与边界测试通过
+========= ERROR SUMMARY: 0 errors

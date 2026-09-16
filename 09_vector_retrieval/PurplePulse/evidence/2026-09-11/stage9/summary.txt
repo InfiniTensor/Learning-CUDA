@@ -1,0 +1,11 @@
+100% tests passed, 0 tests failed out of 18
+Total Test time (real) =   5.38 sec
+exact_rows=130
+ivf_rows=130
+exact_verify=通过：Top-K 候选集合相同，平均绝对分数误差=3.039230769056408e-06，最大分数误差=9.599999998499698e-06，近似并列换位数=0
+ivf_verify=通过：Top-K 候选集合相同，平均绝对分数误差=3.039230769056408e-06，最大分数误差=9.599999998499698e-06，近似并列换位数=0
+a5dcde0e5227b40cc04f0586be1bc80d9465a9f1c91c2e78c228933b1ad98fce  /data/purplepulse-work/PurplePulse/results/stage9_clean_20260911_v2/exact_cpu.txt
+7c9e01d52c60b3a80063ab51b48153d71632b43703aac1b92f1fe038785dcb1e  /data/purplepulse-work/PurplePulse/results/stage9_clean_20260911_v2/exact_gpu.txt
+a5dcde0e5227b40cc04f0586be1bc80d9465a9f1c91c2e78c228933b1ad98fce  /data/purplepulse-work/PurplePulse/results/stage9_clean_20260911_v2/ivf_cpu.txt
+7c9e01d52c60b3a80063ab51b48153d71632b43703aac1b92f1fe038785dcb1e  /data/purplepulse-work/PurplePulse/results/stage9_clean_20260911_v2/ivf_gpu.txt
+7d5b324cbce9475a4adec9eb54567db5ffc80a6867c939dd4b772004d5f749df  /data/purplepulse-work/PurplePulse/results/stage9_clean_20260911_v2/reproduce-plan.json

@@ -1,0 +1,2 @@
+implementation,backend,index_type,metric,num_vectors,num_queries,dim,dtype,cpu_threads,top_k,batch_size,nlist,nprobe,train_samples,build_ms,load_ms,gpu_transfer_ms,average_query_ms,qps,batch_p50_ms,batch_p99_ms,recall_at_k,min_query_recall
+faiss-1.14.1,cpu,ivf_flat,inner_product,1000000,1000,128,fp32,1,10,64,256,128,100000,0.0,291.03782773017883,0.0,22949.28689301014,43.574338700022025,1464.3422737717628,1503.8493275642395,0.8795000000000001,0.5

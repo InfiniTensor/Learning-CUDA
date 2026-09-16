@@ -1,0 +1,4 @@
+implementation,top_k,batch_size,average_query_ms,qps,run_p50_ms,run_p99_ms,run_samples,batch_p50_ms,batch_p99_ms,batch_latency_samples,gpu_initialization_ms,database_h2d_ms,gpu_buffer_mib,query_h2d_ms,distance_and_local_topk_ms,final_topk_ms,result_d2h_ms,result_path
+WarpFusion Exact fused,10,64,1420.77,7038.42,1420.44,1423.89,5,9.06992,9.17027,785,205.322,48.4529,488.437,3.58849,1409.55,1.7796,3.25878,/data/purplepulse-work/PurplePulse/results/real/sift1m/exact_outputs/exact_k10.txt
+WarpFusion Exact fused,50,64,1578.08,6336.81,1577.67,1580.61,5,10.068,10.1572,785,172.465,47.9695,488.935,2.7779,1558.6,7.83877,3.75766,/data/purplepulse-work/PurplePulse/results/real/sift1m/exact_outputs/exact_k50.txt
+WarpFusion Exact fused,100,64,1778.64,5622.28,1778.71,1780.42,5,11.3194,11.6274,785,177.354,48.4283,489.558,2.85445,1743.23,17.8673,5.33884,/data/purplepulse-work/PurplePulse/results/real/sift1m/exact_outputs/exact_k100.txt

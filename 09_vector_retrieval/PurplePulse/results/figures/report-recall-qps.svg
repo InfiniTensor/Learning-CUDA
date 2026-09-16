@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<title>召回率与吞吐权衡</title>
+<desc>图中数据由仓库内原始 CSV 自动生成。</desc>
+<style>.figure-title{font-size:22px;font-weight:600}.panel-title{font-size:16px;font-weight:600}.label{font-size:14px;font-weight:600}.tick{font-size:12px}.note{font-size:12px}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="560.00" y="34.00" class="figure-title" text-anchor="middle">公开数据集上的召回率与吞吐权衡（K=10）</text>
+<text x="305.50" y="76.00" class="panel-title" text-anchor="middle">SIFT1M（图像特征）</text>
+<line x1="78.00" y1="98.00" x2="78.00" y2="402.00" class="grid" />
+<text x="78.00" y="425.00" class="tick" text-anchor="middle">97.5%</text>
+<line x1="78.00" y1="402.00" x2="533.00" y2="402.00" class="grid" />
+<text x="69.00" y="406.00" class="tick" text-anchor="end">0</text>
+<line x1="191.75" y1="98.00" x2="191.75" y2="402.00" class="grid" />
+<text x="191.75" y="425.00" class="tick" text-anchor="middle">98.1%</text>
+<line x1="78.00" y1="326.00" x2="533.00" y2="326.00" class="grid" />
+<text x="69.00" y="330.00" class="tick" text-anchor="end">19,613</text>
+<line x1="305.50" y1="98.00" x2="305.50" y2="402.00" class="grid" />
+<text x="305.50" y="425.00" class="tick" text-anchor="middle">98.7%</text>
+<line x1="78.00" y1="250.00" x2="533.00" y2="250.00" class="grid" />
+<text x="69.00" y="254.00" class="tick" text-anchor="end">39,225</text>
+<line x1="419.25" y1="98.00" x2="419.25" y2="402.00" class="grid" />
+<text x="419.25" y="425.00" class="tick" text-anchor="middle">99.4%</text>
+<line x1="78.00" y1="174.00" x2="533.00" y2="174.00" class="grid" />
+<text x="69.00" y="178.00" class="tick" text-anchor="end">58,838</text>
+<line x1="533.00" y1="98.00" x2="533.00" y2="402.00" class="grid" />
+<text x="533.00" y="425.00" class="tick" text-anchor="middle">100.0%</text>
+<line x1="78.00" y1="98.00" x2="533.00" y2="98.00" class="grid" />
+<text x="69.00" y="102.00" class="tick" text-anchor="end">78,450</text>
+<path d="M 155.27 120.52 L 457.35 207.32 L 527.08 287.55 L 530.67 306.75 L 532.10 320.36 L 533.00 330.53" fill="none" stroke="#2878B5" stroke-width="3"/>
+<circle cx="155.27" cy="120.52" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="457.35" cy="207.32" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="527.08" cy="287.55" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="530.67" cy="306.75" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="532.10" cy="320.36" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="533.00" cy="330.53" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<path d="M 131.78 134.80 L 445.33 266.05 L 513.82 335.10 L 517.22 349.23 L 518.66 358.68 L 519.91 365.36" fill="none" stroke="#D95F02" stroke-width="3"/>
+<circle cx="131.78" cy="134.80" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="445.33" cy="266.05" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="513.82" cy="335.10" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="517.22" cy="349.23" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="518.66" cy="358.68" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="519.91" cy="365.36" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<text x="86.00" y="116.00" class="note" >nprobe=32</text>
+<text x="525.00" y="392.00" class="note" text-anchor="end">nprobe=224</text>
+<line x1="78.00" y1="98.00" x2="78.00" y2="402.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<line x1="78.00" y1="402.00" x2="533.00" y2="402.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<text x="855.50" y="76.00" class="panel-title" text-anchor="middle">Yahoo MiniLM（文本向量）</text>
+<line x1="628.00" y1="98.00" x2="628.00" y2="402.00" class="grid" />
+<text x="628.00" y="425.00" class="tick" text-anchor="middle">95.7%</text>
+<line x1="628.00" y1="402.00" x2="1083.00" y2="402.00" class="grid" />
+<text x="619.00" y="406.00" class="tick" text-anchor="end">0</text>
+<line x1="741.75" y1="98.00" x2="741.75" y2="402.00" class="grid" />
+<text x="741.75" y="425.00" class="tick" text-anchor="middle">96.7%</text>
+<line x1="628.00" y1="326.00" x2="1083.00" y2="326.00" class="grid" />
+<text x="619.00" y="330.00" class="tick" text-anchor="end">10,792</text>
+<line x1="855.50" y1="98.00" x2="855.50" y2="402.00" class="grid" />
+<text x="855.50" y="425.00" class="tick" text-anchor="middle">97.8%</text>
+<line x1="628.00" y1="250.00" x2="1083.00" y2="250.00" class="grid" />
+<text x="619.00" y="254.00" class="tick" text-anchor="end">21,585</text>
+<line x1="969.25" y1="98.00" x2="969.25" y2="402.00" class="grid" />
+<text x="969.25" y="425.00" class="tick" text-anchor="middle">98.8%</text>
+<line x1="628.00" y1="174.00" x2="1083.00" y2="174.00" class="grid" />
+<text x="619.00" y="178.00" class="tick" text-anchor="end">32,377</text>
+<line x1="1083.00" y1="98.00" x2="1083.00" y2="402.00" class="grid" />
+<text x="1083.00" y="425.00" class="tick" text-anchor="middle">99.8%</text>
+<line x1="628.00" y1="98.00" x2="1083.00" y2="98.00" class="grid" />
+<text x="619.00" y="102.00" class="tick" text-anchor="end">43,169</text>
+<path d="M 662.15 120.52 L 876.98 189.84 L 1000.37 269.79 L 1035.63 291.21 L 1054.36 306.97 L 1066.47 318.70" fill="none" stroke="#2878B5" stroke-width="3"/>
+<circle cx="662.15" cy="120.52" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="876.98" cy="189.84" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1000.37" cy="269.79" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1035.63" cy="291.21" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1054.36" cy="306.97" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1066.47" cy="318.70" r="4.50" fill="#2878B5" stroke="#ffffff" stroke-width="1.5"/>
+<path d="M 661.05 168.82 L 906.73 287.82 L 1029.02 346.60 L 1051.05 358.23 L 1065.37 365.79 L 1071.98 371.17" fill="none" stroke="#D95F02" stroke-width="3"/>
+<circle cx="661.05" cy="168.82" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="906.73" cy="287.82" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1029.02" cy="346.60" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1051.05" cy="358.23" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1065.37" cy="365.79" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1071.98" cy="371.17" r="4.50" fill="#D95F02" stroke="#ffffff" stroke-width="1.5"/>
+<text x="636.00" y="116.00" class="note" >nprobe=32</text>
+<text x="1075.00" y="392.00" class="note" text-anchor="end">nprobe=224</text>
+<line x1="628.00" y1="98.00" x2="628.00" y2="402.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<line x1="628.00" y1="402.00" x2="1083.00" y2="402.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<line x1="770.00" y1="52.00" x2="795.00" y2="52.00" class="axis" stroke="#2878B5" stroke-width="3"/>
+<text x="802.00" y="57.00" class="note" >WarpFusion</text>
+<line x1="920.00" y1="52.00" x2="945.00" y2="52.00" class="axis" stroke="#D95F02" stroke-width="3"/>
+<text x="952.00" y="57.00" class="note" >FAISS GPU</text>
+<text x="560.00" y="458.00" class="note" text-anchor="middle">横轴为 Recall@10，纵轴为 QPS；每条曲线包含 nprobe=32、64、128、160、192、224</text>
+<text x="560.00" y="486.00" class="note" text-anchor="middle">越靠近右上方表示在相同召回率附近具有更高吞吐</text>
+</svg>

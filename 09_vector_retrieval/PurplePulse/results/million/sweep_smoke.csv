@@ -1,0 +1,3 @@
+nlist,nprobe,top_k,average_ms,qps,recall_at_k,min_query_recall,gpu_buffer_mib,center_ms,scan_ms,merge_ms
+256,64,10,94.8201,10546.3,0.6613,0.2,496.183968,3.40621,84.5987,0.9104
+256,128,10,159.119,6284.6,0.8716,0.4,496.305061,5.37437,146.86,0.964864

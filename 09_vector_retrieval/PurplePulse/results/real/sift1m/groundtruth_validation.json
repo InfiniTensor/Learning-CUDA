@@ -1,0 +1,23 @@
+[
+  {
+    "exact_query_fraction": 0.9944,
+    "min_query_recall": 0.9,
+    "queries": 10000,
+    "recall_at_k": 0.9994400000000001,
+    "top_k": 10
+  },
+  {
+    "exact_query_fraction": 0.9898,
+    "min_query_recall": 0.98,
+    "queries": 10000,
+    "recall_at_k": 0.9997960000000001,
+    "top_k": 50
+  },
+  {
+    "exact_query_fraction": 0.9889,
+    "min_query_recall": 0.99,
+    "queries": 10000,
+    "recall_at_k": 0.9998890000000001,
+    "top_k": 100
+  }
+]

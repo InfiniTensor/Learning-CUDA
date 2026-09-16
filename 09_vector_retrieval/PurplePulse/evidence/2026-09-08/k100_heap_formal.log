@@ -1,0 +1,38 @@
+K=100 heap optimization, RTX 4090 D, nprobe=160, batch=64
+Warmup: 5 full query sets; repeat: 100; queries per run: 1000
+
+warp1_pre_heap
+average_query_ms=188.737
+qps=5298.37
+run_p50_ms=188.738
+run_p99_ms=190.409
+batch_p50_ms=11.6936
+batch_p99_ms=11.8875
+scan_ms=180.438
+merge_ms=1.30079
+
+warp1_heap_hole
+average_query_ms=184.311
+qps=5425.61
+run_p50_ms=184.179
+run_p99_ms=185.741
+batch_p50_ms=11.3594
+batch_p99_ms=11.6603
+scan_ms=175.945
+merge_ms=1.30443
+speedup_vs_pre_heap=2.4015%
+
+bucket_major_heap_hole
+average_query_ms=182.091
+qps=5491.76
+run_p50_ms=181.988
+run_p99_ms=184.321
+batch_p50_ms=11.2720
+batch_p99_ms=11.3244
+scan_ms=173.743
+merge_ms=1.30183
+speedup_vs_pre_heap=3.6500%
+
+All three result files were compared byte for byte with cmp: equal.
+CTest: 8/8 passed.
+Compute Sanitizer ivf_flat_tests: ERROR SUMMARY: 0 errors.

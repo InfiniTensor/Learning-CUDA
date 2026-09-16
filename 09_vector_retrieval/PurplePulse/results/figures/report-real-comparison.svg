@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<title>公开数据对比</title>
+<desc>图中数据由仓库内原始 CSV 自动生成。</desc>
+<style>.figure-title{font-size:22px;font-weight:600}.panel-title{font-size:16px;font-weight:600}.label{font-size:14px;font-weight:600}.tick{font-size:12px}.note{font-size:12px}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="560.00" y="34.00" class="figure-title" text-anchor="middle">公开数据集上的端到端吞吐对比（nprobe=160）</text>
+<text x="305.00" y="80.00" class="panel-title" text-anchor="middle">SIFT1M（图像特征）</text>
+<rect x="101.00" y="150.22" width="44.00" height="254.78" fill="#2878B5" />
+<rect x="155.00" y="263.85" width="44.00" height="141.15" fill="#D95F02" />
+<text x="150.00" y="140.22" class="note" text-anchor="middle">1.81×</text>
+<text x="150.00" y="432.00" class="label" text-anchor="middle">K=10</text>
+<text x="150.00" y="458.00" class="note" text-anchor="middle">召回 0.9999/0.9991</text>
+<rect x="256.00" y="205.59" width="44.00" height="199.41" fill="#2878B5" />
+<rect x="310.00" y="265.66" width="44.00" height="139.34" fill="#D95F02" />
+<text x="305.00" y="195.59" class="note" text-anchor="middle">1.43×</text>
+<text x="305.00" y="432.00" class="label" text-anchor="middle">K=50</text>
+<text x="305.00" y="458.00" class="note" text-anchor="middle">召回 0.9997/0.9995</text>
+<rect x="411.00" y="225.03" width="44.00" height="179.97" fill="#2878B5" />
+<rect x="465.00" y="269.18" width="44.00" height="135.82" fill="#D95F02" />
+<text x="460.00" y="215.03" class="note" text-anchor="middle">1.33×</text>
+<text x="460.00" y="432.00" class="label" text-anchor="middle">K=100</text>
+<text x="460.00" y="458.00" class="note" text-anchor="middle">召回 0.9996/0.9995</text>
+<line x1="90.00" y1="405.00" x2="560.00" y2="405.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<text x="855.00" y="80.00" class="panel-title" text-anchor="middle">Yahoo MiniLM（文本向量）</text>
+<rect x="651.00" y="150.22" width="44.00" height="254.78" fill="#2878B5" />
+<rect x="705.00" y="304.34" width="44.00" height="100.66" fill="#D95F02" />
+<text x="700.00" y="140.22" class="note" text-anchor="middle">2.53×</text>
+<text x="700.00" y="432.00" class="label" text-anchor="middle">K=10</text>
+<text x="700.00" y="458.00" class="note" text-anchor="middle">召回 0.9939/0.9953</text>
+<rect x="806.00" y="162.91" width="44.00" height="242.09" fill="#2878B5" />
+<rect x="860.00" y="305.29" width="44.00" height="99.71" fill="#D95F02" />
+<text x="855.00" y="152.91" class="note" text-anchor="middle">2.43×</text>
+<text x="855.00" y="432.00" class="label" text-anchor="middle">K=50</text>
+<text x="855.00" y="458.00" class="note" text-anchor="middle">召回 0.9915/0.9913</text>
+<rect x="961.00" y="175.11" width="44.00" height="229.89" fill="#2878B5" />
+<rect x="1015.00" y="306.87" width="44.00" height="98.13" fill="#D95F02" />
+<text x="1010.00" y="165.11" class="note" text-anchor="middle">2.34×</text>
+<text x="1010.00" y="432.00" class="label" text-anchor="middle">K=100</text>
+<text x="1010.00" y="458.00" class="note" text-anchor="middle">召回 0.9892/0.9891</text>
+<line x1="640.00" y1="405.00" x2="1110.00" y2="405.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<rect x="780.00" y="49.00" width="16.00" height="11.00" fill="#2878B5" />
+<text x="804.00" y="60.00" class="note" >WarpFusion</text>
+<rect x="920.00" y="49.00" width="16.00" height="11.00" fill="#D95F02" />
+<text x="944.00" y="60.00" class="note" >FAISS GPU</text>
+<text x="560.00" y="496.00" class="note" text-anchor="middle">召回数字依次为 WarpFusion / FAISS；两者各自训练聚类中心</text>
+</svg>

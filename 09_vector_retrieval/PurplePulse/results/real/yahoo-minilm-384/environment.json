@@ -1,0 +1,35 @@
+{
+  "dataset": "yahoo-minilm-384",
+  "timestamp_utc": "2026-09-10T11:55:25.088905+00:00",
+  "git_commit": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).",
+  "source_sha256": {
+    "src/gpu_ivf_flat.cu": "1a53f5471c1ba2d9edc9f2752fc1dab43152db3d9cae511715f287fea217be91",
+    "src/gpu_search.cu": "52fc4696718ca42a34210c5c708d3356c3d2cb4b43bc0deadccef4aac0b49bfe",
+    "src/ivf_flat.cpp": "ea7854fc9597e66ff5d910f4a4ed5e91abf77d1457eea86d5406ca617bea79ea",
+    "scripts/run_real_benchmarks.py": "c4bf1a520f7392e48759ac64a388fdc25416ff28df92f577bbfe104b13996837",
+    "scripts/benchmark_exact.py": "a9f1e5754ecde98bd66cc0a333106c052c4488ea20076596a72f11d28f1d552a",
+    "scripts/benchmark_ivf_sweep.py": "bb454aee7a1276462f2ecef105ad23d9180a454e39e3043fae00884156f948da",
+    "scripts/benchmark_faiss.py": "0cd80ffcaacd191a7e8b68c40508d917ece3d3bbf2dbb58952f04fa2d0eaa969"
+  },
+  "gpu": "NVIDIA GeForce RTX 4090 D, 570.124.06, 24564 MiB",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Jan_15_19:20:09_PST_2025\nCuda compilation tools, release 12.8, V12.8.61\nBuild cuda_12.8.r12.8/compiler.35404655_0",
+  "python": "3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0]",
+  "parameters": {
+    "dataset": "yahoo-minilm-384",
+    "project_root": "/data/purplepulse-work/PurplePulse",
+    "data_root": "data/real",
+    "results_root": "results/real",
+    "build_dir": "build",
+    "nlist": 1024,
+    "nprobes": "32,64,128,160,192,224",
+    "training_samples": 100000,
+    "iterations": 15,
+    "threads": 16,
+    "batch_size": 64,
+    "warmup": 1,
+    "repeat": 5,
+    "skip_index_build": false,
+    "skip_faiss": false,
+    "maximum_partition_recall_loss": 0.0001
+  }
+}

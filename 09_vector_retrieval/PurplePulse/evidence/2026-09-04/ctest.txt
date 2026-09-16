@@ -1,0 +1,20 @@
+Internal ctest changing into directory: /root/PurplePulse/build
+Test project /root/PurplePulse/build
+    Start 1: unit_tests
+1/7 Test #1: unit_tests ........................   Passed    0.24 sec
+    Start 2: file_io_tests
+2/7 Test #2: file_io_tests .....................   Passed    0.01 sec
+    Start 3: ivf_flat_tests
+3/7 Test #3: ivf_flat_tests ....................   Passed    0.23 sec
+    Start 4: benchmark_faiss_tests
+4/7 Test #4: benchmark_faiss_tests .............   Passed    0.93 sec
+    Start 5: benchmark_ivf_sweep_tests
+5/7 Test #5: benchmark_ivf_sweep_tests .........   Passed    0.07 sec
+    Start 6: benchmark_adaptive_nprobe_tests
+6/7 Test #6: benchmark_adaptive_nprobe_tests ...   Passed    0.07 sec
+    Start 7: plot_results_smoke
+7/7 Test #7: plot_results_smoke ................   Passed    0.06 sec
+
+100% tests passed, 0 tests failed out of 7
+
+Total Test time (real) =   1.60 sec

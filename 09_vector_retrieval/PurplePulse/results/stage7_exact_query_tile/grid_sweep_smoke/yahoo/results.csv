@@ -1,0 +1,7 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,677305,384,1000,10,64,1,281.815,3548.43,279.12,289.263,992.364,280.821,0.192853,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/baseline/exact_k10.txt
+tile4b64,677305,384,1000,10,64,4,172.696,5790.53,172.792,172.878,992.716,171.699,0.195808,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/tile4b64/exact_k10.txt
+tile8b96,677305,384,1000,10,64,8,154.405,6476.45,154.43,154.607,992.95,153.403,0.205579,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/tile8b96/exact_k10.txt
+tile8b128,677305,384,1000,10,64,8,164.453,6080.77,164.162,165.051,993.185,163.424,0.224533,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/tile8b128/exact_k10.txt
+tile8b160,677305,384,1000,10,64,8,145.189,6887.55,145.205,145.243,993.419,144.154,0.254208,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/tile8b160/exact_k10.txt
+tile8b192,677305,384,1000,10,64,8,158.742,6299.54,158.723,158.9,993.653,157.687,0.268971,results/stage7_exact_query_tile/grid_sweep_smoke/yahoo/outputs/tile8b192/exact_k10.txt

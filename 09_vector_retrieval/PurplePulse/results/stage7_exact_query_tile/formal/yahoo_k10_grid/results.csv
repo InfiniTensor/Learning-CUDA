@@ -1,0 +1,5 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,677305,384,1000,10,64,1,279.583,3576.76,279.976,282.94,992.364,278.604,0.189806,results/stage7_exact_query_tile/formal/yahoo_k10_grid/outputs/baseline/exact_k10.txt
+tile8b96,677305,384,1000,10,64,8,155.005,6451.4,154.98,155.297,992.95,153.982,0.209971,results/stage7_exact_query_tile/formal/yahoo_k10_grid/outputs/tile8b96/exact_k10.txt
+tile8b160,677305,384,1000,10,64,8,148.22,6746.74,148.701,150.207,993.419,147.163,0.258874,results/stage7_exact_query_tile/formal/yahoo_k10_grid/outputs/tile8b160/exact_k10.txt
+tile8b192,677305,384,1000,10,64,8,161.791,6180.83,161.839,165.113,993.653,160.523,0.273869,results/stage7_exact_query_tile/formal/yahoo_k10_grid/outputs/tile8b192/exact_k10.txt

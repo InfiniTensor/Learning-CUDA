@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<title>WarpFusion 系统流程</title>
+<desc>图中数据由仓库内原始 CSV 自动生成。</desc>
+<style>.figure-title{font-size:22px;font-weight:600}.panel-title{font-size:16px;font-weight:600}.label{font-size:14px;font-weight:600}.tick{font-size:12px}.note{font-size:12px}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40.00" y="42.00" class="figure-title" >WarpFusion 向量检索系统的组成与数据流</text>
+<rect x="36.00" y="78.00" width="210.00" height="354.00" fill="#F4F5F7" />
+<text x="56.00" y="112.00" class="panel-title" >输入</text>
+<rect x="56.00" y="142.00" width="170.00" height="62.00" fill="#FFFFFF" />
+<text x="141.00" y="179.00" class="label" text-anchor="middle">向量库与查询</text>
+<rect x="56.00" y="228.00" width="170.00" height="62.00" fill="#FFFFFF" />
+<text x="141.00" y="265.00" class="label" text-anchor="middle">检索参数</text>
+<rect x="56.00" y="314.00" width="170.00" height="62.00" fill="#FFFFFF" />
+<text x="141.00" y="351.00" class="label" text-anchor="middle">公开数据校验和</text>
+<rect x="278.00" y="78.00" width="248.00" height="354.00" fill="#F4F5F7" />
+<text x="298.00" y="112.00" class="panel-title" >CPU 端准备</text>
+<rect x="298.00" y="142.00" width="208.00" height="62.00" fill="#FFFFFF" />
+<text x="402.00" y="179.00" class="label" text-anchor="middle">格式与参数检查</text>
+<rect x="298.00" y="228.00" width="208.00" height="62.00" fill="#FFFFFF" />
+<text x="402.00" y="265.00" class="label" text-anchor="middle">精确结果参考</text>
+<rect x="298.00" y="314.00" width="208.00" height="62.00" fill="#FFFFFF" />
+<text x="402.00" y="351.00" class="label" text-anchor="middle">构建并保存 IVF 索引</text>
+<rect x="558.00" y="78.00" width="300.00" height="354.00" fill="#EAF1F7" />
+<text x="578.00" y="112.00" class="panel-title" >GPU 常驻检索</text>
+<rect x="578.00" y="142.00" width="260.00" height="62.00" fill="#FFFFFF" />
+<text x="708.00" y="179.00" class="label" text-anchor="middle">Exact：边算距离边选 Top-K</text>
+<rect x="578.00" y="228.00" width="260.00" height="62.00" fill="#FFFFFF" />
+<text x="708.00" y="265.00" class="label" text-anchor="middle">IVF：选桶、扫描、合并</text>
+<rect x="578.00" y="314.00" width="260.00" height="62.00" fill="#FFFFFF" />
+<text x="708.00" y="351.00" class="label" text-anchor="middle">每批只传查询与结果</text>
+<rect x="890.00" y="78.00" width="194.00" height="354.00" fill="#F4F5F7" />
+<text x="910.00" y="112.00" class="panel-title" >输出证据</text>
+<rect x="910.00" y="142.00" width="154.00" height="62.00" fill="#FFFFFF" />
+<text x="987.00" y="179.00" class="label" text-anchor="middle">ID 与分数</text>
+<rect x="910.00" y="228.00" width="154.00" height="62.00" fill="#FFFFFF" />
+<text x="987.00" y="265.00" class="label" text-anchor="middle">召回率与延迟</text>
+<rect x="910.00" y="314.00" width="154.00" height="62.00" fill="#FFFFFF" />
+<text x="987.00" y="351.00" class="label" text-anchor="middle">CSV、图表、报告</text>
+<line x1="246.00" y1="255.00" x2="278.00" y2="255.00" class="axis" stroke="#2878B5" stroke-width="2.4"/>
+<text x="262.00" y="245.00" class="label" text-anchor="middle">→</text>
+<line x1="526.00" y1="255.00" x2="558.00" y2="255.00" class="axis" stroke="#2878B5" stroke-width="2.4"/>
+<text x="542.00" y="245.00" class="label" text-anchor="middle">→</text>
+<line x1="858.00" y1="255.00" x2="890.00" y2="255.00" class="axis" stroke="#2878B5" stroke-width="2.4"/>
+<text x="874.00" y="245.00" class="label" text-anchor="middle">→</text>
+<line x1="55.00" y1="463.00" x2="1065.00" y2="463.00" class="axis" stroke="#D9DDE3" stroke-width="1.2"/>
+<text x="560.00" y="494.00" class="note" text-anchor="middle">每一次优化都要同时通过正确性检查和同输入 A/B 对照</text>
+</svg>

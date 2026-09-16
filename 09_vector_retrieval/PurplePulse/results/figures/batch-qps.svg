@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="430" viewBox="0 0 1180 430" role="img" aria-labelledby="title desc">
+<title id="title">Batch size vs throughput</title>
+<desc id="desc">Benchmark curves generated from the checked-in raw CSV data.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#202124} .grid{stroke:#d9dde3;stroke-width:1} .axis{stroke:#51565c;stroke-width:1.2} .tick{font-size:11px} .label{font-size:12px;font-weight:600} .panel-title{font-size:14px;font-weight:600} .figure-title{font-size:18px;font-weight:600} .note{font-size:10px;fill:#5f6368}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="590.00" y="28.00" text-anchor="middle" class="figure-title">Batch size vs throughput</text>
+<line x1="85.00" y1="350.00" x2="1135.00" y2="350.00" class="grid"/>
+<text x="76.00" y="354.00" text-anchor="end" class="tick">4049</text>
+<line x1="85.00" y1="282.00" x2="1135.00" y2="282.00" class="grid"/>
+<text x="76.00" y="286.00" text-anchor="end" class="tick">4834</text>
+<line x1="85.00" y1="214.00" x2="1135.00" y2="214.00" class="grid"/>
+<text x="76.00" y="218.00" text-anchor="end" class="tick">5619</text>
+<line x1="85.00" y1="146.00" x2="1135.00" y2="146.00" class="grid"/>
+<text x="76.00" y="150.00" text-anchor="end" class="tick">6404</text>
+<line x1="85.00" y1="78.00" x2="1135.00" y2="78.00" class="grid"/>
+<text x="76.00" y="82.00" text-anchor="end" class="tick">7190</text>
+<line x1="114.72" y1="78.00" x2="114.72" y2="350.00" class="grid"/>
+<text x="114.72" y="368.00" text-anchor="middle" class="tick">8</text>
+<line x1="180.75" y1="78.00" x2="180.75" y2="350.00" class="grid"/>
+<text x="180.75" y="368.00" text-anchor="middle" class="tick">16</text>
+<line x1="312.83" y1="78.00" x2="312.83" y2="350.00" class="grid"/>
+<text x="312.83" y="368.00" text-anchor="middle" class="tick">32</text>
+<line x1="576.98" y1="78.00" x2="576.98" y2="350.00" class="grid"/>
+<text x="576.98" y="368.00" text-anchor="middle" class="tick">64</text>
+<line x1="1105.28" y1="78.00" x2="1105.28" y2="350.00" class="grid"/>
+<text x="1105.28" y="368.00" text-anchor="middle" class="tick">128</text>
+<line x1="85.00" y1="78.00" x2="85.00" y2="350.00" class="axis"/>
+<line x1="85.00" y1="350.00" x2="1135.00" y2="350.00" class="axis"/>
+<text x="610.00" y="397.00" text-anchor="middle" class="label">Batch size (queries)</text>
+<text x="20.00" y="214.00" text-anchor="middle" class="label" transform="rotate(-90 20 214.0)">Throughput (QPS)</text>
+<line x1="430.00" y1="50.00" x2="455.00" y2="50.00" stroke="#0072B2" stroke-width="3"/>
+<text x="462.00" y="54.00" class="label">K=10</text>
+<path d="M 114.72 169.71 L 180.75 126.55 L 312.83 108.30 L 576.98 96.76 L 1105.28 127.55" fill="none" stroke="#0072B2" stroke-width="2.5"/>
+<circle cx="114.72" cy="169.71" r="4.5" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="180.75" cy="126.55" r="4.5" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="312.83" cy="108.30" r="4.5" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="576.98" cy="96.76" r="4.5" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1105.28" cy="127.55" r="4.5" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<line x1="565.00" y1="50.00" x2="590.00" y2="50.00" stroke="#009E73" stroke-width="3"/>
+<text x="597.00" y="54.00" class="label">K=50</text>
+<path d="M 114.72 285.86 L 312.83 125.97 L 576.98 146.45 L 1105.28 236.34" fill="none" stroke="#009E73" stroke-width="2.5"/>
+<circle cx="114.72" cy="285.86" r="4.5" fill="#009E73" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="312.83" cy="125.97" r="4.5" fill="#009E73" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="576.98" cy="146.45" r="4.5" fill="#009E73" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1105.28" cy="236.34" r="4.5" fill="#009E73" stroke="#ffffff" stroke-width="1.5"/>
+<line x1="700.00" y1="50.00" x2="725.00" y2="50.00" stroke="#D55E00" stroke-width="3"/>
+<text x="732.00" y="54.00" class="label">K=100</text>
+<path d="M 114.72 331.24 L 312.83 242.19 L 576.98 236.51 L 1105.28 239.81" fill="none" stroke="#D55E00" stroke-width="2.5"/>
+<circle cx="114.72" cy="331.24" r="4.5" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="312.83" cy="242.19" r="4.5" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="576.98" cy="236.51" r="4.5" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1105.28" cy="239.81" r="4.5" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+</svg>

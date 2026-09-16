@@ -1,0 +1,8 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,exact_fused_layout,exact_fused_blocks,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,1000000,128,1000,10,64,1,warp_query,0,144.318,6929.15,144.353,144.475,488.437,143.308,0.179403,results/stage7_exact_block_tile/smoke/synthetic/outputs/baseline/exact_k10.txt
+warp_best,1000000,128,1000,10,64,4,warp_query,64,107.937,9264.65,107.945,107.978,488.789,106.992,0.193227,results/stage7_exact_block_tile/smoke/synthetic/outputs/warp_best/exact_k10.txt
+block64,1000000,128,1000,10,64,8,block_tile,64,127.981,7813.64,127.983,128.028,488.789,126.986,0.19456,results/stage7_exact_block_tile/smoke/synthetic/outputs/block64/exact_k10.txt
+block96,1000000,128,1000,10,64,8,block_tile,96,128.289,7794.89,128.276,128.338,489.023,127.271,0.209867,results/stage7_exact_block_tile/smoke/synthetic/outputs/block96/exact_k10.txt
+block128,1000000,128,1000,10,64,8,block_tile,128,110.501,9049.68,110.525,110.587,489.257,109.478,0.222496,results/stage7_exact_block_tile/smoke/synthetic/outputs/block128/exact_k10.txt
+block160,1000000,128,1000,10,64,8,block_tile,160,114.417,8739.97,114.366,114.544,489.492,113.375,0.247509,results/stage7_exact_block_tile/smoke/synthetic/outputs/block160/exact_k10.txt
+block192,1000000,128,1000,10,64,8,block_tile,192,112.468,8891.39,112.471,112.568,489.726,111.306,0.261931,results/stage7_exact_block_tile/smoke/synthetic/outputs/block192/exact_k10.txt

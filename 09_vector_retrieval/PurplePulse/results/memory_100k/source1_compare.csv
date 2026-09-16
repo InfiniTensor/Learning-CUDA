@@ -1,0 +1,3 @@
+mode,nlist,nprobe,rerank_factor,session_id,source_type,average_ms,qps,batch_p50_ms,batch_p99_ms,scan_ms,merge_ms,rerank_ms,gpu_buffer_mib,recall_vs_fused,min_query_recall_vs_fused
+fused,64,64,1,any,1,20.8149,48042.6,1.28106,1.29066,18.6603,0.164685,0.0,52.068733,1.0,1.0
+rerank,64,64,10,any,1,46.3539,21573.2,2.88906,2.96419,42.4594,1.10371,0.840845,56.353401,0.507,0.1

@@ -1,0 +1,3 @@
+========= COMPUTE-SANITIZER
+IVF-Flat 建库、持久化、查询与 recall 测试通过
+========= ERROR SUMMARY: 0 errors

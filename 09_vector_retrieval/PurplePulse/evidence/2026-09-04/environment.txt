@@ -1,0 +1,35 @@
+2026-09-04T07:42:26,935679805+00:00
+Linux 2a615599b24c 5.4.0-196-generic #216-Ubuntu SMP Thu Aug 29 13:26:53 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 24.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.1 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+NVIDIA GeForce RTX 4090 D, 570.124.06, 24564 MiB, 8.9
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Jan_15_19:20:09_PST_2025
+Cuda compilation tools, release 12.8, V12.8.61
+Build cuda_12.8.r12.8/compiler.35404655_0
+cmake version 3.31.4
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+1.11.1.git.kitware.jobserver-1
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0
+Python 3.12.3
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'faiss'
+numpy 1.26.4
+faiss-python 3.12.3
+faiss-numpy 2.2.6
+faiss 1.14.1
+faiss-gpus 1

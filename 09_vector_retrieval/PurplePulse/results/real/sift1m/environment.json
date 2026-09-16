@@ -1,0 +1,26 @@
+{
+  "dataset": "sift1m",
+  "timestamp_utc": "2026-09-10T07:55:09.404971+00:00",
+  "git_commit": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).",
+  "gpu": "NVIDIA GeForce RTX 4090 D, 570.124.06, 24564 MiB",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Jan_15_19:20:09_PST_2025\nCuda compilation tools, release 12.8, V12.8.61\nBuild cuda_12.8.r12.8/compiler.35404655_0",
+  "python": "3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0]",
+  "parameters": {
+    "dataset": "sift1m",
+    "project_root": "/data/purplepulse-work/PurplePulse",
+    "data_root": "data/real",
+    "results_root": "results/real",
+    "build_dir": "build",
+    "nlist": 1024,
+    "nprobes": "32,64,128,160,192,224",
+    "training_samples": 100000,
+    "iterations": 15,
+    "threads": 16,
+    "batch_size": 64,
+    "warmup": 1,
+    "repeat": 5,
+    "skip_index_build": false,
+    "skip_faiss": false,
+    "maximum_partition_recall_loss": 0.0001
+  }
+}

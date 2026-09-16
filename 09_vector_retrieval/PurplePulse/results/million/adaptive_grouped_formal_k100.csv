@@ -1,0 +1,2 @@
+policy,execution,target_mass,temperature,min_nprobe,max_nprobe,step,actual_nprobe_min,actual_nprobe_average,actual_nprobe_max,average_ms,qps,batch_p50_ms,batch_p99_ms,recall_at_k,min_query_recall,center_ms,policy_ms,scan_ms,merge_ms,gpu_buffer_mib
+score_mass,grouped,0.93,0.2,64,224,16,128.0,151.632,176.0,204.68,4885.68,12.3324,13.4839,0.8999299999999999,0.77,2.64728,0.155221,195.867,1.29021,512.720711

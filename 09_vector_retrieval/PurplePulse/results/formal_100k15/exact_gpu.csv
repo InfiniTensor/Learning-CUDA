@@ -1,0 +1,4 @@
+implementation,backend,metric,num_vectors,num_queries,dim,dtype,top_k,batch_size,warmup,run_samples,average_query_ms,qps,run_p50_ms,run_p99_ms,batch_latency_samples,batch_p50_ms,batch_p99_ms,gpu_initialization_ms,database_h2d_ms,gpu_buffer_mib,query_h2d_ms,fused_kernel_ms,final_topk_ms,result_d2h_ms
+purplepulse,gpu,inner_product,1000000,1000,128,fp32,10,64,5,100,149.755,6677.57,150.025,151.143,1600,9.53296,9.64477,200.701,48.602,488.437,0.22932,148.772,0.187956,0.363535
+purplepulse,gpu,inner_product,1000000,1000,128,fp32,50,64,5,100,167.387,5974.19,167.671,169.027,1600,10.6347,10.8679,173.011,49.114,488.935,0.232645,165.594,0.844275,0.411974
+purplepulse,gpu,inner_product,1000000,1000,128,fp32,100,64,5,100,184.966,5406.4,185.035,187.947,1600,11.7263,12.1334,172.278,48.5765,489.558,0.232269,181.896,1.88726,0.492971

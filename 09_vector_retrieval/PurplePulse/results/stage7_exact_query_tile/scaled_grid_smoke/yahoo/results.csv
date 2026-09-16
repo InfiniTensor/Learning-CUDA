@@ -1,0 +1,10 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,677305,384,1000,10,64,1,276.786,3612.9,273.801,283.9,992.364,275.793,0.186955,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/baseline/exact_k10.txt
+baseline,677305,384,1000,50,64,1,287.502,3478.24,282.853,296.864,992.862,285.579,0.851019,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/baseline/exact_k50.txt
+baseline,677305,384,1000,100,64,1,306.175,3266.11,303.427,314.989,993.485,302.749,1.93477,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/baseline/exact_k100.txt
+tile2,677305,384,1000,10,64,2,273.55,3655.63,273.601,273.631,992.481,272.532,0.179893,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile2/exact_k10.txt
+tile2,677305,384,1000,50,64,2,281.422,3553.38,281.261,281.774,993.448,279.484,0.907637,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile2/exact_k50.txt
+tile2,677305,384,1000,100,64,2,430.109,2324.99,430.126,430.181,994.657,425.991,2.29615,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile2/exact_k100.txt
+tile4,677305,384,1000,10,64,4,172.223,5806.42,172.072,172.564,992.716,171.208,0.195893,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile4/exact_k10.txt
+tile4,677305,384,1000,50,64,4,244.817,4084.68,244.819,244.932,994.62,242.611,1.20675,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile4/exact_k50.txt
+tile4,677305,384,1000,100,64,4,438.85,2278.68,438.846,439.097,997.0,430.492,6.69938,results/stage7_exact_query_tile/scaled_grid_smoke/yahoo/outputs/tile4/exact_k100.txt

@@ -1,0 +1,110 @@
+{
+  "50": {
+    "selected_mode": "full_heap",
+    "maximum_allowed_recall_loss": 0.0001,
+    "comparisons": [
+      {
+        "nprobe": 32,
+        "partitioned_recall": 0.94596,
+        "full_heap_recall": 0.9469399999999999,
+        "partitioned_qps": 34014.9,
+        "full_heap_qps": 31088.4,
+        "recall_loss": 0.0009799999999998699
+      },
+      {
+        "nprobe": 64,
+        "partitioned_recall": 0.97214,
+        "full_heap_recall": 0.97312,
+        "partitioned_qps": 26861.0,
+        "full_heap_qps": 26075.4,
+        "recall_loss": 0.0009799999999999809
+      },
+      {
+        "nprobe": 128,
+        "partitioned_recall": 0.98718,
+        "full_heap_recall": 0.9881599999999999,
+        "partitioned_qps": 17303.1,
+        "full_heap_qps": 17663.5,
+        "recall_loss": 0.0009799999999999809
+      },
+      {
+        "nprobe": 160,
+        "partitioned_recall": 0.99054,
+        "full_heap_recall": 0.99152,
+        "partitioned_qps": 14734.8,
+        "full_heap_qps": 14949.7,
+        "recall_loss": 0.0009799999999999809
+      },
+      {
+        "nprobe": 192,
+        "partitioned_recall": 0.99238,
+        "full_heap_recall": 0.99336,
+        "partitioned_qps": 12772.4,
+        "full_heap_qps": 12968.9,
+        "recall_loss": 0.0009799999999999809
+      },
+      {
+        "nprobe": 224,
+        "partitioned_recall": 0.9938400000000001,
+        "full_heap_recall": 0.99482,
+        "partitioned_qps": 11189.0,
+        "full_heap_qps": 11431.3,
+        "recall_loss": 0.0009799999999999809
+      }
+    ]
+  },
+  "100": {
+    "selected_mode": "partitioned",
+    "maximum_allowed_recall_loss": 0.0001,
+    "comparisons": [
+      {
+        "nprobe": 32,
+        "partitioned_recall": 0.937,
+        "full_heap_recall": 0.937,
+        "partitioned_qps": 36300.8,
+        "full_heap_qps": 14462.4,
+        "recall_loss": 0.0
+      },
+      {
+        "nprobe": 64,
+        "partitioned_recall": 0.9675,
+        "full_heap_recall": 0.9675,
+        "partitioned_qps": 27557.5,
+        "full_heap_qps": 13275.9,
+        "recall_loss": 0.0
+      },
+      {
+        "nprobe": 128,
+        "partitioned_recall": 0.9851599999999999,
+        "full_heap_recall": 0.9851599999999999,
+        "partitioned_qps": 16917.4,
+        "full_heap_qps": 9555.98,
+        "recall_loss": 0.0
+      },
+      {
+        "nprobe": 160,
+        "partitioned_recall": 0.98923,
+        "full_heap_recall": 0.98923,
+        "partitioned_qps": 14196.2,
+        "full_heap_qps": 8260.7,
+        "recall_loss": 0.0
+      },
+      {
+        "nprobe": 192,
+        "partitioned_recall": 0.99185,
+        "full_heap_recall": 0.99185,
+        "partitioned_qps": 12183.2,
+        "full_heap_qps": 7305.64,
+        "recall_loss": 0.0
+      },
+      {
+        "nprobe": 224,
+        "partitioned_recall": 0.9936799999999999,
+        "full_heap_recall": 0.9936799999999999,
+        "partitioned_qps": 10648.6,
+        "full_heap_qps": 6505.14,
+        "recall_loss": 0.0
+      }
+    ]
+  }
+}

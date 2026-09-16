@@ -1,0 +1,100 @@
+向量库: 1000000 x 128
+查询数: 1000
+dtype: fp32
+metric: inner_product
+top_k: 10
+batch_size: 64
+distance_mode: warp
+topk_mode: fused
+warmup/repeat: 1/5
+backend: gpu
+GPU 一次性初始化总时间: 387.492 ms
+数据库一次性 H2D: 49.1047 ms
+GPU 缓冲区: 488.437 MiB
+估算冷启动端到端: 533.198 ms
+平均常驻查询时间: 145.706 ms
+run P50: 145.789 ms
+run P99: 146.261 ms
+常驻 QPS: 6863.12
+结果: "results/formal_100k15/exact_k10_nsys.txt"
+平均查询 H2D: 0.33273 ms
+平均融合距离+局部 Top-K kernel: 144.491 ms
+平均最终 Top-K kernel: 0.209363 ms
+平均结果 D2H: 0.399002 ms
+batch P50: 9.25331 ms
+batch P99: 9.6127 ms
+Collecting data...
+Generating '/tmp/nsys-report-450f.qdstrm'
+[1/8] [0%                          ] exact_k10_nsys.nsys-rep[1/8] [0%                          ] exact_k10_nsys.nsys-rep[1/8] [==================76%       ] exact_k10_nsys.nsys-rep[1/8] [========================100%] exact_k10_nsys.nsys-rep[1/8] [========================100%] exact_k10_nsys.nsys-rep
+[2/8] [0%                          ] exact_k10_nsys.sqlite[2/8] [1%                          ] exact_k10_nsys.sqlite[2/8] [2%                          ] exact_k10_nsys.sqlite[2/8] [3%                          ] exact_k10_nsys.sqlite[2/8] [4%                          ] exact_k10_nsys.sqlite[2/8] [5%                          ] exact_k10_nsys.sqlite[2/8] [6%                          ] exact_k10_nsys.sqlite[2/8] [7%                          ] exact_k10_nsys.sqlite[2/8] [8%                          ] exact_k10_nsys.sqlite[2/8] [9%                          ] exact_k10_nsys.sqlite[2/8] [10%                         ] exact_k10_nsys.sqlite[2/8] [11%                         ] exact_k10_nsys.sqlite[2/8] [12%                         ] exact_k10_nsys.sqlite[2/8] [13%                         ] exact_k10_nsys.sqlite[2/8] [14%                         ] exact_k10_nsys.sqlite[2/8] [=15%                        ] exact_k10_nsys.sqlite[2/8] [=16%                        ] exact_k10_nsys.sqlite[2/8] [=17%                        ] exact_k10_nsys.sqlite[2/8] [==18%                       ] exact_k10_nsys.sqlite[2/8] [==19%                       ] exact_k10_nsys.sqlite[2/8] [==20%                       ] exact_k10_nsys.sqlite[2/8] [==21%                       ] exact_k10_nsys.sqlite[2/8] [===22%                      ] exact_k10_nsys.sqlite[2/8] [===23%                      ] exact_k10_nsys.sqlite[2/8] [===24%                      ] exact_k10_nsys.sqlite[2/8] [====25%                     ] exact_k10_nsys.sqlite[2/8] [====26%                     ] exact_k10_nsys.sqlite[2/8] [====27%                     ] exact_k10_nsys.sqlite[2/8] [====28%                     ] exact_k10_nsys.sqlite[2/8] [=====29%                    ] exact_k10_nsys.sqlite[2/8] [=====30%                    ] exact_k10_nsys.sqlite[2/8] [=====31%                    ] exact_k10_nsys.sqlite[2/8] [=====32%                    ] exact_k10_nsys.sqlite[2/8] [======33%                   ] exact_k10_nsys.sqlite[2/8] [======34%                   ] exact_k10_nsys.sqlite[2/8] [======35%                   ] exact_k10_nsys.sqlite[2/8] [=======36%                  ] exact_k10_nsys.sqlite[2/8] [=======37%                  ] exact_k10_nsys.sqlite[2/8] [=======38%                  ] exact_k10_nsys.sqlite[2/8] [=======39%                  ] exact_k10_nsys.sqlite[2/8] [========40%                 ] exact_k10_nsys.sqlite[2/8] [========41%                 ] exact_k10_nsys.sqlite[2/8] [========42%                 ] exact_k10_nsys.sqlite[2/8] [=========43%                ] exact_k10_nsys.sqlite[2/8] [=========44%                ] exact_k10_nsys.sqlite[2/8] [=========45%                ] exact_k10_nsys.sqlite[2/8] [=========46%                ] exact_k10_nsys.sqlite[2/8] [==========47%               ] exact_k10_nsys.sqlite[2/8] [==========48%               ] exact_k10_nsys.sqlite[2/8] [==========49%               ] exact_k10_nsys.sqlite[2/8] [===========50%              ] exact_k10_nsys.sqlite[2/8] [===========51%              ] exact_k10_nsys.sqlite[2/8] [===========52%              ] exact_k10_nsys.sqlite[2/8] [===========53%              ] exact_k10_nsys.sqlite[2/8] [============54%             ] exact_k10_nsys.sqlite[2/8] [============55%             ] exact_k10_nsys.sqlite[2/8] [============56%             ] exact_k10_nsys.sqlite[2/8] [============57%             ] exact_k10_nsys.sqlite[2/8] [=============58%            ] exact_k10_nsys.sqlite[2/8] [=============59%            ] exact_k10_nsys.sqlite[2/8] [=============60%            ] exact_k10_nsys.sqlite[2/8] [==============61%           ] exact_k10_nsys.sqlite[2/8] [==============62%           ] exact_k10_nsys.sqlite[2/8] [==============63%           ] exact_k10_nsys.sqlite[2/8] [==============64%           ] exact_k10_nsys.sqlite[2/8] [===============65%          ] exact_k10_nsys.sqlite[2/8] [===============66%          ] exact_k10_nsys.sqlite[2/8] [===============67%          ] exact_k10_nsys.sqlite[2/8] [================68%         ] exact_k10_nsys.sqlite[2/8] [================69%         ] exact_k10_nsys.sqlite[2/8] [================70%         ] exact_k10_nsys.sqlite[2/8] [================71%         ] exact_k10_nsys.sqlite[2/8] [=================72%        ] exact_k10_nsys.sqlite[2/8] [=================73%        ] exact_k10_nsys.sqlite[2/8] [=================74%        ] exact_k10_nsys.sqlite[2/8] [==================75%       ] exact_k10_nsys.sqlite[2/8] [==================76%       ] exact_k10_nsys.sqlite[2/8] [==================77%       ] exact_k10_nsys.sqlite[2/8] [==================78%       ] exact_k10_nsys.sqlite[2/8] [===================79%      ] exact_k10_nsys.sqlite[2/8] [===================80%      ] exact_k10_nsys.sqlite[2/8] [===================81%      ] exact_k10_nsys.sqlite[2/8] [===================82%      ] exact_k10_nsys.sqlite[2/8] [====================83%     ] exact_k10_nsys.sqlite[2/8] [====================84%     ] exact_k10_nsys.sqlite[2/8] [====================85%     ] exact_k10_nsys.sqlite[2/8] [=====================86%    ] exact_k10_nsys.sqlite[2/8] [=====================87%    ] exact_k10_nsys.sqlite[2/8] [=====================88%    ] exact_k10_nsys.sqlite[2/8] [=====================89%    ] exact_k10_nsys.sqlite[2/8] [======================90%   ] exact_k10_nsys.sqlite[2/8] [======================91%   ] exact_k10_nsys.sqlite[2/8] [======================92%   ] exact_k10_nsys.sqlite[2/8] [=======================93%  ] exact_k10_nsys.sqlite[2/8] [=======================94%  ] exact_k10_nsys.sqlite[2/8] [=======================95%  ] exact_k10_nsys.sqlite[2/8] [=======================96%  ] exact_k10_nsys.sqlite[2/8] [========================97% ] exact_k10_nsys.sqlite[2/8] [========================98% ] exact_k10_nsys.sqlite[2/8] [========================99% ] exact_k10_nsys.sqlite[2/8] [========================100%] exact_k10_nsys.sqlite[2/8] [========================100%] exact_k10_nsys.sqlite
+SKIPPED: /root/PurplePulse/results/evidence/exact_k10_nsys.sqlite does not contain NV Tools Extension (NVTX) data.
+[3/8] Executing 'nvtx_sum' stats report
+[4/8] Executing 'osrt_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)     Med (ns)    Min (ns)   Max (ns)   StdDev (ns)           Name
+ --------  ---------------  ---------  -----------  -----------  ---------  ---------  -----------  ----------------------
+     50.5       1229257719         21   58536081.9   41666582.0       4009  227645472   60313247.0  poll
+     41.1       1000173936          2  500086968.0  500086968.0  500085280  500088656       2387.2  pthread_cond_timedwait
+      4.5        108441993         19    5707473.3       2347.0       1028  108319891   24848738.0  read
+      3.8         92281614        552     167176.8      15264.5       1034   16349452     834161.2  ioctl
+      0.1          1445352         25      57814.1       4230.0       2799    1135032     225138.3  mmap64
+      0.0           458294          9      50921.6      47450.0      44364      69199       8896.6  sem_timedwait
+      0.0           308424         75       4112.3       1614.0       1244      60791       7551.7  fopen
+      0.0           199870         43       4648.1       3864.0       1716      10003       1941.4  open64
+      0.0           141161          1     141161.0     141161.0     141161     141161          0.0  pthread_cond_wait
+      0.0           122397         26       4707.6       3610.0       3177      15967       3203.3  writev
+      0.0           110603          3      36867.7      35896.0      27886      46821       9504.8  pthread_create
+      0.0            88462         13       6804.8       2546.0       1350      36082       9437.1  mmap
+      0.0            46148         11       4195.3       3895.0       1685       7795       1879.7  write
+      0.0            41415         11       3765.0       1962.0       1010      10948       3549.7  fclose
+      0.0            39814          1      39814.0      39814.0      39814      39814          0.0  fgets
+      0.0            25760          3       8586.7       4555.0       1766      19439       9501.3  pipe2
+      0.0            25583          6       4263.8       4722.0       1795       6360       1915.0  open
+      0.0            20692          6       3448.7       3280.5       1891       5558       1403.1  munmap
+      0.0            20296          3       6765.3       4667.0       4282      11347       3972.5  pthread_cond_broadcast
+      0.0            15064          3       5021.3       2905.0       2787       9372       3768.2  stat
+      0.0            13074          2       6537.0       6537.0       4600       8474       2739.3  socket
+      0.0             8873          1       8873.0       8873.0       8873       8873          0.0  connect
+      0.0             6874          3       2291.3       2418.0       1040       3416       1193.1  fwrite
+      0.0             2770          1       2770.0       2770.0       2770       2770          0.0  bind
+      0.0             1234          1       1234.0       1234.0       1234       1234          0.0  listen
+      0.0             1156          1       1156.0       1156.0       1156       1156          0.0  fcntl
+
+[5/8] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)   Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Name
+ --------  ---------------  ---------  ----------  --------  --------  --------  -----------  ----------------------
+     89.9        919006727        289   3179954.1   13477.0      9090  49083340    5059558.9  cudaMemcpy
+      9.7         99655891          6  16609315.2    3164.5      1521  99579244   40646806.2  cudaMalloc
+      0.2          1653566        482      3430.6    3266.5      2894     23561       1083.3  cudaEventRecord
+      0.2          1584689        192      8253.6    3812.0      3165    815332      58578.6  cudaLaunchKernel
+      0.1           608876          6    101479.3   23387.0      2171    376971     151258.0  cudaFree
+      0.0           253967         97      2618.2    2630.0      1364      3568        259.8  cudaEventSynchronize
+      0.0            31958         32       998.7     520.0       403      7999       1462.2  cudaEventCreate
+      0.0            16409         32       512.8     355.5       288      1888        375.6  cudaEventDestroy
+      0.0             1284          1      1284.0    1284.0      1284      1284          0.0  cuModuleGetLoadingMode
+
+[6/8] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     99.9        866184910         96  9022759.5  9188328.0   6364230   9554682     668168.8  void exactFusedWarpTopKKernel<float, (unsigned int)10, (Metric)2>(const T1 *, const T1 *, float *, …
+      0.1           877669         96     9142.4     9120.0      8992      9696        104.0  blockTopKKernel(float *, const unsigned long *, float *, unsigned long *, unsigned long, unsigned i…
+
+[7/8] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     99.5         49358062     97  508846.0    3936.0      2688  48983659    4973141.1  [CUDA memcpy Host-to-Device]
+      0.5           241888    192    1259.8    1280.0      1184      1728         73.5  [CUDA memcpy Device-to-Host]
+
+[8/8] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+    515.072     97     5.310     0.033     0.020   512.000       51.982  [CUDA memcpy Host-to-Device]
+      0.720    192     0.004     0.003     0.002     0.005        0.001  [CUDA memcpy Device-to-Host]
+
+Generated:
+    /root/PurplePulse/results/evidence/exact_k10_nsys.nsys-rep
+    /root/PurplePulse/results/evidence/exact_k10_nsys.sqlite

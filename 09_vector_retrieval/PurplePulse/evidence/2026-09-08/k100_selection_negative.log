@@ -1,0 +1,46 @@
+K=100 selection experiments rejected after same-host A/B
+Platform: NVIDIA GeForce RTX 4090 D
+Dataset: Synthetic-1M, 128-dimensional FP32, inner product
+Index: IVF-Flat, nlist=256, nprobe=160
+Batch size: 64
+
+distributed_register_topk
+  baseline: 5483.49 QPS, average 182.366 ms, P99 183.618 ms, scan 174.026 ms
+  variant:  5507.23 QPS, average 181.579 ms, P99 183.087 ms, scan 173.294 ms
+  change:   +0.4329%
+  repeat:   100 after warm-up
+  output:   byte-identical
+  decision: reject; below the predeclared 1% acceptance threshold
+
+candidate_buffer_8
+  baseline: 5508.19 QPS, average 181.548 ms, P99 182.597 ms, scan 173.114 ms
+  variant:  4258.85 QPS, average 234.805 ms, P99 239.191 ms, scan 225.342 ms
+  change:   -22.6815%
+  repeat:   10 after warm-up; stopped before the 100-run formal phase
+  output:   byte-identical
+  CTest:    8/8 passed
+  Compute Sanitizer: 0 errors
+  resource diagnostic for K=100, one-warp, inner-product, bucket-major kernel:
+    stable:  REG 48, STACK 0 B,  SHARED 1200 B, LOCAL 0 B
+    buffer8: REG 48, STACK 96 B, SHARED 1200 B, LOCAL 0 B
+  decision: reject; per-thread candidate arrays spill to a 96-byte stack and the
+            best-first flush adds extra selection work
+
+warp_bitonic_sort_128
+  baseline: 5496.78 QPS, average 181.925 ms, P99 182.873 ms, scan 173.398 ms
+  variant:  4467.83 QPS, average 223.822 ms, P99 229.924 ms, scan 214.114 ms
+  change:   -18.7191%
+  repeat:   10 after warm-up; stopped before the 100-run formal phase
+  output:   byte-identical
+  CTest:    8/8 passed
+  Compute Sanitizer: 0 errors
+  resource diagnostic for K=100, one-warp, inner-product, bucket-major kernel:
+    stable:  REG 48, STACK 0 B, SHARED 1200 B, LOCAL 0 B
+    bitonic: REG 56, STACK 0 B, SHARED 1536 B, LOCAL 0 B
+  decision: reject; the fixed 28-stage sorting network, synchronization, and
+            extra comparisons cost more than parallel lane participation saves
+
+After each experiment, local and remote source were restored to the retained
+stable baseline:
+  sha256 0a4dd5ddaaf7471893f3a2471908d2c9417f8f014c961e16153584f7ca6e45ac
+Remote CTest after restoration: 8/8 passed.

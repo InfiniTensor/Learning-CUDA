@@ -1,0 +1,4 @@
+implementation,backend,index_type,metric,num_vectors,num_queries,dim,dtype,cpu_threads,top_k,batch_size,nlist,nprobe,train_samples,build_ms,load_ms,gpu_transfer_ms,average_query_ms,qps,batch_p50_ms,batch_p99_ms,recall_at_k,min_query_recall
+faiss-1.14.1,cpu,flat,inner_product,1000000,1000,128,fp32,1,10,64,0,0,0,0.0,287.047304213047,0.0,13172.113172709942,75.91796296374113,840.2729630470276,852.7840971946716,1.0,1.0
+faiss-1.14.1,cpu,flat,inner_product,1000000,1000,128,fp32,1,50,64,0,0,0,0.0,287.047304213047,0.0,13208.435845871767,75.70919158550822,842.0012220740318,853.2666340470314,1.0,1.0
+faiss-1.14.1,cpu,flat,inner_product,1000000,1000,128,fp32,1,100,64,0,0,0,0.0,287.047304213047,0.0,13687.985599040985,73.05676885502149,873.8687261939049,878.7985518574715,1.0,1.0

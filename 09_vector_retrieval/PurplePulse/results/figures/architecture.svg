@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600" viewBox="0 0 1120 600" role="img" aria-labelledby="title desc">
+  <title id="title">WarpFusion system architecture</title>
+  <desc id="desc">Versioned inputs flow through host-side validation and index construction into resident GPU Exact and IVF pipelines, followed by strict correctness checks and reproducible artifacts.</desc>
+  <style>
+    .figure-title { font: 600 24px sans-serif; fill: #142b4a; }
+    .panel-title { font: 600 17px sans-serif; fill: #142b4a; }
+    .label { font: 500 14px sans-serif; fill: #18212b; }
+    .note { font: 400 12px sans-serif; fill: #59636e; }
+    .flow { stroke: #275d8c; stroke-width: 2.2; }
+    .lane { stroke: #b8c0c8; stroke-width: 1.2; }
+  </style>
+  <rect x="0" y="0" width="1120" height="600" fill="#ffffff"/>
+  <text x="40" y="42" class="figure-title">WarpFusion: from versioned inputs to auditable results</text>
+
+  <rect x="36" y="78" width="222" height="438" fill="#f4f5f7" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="58" y="110" class="panel-title">Inputs</text>
+  <rect x="58" y="136" width="178" height="68" fill="#eaf1f7" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="76" y="165" class="label">Vector database</text>
+  <text x="76" y="187" class="note">FP32 / FP16 + metric</text>
+  <rect x="58" y="224" width="178" height="68" fill="#eaf1f7" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="76" y="253" class="label">Queries + parameters</text>
+  <text x="76" y="275" class="note">K, batch, nprobe, layout</text>
+  <rect x="58" y="312" width="178" height="68" fill="#eaf1f7" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="76" y="341" class="label">Public provenance</text>
+  <text x="76" y="363" class="note">checksum + ground truth</text>
+  <rect x="58" y="400" width="178" height="88" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="76" y="430" class="label">Versioned binary I/O</text>
+  <text x="76" y="453" class="note">magic / shape / dtype</text>
+  <text x="76" y="474" class="note">fail-closed validation</text>
+
+  <rect x="294" y="78" width="274" height="438" fill="#f4f5f7" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="316" y="110" class="panel-title">Host orchestration</text>
+  <rect x="316" y="136" width="230" height="78" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="334" y="166" class="label">CPU Exact reference</text>
+  <text x="334" y="190" class="note">stable score + ID ordering</text>
+  <rect x="316" y="236" width="230" height="92" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="334" y="266" class="label">IVF index construction</text>
+  <text x="334" y="290" class="note">deterministic k-means</text>
+  <text x="334" y="312" class="note">continuous bucket layout</text>
+  <rect x="316" y="350" width="230" height="112" fill="#eaf1f7" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="334" y="380" class="label">Reproduction driver</text>
+  <text x="334" y="404" class="note">build → test → datasets</text>
+  <text x="334" y="426" class="note">benchmarks → plots → PDF</text>
+  <text x="334" y="448" class="note">checkpoint + resume</text>
+
+  <rect x="604" y="78" width="286" height="438" fill="#eaf1f7" stroke="#275d8c" stroke-width="1.4"/>
+  <text x="626" y="110" class="panel-title">Resident GPU engine</text>
+  <rect x="626" y="136" width="242" height="92" fill="#ffffff" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="644" y="166" class="label">Exact fused scan</text>
+  <text x="644" y="190" class="note">query tile → warp heap</text>
+  <text x="644" y="212" class="note">block merge; no score matrix</text>
+  <rect x="626" y="250" width="242" height="118" fill="#ffffff" stroke="#275d8c" stroke-width="1.2"/>
+  <text x="644" y="280" class="label">IVF-Flat search</text>
+  <text x="644" y="304" class="note">center selection → bucket tasks</text>
+  <text x="644" y="326" class="note">warp scan → local heap</text>
+  <text x="644" y="348" class="note">query-level k-way merge</text>
+  <rect x="626" y="390" width="242" height="72" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="644" y="420" class="label">Persistent buffers</text>
+  <text x="644" y="444" class="note">only queries/results transfer per batch</text>
+
+  <rect x="926" y="78" width="158" height="438" fill="#f4f5f7" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="946" y="110" class="panel-title">Evidence</text>
+  <rect x="946" y="136" width="118" height="92" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="960" y="164" class="label">Correctness</text>
+  <text x="960" y="188" class="note">ID + score</text>
+  <text x="960" y="209" class="note">recall fallback</text>
+  <rect x="946" y="250" width="118" height="92" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="960" y="278" class="label">Performance</text>
+  <text x="960" y="302" class="note">QPS / P50 / P99</text>
+  <text x="960" y="323" class="note">GPU buffers</text>
+  <rect x="946" y="364" width="118" height="98" fill="#ffffff" stroke="#b8c0c8" stroke-width="1.2"/>
+  <text x="960" y="392" class="label">Artifacts</text>
+  <text x="960" y="416" class="note">CSV + JSON</text>
+  <text x="960" y="437" class="note">SVG + PDF</text>
+
+  <line x1="258" y1="297" x2="294" y2="297" class="flow"/>
+  <text x="267" y="286" class="note">→</text>
+  <line x1="568" y1="297" x2="604" y2="297" class="flow"/>
+  <text x="577" y="286" class="note">→</text>
+  <line x1="890" y1="297" x2="926" y2="297" class="flow"/>
+  <text x="899" y="286" class="note">→</text>
+  <line x1="147" y1="516" x2="1005" y2="516" class="lane"/>
+  <text x="350" y="548" class="note">Every optimization is accepted only after reproducible A/B and correctness checks</text>
+</svg>

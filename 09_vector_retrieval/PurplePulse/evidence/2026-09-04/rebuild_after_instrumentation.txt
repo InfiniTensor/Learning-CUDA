@@ -1,0 +1,4 @@
+[1/4] Building CXX object CMakeFiles/vector_search.dir/src/main.cpp.o
+[2/4] Linking CXX executable vector_search
+[3/4] Building CXX object CMakeFiles/ivf_search.dir/src/search_ivf.cpp.o
+[4/4] Linking CXX executable ivf_search
