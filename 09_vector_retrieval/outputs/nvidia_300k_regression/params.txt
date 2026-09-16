@@ -1,0 +1,15 @@
+# vsearch retrieval parameters
+top_k = 100
+search_mode = "ivf_flat"
+batch_size = 128
+nlist = 1024
+nprobe = 16
+pq_m = 16
+
+# extension knobs
+kmeans_sample = 131072
+kmeans_iters = 12
+index_path = data_nv/index.idx
+result_path = data_nv/result.txt
+perf_log_path = data_nv/perf.log
+quality_log_path = data_nv/quality.log

@@ -1,0 +1,56 @@
+# Iluvatar CoreX (天数智芯) build for the GPU vector search engine.
+#
+# The CoreX toolkit ships an nvcc-compatible *stub* and a customized clang
+# driver. CMake's CUDA language support expects a real nvcc, so this simple
+# Makefile compiles every .cu through the CoreX clang `-x ivcore` path and
+# links against the CoreX runtime / cuBLAS libraries directly.
+
+COREX ?= /usr/local/corex
+CXX   := $(COREX)/bin/clang++
+INCS  := -I$(COREX)/include -Iinclude
+LIBS  := -L$(COREX)/lib64 -lcudart -lcublas -lpthread
+CFLAGS := -std=c++17 -O2 -fPIC -Wall
+CUFLAGS := -x ivcore --cuda-path=$(COREX) $(INCS) $(CFLAGS)
+CUFLAGS += -DVSEARCH_COREX=1
+HFLAGS := $(INCS) $(CFLAGS) -DVSEARCH_COREX=1
+
+BUILD := build_corex
+CORE_SRCS := src/binary_io.cpp src/config.cpp src/cpu_reference.cpp \
+             src/result_io.cpp src/metric.cpp cuda/engine.cu
+CORE_OBJS := $(patsubst %.cpp,$(BUILD)/%.o,$(patsubst %.cu,$(BUILD)/%.o,$(CORE_SRCS)))
+
+BIN := vsearch
+TEST_HOST := test_host
+TEST_GPU := test_gpu
+
+.PHONY: all clean tests
+
+all: $(BUILD)/$(BIN) $(BUILD)/$(TEST_HOST) $(BUILD)/$(TEST_GPU)
+
+$(BUILD)/%.o: %.cu
+	@mkdir -p $(dir $@)
+	$(CXX) $(CUFLAGS) -c $< -o $@
+
+$(BUILD)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(HFLAGS) -c $< -o $@
+
+$(BUILD)/$(BIN): $(CORE_OBJS) src/main.cpp
+	@mkdir -p $(BUILD)
+	$(CXX) $(HFLAGS) -c src/main.cpp -o $(BUILD)/src/main.o
+	$(CXX) $(BUILD)/src/main.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/$(TEST_HOST): $(CORE_OBJS) tests/test_host.cpp
+	@mkdir -p $(BUILD)/tests
+	$(CXX) $(HFLAGS) -c tests/test_host.cpp -o $(BUILD)/tests/test_host.o
+	$(CXX) $(BUILD)/tests/test_host.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/$(TEST_GPU): $(CORE_OBJS) tests/test_gpu.cu
+	@mkdir -p $(BUILD)/tests
+	$(CXX) $(CUFLAGS) -c tests/test_gpu.cu -o $(BUILD)/tests/test_gpu.o
+	$(CXX) $(BUILD)/tests/test_gpu.o $(CORE_OBJS) $(LIBS) -o $@
+
+tests: all
+
+clean:
+	rm -rf $(BUILD)

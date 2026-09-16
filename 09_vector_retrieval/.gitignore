@@ -1,0 +1,8 @@
+build/
+data/*.bin
+data/*.idx
+data/*.npy
+*.log
+test_index_tmp.idx
+test_fp16_tmp.bin
+test_fp32_tmp.bin
