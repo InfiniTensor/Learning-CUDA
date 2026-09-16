@@ -26,7 +26,7 @@ indexes/                IVF-Flat 与 IVF-PQ 构建索引
   `index built: build_ms=...`，perf.log 的 build_ms 字段在 bench 模式下为 0
   （检索阶段单独计时，索引构建在 perf 行采样前完成）。
 - exact 表行以独立 `exact_perf.log` 为准（98.6 ms / 2029 QPS / 87.1×）；
-  IVF bench 内嵌的 exact 子集对比行（~95.5 ms / 90.8×）用于 recall 与 speedup
+  IVF bench 内嵌的 exact 子集对比行（约 95.5 ms / 90.8×）用于 recall 与 speedup
   对照，两者存在正常的运行间波动。
 - 原始 `vectors.bin` / `queries.bin` 数据文件不随报告分发；如需复现，用
   `python/gen_dataset.py`（参数见上文）重新生成即可。

@@ -25,7 +25,7 @@ outputs/
 ├── ivf_flat_quality.log       IVF-Flat 召回率与距离误差（表 1）
 ├── ivf_pq16_perf.log          IVF-PQ16 + rerank 性能
 ├── ivf_pq16_quality.log       IVF-PQ16 + rerank 质量（表 3）
-├── sweep/                     21 组 nprobe(1~64) × batch(32/128/512) 的
+├── sweep/                     21 组 nprobe(1 至 64) × batch(32/128/512) 的
 │                              result / perf / quality 三件套
 ├── retrieval_results/         exact / IVF-Flat / IVF-PQ16 的 Top-K 结果样例
 ├── indexes/                   IVF-Flat 与 IVF-PQ16 索引文件
