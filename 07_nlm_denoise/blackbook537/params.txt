@@ -1,0 +1,4 @@
+patch_radius = 3          # patch 半径，实际 patch 大小为 (2*patch_radius+1)^2
+search_radius = 10        # 搜索窗口半径
+h = 10.0                  # 滤波强度
+sigma = 25.0              # 噪声标准差估计，对于8位图像范围0-255

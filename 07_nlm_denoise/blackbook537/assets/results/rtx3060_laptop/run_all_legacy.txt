@@ -1,0 +1,101 @@
+===============================================================
+ nlm_denoise —— NVIDIA 平台实测结果（nvidia_result.txt）
+ 生成方式: bash scripts/gen_result_wsl.sh（可复现）
+===============================================================
+
+[环境]
+GPU     : NVIDIA GeForce RTX 3060 Laptop GPU
+CUDA    : release 12.9
+OS      : Linux 6.18.33.2-microsoft-standard-WSL2
+参数基线: pr=3 sr=10 h=10.0 sigma=25.0
+
+===============================================================
+[1] make run VERBOSE=true（单元测试 + GPU 端到端校验 256x256）
+===============================================================
+=== Running tests (output from build/nlm_denoise) ===
+=== Verbose mode: Enabled (using '--verbose') ===
+build/nlm_denoise units
+========== NLM 单元测试 ==========
+[units] 参数解析
+  [PASS] 正常解析（含注释/缺省）
+  [PASS] 未知 key 拒绝
+  [PASS] 越界取值拒绝
+[units] 质量指标
+  [PASS] MAE(相同图像)=0
+  [PASS] PSNR(相同图像)=inf
+  [PASS] MAE(恒差10)=10
+  [PASS] PSNR(恒差10)≈28.13dB
+[units] CPU 参考实现
+  [PASS] 常量灰度图恒等
+  [PASS] 常量 RGB 图恒等
+  [PASS] 确定性（两次运行一致）
+  [PASS] 极小图（5x7, sr=10）不崩溃且尺寸正确
+    降噪前后对干净图 MAE: 12.48 -> 1.57
+  [PASS] 降噪有效性（MAE 下降）
+========== 全部通过（失败 0 项）==========
+=== Verbose extra: GPU 端到端正确性校验（256x256 RGB）===
+[gen] 已生成 256x256x3 sigma=25.0 -> /tmp/nlm_make_run.png
+[validate] 图像 256x256x3，参数 pr=3 sr=10 h=10.0 sigma=25.0
+[validate] CPU 参考耗时: 5077.8 ms
+ver    kernel(ms)   e2e(ms)      MAE(vsCPU)   PSNR(dB)   判定
+0      29.435       248.460      0.0000       inf        PASS
+1      13.586       14.708       0.0000       inf        PASS
+2      13.318       14.908       0.0000       inf        PASS
+[validate] 总体判定: PASS
+
+===============================================================
+[2] 正确性校验 validate（512x512 RGB，三版本 vs CPU 参考）
+===============================================================
+[gen] 已生成 512x512x3 sigma=25.0 -> /tmp/nlm_res_512.png
+[validate] 图像 512x512x3，参数 pr=3 sr=10 h=10.0 sigma=25.0
+[validate] CPU 参考耗时: 19981.0 ms
+ver    kernel(ms)   e2e(ms)      MAE(vsCPU)   PSNR(dB)   判定
+0      110.222      335.570      0.0000       inf        PASS
+1      51.163       53.033       0.0000       inf        PASS
+2      44.296       46.678       0.0000       inf        PASS
+[validate] 总体判定: PASS
+
+===============================================================
+[3] 性能基准抽样（640x360，完整 48 组数据见 bench.csv）
+===============================================================
+[bench] warmup=1 repeat=3，输出 /tmp/nlm_res_bench.csv
+[bench] 640x360x1 base     v0: kernel=47.460 ms  e2e=49.395 ms  4.9 Mpx/s
+[bench] 640x360x1 base     v1: kernel=22.047 ms  e2e=23.698 ms  10.5 Mpx/s
+[bench] 640x360x1 base     v2: kernel=17.622 ms  e2e=19.207 ms  13.1 Mpx/s
+[bench] 640x360x1 strong-h v0: kernel=43.867 ms  e2e=48.350 ms  5.3 Mpx/s
+[bench] 640x360x1 strong-h v1: kernel=21.043 ms  e2e=24.679 ms  10.9 Mpx/s
+[bench] 640x360x1 strong-h v2: kernel=17.576 ms  e2e=19.119 ms  13.1 Mpx/s
+[bench] 640x360x1 small    v0: kernel=13.418 ms  e2e=14.850 ms  17.2 Mpx/s
+[bench] 640x360x1 small    v1: kernel=5.364 ms  e2e=6.948 ms  43.0 Mpx/s
+[bench] 640x360x1 small    v2: kernel=3.986 ms  e2e=5.369 ms  57.8 Mpx/s
+[bench] 640x360x1 large    v0: kernel=140.188 ms  e2e=148.394 ms  1.6 Mpx/s
+[bench] 640x360x1 large    v1: kernel=68.777 ms  e2e=70.522 ms  3.3 Mpx/s
+[bench] 640x360x1 large    v2: kernel=65.242 ms  e2e=67.839 ms  3.5 Mpx/s
+[bench] 640x360x3 base     v0: kernel=87.725 ms  e2e=89.905 ms  2.6 Mpx/s
+[bench] 640x360x3 base     v1: kernel=37.180 ms  e2e=42.286 ms  6.2 Mpx/s
+[bench] 640x360x3 base     v2: kernel=38.963 ms  e2e=41.604 ms  5.9 Mpx/s
+[bench] 640x360x3 strong-h v0: kernel=87.507 ms  e2e=89.743 ms  2.6 Mpx/s
+[bench] 640x360x3 strong-h v1: kernel=40.482 ms  e2e=42.578 ms  5.7 Mpx/s
+[bench] 640x360x3 strong-h v2: kernel=37.172 ms  e2e=40.020 ms  6.2 Mpx/s
+[bench] 640x360x3 small    v0: kernel=20.902 ms  e2e=23.873 ms  11.0 Mpx/s
+[bench] 640x360x3 small    v1: kernel=11.015 ms  e2e=12.831 ms  20.9 Mpx/s
+[bench] 640x360x3 small    v2: kernel=10.006 ms  e2e=11.924 ms  23.0 Mpx/s
+[bench] 640x360x3 large    v0: kernel=258.631 ms  e2e=269.029 ms  0.9 Mpx/s
+[bench] 640x360x3 large    v1: kernel=144.836 ms  e2e=153.271 ms  1.6 Mpx/s
+[bench] 640x360x3 large    v2: kernel=153.670 ms  e2e=156.464 ms  1.5 Mpx/s
+[bench] 完成，CSV 已写入 /tmp/nlm_res_bench.csv
+
+----- bench.csv 摘要（RTX 3060 Laptop 实测，warmup=3 repeat=10）-----
+size,channels,pr,sr,h,sigma,kernel_ver,kernel_ms,e2e_ms,mpx_s,cpu_ms,speedup
+1920x1080,1,3,10,10,25,0,422.151,426.491,4.91198,-1,-1
+1920x1080,1,3,10,10,25,1,197.33,201.464,10.5083,-1,-1
+1920x1080,1,3,10,10,25,2,152.199,155.809,13.6243,-1,-1
+1920x1080,3,3,10,10,25,0,870.892,893.541,2.38101,-1,-1
+1920x1080,3,3,10,10,25,1,365.143,392.385,5.67887,-1,-1
+1920x1080,3,3,10,10,25,2,353.994,374.229,5.85773,-1,-1
+3840x2160,1,3,10,10,25,0,2017.37,2039.27,4.1115,-1,-1
+3840x2160,1,3,10,10,25,1,878.583,900.289,9.44066,-1,-1
+3840x2160,1,3,10,10,25,2,693.923,709.221,11.9529,-1,-1
+3840x2160,3,3,10,10,25,0,3771.64,3868.83,2.19915,-1,-1
+3840x2160,3,3,10,10,25,1,1706.93,1730.46,4.85926,-1,-1
+3840x2160,3,3,10,10,25,2,1659.49,1691.04,4.99815,-1,-1

@@ -1,0 +1,5 @@
+# 速度优先：缩小 patch/search window；与 base 使用相同噪声标定，便于公平比较。
+patch_radius = 2
+search_radius = 7
+h = 10
+sigma = 25

@@ -1,0 +1,5 @@
+# 与 base 计算量相同，提高 h 以增强平滑。
+patch_radius = 3
+search_radius = 10
+h = 15
+sigma = 25

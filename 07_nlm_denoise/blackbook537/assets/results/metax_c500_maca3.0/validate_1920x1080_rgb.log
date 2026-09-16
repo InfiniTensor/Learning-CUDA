@@ -1,0 +1,8 @@
+[validate] 图像 1920x1080x3，参数 pr=3 sr=10 h=10.0 sigma=25.0
+[validate] CPU 参考耗时: 179382.8 ms
+ver    kernel(ms)   e2e(ms)      MAE(vsCPU)   PSNR(dB)   判定
+0      798.987      824.309      0.0000       inf        PASS
+1      418.401      422.132      0.0000       inf        PASS
+2      1487.083     1489.690     0.0000       inf        PASS
+[validate] 已保存 GPU(v2) 输出: experiments/results/current/metax_c500/denoised_1920x1080_base_v2.png
+[validate] 总体判定: PASS

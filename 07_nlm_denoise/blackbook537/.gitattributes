@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.cu text eol=lf
+*.mu text eol=lf
+*.maca text eol=lf
+Makefile text eol=lf
+*.png binary
+*.pdf binary
+# Historical evidence hashes cover original line endings and tool-output spaces.
+# Do not normalize or whitespace-check these archived records as source code.
+assets/results/** -text -whitespace

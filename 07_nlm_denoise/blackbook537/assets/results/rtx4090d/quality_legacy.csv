@@ -1,0 +1,3 @@
+label,mae,psnr_db,source
+noisy-sigma25,12.4857,24.95,paired synthetic images seed=7
+base-v2,0.5972,49.41,paired synthetic images seed=7

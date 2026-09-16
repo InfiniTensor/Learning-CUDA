@@ -1,0 +1,13 @@
+/build/
+/output/
+__pycache__/
+*.pyc
+*.o
+*.obj
+*.nsys-rep
+*.ncu-rep
+*.qdrep
+.vscode/
+.idea/
+*.swp
+.DS_Store

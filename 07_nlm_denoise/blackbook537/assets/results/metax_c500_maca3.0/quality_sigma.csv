@@ -1,0 +1,7 @@
+label,reference,test,width,height,channels,mae,psnr_db
+noisy-sigma10,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/noisy_1920x1080_3ch_sigma10.png,1920,1080,3,4.997221,32.883942
+denoised-sigma10,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/denoised_base_1920x1080_3ch_sigma10.png,1920,1080,3,0.304271,53.265898
+noisy-sigma25,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/noisy_1920x1080_3ch_sigma25.png,1920,1080,3,12.485684,24.947823
+denoised-sigma25,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/denoised_base_1920x1080_3ch_sigma25.png,1920,1080,3,0.597227,49.414889
+noisy-sigma50,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/noisy_1920x1080_3ch_sigma50.png,1920,1080,3,24.883010,18.960290
+denoised-sigma50,experiments/results/current/metax_c500/quality_images/clean_1920x1080_3ch.png,experiments/results/current/metax_c500/quality_images/denoised_base_1920x1080_3ch_sigma50.png,1920,1080,3,1.190769,43.964257

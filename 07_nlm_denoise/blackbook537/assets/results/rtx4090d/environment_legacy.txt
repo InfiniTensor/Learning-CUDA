@@ -1,0 +1,12 @@
+collected_at=2026-09-07
+gpu=NVIDIA GeForce RTX 4090 D
+compute_capability=8.9
+architecture=sm_89
+memory_mib=24564
+driver=570.124.06
+cuda_toolkit=12.8.61
+cuda_symlink=/usr/local/cuda -> cuda-12.8
+host=Docker container, 128 vCPU
+nsight_systems=2024.6.2.225
+nsight_compute=2025.1.0.0 (ERR_NVGPUCTRPERM: host counters restricted)
+build_command=make PLATFORM=nvidia ARCH=sm_89

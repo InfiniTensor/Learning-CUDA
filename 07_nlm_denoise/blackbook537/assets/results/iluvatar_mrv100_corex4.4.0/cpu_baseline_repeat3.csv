@@ -1,0 +1,2 @@
+size,channels,config,pr,sr,h,sigma,cpu_repeat,cpu_mean_ms,cpu_min_ms,cpu_stddev_ms
+1920x1080,3,base,3,10,10.000000,25.000000,3,232814.573362,232737.430104,63.254730

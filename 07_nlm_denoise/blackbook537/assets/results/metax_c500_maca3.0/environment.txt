@@ -1,0 +1,77 @@
+collected_at_utc=2026-09-15T15:06:40Z
+hostname=5bd71ded5feb
+os=Linux 5bd71ded5feb 5.15.0-58-generic #64~20.04.1-Ubuntu SMP Fri Jan 6 16:42:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.3 LTS (Jammy Jellyfish)"
+
+[gpu]
+
+mx-smi  version: 2.2.6
+
+mx-smi  version: 2.2.6
+
+=================== MetaX System Management Interface Log ===================
+Timestamp                                         : Tue Sep 15 23:06:40 2026
+
+Attached GPUs                                     : 1
++---------------------------------------------------------------------------------+
+| MX-SMI 2.2.6                        Kernel Mode Driver Version: 3.8.30          |
+| MACA Version: 3.0.0.8               BIOS Version: 1.33.5.0                      |
+|------------------------------------+---------------------+----------------------+
+| GPU     NAME         Persistence-M | Bus-id              | GPU-Util      sGPU-M |
+| Temp    Pwr:Usage/Cap         Perf | Memory-Usage        | GPU-State            |
+|====================================+=====================+======================|
+| 0       MetaX C500             Off | 0000:0f:00.0        | 0%             *sGPU |
+| 35C     45W / 350W              P0 | 826/65536 MiB       | Available            |
++------------------------------------+---------------------+----------------------+
+
++---------------------------------------------------------------------------------+
+| Sliced GPU                                                                      |
+|------------------------------------+---------------------+----------------------+
+| Minor    GPU    sGPU-Id    Compute | Vram Quota          | sGPU-Util            |
+|====================================+=====================+======================|
+| 005      0      2          25%     | 0/16000 MiB         | 0%                   |
++------------------------------------+---------------------+----------------------+
+
++---------------------------------------------------------------------------------+
+| Process:                                                                        |
+|  GPU                    PID         Process Name                 GPU Memory     |
+|                                                                  Usage(MiB)     |
+|=================================================================================|
+|  no process found                                                               |
++---------------------------------------------------------------------------------+
+
+End of Log
+
+[accelerator-toolkit]
+mxcc=/opt/maca/mxgpu_llvm/bin/mxcc
+mxcc version 1.0.0 (df29922f9c)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/maca/mxgpu_llvm/bin
+MACA_HOME=/opt/maca
+MACA_CUDA=/opt/maca/tools/cu-bridge
+MACA_HOME_REALPATH=/opt/maca-3.0.0
+
+[compiler]
+g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+GNU Make 4.3
+
+[profilers]
+nsys=not-found
+ncu=not-found
+muprof=not-found
+mxprof=not-found
+mcTracer=/opt/maca/bin/mcTracer
+(Tracer): 23:06:40 [INFO ] ***** Version: 
+
+[build-contract]
+PLATFORM=metax
+MACA_HOME=/opt/maca
+MACA_CUDA=/opt/maca/tools/cu-bridge
+MXCC=/opt/maca/mxgpu_llvm/bin/mxcc
+FAST_EXP=0
+WITH_OPENCV=0
+git_commit=unavailable
+git_worktree=unavailable (uploaded source snapshot)

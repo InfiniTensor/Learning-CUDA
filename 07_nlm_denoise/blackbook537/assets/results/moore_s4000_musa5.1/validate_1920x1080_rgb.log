@@ -1,0 +1,8 @@
+[validate] 图像 1920x1080x3，参数 pr=3 sr=10 h=10.0 sigma=25.0
+[validate] CPU 参考耗时: 187922.0 ms
+ver    kernel(ms)   e2e(ms)      MAE(vsCPU)   PSNR(dB)   判定
+0      1030.048     1109.572     0.0000       inf        PASS
+1      569.469      573.384      0.0000       inf        PASS
+2      468.039      471.062      0.0000       inf        PASS
+[validate] 已保存 GPU(v2) 输出: experiments/results/moore_s4000_musa5.1/denoised_1920x1080_base_v2.png
+[validate] 总体判定: PASS

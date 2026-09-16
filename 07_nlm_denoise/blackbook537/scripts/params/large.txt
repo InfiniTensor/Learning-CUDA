@@ -1,0 +1,5 @@
+# 质量/压力测试：扩大 patch/search window；噪声标定仍为 25。
+patch_radius = 4
+search_radius = 14
+h = 10
+sigma = 25

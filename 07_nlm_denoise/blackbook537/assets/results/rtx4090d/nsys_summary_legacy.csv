@@ -1,0 +1,4 @@
+implementation,kernel_name,gpu_ms,gpu_share_percent
+V0,NlmNaiveKernel,133.217,100.0
+V1,NlmSmemKernel,62.126,99.9
+V2,NlmSmemUnrollKernel<3>,61.036,99.9

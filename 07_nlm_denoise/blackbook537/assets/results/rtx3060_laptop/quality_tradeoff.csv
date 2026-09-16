@@ -1,0 +1,5 @@
+label,reference,test,width,height,channels,mae,psnr_db
+noisy-sigma25,experiments/work/clean_1920x1080_3ch.png,experiments/work/noisy_1920x1080_3ch_sigma25.png,1920,1080,3,12.485684,24.947823
+small,experiments/work/clean_1920x1080_3ch.png,experiments/work/denoised_small_1920x1080_3ch_sigma25.png,1920,1080,3,0.803424,47.358490
+base,experiments/work/clean_1920x1080_3ch.png,experiments/work/denoised_base_1920x1080_3ch_sigma25.png,1920,1080,3,0.597227,49.414889
+large,experiments/work/clean_1920x1080_3ch.png,experiments/work/denoised_large_1920x1080_3ch_sigma25.png,1920,1080,3,0.463451,50.948416

@@ -1,0 +1,5 @@
+source snapshot and applied patch archives:
+7272d32769d40a63a965f322b4d429a4965d7f931adb136ac69fb7107269e5b6  ../source.tar.gz
+1b8ea9dab37c01aea009b7eb4a0819e2630668531ee44243424bdcd7c80578b7  ../patch.tar.gz
+ec5e2ecfe7c45a0eeef0668aa1e99da1c12ec1eff19c59874cefca23ae48c9bf  ../patch_v2.tar.gz
+tested source control note: uploaded snapshot of local uncommitted worktree; git metadata intentionally excluded

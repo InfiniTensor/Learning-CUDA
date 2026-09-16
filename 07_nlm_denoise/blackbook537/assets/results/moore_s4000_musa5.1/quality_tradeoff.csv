@@ -1,0 +1,5 @@
+label,reference,test,width,height,channels,mae,psnr_db
+noisy-sigma25,experiments/results/moore_s4000_musa5.1/quality_images/clean_1920x1080_3ch_seed7.png,experiments/results/moore_s4000_musa5.1/quality_images/noisy_1920x1080_3ch_sigma25_seed7.png,1920,1080,3,12.485684,24.947823
+small,experiments/results/moore_s4000_musa5.1/quality_images/clean_1920x1080_3ch_seed7.png,experiments/results/moore_s4000_musa5.1/quality_images/denoised_small_1920x1080_3ch_sigma25_seed7.png,1920,1080,3,0.803424,47.358490
+base,experiments/results/moore_s4000_musa5.1/quality_images/clean_1920x1080_3ch_seed7.png,experiments/results/moore_s4000_musa5.1/quality_images/denoised_base_1920x1080_3ch_sigma25_seed7.png,1920,1080,3,0.597227,49.414889
+large,experiments/results/moore_s4000_musa5.1/quality_images/clean_1920x1080_3ch_seed7.png,experiments/results/moore_s4000_musa5.1/quality_images/denoised_large_1920x1080_3ch_sigma25_seed7.png,1920,1080,3,0.463451,50.948416

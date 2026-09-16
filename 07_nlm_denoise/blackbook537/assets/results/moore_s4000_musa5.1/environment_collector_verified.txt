@@ -1,0 +1,223 @@
+collected_at_utc=2026-09-15T13:58:05Z
+hostname=afaaa9126062
+os=Linux afaaa9126062 5.15.0-105-generic #115~20.04.1-Ubuntu SMP Mon Apr 15 17:33:04 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+
+[gpu]
+compiler: mcc
+--------------------------------------------------------------------------------
+device#                          0
+Name:                            MTT S4000
+Driver Version:                  5.1
+Runtime Version:                 5.1
+compute capability:              2.2
+pciBusID:                        0x9
+pciDeviceID:                     0x0
+pciDomainID:                     0x0
+multiProcessorCount:             64
+maxThreadsPerMultiProcessor:     6144
+isMultiGpuBoard:                 1
+clockRate:                       1791 Mhz
+memoryClockRate:                 8006 Mhz
+memoryBusWidth:                  384
+totalGlobalMem:                  47.91 GB
+sharedMemPerMultiprocessor:      72.00 KB
+totalConstMem:                   8192
+sharedMemPerBlock:               72.00 KB
+canMapHostMemory:                1
+regsPerBlock:                    131072
+warpSize:                        128
+l2CacheSize:                     25165824
+computeMode:                     0
+maxThreadsPerBlock:              1024
+maxThreadsDim.x:                 1024
+maxThreadsDim.y:                 1024
+maxThreadsDim.z:                 1024
+maxGridSize.x:                   2147483647
+maxGridSize.y:                   2147483647
+maxGridSize.z:                   2147483647
+concurrentKernels:               1
+cooperativeLaunch:               1
+cooperativeMultiDeviceLaunch:    0
+isIntegrated:                    0
+maxTexture1D:                    32768
+maxTexture2D.width:              32768
+maxTexture2D.height:             32768
+maxTexture3D.width:              16384
+maxTexture3D.height:             16384
+maxTexture3D.depth:              2048
+peers:                           
+non-peers:                       device#0 
+memInfo.total:                   47.91 GB
+memInfo.free:                    45.81 GB (96%)
+
+[accelerator-toolkit]
+mcc=/usr/local/musa/bin/mcc
+clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git 61c54cd8e5c72ef146656c7beee1889a837ed7bc)
+mcc version 5.1.0
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/musa/bin
+musa_toolkits:
+{
+	"version":	"5.1.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"AIMODULE_1.4.0",
+	"commit id":	"e1481406739bd545c45c4b852450a81ac5feee6c",
+	"commit date":	"2026-03-06 20:38:51 +0800"
+}
+CUB:
+{
+	"version":	"1.17.2",
+	"git branch":	"develop-1.17",
+	"git tag":	"No tag",
+	"commit id":	"2aa7e2b6a2e82ca339ca132d345377d6faef6024",
+	"commit date":	"2026-04-22 21:48:03 +0800"
+}
+MUPTI:
+{
+	"version":	"1.2.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"453615f9e030b4c0bd101ce44d60346a1ffee11b",
+	"commit date":	"2026-04-28 12:40:08 +0800"
+}
+Thrust:
+{
+	"version":	"1.17.2",
+	"git branch":	"develop-1.17",
+	"git tag":	"No tag",
+	"commit id":	"bffd03bde9af75266cc1a51d46cde48f4bcd9280",
+	"commit date":	"2026-04-22 21:51:23 +0800"
+}
+mcc:
+{
+	"version":	"5.1.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"61c54cd8e5c72ef146656c7beee1889a837ed7bc",
+	"commit date":	"2026-04-28 15:32:37 +0800"
+}
+mccl:
+{
+	"version":	"2.1.3",
+	"build archs":	"22",
+	"git branch":	"release_musa_5.1.0_s4000",
+	"git tag":	"No tag",
+	"commit id":	"f13ff3006e6f7fa7e70064fc989364661b3ad9d2",
+	"commit date":	"2026-04-15 10:49:18 +0800"
+}
+mtjpeg:
+{
+	"version":	"1.0.5",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"070f3ff97088cfdef12da04b09af22bfc862874c",
+	"commit date":	"2026-03-23 13:40:41 +0800"
+}
+muPP:
+{
+	"version":	"1.13.0",
+	"build archs":	"22;31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"AIMODULE_1.4.0",
+	"commit id":	"0a8b4f2b1c8f9928130fa882a97705be2fc693e2",
+	"commit date":	"2026-03-12 14:48:07 +0800"
+}
+mublasLt:
+{
+	"version":	"1.12.0",
+	"build archs":	"22,31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"AIMODULE_1.4.0",
+	"commit id":	"b99c7919a587a92ec1f24b75a633d18da754377b",
+	"commit date":	"2026-04-07 14:08:36 +0800"
+}
+mublas:
+{
+	"version":	"1.12.0",
+	"build archs":	"22,31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"4bced69bfb393863c43c23e9d21fbce6e2ff9ffd",
+	"commit date":	"2026-04-23 19:16:27 +0800"
+}
+mudnn:
+{
+	"version":	"3.3.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"bd105d42d4413d10f51cf91785cf4e06acee30ac",
+	"commit date":	"2026-04-26 17:03:03 +0800"
+}
+mufft:
+{
+	"version":	"1.12.0",
+	"build archs":	"22;31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"AIMODULE_1.4.0",
+	"commit id":	"0a2e9ac103e2d54c384947561076c682c6811c1e",
+	"commit date":	"2026-03-11 19:24:16 +0800"
+}
+murand:
+{
+	"version":	"1.3.0",
+	"build archs":	"22;31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"AIMODULE_1.4.0",
+	"commit id":	"525224ed521b4cb0af25ada59b84583241e57761",
+	"commit date":	"2026-03-27 19:58:21 +0800"
+}
+musify:
+{
+	"version":	"1.2.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"a5f79eb9e507dd7bfa1b5bd8b6b833f671c6b8c1",
+	"commit date":	"2026-04-08 14:58:40 +0800"
+}
+musolver:
+{
+	"version":	"1.6.0",
+	"build archs":	"22,31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"f6062eb2da90ad3b5091a91d3348423649275d12",
+	"commit date":	"2026-04-25 19:06:04 +0800"
+}
+musparse:
+{
+	"version":	"1.7.0",
+	"build archs":	"22,31",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"3b5df2ca75c504c98821bc2cd71a9160ddf4eb55",
+	"commit date":	"2026-04-27 17:08:43 +0800"
+}
+musa_runtime:
+{
+	"version":	"5.1.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"73921cd20f278bd905e50dbd920c976d93cc18b4",
+	"commit date":	"2026-04-24 13:42:11 +0800"
+}
+
+[compiler]
+g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+GNU Make 4.3
+
+[profilers]
+nsys=not-found
+ncu=not-found
+muprof=not-found
+
+[build-contract]
+PLATFORM=moore
+MUSA_HOME=/usr/local/musa
+FAST_EXP=0
+WITH_OPENCV=0
+git_commit=unavailable
+git_worktree=clean

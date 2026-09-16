@@ -1,0 +1,33 @@
+collected_at_utc=2026-09-15T05:56:53Z
+hostname=DESKTOP-9OMGKMK
+os=Linux DESKTOP-9OMGKMK 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 GNU/Linux
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04 LTS (Resolute Raccoon)"
+
+[gpu]
+NVIDIA GeForce RTX 3060 Laptop GPU, GPU-3a2c7f60-59bc-affa-0466-f486df5eb745, 610.88, 6144 MiB, 8.6
+
+[cuda]
+nvcc=/home/zhoufei/cuda/cuda_nvcc-linux-x86_64-12.9.86-archive/bin/nvcc
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_May_27_02:21:03_PDT_2025
+Cuda compilation tools, release 12.9, V12.9.86
+Build cuda_12.9.r12.9/compiler.36037853_0
+
+[compiler]
+x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0
+GNU Make 4.4.1
+
+[profilers]
+nsys=not-found
+ncu=not-found
+
+[build-contract]
+PLATFORM=nvidia
+ARCH=sm_86
+FAST_EXP=0
+WITH_OPENCV=0
+git_commit=549f45ffa93c1864c88e5b218fd2c50a3d192437
+git_worktree=dirty

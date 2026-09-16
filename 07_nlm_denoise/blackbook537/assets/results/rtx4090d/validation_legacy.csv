@@ -1,0 +1,4 @@
+implementation,kernel_ms,e2e_ms,mae_vs_cpu,psnr_vs_cpu,cpu_ms,status
+V0,132.935,305.017,0.0000,inf,174535.3,PASS
+V1,58.876,61.969,0.0000,inf,174535.3,PASS
+V2,57.614,61.489,0.0000,inf,174535.3,PASS

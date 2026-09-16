@@ -1,0 +1,2 @@
+// MetaX MACA 编译入口；共享算法，平台 API 由编译宏选择。
+#include "kernels.cu"
