@@ -57,7 +57,7 @@
 `quality.log`，`sweep/` 放 nprobe × batch 扫描结果，另外各自附带
 `experiment_summary.csv`。四个平台的对应关系与数据来源见报告 §11.2。
 
-## 构建
+## 构建（以 NVIDIA 平台为示例）
 
 需要 CMake ≥ 3.18、CUDA Toolkit（≥ 11.8）与 C++17 编译器。
 
@@ -70,6 +70,13 @@ ctest --test-dir build --output-on-failure      # 可选：主机+GPU 测试
 
 Windows 下把 `-DCMAKE_CUDA_ARCHITECTURES` 换成实际卡型（如 `75;86;89`），并保证
 `nvcc` 能调用同一套 MSVC 工具链。
+
+产物为 `build/vsearch`、`build/test_host`、`build/test_gpu`；运行
+`./build/test_host && ./build/test_gpu` 可完成正确性自检。
+
+**其余三个平台的构建入口与命令见下文**「天数智芯 CoreX 平台支持」、
+「沐曦 MetaX（MACA）平台支持」、「摩尔线程 MUSA 平台支持」三节——它们只替换
+编译器与链接库，源码、测试与基准命令与 NVIDIA 示例完全一致。
 
 ## 天数智芯 CoreX 平台支持
 
