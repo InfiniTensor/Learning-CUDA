@@ -426,5 +426,4 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 
 表 1-3（NVIDIA 1e6）、表 3b（NVIDIA 300k 回归）与表 4-5（CoreX 300k）分别对应
 `outputs/`、`outputs/nvidia_300k_regression/`、`outputs_corex/` 下的原始
-perf/quality 日志；代码、测试与脚本均在仓库内，任何一行运行路径均无需人工改动
-数据格式。
+perf/quality 日志；代码、测试与脚本均在仓库内。
