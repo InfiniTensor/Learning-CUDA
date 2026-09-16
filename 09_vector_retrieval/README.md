@@ -21,7 +21,7 @@
 
 两平台最近一次回归均通过：NVIDIA `test_host` + `test_gpu` 全部 PASS；CoreX 同样
 全部 PASS（详见下文两节实测结果）。平台差异适配均体现在同一份源码中。代表性
-结果见文末与 [outputs/REPORT.md](outputs/REPORT.md)。
+结果见文末与 [REPORT.md](REPORT.md)。
 
 验证日期：2026-09-07（NVIDIA RTX 4090 与天数智芯 MR-V100 均重新编译并跑完整测试
 与 bench）。
