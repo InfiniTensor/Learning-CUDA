@@ -185,7 +185,7 @@ ids，以及 PQ 码本与压缩码，兼容 IVF-Flat 与 IVF-PQ。完整布局�
 
 CPU 单线程暴力参考（100 query）约 7.4 s；GPU exact 同子集约 67 ms，加速约 111×。
 完整数据与 nprobe/batch 扫描见 [experiment_summary.csv](outputs/experiment_summary.csv)
-与 [outputs/REPORT.md](outputs/REPORT.md)。
+与 [REPORT.md](REPORT.md)。
 
 ### 本次最终源码回归验证（RTX 4090，300k×128，nq=1000，topK=100，nprobe=16）
 
@@ -219,4 +219,4 @@ QPS 最高，但其 recall 受 PQ 量化精度限制：该高斯聚类合成数�
 recall≈0.01。小规模紧致数据（40k×32、100 个分离簇）上 PQ 的 top-1 召回为 100%。
 该差异用于说明 "PQ 压缩率 vs 召回" 的系统取舍：PQ 适合低精度高吞吐筛选或作为
 粗排，需配合更大的精排窗口 / 更高 PQ 码率。详见
-[outputs/REPORT.md](outputs/REPORT.md) 的 CoreX 适配与质量分析。
+[REPORT.md](REPORT.md) 的 CoreX 适配与质量分析。
