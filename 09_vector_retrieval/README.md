@@ -31,6 +31,8 @@
 
 ```text
 .
+├── .gitignore
+├── REPORT.md              # 完整实验报告（实现、实验设计、结果、数据溯源）
 ├── CMakeLists.txt
 ├── Makefile.corex         # 天数智芯 CoreX 专用构建
 ├── Makefile.maca          # 沐曦 MetaX（MACA）专用构建
@@ -43,10 +45,14 @@
 ├── python/                 # 数据生成与实验调度
 ├── data/                   # 生成的二进制向量库/查询/参数
 ├── docs/
-├── outputs/                # NVIDIA 平台报告、日志与交付物
-├── outputs_corex/          # CoreX 平台日志（perf/quality/sweep 汇总）
-└── outputs_maca/           # 沐曦 MetaX 平台日志（perf/quality/sweep 汇总）
+├── outputs/                # NVIDIA 平台产物（报告 §7.3 表 1-4）
+├── outputs_corex/          # 天数智芯平台产物（报告 §7.4 表 5-6）
+└── outputs_maca/           # 沐曦平台产物（报告 §7.5 表 7-8）
 ```
+
+每个 `outputs*/` 目录的组织方式一致：根目录放单次 bench 的 `perf.log` /
+`quality.log`，`sweep/` 放 nprobe × batch 扫描结果，另外各自附带
+`experiment_summary.csv`。三个平台的对应关系与数据来源见报告 §11.2。
 
 ## 构建
 
