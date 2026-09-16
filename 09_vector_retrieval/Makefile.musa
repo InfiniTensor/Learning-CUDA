@@ -1,0 +1,56 @@
+# 摩尔线程 MUSA 平台构建。
+#
+# MUSA 提供原生 API（musa_runtime.h / mublas_v2.h / CUB for MUSA），不提供
+# CUDA 兼容头，因此 engine.cu 通过 -DVSEARCH_MUSA=1 启用一层名称映射
+# （cuda* -> musa*, cublas* -> mublas*），其余实现代码不变。
+#
+# 构建与运行：
+#   make -f Makefile.musa -j
+#   export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
+#   ./build_musa/test_host && ./build_musa/test_gpu
+
+MUSA ?= /usr/local/musa
+MCC  := $(MUSA)/bin/mcc
+CXX  := g++
+INCS := -I$(MUSA)/include -Iinclude
+HINCS := -Iinclude
+LIBS := -L$(MUSA)/lib -lmusart -lmublas
+CFLAGS  := -std=c++17 -O2 -fPIC -Wall
+# -x musa：把源文件按 MUSA 语言编译（若按 .cu 推断，mcc 会走 CUDA 前端并报
+# 找不到 CUDA 安装）。--musa-path 显式给出 MUSA 安装根目录。
+CUFLAGS := -x musa --musa-path=$(MUSA) $(INCS) $(CFLAGS) -DVSEARCH_MUSA=1
+
+BUILD := build_musa
+CORE_SRCS := src/binary_io.cpp src/config.cpp src/cpu_reference.cpp \
+             src/result_io.cpp src/metric.cpp cuda/engine.cu
+CORE_OBJS := $(patsubst %.cpp,$(BUILD)/%.o,$(patsubst %.cu,$(BUILD)/%.o,$(CORE_SRCS)))
+
+.PHONY: all clean
+
+all: $(BUILD)/vsearch $(BUILD)/test_host $(BUILD)/test_gpu
+
+$(BUILD)/%.o: %.cu
+	@mkdir -p $(dir $@)
+	$(MCC) $(CUFLAGS) -c $< -o $@
+
+$(BUILD)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(HINCS) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/vsearch: $(CORE_OBJS) src/main.cpp
+	@mkdir -p $(BUILD)/src
+	$(CXX) $(HINCS) $(CFLAGS) -c src/main.cpp -o $(BUILD)/src/main.o
+	$(MCC) $(BUILD)/src/main.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/test_host: $(CORE_OBJS) tests/test_host.cpp
+	@mkdir -p $(BUILD)/tests
+	$(CXX) $(HINCS) $(CFLAGS) -c tests/test_host.cpp -o $(BUILD)/tests/test_host.o
+	$(MCC) $(BUILD)/tests/test_host.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/test_gpu: $(CORE_OBJS) tests/test_gpu.cu
+	@mkdir -p $(BUILD)/tests
+	$(MCC) $(CUFLAGS) -c tests/test_gpu.cu -o $(BUILD)/tests/test_gpu.o
+	$(MCC) $(BUILD)/tests/test_gpu.o $(CORE_OBJS) $(LIBS) -o $@
+
+clean:
+	rm -rf $(BUILD)

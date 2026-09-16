@@ -1,13 +1,14 @@
 # 实验产物（沐曦 MetaX 平台）
 
 本目录保存沐曦 MetaX MXC500（MACA 3.5.3，cu-bridge）平台的实测日志与扫描汇总，
-对应报告 §7.5 的表 7-8。三个平台产物的对应关系：
+对应报告 §7.5 的表 7-8。四个平台产物的对应关系：
 
 | 目录 | 平台 | 对应报告章节 |
 | --- | --- | --- |
 | `outputs/` | NVIDIA RTX 4090 | §7.3 表 1-4 |
 | `outputs_corex/` | 天数智芯 MR-V100 | §7.4 表 5-6 |
 | `outputs_maca/`（本目录） | 沐曦 MetaX MXC500 | §7.5 表 7-8 |
+| `outputs_musa/` | 摩尔线程 MUSA | §7.6 表 9-10 |
 
 ## 目录结构
 
@@ -20,7 +21,7 @@ outputs_maca/
 ├── ivf_flat_perf.log          IVF-Flat 性能（表 7）
 ├── ivf_flat_quality.log       IVF-Flat recall@100 = 0.991390
 ├── ivf_pq16_perf.log          IVF-PQ16 + rerank 性能（表 7）
-├── ivf_pq16_quality.log       IVF-PQ recall@100 ≈ 0.012（量化限制，分析见 §7.7）
+├── ivf_pq16_quality.log       IVF-PQ recall@100 ≈ 0.012（量化限制，分析见 §7.8）
 └── sweep/                     7 组 nprobe（batch=128）的 perf/quality 日志
 ```
 

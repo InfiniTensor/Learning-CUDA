@@ -12,20 +12,21 @@
 - 批量查询、K=1/10/50/100、CPU 参考实现、结果/性能/质量日志；
 - 主机与 GPU 正确性测试。
 
-程序可在 **NVIDIA CUDA**、**天数智芯 Iluvatar CoreX** 与 **沐曦 MetaX（MACA）**
-三个平台构建与运行：
+程序可在四个 GPU 平台构建与运行：
 
 | 平台 | 构建方式 | 验证情况 |
 | --- | --- | --- |
 | NVIDIA | CMake + `nvcc` | RTX 4090 上构建、主机/GPU 测试与 bench 全部通过 |
 | 天数智芯 CoreX | `make -f Makefile.corex`（clang `-x ivcore`） | MR-V100（IX-ML 4.4.0）上全部通过 |
 | 沐曦 MetaX | `make -f Makefile.maca`（`cucc` + `-lmcblas`） | MXC500（MACA 3.5.3）上全部通过 |
+| 摩尔线程 MUSA | `make -f Makefile.musa`（`mcc -x musa` + `-lmublas`） | MUSA 5.1.0 上全部通过 |
 
-三平台最近一次回归均通过（`test_host` + `test_gpu` 全部 PASS，端到端 bench 正常）。
-三平台使用同一套检索算法与 kernel 实现，差异仅体现为构建脚本与少量编译期分支。
+四平台最近一次回归均通过（`test_host` + `test_gpu` 全部 PASS，端到端 bench 正常）。
+四平台使用同一套检索算法与 kernel 实现，差异仅体现为构建脚本与少量编译期分支。
 代表性结果见文末与 [REPORT.md](REPORT.md)。
 
-验证日期：NVIDIA / CoreX 为 2026-09-07，沐曦 MetaX 为 2026-09-13。
+验证日期：NVIDIA / CoreX 为 2026-09-07，沐曦 MetaX 为 2026-09-13，
+摩尔线程 MUSA 为 2026-09-14。
 
 ## 目录
 
@@ -36,6 +37,7 @@
 ├── CMakeLists.txt
 ├── Makefile.corex         # 天数智芯 CoreX 专用构建
 ├── Makefile.maca          # 沐曦 MetaX（MACA）专用构建
+├── Makefile.musa          # 摩尔线程 MUSA 专用构建
 ├── README.md
 ├── include/vsearch/        # 公共数据结构/配置/IO/CPU 参考
 ├── src/                    # 主机侧实现与 CLI
@@ -47,12 +49,13 @@
 ├── docs/
 ├── outputs/                # NVIDIA 平台产物（报告 §7.3 表 1-4）
 ├── outputs_corex/          # 天数智芯平台产物（报告 §7.4 表 5-6）
-└── outputs_maca/           # 沐曦平台产物（报告 §7.5 表 7-8）
+├── outputs_maca/           # 沐曦平台产物（报告 §7.5 表 7-8）
+└── outputs_musa/           # 摩尔线程平台产物（报告 §7.6 表 9-10）
 ```
 
 每个 `outputs*/` 目录的组织方式一致：根目录放单次 bench 的 `perf.log` /
 `quality.log`，`sweep/` 放 nprobe × batch 扫描结果，另外各自附带
-`experiment_summary.csv`。三个平台的对应关系与数据来源见报告 §11.2。
+`experiment_summary.csv`。四个平台的对应关系与数据来源见报告 §11.2。
 
 ## 构建
 
@@ -118,6 +121,26 @@ export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib
 全部测试与 bench。
 
 沐曦（MXC500）实测见下方「沐曦 MetaX 实测结果」。
+
+## 摩尔线程 MUSA 平台支持
+
+MUSA 提供原生 API（`musa_runtime.h`、`mublas_v2.h` 与 MUSA 版 CUB），不提供 CUDA
+兼容头文件。因此 `cuda/engine.cu` 以 `-DVSEARCH_MUSA=1` 启用一层名称映射
+（`cuda*` → `musa*`、`cublas*` → `mublas*`、`CUBLAS_OP_*` → `MUBLAS_OP_*`），
+检索算法与 kernel 代码保持不变。构建使用仓库根目录的
+[Makefile.musa](Makefile.musa)：
+
+```bash
+make -f Makefile.musa -j            # 产物在 build_musa/
+export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
+./build_musa/test_host              # 主机测试
+./build_musa/test_gpu               # GPU 集成测试
+```
+
+Makefile 用 `mcc -x musa --musa-path=/usr/local/musa` 编译 `.cu`（若按扩展名推断为
+CUDA，mcc 会走 CUDA 前端并报找不到 CUDA 安装），链接 `-lmusart -lmublas`。实测该
+平台的 64 位 `atomicAdd` 与 double 累加均正常，因此距离累计与倒排计数沿用
+NVIDIA 路径。摩尔线程实测见下方「摩尔线程 MUSA 实测结果」。
 
 ## 生成数据并运行实验
 
@@ -229,7 +252,7 @@ CPU 单线程暴力参考（100 query）约 7.4 s；GPU exact 同子集约 67 ms
 | ivf_pq16 + rerank | 213 | 21.8 | 45792 | 2.59 | 3.68 | 0.012 | 397× |
 
 该组数据与 CoreX 使用同一生成参数（100 个高斯簇、scale 0.10），因此 Flat 召回
-（≈0.986）与 PQ 低召回（≈0.012，ADC 量化限制）在三平台一致，说明差异来自数据
+（≈0.986）与 PQ 低召回（≈0.012，ADC 量化限制）在四平台一致，说明差异来自数据
 与量化率，而非平台实现。
 
 ## 天数智芯实测结果（Iluvatar MR-V100，300k×128，nq=1000，topK=100）
@@ -267,13 +290,30 @@ CPU 参考为单线程暴力精确检索（200 query 子集约 7.5–8.6 s）。
 32/64 → 1.000，与 NVIDIA / CoreX 在相同生成参数下的曲线一致；完整 21 组
 nprobe×batch 数据见 [outputs_maca/experiment_summary.csv](outputs_maca/experiment_summary.csv)。
 
-### 三平台对比（300k×128，nprobe=16）
+## 摩尔线程 MUSA 实测结果（300k×128，nq=1000，topK=100）
+
+主机测试 5/5 通过、GPU 集成测试全部通过（exact 与 CPU 参考逐条一致、IVF-Flat
+recall=1.0、IVF-PQ 返回合法 id、索引保存/加载 round-trip 一致）。
+
+| mode | build ms | search ms | QPS | P50 ms | P99 ms | recall@100 | 加速比 vs CPU |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| exact | - | 1028.7 | 194 | 514.0 | 638.5 | - | 16.1× |
+| ivf_flat | 241 | 179.2 | 5581 | 22.5 | 24.3 | 0.991 | 92.5× |
+| ivf_pq16 + rerank | 4820 | 164.2 | 6092 | 20.0 | 24.4 | 0.012（受限于 ADC 量化） | 101.9× |
+
+CPU 参考为单线程暴力精确检索（200 query 子集约 16.6 s）。nprobe 扫描（batch=128）
+显示 recall 随 nprobe 单调上升：nprobe=1 → 0.0125、8 → 0.5437、16 → 0.9914、
+32/64 → 1.0000，与其他平台在相同生成参数下的曲线一致；完整 21 组 nprobe×batch
+数据见 [outputs_musa/experiment_summary.csv](outputs_musa/experiment_summary.csv)。
+
+### 四平台对比（300k×128，nprobe=16）
 
 | 平台 | GPU | exact QPS | ivf_flat QPS | recall@100 | ivf_pq QPS |
 | --- | --- | --- | --- | --- | --- |
 | NVIDIA | RTX 4090 | 2029 | 49058 | 0.986 | 45792 |
 | 天数智芯 | MR-V100 | 366 | 9340 | 0.991 | 16974 |
 | 沐曦 | MXC500 | 1560 | 15916 | 0.991 | 15985 |
+| 摩尔线程 | MUSA 5.1.0 | 194 | 5581 | 0.991 | 6092 |
 
-三平台的 recall 与排序结果一致（同参数数据下 CoreX / 沐曦为 0.991390），说明检索
-算法在各平台上行为一致，差异来自 GPU 算力与访存带宽。
+四平台的 recall 与排序结果一致（同参数数据下天数智芯 / 沐曦 / 摩尔线程均为
+0.991390），说明检索算法在各平台上行为一致，差异来自 GPU 算力与访存带宽。

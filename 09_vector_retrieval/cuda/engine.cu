@@ -36,9 +36,55 @@
 #define VSEARCH_ACC_TYPE double
 #endif
 
+// ---------------------------------------------------------------------------
+// 平台运行时头文件。
+//
+// 本文件同时服务四个平台：
+//   * NVIDIA  : CUDA（cuda_runtime.h / cublas_v2.h）
+//   * 天数智芯 : CoreX CUDA 兼容层（用 -DVSEARCH_COREX=1）
+//   * 沐曦     : MACA cu-bridge CUDA 兼容层（cucc 直接提供 cuda_runtime.h）
+//   * 摩尔线程 : MUSA 原生 API（用 -DVSEARCH_MUSA=1，名称前缀为 musa/mublas）
+// 其中 MUSA 不提供 CUDA 兼容头，因此在头文件之后做一层名称映射，使下面的
+// 检索实现代码无需为 MUSA 单独改写。
+// ---------------------------------------------------------------------------
+#if defined(VSEARCH_MUSA)
+#include <musa_runtime.h>
+#include <mublas_v2.h>
+#else
 #include <cuda_runtime.h>
-#include <cub/cub.cuh>
 #include <cublas_v2.h>
+#endif
+#include <cub/cub.cuh>
+
+#if defined(VSEARCH_MUSA)
+// CUDA 名称 -> MUSA 名称映射（仅作用于本文件后续代码，不影响已包含的头文件）。
+#define cudaError_t musaError_t
+#define cudaEvent_t musaEvent_t
+#define cudaSuccess musaSuccess
+#define cudaMemcpyHostToDevice musaMemcpyHostToDevice
+#define cudaMemcpyDeviceToHost musaMemcpyDeviceToHost
+#define cudaMemcpyDeviceToDevice musaMemcpyDeviceToDevice
+#define cudaMalloc musaMalloc
+#define cudaFree musaFree
+#define cudaMemset musaMemset
+#define cudaMemcpy musaMemcpy
+#define cudaDeviceSynchronize musaDeviceSynchronize
+#define cudaGetErrorString musaGetErrorString
+#define cudaMemGetInfo musaMemGetInfo
+#define cudaEventCreate musaEventCreate
+#define cudaEventRecord musaEventRecord
+#define cudaEventSynchronize musaEventSynchronize
+#define cudaEventElapsedTime musaEventElapsedTime
+#define cudaEventDestroy musaEventDestroy
+#define cublasHandle_t mublasHandle_t
+#define cublasStatus_t mublasStatus_t
+#define cublasCreate mublasCreate
+#define cublasDestroy mublasDestroy
+#define cublasSgemm mublasSgemm
+#define CUBLAS_STATUS_SUCCESS MUBLAS_STATUS_SUCCESS
+#define CUBLAS_OP_N MUBLAS_OP_N
+#define CUBLAS_OP_T MUBLAS_OP_T
+#endif
 
 #include <algorithm>
 #include <cstddef>

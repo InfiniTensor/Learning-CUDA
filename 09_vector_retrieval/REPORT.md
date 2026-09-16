@@ -20,13 +20,14 @@
 索引落盘与重载，并输出结果文件、性能日志与质量日志。CPU 参考实现独立于 GPU 代码，
 用于校验精确检索的距离与排序（含同分时按 id 升序的确定性 tie-break）。
 
-实验在三套 GPU 平台上完成，各平台均执行了完整的构建、正确性测试与端到端基准测试：
+实验在四套 GPU 平台上完成，各平台均执行了完整的构建、正确性测试与端到端基准测试：
 
 | 平台 | GPU | 系统 / 软件栈 | 本次执行内容 |
 | --- | --- | --- | --- |
 | NVIDIA | RTX 4090 24 GB | Ubuntu 24.04，CUDA 12.0/12.8，驱动 570 | 构建、主机/GPU 测试、1e6 与 300k 两档基准 |
 | 天数智芯 | Iluvatar MR-V100 32 GB | IX-ML 4.4.0（clang `-x ivcore`） | 构建、主机/GPU 测试、300k 基准 + 21 组扫描 |
 | 沐曦 | MetaX MXC500 32 GB | MACA 3.5.3（`cucc` + `mcblas`） | 构建、主机/GPU 测试、300k 基准 + 21 组扫描 |
+| 摩尔线程 | MUSA 5.1.0 环境 | MUSA 5.1.0（`mcc -x musa` + `mublas`） | 构建、主机/GPU 测试、300k 基准 + 21 组扫描 |
 
 主要结果（300k×128，nq=1000，topK=100，nprobe=16，详见 §7）：
 
@@ -35,10 +36,11 @@
 | NVIDIA RTX 4090 | 2029 | 49058 | 0.986 | 45792 |
 | 天数智芯 MR-V100 | 366 | 9340 | 0.991 | 16974 |
 | 沐曦 MXC500 | 1560 | 15916 | 0.991 | 15985 |
+| 摩尔线程 MUSA | 194 | 5581 | 0.991 | 6092 |
 
-三套平台上，精确检索的 id 与 CPU 参考逐位一致，IVF-Flat 在 nprobe=32 时
+四套平台上，精确检索的 id 与 CPU 参考逐位一致，IVF-Flat 在 nprobe=32 时
 recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据集上约 0.012，
-原因见 §7.7）。
+原因见 §7.8）。
 
 ## 2. 实验目标与范围
 
@@ -64,13 +66,13 @@ recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据�
 
 ### 3.1 硬件与系统
 
-| 项目 | 平台 A（NVIDIA） | 平台 B（天数智芯） | 平台 C（沐曦） |
-| --- | --- | --- | --- |
-| GPU | GeForce RTX 4090 | Iluvatar MR-V100 | MetaX MXC500（单 SGPU 分片） |
-| 显存 | 24 GB | 32 GB | 32 GB（mx-smi 显示 50% 规格） |
-| CPU / 内存 | 容器环境，未记录 | 112 核 / 32 GB | 128 核 / 64 GB |
-| 操作系统 | Ubuntu 24.04 | Ubuntu 24.04.4 | Ubuntu 20.04 |
-| GPU 驱动 | 570.124.06 | IX-ML 4.4.0 | MACA 3.5.3.20（mx-smi 2.2.12） |
+| 项目 | 平台 A（NVIDIA） | 平台 B（天数智芯） | 平台 C（沐曦） | 平台 D（摩尔线程） |
+| --- | --- | --- | --- | --- |
+| GPU | GeForce RTX 4090 | Iluvatar MR-V100 | MetaX MXC500（单 SGPU 分片） | 摩尔线程 GPU（`/dev/mtgpu`） |
+| 显存 | 24 GB | 32 GB | 32 GB（mx-smi 显示 50% 规格） | 未记录（`musaMemGetInfo` 报告空闲 49 GB） |
+| CPU / 内存 | 容器环境，未记录 | 112 核 / 32 GB | 128 核 / 64 GB | 128 核 / 64 GB |
+| 操作系统 | Ubuntu 24.04 | Ubuntu 24.04.4 | Ubuntu 20.04 | Ubuntu 20.04（内核 5.15） |
+| GPU 驱动 / 工具链版本 | 570.124.06 | IX-ML 4.4.0 | MACA 3.5.3.20（mx-smi 2.2.12） | MUSA 5.1.0（CUB 1.17.2、mcc 5.1.0） |
 
 ### 3.2 工具链与构建方式
 
@@ -79,20 +81,23 @@ recall@100 达到 1.000，IVF-PQ 的召回率受量化精度限制（本数据�
 | NVIDIA | `CMakeLists.txt` | `nvcc`（CUDA 12.0 / 12.8） | cuBLAS | CUDA Toolkit 默认 |
 | 天数智芯 | `Makefile.corex` | CoreX 定制 clang 18（`-x ivcore`） | CoreX cuBLAS 兼容层 | `/usr/local/corex/lib64` |
 | 沐曦 | `Makefile.maca` | `cucc`（→ mxgpu_llvm `mxcc`） | `libmcblas.so` | `/opt/maca/lib`、`/opt/maca/tools/cu-bridge/lib` |
+| 摩尔线程 | `Makefile.musa` | `mcc -x musa`（clang 14 前端） | `libmublas.so` | `/usr/local/musa/lib` |
 
-两个加速卡平台均提供 CUDA 兼容头文件与 CUB 实现，因此程序中的
-`cub::DeviceScan`、`cub::DeviceSegmentedRadixSort` 与 cuBLAS 调用无需替换。各平台
-的构建命令见 §5.4。
+天数智芯与沐曦提供 CUDA 兼容头文件与 CUB 实现，因此程序中的 `cub::DeviceScan`、
+`cub::DeviceSegmentedRadixSort` 与 cuBLAS 调用无需替换；摩尔线程使用 MUSA 原生
+API 与 MUSA 版 CUB，通过 `-DVSEARCH_MUSA=1` 的名称映射复用同一套实现。各平台的
+构建命令见 §5.4。
 
 ### 3.3 平台能力探测
 
-移植前在两台加速卡平台上分别执行了两项设备能力探测，结果决定是否需要修改计算路径：
+移植前在三台加速卡平台上分别执行了设备能力探测，结果决定各平台是否需要修改计算
+路径（探测程序见 [tools/probe/device_probe.cu](tools/probe/device_probe.cu)）：
 
-| 探测项 | 平台 B（天数智芯） | 平台 C（沐曦） |
-| --- | --- | --- |
-| `atomicAdd(unsigned long long*)` | 调用返回成功但计数不增加（256 线程累加结果为 0） | 正常（256 线程累加结果为 256） |
-| device 端 double 长求和（128 维） | 与主机 int64/IEEE 结果偏差约 1e-4 相对量级 | 与主机 double 结果一致（偏差 0） |
-| PTX 内联汇编 `asm("mov.b32 ...")` | 后端寄存器分配失败，编译报错 | 未使用（改用内建函数后不再依赖） |
+| 探测项 | 平台 B（天数智芯） | 平台 C（沐曦） | 平台 D（摩尔线程） |
+| --- | --- | --- | --- |
+| `atomicAdd(unsigned long long*)` | 调用返回成功但计数不增加（256 线程累加结果为 0） | 正常（256 线程累加结果为 256） | 正常（256 线程累加结果为 256） |
+| device 端 double 长求和（128 维） | 与主机结果偏差约 1e-4 相对量级 | 与主机 double 结果一致（偏差 0） | 与主机 double 结果一致（偏差 0） |
+| PTX 内联汇编 `asm("mov.b32 ...")` | 后端寄存器分配失败，编译报错 | 未使用（改用内建函数后不再依赖） | 未使用 |
 
 对应的处理方式见 §7.2。
 
@@ -111,9 +116,11 @@ python/run_experiments.py  nprobe x batch 扫描并汇总 CSV
 CMakeLists.txt             NVIDIA 构建（nvcc）
 Makefile.corex             CoreX 构建（clang -x ivcore，-DVSEARCH_COREX=1）
 Makefile.maca              沐曦构建（cucc + mcblas）
-outputs/                   NVIDIA 平台报告、日志与结果样例
+Makefile.musa              摩尔线程构建（mcc -x musa，-DVSEARCH_MUSA=1）
+outputs/                   NVIDIA 平台日志与结果样例
 outputs_corex/             CoreX 平台 perf/quality 日志与扫描汇总
 outputs_maca/              沐曦平台 perf/quality 日志与扫描汇总
+outputs_musa/              摩尔线程平台 perf/quality 日志与扫描汇总
 ```
 
 编译产物为一个静态库和三个可执行文件（`vsearch`、`test_host`、`test_gpu`）。
@@ -286,7 +293,7 @@ CLI/配置任意正整数 K，测试覆盖 1/10/50/100；`topK ≤ 65535` 均可
 | `data_ann`（早期） | 1 000 000 | 128 | 1000 | 100 | 自动 | 默认 | 默认 | 4096 | 16 | 16 |
 | 统一复现组 | 300 000 | 128 | 1000 | 100 | 100 | 0.10 | 0.02 | 1024 | 16 | 16 |
 
-其中 300k 数据组在三套平台上使用相同生成参数与相同随机种子（`--seed 2026`）
+其中 300k 数据组在四套平台上使用相同生成参数与相同随机种子（`--seed 2026`）
 生成，用于跨平台比较。其余参数取默认值：`kmeans_iters = 12`、
 `kmeans_sample = 65536`、`pq_ks = 256`、`pq_rerank = 256`、
 `ref_query_limit = 200`、`exact_memory_mb = 4096`。
@@ -351,7 +358,7 @@ export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib
 
 ### 6.1 主机侧单元测试（test_host）
 
-5 个用例在三套平台上全部通过（输出 `ALL HOST TESTS PASSED`）：
+5 个用例在四套平台上全部通过（输出 `ALL HOST TESTS PASSED`）：
 
 | 用例 | 检查内容 |
 | --- | --- |
@@ -363,7 +370,7 @@ export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib
 
 ### 6.2 GPU 集成测试（test_gpu）
 
-测试数据为 20000×64、100 个分离簇的合成集，三套平台输出一致：
+测试数据为 20000×64、100 个分离簇的合成集，四套平台输出一致：
 
 | 检查项 | 结果 |
 | --- | --- |
@@ -428,10 +435,12 @@ export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib
 | --- | --- | --- |
 | CoreX 设备端 64 位 `atomicAdd` 不生效 | 聚类计数与倒排直方图恒为 0 | 计数与游标改为 32 位原子；需要 64 位前缀和处仍由 `cub::DeviceScan` 输出 64 位 offsets |
 | CUB `ExclusiveSum` 不写 `out[n]` | 调用方需要的候选总数缺失 | 使用 `n+1` 临时缓冲执行 scan，再按“最后前缀 + 最后一项”补写 `out[n]` |
-| CoreX device double 精度不足 | 长求和误差会使距离排序失真 | CoreX 构建以 `VSEARCH_COREX` 宏切换为 float 累计；NVIDIA 与沐曦保持 double |
-| PTX 内联汇编在 CoreX 后端编译失败 | 无法生成 kernel | 改用 CUDA 内建 `__float_as_int` / `__int_as_float`，三平台语义一致 |
+| CoreX device double 精度不足 | 长求和误差会使距离排序失真 | CoreX 构建以 `VSEARCH_COREX` 宏切换为 float 累计；NVIDIA / 沐曦 / MUSA 保持 double |
+| PTX 内联汇编在 CoreX 后端编译失败 | 无法生成 kernel | 改用 CUDA 内建 `__float_as_int` / `__int_as_float`，各平台语义一致 |
+| MUSA 不提供 CUDA 兼容头 | 无法直接包含 cuda_runtime.h | 以 `-DVSEARCH_MUSA=1` 启用名称映射（`cuda*`/`cublas*` → `musa*`/`mublas*`），实现代码不变 |
+| mcc 把 `.cu` 当作 CUDA 源 | 报“找不到 CUDA 安装” | 编译时显式指定 `-x musa --musa-path=/usr/local/musa` |
 
-上述处理只改变计数类型与累计类型，检索流程与 kernel 划分不变。
+上述处理只涉及计数类型、累计类型与符号名称映射，检索流程与 kernel 划分不变。
 
 ### 7.3 NVIDIA 平台结果
 
@@ -536,19 +545,65 @@ IVF-Flat recall≈1.0。
 
 完整 21 组数据：`outputs_maca/experiment_summary.csv`。
 
-### 7.6 三平台横向对比
+### 7.6 摩尔线程 MUSA 结果
 
-**表 9：三平台，300k×128，nq=1000，topK=100，nprobe=16**
+#### 7.6.1 构建方式
+
+MUSA 提供原生 API（`musa_runtime.h`、`mublas_v2.h` 以及 CUB for MUSA），不提供
+CUDA 兼容头文件。因此 `cuda/engine.cu` 在 `-DVSEARCH_MUSA=1` 时启用一层名称映射
+（`cuda*` → `musa*`、`cublas*` → `mublas*`、`CUBLAS_OP_*` → `MUBLAS_OP_*`），
+检索算法与 kernel 代码不变。构建使用 [Makefile.musa](Makefile.musa)：
+
+```bash
+make -f Makefile.musa -j
+export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
+./build_musa/test_host && ./build_musa/test_gpu
+```
+
+Makefile 以 `mcc -x musa --musa-path=/usr/local/musa` 编译 `.cu`（若按扩展名推断为
+CUDA，mcc 会走 CUDA 前端并报找不到 CUDA 安装），并链接 `-lmusart -lmublas`。
+
+#### 7.6.2 基准结果
+
+**表 9：摩尔线程 MUSA，300k×128，nq=1000，topK=100，nprobe=16**
+
+| mode | build ms | search ms | QPS | P50 ms | P99 ms | recall@100 | speedup vs CPU |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| exact_gpu | - | 1028.7 | 194 | 514.0 | 638.5 | - | 16.1× |
+| ivf_flat | 241 | 179.2 | 5581 | 22.5 | 24.3 | 0.991 | 92.5× |
+| ivf_pq16+rerank | 4820 | 164.2 | 6092 | 20.0 | 24.4 | 0.012 | 101.9× |
+
+原始日志：`outputs_musa/`。
+
+**表 10：MUSA IVF-Flat nprobe 权衡（batch=128）**
+
+| nprobe | recall@100 | QPS | P50 ms |
+| --- | --- | --- | --- |
+| 1 | 0.0125 | 14307 | 8.45 |
+| 2 | 0.0190 | 11249 | 10.67 |
+| 4 | 0.0629 | 9605 | 12.71 |
+| 8 | 0.5437 | 7669 | 16.18 |
+| 16 | 0.9914 | 5515 | 22.63 |
+| 32 | 1.0000 | 3447 | 34.69 |
+| 64 | 1.0000 | 2101 | 60.07 |
+
+完整 21 组（nprobe × batch）数据：`outputs_musa/experiment_summary.csv`。
+
+### 7.7 四平台横向对比
+
+**表 11：四个平台，300k×128，nq=1000，topK=100，nprobe=16**
 
 | 平台 | GPU | exact QPS | ivf_flat QPS | recall@100 | ivf_pq QPS |
 | --- | --- | --- | --- | --- | --- |
 | NVIDIA | RTX 4090 | 2029 | 49058 | 0.986 | 45792 |
 | 天数智芯 | MR-V100 | 366 | 9340 | 0.991 | 16974 |
 | 沐曦 | MXC500 | 1560 | 15916 | 0.991 | 15985 |
+| 摩尔线程 | MUSA（MUSA 5.1.0 环境） | 194 | 5581 | 0.991 | 6092 |
 
-原始日志：`outputs/nvidia_300k_regression/`、`outputs_corex/`、`outputs_maca/`。
+原始日志：`outputs/nvidia_300k_regression/`、`outputs_corex/`、`outputs_maca/`、
+`outputs_musa/`。
 
-### 7.7 IVF-PQ 量化误差分析
+### 7.8 IVF-PQ 量化误差分析
 
 在 300k 数据组上，IVF-PQ 的 recall@100 约为 0.012，与 IVF-Flat 的 0.99 相差
 两个数量级（表 4、5、7）。为确认这是量化方法的固有代价而非实现缺陷，做了如下
@@ -566,9 +621,9 @@ IVF-Flat recall≈1.0。
 时 Top-1 命中率为 100%，说明 PQ 通路本身可用；本数据集上的低召回来自数据分布与
 码率的匹配，而非实现错误。
 
-该结论在三套平台上一致：300k 数据组（同参数、同随机种子）在 NVIDIA、CoreX 与
-沐曦上分别测得 recall@100 = 0.9858/0.9914/0.9914（IVF-Flat）与
-≈0.012（IVF-PQ）。
+该结论在四套平台上一致：300k 数据组（同参数、同随机种子）在 NVIDIA、CoreX、
+沐曦与摩尔线程上分别测得 recall@100 = 0.9858/0.9914/0.9914/0.9914（IVF-Flat），
+IVF-PQ 均约 0.012。
 
 ## 8. 性能剖析（Nsight Systems）
 
@@ -604,7 +659,7 @@ nsys stats --report cuda_gpu_sum prof/nsys_exact.nsys-rep
 
 ### 9.1 正确性
 
-三套平台上主机测试 5 项、GPU 集成测试 4 项全部通过；基准测试过程中 GPU exact 与
+四套平台上主机测试 5 项、GPU 集成测试 4 项全部通过；基准测试过程中 GPU exact 与
 CPU 参考的 id 逐位一致。这满足题目对“精确检索结果需与 CPU 参考实现一致”“Top-K
 输出需按距离或相似度排序”的要求。
 
@@ -622,12 +677,13 @@ CPU 参考的 id 逐位一致。这满足题目对“精确检索结果需与 CP
 IVF-Flat 只扫描 `nprobe/nlist` 比例的候选：1e6 数据、nlist=4096、nprobe=16 时理论
 候选约为全库的 0.4%，实测 QPS 相对 exact 提升约 30 倍；300k 数据、nlist=1024、
 nprobe=16 时提升约 24 倍（表 4、7）。IVF-PQ 进一步把候选打分从读原始向量改为读
-压缩码与距离表，在 300k 数据上与 IVF-Flat 吞吐相当，但代价是召回率（§7.7）。
+压缩码与距离表，在 300k 数据上与 IVF-Flat 吞吐相当，但代价是召回率（§7.8）。
 
-三平台吞吐排序为 NVIDIA > 沐曦 > 天数智芯。需要注意沐曦本次只启用了 MXC500 的一个
-SGPU 分片（mx-smi 显示 50% 规格），并非整卡；天数智芯的精确检索明显慢于另两者
-（366 QPS 对 1560 / 2029 QPS），但其 IVF-Flat 相对自身 exact 的加速倍数最大
-（约 25 倍），说明瓶颈更多在原始向量扫描而非索引结构。
+四平台吞吐排序为 NVIDIA > 沐曦 > 天数智芯 > 摩尔线程。需要注意沐曦本次只启用了
+MXC500 的一个 SGPU 分片（mx-smi 显示 50% 规格），并非整卡；天数智芯与摩尔线程的
+精确检索明显慢于前两者（366 / 194 QPS 对 1560 / 2029 QPS），但两者的 IVF-Flat
+相对自身 exact 的加速倍数最大（约 25 倍与 29 倍），说明瓶颈更多在原始向量扫描
+而非索引结构。
 
 ### 9.3 召回率与参数的权衡
 
@@ -644,7 +700,7 @@ SGPU 分片（mx-smi 显示 50% 规格），并非整卡；天数智芯的精确
 ### 9.4 量化误差
 
 IVF-PQ 在本数据组上的低召回（0.012）经离线核对确认来自 8 bit×16 子空间的量化
-误差量级与近邻距离量级相当（§7.7），而非编码或打分实现错误。若要在此类数据上
+误差量级与近邻距离量级相当（§7.8），而非编码或打分实现错误。若要在此类数据上
 使用 PQ，需要提高码率（增大 `pq_m`、使用更多码字或残差量化）或扩大精排窗口。
 
 ### 9.5 实验局限
@@ -656,16 +712,16 @@ IVF-PQ 在本数据组上的低召回（0.012）经离线核对确认来自 8 bi
 
 ## 10. 实验结论
 
-1. **功能正确性**：三套平台上 GPU 精确检索与独立 CPU 参考的 id 逐位一致，距离在
+1. **功能正确性**：四套平台上 GPU 精确检索与独立 CPU 参考的 id 逐位一致，距离在
    平台相应容差内；Top-K 严格有序；批量查询、K 取值、fp16/fp32 输入、索引落盘与
    重载均可用。
 2. **近似检索有效性**：IVF-Flat 在 nprobe=16 时 recall@100 达到 0.986~0.991，
    nprobe=32 时达到 1.000，同时吞吐为精确检索的 20~70 倍。
-3. **性能量级**（300k×128，nprobe=16）：exact 366~2029 QPS，ivf_flat 9340~49058
-   QPS，ivf_pq 15985~45792 QPS，相对单线程 CPU 基线的加速比为 21×~425×。
-4. **跨平台**：程序在三套 GPU 软件栈（CUDA、CoreX IX-ML、MetaX MACA）上均能构建
-   并完成全部测试与基准；天数智芯需要针对设备特性调整计数位宽与距离累计类型，
-   沐曦与 NVIDIA 使用相同计算路径。
+3. **性能量级**（300k×128，nprobe=16）：exact 194~2029 QPS，ivf_flat 5581~49058
+   QPS，ivf_pq 6092~45792 QPS，相对单线程 CPU 基线的加速比为 16×~425×。
+4. **跨平台**：程序在四套 GPU 软件栈（CUDA、CoreX IX-ML、MetaX MACA、MUSA）上均能
+   构建并完成全部测试与基准；天数智芯需要针对设备特性调整计数位宽与距离累计类型，
+   摩尔线程需要一层 API 名称映射，沐曦与 NVIDIA 使用相同计算路径。
 5. **已知代价**：IVF-PQ 在本数据组上将召回降到约 0.012，属于量化码率与数据分布
    不匹配的固有结果，需通过提高码率或扩大精排窗口改善。
 
@@ -689,8 +745,13 @@ make -f Makefile.maca -j
 export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
 ./build_maca/test_host && ./build_maca/test_gpu
 
-# 4) 生成 300k 数据组并做 nprobe × batch 扫描
-#    （NVIDIA 用 ./build/vsearch，CoreX 用 ./build_corex/vsearch）
+# 4) 摩尔线程 MUSA 构建与正确性自检
+make -f Makefile.musa -j
+export LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64
+./build_musa/test_host && ./build_musa/test_gpu
+
+# 5) 生成 300k 数据组并做 nprobe × batch 扫描
+#    （NVIDIA 用 ./build/vsearch，其余平台用对应 build_*/vsearch）
 python python/gen_dataset.py --out data \
     --n 300000 --dim 128 --nq 1000 --top-k 100 --metric l2 \
     --clusters 100 --vector-scale 0.10 --query-scale 0.02 \
@@ -708,7 +769,8 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 | 表 4 | 300k×128 | NVIDIA | `outputs/nvidia_300k_regression/` |
 | 表 5、6 | 300k×128 | 天数智芯 | `outputs_corex/` |
 | 表 7、8 | 300k×128 | 沐曦 | `outputs_maca/` |
-| 表 9 | 300k×128 | 三平台 | 上述三个目录 |
+| 表 9、10 | 300k×128 | 摩尔线程 | `outputs_musa/` |
+| 表 11 | 300k×128 | 四平台 | 上述四个目录 |
 
 每组日志均包含 `perf.log`（性能）、`quality.log`（召回与距离误差）与
 `experiment_summary.csv`（nprobe × batch 汇总）。索引文件为 `.idx`，`saveIndex`
@@ -716,7 +778,7 @@ python python/run_experiments.py --vsearch ./build/vsearch \
 
 ### 11.3 结果核验方式
 
-1. **正确性**：直接运行 `test_host` 与 `test_gpu`（§11.1 步骤 1-3），
+1. **正确性**：直接运行 `test_host` 与 `test_gpu`（§11.1 步骤 1-4），
    `test_gpu` 内部会把 GPU exact 与 CPU 参考逐条比对。
 2. **性能/召回**：按 §5.4 的命令重跑 bench，得到的 `perf.log` 与 `quality.log`
    可与 §7 各表逐项对照；表下方均标注了对应的日志文件。
