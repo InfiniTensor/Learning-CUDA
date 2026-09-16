@@ -1,0 +1,25 @@
+向量库: 1000000 x 128
+查询数: 1000
+dtype: fp32
+metric: inner_product
+top_k: 50
+batch_size: 64
+distance_mode: warp
+topk_mode: fused
+warmup/repeat: 5/100
+backend: gpu
+GPU 一次性初始化总时间: 173.011 ms
+数据库一次性 H2D: 49.114 ms
+GPU 缓冲区: 488.935 MiB
+估算冷启动端到端: 340.398 ms
+平均常驻查询时间: 167.387 ms
+run P50: 167.671 ms
+run P99: 169.027 ms
+常驻 QPS: 5974.19
+结果: "results/formal_100k15/exact_k50.txt"
+平均查询 H2D: 0.232645 ms
+平均融合距离+局部 Top-K kernel: 165.594 ms
+平均最终 Top-K kernel: 0.844275 ms
+平均结果 D2H: 0.411974 ms
+batch P50: 10.6347 ms
+batch P99: 10.8679 ms

@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "project_root": "PurplePulse",
+  "validated_csv_rows": {
+    "results/real/sift1m/exact_gpu.csv": 3,
+    "results/real/sift1m/faiss_gpu.csv": 21,
+    "results/real/sift1m/ivf_k10.csv": 6,
+    "results/real/sift1m/ivf_k50.csv": 6,
+    "results/real/sift1m/ivf_k100.csv": 6,
+    "results/real/yahoo-minilm-384/exact_gpu.csv": 3,
+    "results/real/yahoo-minilm-384/faiss_gpu.csv": 21,
+    "results/real/yahoo-minilm-384/ivf_k10.csv": 6,
+    "results/real/yahoo-minilm-384/ivf_k50.csv": 6,
+    "results/real/yahoo-minilm-384/ivf_k100.csv": 6,
+    "results/formal_100k15/exact_gpu.csv": 3,
+    "results/formal_100k15/faiss_cpu_flat.csv": 3,
+    "results/stage8_stability/coverage.csv": 9
+  },
+  "report_bytes": 408735
+}

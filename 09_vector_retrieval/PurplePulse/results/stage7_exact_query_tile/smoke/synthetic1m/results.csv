@@ -1,0 +1,10 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,1000000,128,1000,10,64,1,144.492,6920.78,144.478,144.568,488.437,143.571,0.179381,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/baseline/exact_k10.txt
+baseline,1000000,128,1000,50,64,1,159.407,6273.26,159.396,159.543,488.935,157.604,0.797781,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/baseline/exact_k50.txt
+baseline,1000000,128,1000,100,64,1,176.951,5651.27,176.837,177.386,489.558,173.766,1.80062,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/baseline/exact_k100.txt
+tile2,1000000,128,1000,10,64,2,157.074,6366.42,157.068,157.177,488.437,156.117,0.166123,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile2/exact_k10.txt
+tile2,1000000,128,1000,50,64,2,162.361,6159.13,162.333,162.425,488.935,160.603,0.750944,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile2/exact_k50.txt
+tile2,1000000,128,1000,100,64,2,317.018,3154.4,316.998,317.379,489.558,313.943,1.72026,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile2/exact_k100.txt
+tile4,1000000,128,1000,10,64,4,183.473,5450.4,183.454,183.512,488.437,182.569,0.169333,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile4/exact_k10.txt
+tile4,1000000,128,1000,50,64,4,190.591,5246.83,190.522,190.759,488.935,188.841,0.751019,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile4/exact_k50.txt
+tile4,1000000,128,1000,100,64,4,388.451,2574.33,388.913,389.133,489.558,385.257,1.71516,results/stage7_exact_query_tile/smoke/synthetic1m/outputs/tile4/exact_k100.txt

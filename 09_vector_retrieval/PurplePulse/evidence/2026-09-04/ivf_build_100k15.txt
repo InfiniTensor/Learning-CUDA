@@ -1,0 +1,11 @@
+IVF-Flat 索引构建完成
+向量库: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist: 256
+迭代/训练样本: 15/100000
+构建时间: 67678 ms
+保存时间: 201.959 ms
+桶大小 min/avg/max: 3734/3906.25/4091
+空桶: 0
+索引大小: 520133160 bytes
+输出: "data/million/inner_fp32_nlist256_spherical_100k15.ivf"

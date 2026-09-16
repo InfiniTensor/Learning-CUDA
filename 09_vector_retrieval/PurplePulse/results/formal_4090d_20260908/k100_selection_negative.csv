@@ -1,0 +1,4 @@
+top_k,nprobe,batch_size,variant,baseline_qps,variant_qps,speedup_percent,baseline_average_ms,variant_average_ms,baseline_run_p99_ms,variant_run_p99_ms,baseline_scan_ms,variant_scan_ms,repeat,output_equal,accepted
+100,160,64,distributed_register_topk,5483.49,5507.23,0.4329,182.366,181.579,183.618,183.087,174.026,173.294,100,true,false
+100,160,64,candidate_buffer_8,5508.19,4258.85,-22.6815,181.548,234.805,182.597,239.191,173.114,225.342,10,true,false
+100,160,64,warp_bitonic_sort_128,5496.78,4467.83,-18.7191,181.925,223.822,182.873,229.924,173.398,214.114,10,true,false

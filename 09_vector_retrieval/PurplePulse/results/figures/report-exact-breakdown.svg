@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<title>Exact 耗时分解</title>
+<desc>图中数据由仓库内原始 CSV 自动生成。</desc>
+<style>.figure-title{font-size:22px;font-weight:600}.panel-title{font-size:16px;font-weight:600}.label{font-size:14px;font-weight:600}.tick{font-size:12px}.note{font-size:12px}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="560.00" y="34.00" class="figure-title" text-anchor="middle">Exact 融合路径的 GPU 执行时间分解</text>
+<rect x="370.00" y="49.00" width="16.00" height="11.00" fill="#2878B5" />
+<text x="394.00" y="60.00" class="note" >距离与向量读取</text>
+<rect x="550.00" y="49.00" width="16.00" height="11.00" fill="#E9C46A" />
+<text x="574.00" y="60.00" class="note" >局部 Top-K</text>
+<rect x="730.00" y="49.00" width="16.00" height="11.00" fill="#D95F02" />
+<text x="754.00" y="60.00" class="note" >最终合并</text>
+<text x="310.00" y="94.00" class="panel-title" text-anchor="middle">百万条 128 维合成数据</text>
+<rect x="150.00" y="134.69" width="72.00" height="265.31" fill="#2878B5" />
+<rect x="150.00" y="130.34" width="72.00" height="4.35" fill="#E9C46A" />
+<rect x="150.00" y="130.00" width="72.00" height="0.34" fill="#D95F02" />
+<text x="186.00" y="427.00" class="label" text-anchor="middle">K=10</text>
+<text x="186.00" y="118.00" class="note" text-anchor="middle">98.3%</text>
+<rect x="295.00" y="159.66" width="72.00" height="240.34" fill="#2878B5" />
+<rect x="295.00" y="131.36" width="72.00" height="28.29" fill="#E9C46A" />
+<rect x="295.00" y="130.00" width="72.00" height="1.37" fill="#D95F02" />
+<text x="331.00" y="427.00" class="label" text-anchor="middle">K=50</text>
+<text x="331.00" y="118.00" class="note" text-anchor="middle">89.0%</text>
+<rect x="440.00" y="182.06" width="72.00" height="217.94" fill="#2878B5" />
+<rect x="440.00" y="132.77" width="72.00" height="49.29" fill="#E9C46A" />
+<rect x="440.00" y="130.00" width="72.00" height="2.77" fill="#D95F02" />
+<text x="476.00" y="427.00" class="label" text-anchor="middle">K=100</text>
+<text x="476.00" y="118.00" class="note" text-anchor="middle">80.7%</text>
+<line x1="110.00" y1="400.00" x2="560.00" y2="400.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<text x="860.00" y="94.00" class="panel-title" text-anchor="middle">67.7 万条 384 维文本向量</text>
+<rect x="700.00" y="133.43" width="72.00" height="266.57" fill="#2878B5" />
+<rect x="700.00" y="130.18" width="72.00" height="3.24" fill="#E9C46A" />
+<rect x="700.00" y="130.00" width="72.00" height="0.19" fill="#D95F02" />
+<text x="736.00" y="427.00" class="label" text-anchor="middle">K=10</text>
+<text x="736.00" y="118.00" class="note" text-anchor="middle">98.7%</text>
+<rect x="845.00" y="143.26" width="72.00" height="256.74" fill="#2878B5" />
+<rect x="845.00" y="130.81" width="72.00" height="12.45" fill="#E9C46A" />
+<rect x="845.00" y="130.00" width="72.00" height="0.81" fill="#D95F02" />
+<text x="881.00" y="427.00" class="label" text-anchor="middle">K=50</text>
+<text x="881.00" y="118.00" class="note" text-anchor="middle">95.1%</text>
+<rect x="990.00" y="158.15" width="72.00" height="241.85" fill="#2878B5" />
+<rect x="990.00" y="131.72" width="72.00" height="26.42" fill="#E9C46A" />
+<rect x="990.00" y="130.00" width="72.00" height="1.72" fill="#D95F02" />
+<text x="1026.00" y="427.00" class="label" text-anchor="middle">K=100</text>
+<text x="1026.00" y="118.00" class="note" text-anchor="middle">89.6%</text>
+<line x1="660.00" y1="400.00" x2="1110.00" y2="400.00" class="axis" stroke="#65717D" stroke-width="1.2"/>
+<text x="560.00" y="482.00" class="note" text-anchor="middle">柱顶数字表示“距离计算与向量读取”占 GPU 核函数流水的比例</text>
+</svg>

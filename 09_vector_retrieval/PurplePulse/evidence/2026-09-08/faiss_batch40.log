@@ -1,0 +1,31 @@
+FAISS same-batch comparison, RTX 4090 D
+FAISS 1.14.1 GPU; NumPy 2.2.6; Python 3.12.3
+K=50, nlist=256, nprobe=160, batch=40
+Training samples=100000, iterations=15, seed=2026
+Warmup: 5 full query sets; repeat: 100
+
+FAISS Flat vs PurplePulse Exact:
+recall@50=1.000000000
+minimum_query_recall=1.000000000
+mean_score_error=1.9556427e-06
+max_score_error=1.33514404e-05
+
+FAISS GPU IVF-Flat:
+average_query_ms=120.07527381181717
+qps=8328.109262255002
+run_p50_ms=119.6761205792427
+run_p99_ms=126.95340067148209
+batch_p50_ms=4.623956978321075
+batch_p99_ms=5.8260709047317505
+run_samples=100
+batch_latency_samples=2500
+recall_at_50=0.92312
+minimum_query_recall=0.8
+
+PurplePulse bucket-major, same K/nprobe/batch/repeat:
+average_query_ms=144.077
+qps=6940.71
+run_p99_ms=146.137
+recall_at_50=0.92482
+
+FAISS/PurplePulse QPS ratio=1.1999x.

@@ -1,0 +1,101 @@
+IVF-Flat gpu 查询完成
+索引: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist/nprobe/top_k: 256/128/100
+nprobe policy: fixed
+memory mode: disabled
+索引加载: 353.542 ms
+GPU 初始化: 222.296557 ms
+索引 H2D: 51.038208 ms
+GPU 缓冲区: 505.610847 MiB
+平均查询: 164.37 ms
+run P50/P99: 164.701/166.278 ms
+QPS: 6083.83
+输出: "results/formal_100k15/ivf_k100_raw/nlist256_nprobe128.txt"
+平均 CPU 中心/桶选择: 0 ms
+平均 query H2D: 0.230585 ms
+平均 GPU 中心选择: 1.42848 ms
+平均自适应分层开销: 0 ms
+平均 GPU 桶扫描+局部 Top-K: 156.251 ms
+平均 GPU 最终 Top-K 归并: 1.33227 ms
+平均记忆独立重排: 0 ms
+平均结果 D2H: 0.526344 ms
+batch P50/P99: 10.2194/10.4293 ms
+实际 nprobe min/avg/max: 128/128/128
+recall@100=0.851910, min_query_recall=0.700000
+IVF-Flat gpu 查询完成
+索引: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist/nprobe/top_k: 256/160/100
+nprobe policy: fixed
+memory mode: disabled
+索引加载: 348.273 ms
+GPU 初始化: 177.593285 ms
+索引 H2D: 49.840225 ms
+GPU 缓冲区: 507.962410 MiB
+平均查询: 211.3 ms
+run P50/P99: 211.196/213.17 ms
+QPS: 4732.6
+输出: "results/formal_100k15/ivf_k100_raw/nlist256_nprobe160.txt"
+平均 CPU 中心/桶选择: 0 ms
+平均 query H2D: 0.230195 ms
+平均 GPU 中心选择: 1.71171 ms
+平均自适应分层开销: 0 ms
+平均 GPU 桶扫描+局部 Top-K: 202.791 ms
+平均 GPU 最终 Top-K 归并: 1.36999 ms
+平均记忆独立重排: 0 ms
+平均结果 D2H: 0.538248 ms
+batch P50/P99: 13.2468/13.5739 ms
+实际 nprobe min/avg/max: 160/160/160
+recall@100=0.917580, min_query_recall=0.830000
+IVF-Flat gpu 查询完成
+索引: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist/nprobe/top_k: 256/192/100
+nprobe policy: fixed
+memory mode: disabled
+索引加载: 349.271 ms
+GPU 初始化: 184.404243 ms
+索引 H2D: 50.775040 ms
+GPU 缓冲区: 510.313972 MiB
+平均查询: 262.99 ms
+run P50/P99: 263.133/264.838 ms
+QPS: 3802.43
+输出: "results/formal_100k15/ivf_k100_raw/nlist256_nprobe192.txt"
+平均 CPU 中心/桶选择: 0 ms
+平均 query H2D: 0.234722 ms
+平均 GPU 中心选择: 1.99681 ms
+平均自适应分层开销: 0 ms
+平均 GPU 桶扫描+局部 Top-K: 254.169 ms
+平均 GPU 最终 Top-K 归并: 1.38832 ms
+平均记忆独立重排: 0 ms
+平均结果 D2H: 0.53602 ms
+batch P50/P99: 16.5511/16.997 ms
+实际 nprobe min/avg/max: 192/192/192
+recall@100=0.962280, min_query_recall=0.900000
+IVF-Flat gpu 查询完成
+索引: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist/nprobe/top_k: 256/224/100
+nprobe policy: fixed
+memory mode: disabled
+索引加载: 345.818 ms
+GPU 初始化: 177.716485 ms
+索引 H2D: 49.881088 ms
+GPU 缓冲区: 512.665535 MiB
+平均查询: 315.231 ms
+run P50/P99: 315.293/317.578 ms
+QPS: 3172.27
+输出: "results/formal_100k15/ivf_k100_raw/nlist256_nprobe224.txt"
+平均 CPU 中心/桶选择: 0 ms
+平均 query H2D: 0.234026 ms
+平均 GPU 中心选择: 2.27418 ms
+平均自适应分层开销: 0 ms
+平均 GPU 桶扫描+局部 Top-K: 306.111 ms
+平均 GPU 最终 Top-K 归并: 1.42648 ms
+平均记忆独立重排: 0 ms
+平均结果 D2H: 0.514689 ms
+batch P50/P99: 19.943/20.4702 ms
+实际 nprobe min/avg/max: 224/224/224
+recall@100=0.989200, min_query_recall=0.930000
+CSV: results/formal_100k15/ivf_k100_raw.csv

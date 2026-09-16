@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<title>K=100 分区候选</title>
+<desc>图中数据由仓库内原始 CSV 自动生成。</desc>
+<style>.figure-title{font-size:22px;font-weight:600}.panel-title{font-size:16px;font-weight:600}.label{font-size:14px;font-weight:600}.tick{font-size:12px}.note{font-size:12px}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="560.00" y="34.00" class="figure-title" text-anchor="middle">K=100 条件下分区候选结构的性能影响</text>
+<line x1="95.00" y1="410.00" x2="1070.00" y2="410.00" class="grid" />
+<text x="85.00" y="414.00" class="tick" text-anchor="end">0</text>
+<line x1="95.00" y1="349.96" x2="1070.00" y2="349.96" class="grid" />
+<text x="85.00" y="353.96" class="tick" text-anchor="end">10,000</text>
+<line x1="95.00" y1="289.92" x2="1070.00" y2="289.92" class="grid" />
+<text x="85.00" y="293.92" class="tick" text-anchor="end">20,000</text>
+<line x1="95.00" y1="229.87" x2="1070.00" y2="229.87" class="grid" />
+<text x="85.00" y="233.87" class="tick" text-anchor="end">30,000</text>
+<line x1="95.00" y1="169.83" x2="1070.00" y2="169.83" class="grid" />
+<text x="85.00" y="173.83" class="tick" text-anchor="end">40,000</text>
+<line x1="95.00" y1="109.79" x2="1070.00" y2="109.79" class="grid" />
+<text x="85.00" y="113.79" class="tick" text-anchor="end">50,000</text>
+<line x1="95.00" y1="82.00" x2="95.00" y2="410.00" class="grid" />
+<text x="95.00" y="434.00" class="tick" text-anchor="middle">32</text>
+<line x1="257.50" y1="82.00" x2="257.50" y2="410.00" class="grid" />
+<text x="257.50" y="434.00" class="tick" text-anchor="middle">64</text>
+<line x1="582.50" y1="82.00" x2="582.50" y2="410.00" class="grid" />
+<text x="582.50" y="434.00" class="tick" text-anchor="middle">128</text>
+<line x1="745.00" y1="82.00" x2="745.00" y2="410.00" class="grid" />
+<text x="745.00" y="434.00" class="tick" text-anchor="middle">160</text>
+<line x1="907.50" y1="82.00" x2="907.50" y2="410.00" class="grid" />
+<text x="907.50" y="434.00" class="tick" text-anchor="middle">192</text>
+<line x1="1070.00" y1="82.00" x2="1070.00" y2="410.00" class="grid" />
+<text x="1070.00" y="434.00" class="tick" text-anchor="middle">224</text>
+<path d="M 95.00 272.60 L 257.50 299.99 L 582.50 325.36 L 745.00 334.40 L 907.50 341.51 L 1070.00 347.26" fill="none" stroke="#65717D" stroke-width="3"/>
+<circle cx="95.00" cy="272.60" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="257.50" cy="299.99" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="582.50" cy="325.36" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="745.00" cy="334.40" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="907.50" cy="341.51" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1070.00" cy="347.26" r="5.00" fill="#65717D" stroke="#ffffff" stroke-width="1.5"/>
+<line x1="780.00" y1="56.00" x2="805.00" y2="56.00" class="axis" stroke="#65717D" stroke-width="3"/>
+<text x="812.00" y="61.00" class="note" >完整大候选表</text>
+<path d="M 95.00 106.30 L 257.50 201.18 L 582.50 284.43 L 745.00 305.75 L 907.50 320.70 L 1070.00 332.57" fill="none" stroke="#2A9D8F" stroke-width="3"/>
+<circle cx="95.00" cy="106.30" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="257.50" cy="201.18" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="582.50" cy="284.43" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="745.00" cy="305.75" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="907.50" cy="320.70" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<circle cx="1070.00" cy="332.57" r="5.00" fill="#2A9D8F" stroke="#ffffff" stroke-width="1.5"/>
+<line x1="940.00" y1="56.00" x2="965.00" y2="56.00" class="axis" stroke="#2A9D8F" stroke-width="3"/>
+<text x="972.00" y="61.00" class="note" >4 个小候选表</text>
+<text x="745.00" y="289.75" class="label" text-anchor="middle">Recall@100 相同；加速比 1.38×</text>
+<text x="582.50" y="474.00" class="label" text-anchor="middle">搜索桶数 nprobe</text>
+</svg>

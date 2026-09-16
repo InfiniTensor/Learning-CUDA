@@ -1,0 +1,10 @@
+suite,cases,status,details
+exact_cross_product,576,passed,"dim=64/128/384/768; batch=1/8/32/40/64/128; K=1/10/50/100; FP32/FP16; L2/IP/cosine"
+exact_full_batch_boundary,6,passed,"dim=65; query_count=batch+1; batch=1/8/32/40/64/128"
+exact_non_warp_dimension,6,passed,"dim=65; K=100; FP32/FP16; L2/IP/cosine"
+exact_recommended_paths,3,passed,"128/K10/tile4/64; 384/K10/tile8/160; 384/K50/tile4/64"
+exact_safe_fallback,2,passed,"FP32 dim768 block-tile rejected then warp-query passed; K50/tile8 rejected then tile1 passed"
+ivf_empty_skewed_buckets,48,passed,"dim=65; 4 empty buckets; largest bucket=125/128; K=1/10/50/100; FP32/FP16; L2/IP/cosine; warp/bucket-major"
+ctest,14,passed,"all project tests"
+python_unittest,29,passed,"2 skipped because local h5py is unavailable"
+compute_sanitizer,1,passed,"memcheck ERROR SUMMARY: 0 errors"

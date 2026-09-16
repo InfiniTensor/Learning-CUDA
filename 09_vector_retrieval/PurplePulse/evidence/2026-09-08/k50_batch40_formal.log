@@ -1,0 +1,26 @@
+IVF-Flat gpu 查询完成
+索引: 1000000 x 128
+dtype/metric: fp32/inner_product
+nlist/nprobe/top_k: 256/160/50
+nprobe policy: fixed
+memory mode: disabled
+索引加载: 318.318 ms
+GPU 初始化: 227.746493 ms
+索引 H2D: 63.280128 ms
+GPU 缓冲区: 499.805611 MiB
+平均查询: 166.116 ms
+run P50/P99: 166.303/168.097 ms
+run samples: 100
+QPS: 6019.91
+输出: "results/new_gpu/k50_tuning/batch40_formal.txt"
+平均 CPU 中心/桶选择: 0 ms
+平均 query H2D: 0.296211 ms
+平均 GPU 中心选择: 2.65625 ms
+平均自适应分层开销: 0 ms
+平均 GPU 桶扫描+局部 Top-K: 157.225 ms
+平均 GPU 最终 Top-K 归并: 1.02493 ms
+平均记忆独立重排: 0 ms
+平均结果 D2H: 0.641596 ms
+batch P50/P99: 6.49126/6.62845 ms
+batch samples: 2500
+实际 nprobe min/avg/max: 160/160/160

@@ -1,0 +1,2 @@
+dataset,nlist,training_iterations,training_samples,threads,build_ms,save_ms,minimum_bucket,average_bucket,maximum_bucket,empty_buckets,index_bytes
+yahoo-minilm-384,1024,15,100000,16,87542.6,543.356,55,661.431,1878,0,1047340016

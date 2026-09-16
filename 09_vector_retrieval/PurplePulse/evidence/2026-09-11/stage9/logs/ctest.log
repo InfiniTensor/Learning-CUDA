@@ -1,0 +1,42 @@
+Internal ctest changing into directory: /data/purplepulse-work/PurplePulse/build-stage9-clean-20260911-v2
+Test project /data/purplepulse-work/PurplePulse/build-stage9-clean-20260911-v2
+      Start  1: unit_tests
+ 1/18 Test  #1: unit_tests .........................   Passed    0.24 sec
+      Start  2: file_io_tests
+ 2/18 Test  #2: file_io_tests ......................   Passed    0.01 sec
+      Start  3: ivf_flat_tests
+ 3/18 Test  #3: ivf_flat_tests .....................   Passed    0.26 sec
+      Start  4: stability_tests
+ 4/18 Test  #4: stability_tests ....................   Passed    1.66 sec
+      Start  5: vector_search_help
+ 5/18 Test  #5: vector_search_help .................   Passed    0.00 sec
+      Start  6: ivf_build_help
+ 6/18 Test  #6: ivf_build_help .....................   Passed    0.00 sec
+      Start  7: ivf_search_help
+ 7/18 Test  #7: ivf_search_help ....................   Passed    0.00 sec
+      Start  8: benchmark_faiss_tests
+ 8/18 Test  #8: benchmark_faiss_tests ..............   Passed    1.66 sec
+      Start  9: benchmark_ivf_sweep_tests
+ 9/18 Test  #9: benchmark_ivf_sweep_tests ..........   Passed    0.07 sec
+      Start 10: benchmark_adaptive_nprobe_tests
+10/18 Test #10: benchmark_adaptive_nprobe_tests ....   Passed    0.07 sec
+      Start 11: import_mnist_tests
+11/18 Test #11: import_mnist_tests .................   Passed    0.31 sec
+      Start 12: import_sift1m_tests
+12/18 Test #12: import_sift1m_tests ................   Passed    0.31 sec
+      Start 13: import_ann_benchmarks_tests
+13/18 Test #13: import_ann_benchmarks_tests ........   Passed    0.25 sec
+      Start 14: plot_results_tests
+14/18 Test #14: plot_results_tests .................   Passed    0.07 sec
+      Start 15: stage6_tools_tests
+15/18 Test #15: stage6_tools_tests .................   Passed    0.23 sec
+      Start 16: benchmark_exact_breakdown_tests
+16/18 Test #16: benchmark_exact_breakdown_tests ....   Passed    0.07 sec
+      Start 17: benchmark_exact_query_tile_tests
+17/18 Test #17: benchmark_exact_query_tile_tests ...   Passed    0.07 sec
+      Start 18: stage9_tools_tests
+18/18 Test #18: stage9_tools_tests .................   Passed    0.08 sec
+
+100% tests passed, 0 tests failed out of 18
+
+Total Test time (real) =   5.38 sec

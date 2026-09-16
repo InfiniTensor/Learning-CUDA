@@ -1,0 +1,27 @@
+向量库: 60000 x 784
+查询数: 10000
+dtype: fp32
+metric: l2
+top_k: 10
+batch_size: 64
+distance_mode: warp
+topk_mode: fused
+warmup/repeat: 2/10
+backend: gpu
+GPU 一次性初始化总时间: 188.657 ms
+数据库一次性 H2D: 23.2746 ms
+GPU 缓冲区: 179.759 MiB
+估算冷启动端到端: 621.072 ms
+平均常驻查询时间: 432.415 ms
+run P50: 430.865 ms
+run P99: 437.408 ms
+run samples: 10
+常驻 QPS: 23125.9
+结果: "results/new_gpu/mnist_exact_k10.txt"
+平均查询 H2D: 6.91412 ms
+平均融合距离+局部 Top-K kernel: 418.37 ms
+平均最终 Top-K kernel: 1.67326 ms
+平均结果 D2H: 3.2634 ms
+batch P50: 2.74214 ms
+batch P99: 2.81181 ms
+batch samples: 1570

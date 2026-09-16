@@ -1,0 +1,4 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,1000000,128,1000,50,64,1,165.038,6059.22,165.614,167.005,488.935,163.268,0.829941,results/stage7_exact_query_tile/formal/synthetic_k50/outputs/baseline/exact_k50.txt
+tile2,1000000,128,1000,50,64,2,167.406,5973.5,167.385,167.861,489.521,165.643,0.91159,results/stage7_exact_query_tile/formal/synthetic_k50/outputs/tile2/exact_k50.txt
+tile4,1000000,128,1000,50,64,4,179.957,5556.89,179.917,180.472,490.693,177.9,1.21166,results/stage7_exact_query_tile/formal/synthetic_k50/outputs/tile4/exact_k50.txt

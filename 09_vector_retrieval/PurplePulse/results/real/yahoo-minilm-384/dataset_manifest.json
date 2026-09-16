@@ -1,0 +1,30 @@
+{
+  "dataset": "yahoo-minilm-384-normalized",
+  "source_url": "https://huggingface.co/datasets/vector-index-bench/vibe/resolve/main/yahoo-minilm-384-normalized.hdf5",
+  "source_path": "/data/real-datasets/raw/vibe/yahoo-minilm-384-normalized.hdf5",
+  "source_bytes": 1043492672,
+  "source_sha256": "8b0519850249d7ea4aea258eb43ae837dca1bb2f7a85ee0a5145afdb699c4136",
+  "distance": "normalized",
+  "warpfusion_metric": "cosine",
+  "database_rows": 677305,
+  "query_rows": 1000,
+  "dim": 384,
+  "groundtruth_k": 100,
+  "outputs": {
+    "database": {
+      "path": "data/real/yahoo-minilm-384-normalized/database.bin",
+      "bytes": 1040340508,
+      "sha256": "867ab60b87ab69cb837825dc69b1d7c8b4d7c3a49e80e4a378292424f14a24d4"
+    },
+    "queries": {
+      "path": "data/real/yahoo-minilm-384-normalized/queries.bin",
+      "bytes": 1536024,
+      "sha256": "aa822e4c811a8ac119a100cd6f252ec4d2d5e1a2b1eb6d2cff9fb3de2d1c26cf"
+    },
+    "groundtruth": {
+      "path": "data/real/yahoo-minilm-384-normalized/groundtruth.ivecs",
+      "bytes": 404000,
+      "sha256": "cc9b1496e1bb9d1da67128bbe1e2ef4c70e9bce6fb654290a3be0af780511324"
+    }
+  }
+}

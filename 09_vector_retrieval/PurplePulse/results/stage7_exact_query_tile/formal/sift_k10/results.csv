@@ -1,0 +1,4 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,1000000,128,10000,10,64,1,1440.91,6940.08,1442.63,1445.25,488.437,1431.54,1.80152,results/stage7_exact_query_tile/formal/sift_k10/outputs/baseline/exact_k10.txt
+tile4,1000000,128,10000,10,64,4,1083.7,9227.65,1083.44,1085.15,488.789,1074.32,1.94307,results/stage7_exact_query_tile/formal/sift_k10/outputs/tile4/exact_k10.txt
+tile8,1000000,128,10000,10,64,8,1249.66,8002.19,1249.55,1251.36,489.257,1240.05,2.22865,results/stage7_exact_query_tile/formal/sift_k10/outputs/tile8/exact_k10.txt

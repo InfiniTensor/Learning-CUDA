@@ -1,0 +1,1 @@
+f5bd87fcc72d37164fa931436e5bfd293dfb7f953d09cb28169a77c7cdadc415  data/million/inner_fp32_nlist256_spherical_100k15.ivf

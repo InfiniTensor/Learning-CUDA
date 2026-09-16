@@ -1,0 +1,4 @@
+implementation,top_k,batch_size,average_query_ms,qps,run_p50_ms,run_p99_ms,run_samples,batch_p50_ms,batch_p99_ms,batch_latency_samples,gpu_initialization_ms,database_h2d_ms,gpu_buffer_mib,query_h2d_ms,distance_and_local_topk_ms,final_topk_ms,result_d2h_ms,result_path
+WarpFusion Exact fused,10,64,276.992,3610.22,276.461,282.893,5,17.6113,18.5666,80,256.683,103.47,992.364,0.358611,275.887,0.188109,0.330854,/data/purplepulse-work/PurplePulse/results/real/yahoo-minilm-384/exact_outputs/exact_k10.txt
+WarpFusion Exact fused,50,64,288.082,3471.23,284.597,294.777,5,18.2826,19.5238,80,250.861,98.1649,992.862,0.349184,286.057,0.854976,0.423923,/data/purplepulse-work/PurplePulse/results/real/yahoo-minilm-384/exact_outputs/exact_k50.txt
+WarpFusion Exact fused,100,64,304.328,3285.92,301.115,312.348,5,19.2952,20.0785,80,231.485,102.26,993.485,0.357984,300.941,1.92299,0.499981,/data/purplepulse-work/PurplePulse/results/real/yahoo-minilm-384/exact_outputs/exact_k100.txt

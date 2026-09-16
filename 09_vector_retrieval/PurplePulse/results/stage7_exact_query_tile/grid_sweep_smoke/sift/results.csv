@@ -1,0 +1,7 @@
+variant,num_vectors,dim,num_queries,top_k,batch_size,exact_query_tile,average_query_ms,qps,run_p50_ms,run_p99_ms,gpu_buffer_mib,fused_kernel_ms,final_merge_ms,result_path
+baseline,1000000,128,10000,10,64,1,1419.46,7044.92,1420.71,1420.97,488.437,1409.63,1.77203,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/baseline/exact_k10.txt
+b48,1000000,128,10000,10,64,4,1401.5,7135.21,1400.22,1404.32,488.671,1391.46,1.83397,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/b48/exact_k10.txt
+b64,1000000,128,10000,10,64,4,1081.66,9245.07,1082.62,1082.77,488.789,1069.38,1.93764,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/b64/exact_k10.txt
+b80,1000000,128,10000,10,64,4,1165.8,8577.83,1165.78,1166.72,488.906,1156.29,2.0629,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/b80/exact_k10.txt
+b96,1000000,128,10000,10,64,4,1167.56,8564.9,1167.57,1168.89,489.023,1157.08,2.09634,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/b96/exact_k10.txt
+b128,1000000,128,10000,10,64,4,1108.76,9019.09,1108.76,1109.19,489.257,1098.89,2.2765,results/stage7_exact_query_tile/grid_sweep_smoke/sift/outputs/b128/exact_k10.txt

@@ -1,0 +1,58 @@
+{
+  "dataset": "SIFT1M",
+  "source_url": "ftp://ftp.irisa.fr/local/texmex/corpus/sift.tar.gz",
+  "metric": "l2",
+  "database_rows": 1000000,
+  "query_rows": 10000,
+  "dim": 128,
+  "groundtruth_k": 100,
+  "inputs": {
+    "base": {
+      "path": "/data/real-datasets/raw/sift1m/extracted/sift/sift_base.fvecs",
+      "kind": "fvecs",
+      "rows": 1000000,
+      "dim": 128,
+      "bytes": 516000000,
+      "sha256": "21f66e2975057b5728ba56de1c825bac4f4d89d596609ae985741c6242631816"
+    },
+    "queries": {
+      "path": "/data/real-datasets/raw/sift1m/extracted/sift/sift_query.fvecs",
+      "kind": "fvecs",
+      "rows": 10000,
+      "dim": 128,
+      "bytes": 5160000,
+      "sha256": "f7fc9be140accdfd64116c2fa2365ecdb69b8f084970c6b0532db5ff79ac8fdc"
+    },
+    "groundtruth": {
+      "path": "/data/real-datasets/raw/sift1m/extracted/sift/sift_groundtruth.ivecs",
+      "kind": "ivecs",
+      "rows": 10000,
+      "dim": 100,
+      "bytes": 4040000,
+      "sha256": "2b71de0a8d5a83e6a84eec3e23fb8b611d8801dd9b3a6cd62f070ab65ea65f4f"
+    }
+  },
+  "outputs": {
+    "database": {
+      "path": "data/real/sift1m/database.bin",
+      "bytes": 512000028,
+      "sha256": "c8e127794ab289f0e45c28440be05085b8961ca52907676dd313638d6fd4f861"
+    },
+    "queries": {
+      "path": "data/real/sift1m/queries.bin",
+      "bytes": 5120024,
+      "sha256": "d75631c98e58a0f3e103db6490fd110be7a0881ad738ef979a4c512aebe2f032"
+    },
+    "groundtruth": {
+      "path": "data/real/sift1m/groundtruth.ivecs",
+      "bytes": 4040000,
+      "sha256": "2b71de0a8d5a83e6a84eec3e23fb8b611d8801dd9b3a6cd62f070ab65ea65f4f"
+    }
+  },
+  "archive": {
+    "path": "/data/real-datasets/raw/sift1m/sift.tar.gz",
+    "bytes": 168280445,
+    "md5": "b23d1b3b2ee8469d819b61ca900ef0ed",
+    "sha256": "92f1270c5e3a0cb46b89983e72b0511e4df065c31a9fa0276d8c9b1fca5bc81a"
+  }
+}

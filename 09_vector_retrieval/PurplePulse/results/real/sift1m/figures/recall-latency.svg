@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="430" viewBox="0 0 1180 430" role="img" aria-labelledby="title desc">
+<title id="title">Recall–latency frontier</title>
+<desc id="desc">Benchmark curves generated from the checked-in raw CSV data.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#202124} .grid{stroke:#d9dde3;stroke-width:1} .axis{stroke:#51565c;stroke-width:1.2} .tick{font-size:11px} .label{font-size:12px;font-weight:600} .panel-title{font-size:14px;font-weight:600} .figure-title{font-size:18px;font-weight:600} .note{font-size:10px;fill:#5f6368}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="590.00" y="27.00" text-anchor="middle" class="figure-title">Recall–latency frontier</text>
+<line x1="430.00" y1="47.00" x2="455.00" y2="47.00" stroke="#0072B2" stroke-width="3"/>
+<text x="462.00" y="51.00" class="label">WarpFusion</text>
+<line x1="590.00" y1="47.00" x2="615.00" y2="47.00" stroke="#D55E00" stroke-width="3"/>
+<text x="622.00" y="51.00" class="label">FAISS GPU</text>
+<text x="249.00" y="73.00" text-anchor="middle" class="panel-title">K = 10</text>
+<line x1="103.00" y1="355.00" x2="395.00" y2="355.00" class="grid"/>
+<text x="96.00" y="359.00" text-anchor="end" class="tick">64</text>
+<line x1="103.00" y1="287.75" x2="395.00" y2="287.75" class="grid"/>
+<text x="96.00" y="291.75" text-anchor="end" class="tick">331</text>
+<line x1="103.00" y1="220.50" x2="395.00" y2="220.50" class="grid"/>
+<text x="96.00" y="224.50" text-anchor="end" class="tick">598</text>
+<line x1="103.00" y1="153.25" x2="395.00" y2="153.25" class="grid"/>
+<text x="96.00" y="157.25" text-anchor="end" class="tick">864</text>
+<line x1="103.00" y1="86.00" x2="395.00" y2="86.00" class="grid"/>
+<text x="96.00" y="90.00" text-anchor="end" class="tick">1131</text>
+<line x1="103.00" y1="86.00" x2="103.00" y2="355.00" class="grid"/>
+<text x="103.00" y="372.00" text-anchor="middle" class="tick">0.98</text>
+<line x1="176.00" y1="86.00" x2="176.00" y2="355.00" class="grid"/>
+<text x="176.00" y="372.00" text-anchor="middle" class="tick">0.98</text>
+<line x1="249.00" y1="86.00" x2="249.00" y2="355.00" class="grid"/>
+<text x="249.00" y="372.00" text-anchor="middle" class="tick">0.99</text>
+<line x1="322.00" y1="86.00" x2="322.00" y2="355.00" class="grid"/>
+<text x="322.00" y="372.00" text-anchor="middle" class="tick">0.99</text>
+<line x1="395.00" y1="86.00" x2="395.00" y2="355.00" class="grid"/>
+<text x="395.00" y="372.00" text-anchor="middle" class="tick">1.00</text>
+<line x1="103.00" y1="86.00" x2="103.00" y2="355.00" class="axis"/>
+<line x1="103.00" y1="355.00" x2="395.00" y2="355.00" class="axis"/>
+<text x="249.00" y="397.00" text-anchor="middle" class="label">Recall@K</text>
+<text x="15.00" y="220.50" text-anchor="middle" class="label" transform="rotate(-90 15 220.5)">1000-query latency (ms)</text>
+<path d="M 129.64 336.45 L 333.20 320.98 L 380.20 285.80 L 382.61 268.60 L 383.58 251.50 L 384.19 234.47" fill="none" stroke="#0072B2" stroke-width="2.5"/>
+<circle cx="129.64" cy="336.45" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="134.64" y="330.45" class="note">32</text>
+<circle cx="333.20" cy="320.98" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="338.20" y="314.98" class="note">64</text>
+<circle cx="380.20" cy="285.80" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="385.20" y="279.80" class="note">128</text>
+<circle cx="382.61" cy="268.60" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="387.61" y="262.60" class="note">160</text>
+<circle cx="383.58" cy="251.50" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="388.58" y="245.50" class="note">192</text>
+<circle cx="384.19" cy="234.47" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="389.19" y="228.47" class="note">224</text>
+<path d="M 113.81 334.59 L 325.11 299.30 L 371.26 225.15 L 373.55 186.03 L 374.52 145.67 L 375.37 104.55" fill="none" stroke="#D55E00" stroke-width="2.5"/>
+<circle cx="113.81" cy="334.59" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="118.81" y="328.59" class="note">32</text>
+<circle cx="325.11" cy="299.30" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="330.11" y="293.30" class="note">64</text>
+<circle cx="371.26" cy="225.15" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="376.26" y="219.15" class="note">128</text>
+<circle cx="373.55" cy="186.03" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="378.55" y="180.03" class="note">160</text>
+<circle cx="374.52" cy="145.67" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="379.52" y="139.67" class="note">192</text>
+<circle cx="375.37" cy="104.55" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="380.37" y="98.55" class="note">224</text>
+<text x="629.00" y="73.00" text-anchor="middle" class="panel-title">K = 50</text>
+<line x1="483.00" y1="355.00" x2="775.00" y2="355.00" class="grid"/>
+<text x="476.00" y="359.00" text-anchor="end" class="tick">79</text>
+<line x1="483.00" y1="287.75" x2="775.00" y2="287.75" class="grid"/>
+<text x="476.00" y="291.75" text-anchor="end" class="tick">344</text>
+<line x1="483.00" y1="220.50" x2="775.00" y2="220.50" class="grid"/>
+<text x="476.00" y="224.50" text-anchor="end" class="tick">610</text>
+<line x1="483.00" y1="153.25" x2="775.00" y2="153.25" class="grid"/>
+<text x="476.00" y="157.25" text-anchor="end" class="tick">876</text>
+<line x1="483.00" y1="86.00" x2="775.00" y2="86.00" class="grid"/>
+<text x="476.00" y="90.00" text-anchor="end" class="tick">1142</text>
+<line x1="483.00" y1="86.00" x2="483.00" y2="355.00" class="grid"/>
+<text x="483.00" y="372.00" text-anchor="middle" class="tick">0.96</text>
+<line x1="556.00" y1="86.00" x2="556.00" y2="355.00" class="grid"/>
+<text x="556.00" y="372.00" text-anchor="middle" class="tick">0.97</text>
+<line x1="629.00" y1="86.00" x2="629.00" y2="355.00" class="grid"/>
+<text x="629.00" y="372.00" text-anchor="middle" class="tick">0.98</text>
+<line x1="702.00" y1="86.00" x2="702.00" y2="355.00" class="grid"/>
+<text x="702.00" y="372.00" text-anchor="middle" class="tick">0.99</text>
+<line x1="775.00" y1="86.00" x2="775.00" y2="355.00" class="grid"/>
+<text x="775.00" y="372.00" text-anchor="middle" class="tick">1.00</text>
+<line x1="483.00" y1="86.00" x2="483.00" y2="355.00" class="axis"/>
+<line x1="483.00" y1="355.00" x2="775.00" y2="355.00" class="axis"/>
+<text x="629.00" y="397.00" text-anchor="middle" class="label">Recall@K</text>
+<path d="M 497.72 316.80 L 706.63 296.70 L 758.55 261.06 L 762.23 243.36 L 763.70 222.52 L 764.19 203.41" fill="none" stroke="#0072B2" stroke-width="2.5"/>
+<circle cx="497.72" cy="316.80" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="502.72" y="310.80" class="note">32</text>
+<circle cx="706.63" cy="296.70" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="711.63" y="290.70" class="note">64</text>
+<circle cx="758.55" cy="261.06" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="763.55" y="255.06" class="note">128</text>
+<circle cx="762.23" cy="243.36" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="767.23" y="237.36" class="note">160</text>
+<circle cx="763.70" cy="222.52" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="768.70" y="216.52" class="note">192</text>
+<circle cx="764.19" cy="203.41" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="769.19" y="197.41" class="note">224</text>
+<path d="M 493.81 336.45 L 705.21 300.88 L 757.19 225.94 L 760.78 186.66 L 762.05 146.11 L 762.60 104.55" fill="none" stroke="#D55E00" stroke-width="2.5"/>
+<circle cx="493.81" cy="336.45" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="498.81" y="330.45" class="note">32</text>
+<circle cx="705.21" cy="300.88" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="710.21" y="294.88" class="note">64</text>
+<circle cx="757.19" cy="225.94" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="762.19" y="219.94" class="note">128</text>
+<circle cx="760.78" cy="186.66" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="765.78" y="180.66" class="note">160</text>
+<circle cx="762.05" cy="146.11" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="767.05" y="140.11" class="note">192</text>
+<circle cx="762.60" cy="104.55" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="767.60" y="98.55" class="note">224</text>
+<text x="1009.00" y="73.00" text-anchor="middle" class="panel-title">K = 100</text>
+<line x1="863.00" y1="355.00" x2="1155.00" y2="355.00" class="grid"/>
+<text x="856.00" y="359.00" text-anchor="end" class="tick">90</text>
+<line x1="863.00" y1="287.75" x2="1155.00" y2="287.75" class="grid"/>
+<text x="856.00" y="291.75" text-anchor="end" class="tick">360</text>
+<line x1="863.00" y1="220.50" x2="1155.00" y2="220.50" class="grid"/>
+<text x="856.00" y="224.50" text-anchor="end" class="tick">630</text>
+<line x1="863.00" y1="153.25" x2="1155.00" y2="153.25" class="grid"/>
+<text x="856.00" y="157.25" text-anchor="end" class="tick">901</text>
+<line x1="863.00" y1="86.00" x2="1155.00" y2="86.00" class="grid"/>
+<text x="856.00" y="90.00" text-anchor="end" class="tick">1171</text>
+<line x1="863.00" y1="86.00" x2="863.00" y2="355.00" class="grid"/>
+<text x="863.00" y="372.00" text-anchor="middle" class="tick">0.95</text>
+<line x1="936.00" y1="86.00" x2="936.00" y2="355.00" class="grid"/>
+<text x="936.00" y="372.00" text-anchor="middle" class="tick">0.97</text>
+<line x1="1009.00" y1="86.00" x2="1009.00" y2="355.00" class="grid"/>
+<text x="1009.00" y="372.00" text-anchor="middle" class="tick">0.98</text>
+<line x1="1082.00" y1="86.00" x2="1082.00" y2="355.00" class="grid"/>
+<text x="1082.00" y="372.00" text-anchor="middle" class="tick">0.99</text>
+<line x1="1155.00" y1="86.00" x2="1155.00" y2="355.00" class="grid"/>
+<text x="1155.00" y="372.00" text-anchor="middle" class="tick">1.00</text>
+<line x1="863.00" y1="86.00" x2="863.00" y2="355.00" class="axis"/>
+<line x1="863.00" y1="355.00" x2="1155.00" y2="355.00" class="axis"/>
+<text x="1009.00" y="397.00" text-anchor="middle" class="label">Recall@K</text>
+<path d="M 875.78 328.11 L 1081.63 305.77 L 1137.57 258.35 L 1141.92 234.03 L 1143.54 210.05 L 1144.19 184.41" fill="none" stroke="#0072B2" stroke-width="2.5"/>
+<circle cx="875.78" cy="328.11" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="880.78" y="322.11" class="note">32</text>
+<circle cx="1081.63" cy="305.77" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1086.63" y="299.77" class="note">64</text>
+<circle cx="1137.57" cy="258.35" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1142.57" y="252.35" class="note">128</text>
+<circle cx="1141.92" cy="234.03" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1146.92" y="228.03" class="note">160</text>
+<circle cx="1143.54" cy="210.05" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1148.54" y="204.05" class="note">192</text>
+<circle cx="1144.19" cy="184.41" r="4" fill="#0072B2" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1149.19" y="178.41" class="note">224</text>
+<path d="M 873.81 336.45 L 1081.01 301.20 L 1137.14 226.69 L 1141.27 187.45 L 1142.80 146.43 L 1143.43 104.55" fill="none" stroke="#D55E00" stroke-width="2.5"/>
+<circle cx="873.81" cy="336.45" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="878.81" y="330.45" class="note">32</text>
+<circle cx="1081.01" cy="301.20" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1086.01" y="295.20" class="note">64</text>
+<circle cx="1137.14" cy="226.69" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1142.14" y="220.69" class="note">128</text>
+<circle cx="1141.27" cy="187.45" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1146.27" y="181.45" class="note">160</text>
+<circle cx="1142.80" cy="146.43" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1147.80" y="140.43" class="note">192</text>
+<circle cx="1143.43" cy="104.55" r="4" fill="#D55E00" stroke="#ffffff" stroke-width="1.5"/>
+<text x="1148.43" y="98.55" class="note">224</text>
+<text x="1170.00" y="422.00" text-anchor="end" class="note">Matched batch=64 · point labels: nprobe</text>
+</svg>

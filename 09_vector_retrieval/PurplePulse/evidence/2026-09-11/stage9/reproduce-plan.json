@@ -1,0 +1,125 @@
+{
+  "project_root": "/data/purplepulse-work/PurplePulse",
+  "steps": [
+    {
+      "name": "configure",
+      "command": [
+        "cmake",
+        "-S",
+        "/data/purplepulse-work/PurplePulse",
+        "-B",
+        "/data/purplepulse-work/PurplePulse/build-reproduce",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CUDA_ARCHITECTURES=native"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/configure.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "cmake",
+        "--build",
+        "/data/purplepulse-work/PurplePulse/build-reproduce"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/build.log"
+    },
+    {
+      "name": "test",
+      "command": [
+        "ctest",
+        "--test-dir",
+        "/data/purplepulse-work/PurplePulse/build-reproduce",
+        "--output-on-failure"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/ctest.log"
+    },
+    {
+      "name": "prepare",
+      "command": [
+        "/usr/bin/python3",
+        "/data/purplepulse-work/PurplePulse/scripts/prepare_real_datasets.py",
+        "--dataset",
+        "yahoo-minilm-384-normalized",
+        "--raw-dir",
+        "/data/purplepulse-work/PurplePulse/data/real/raw",
+        "--output-dir",
+        "/data/purplepulse-work/PurplePulse/data/real",
+        "--skip-download"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/prepare.log"
+    },
+    {
+      "name": "benchmark:yahoo-minilm-384",
+      "command": [
+        "/usr/bin/python3",
+        "/data/purplepulse-work/PurplePulse/scripts/run_real_benchmarks.py",
+        "--dataset",
+        "yahoo-minilm-384",
+        "--project-root",
+        "/data/purplepulse-work/PurplePulse",
+        "--data-root",
+        "/data/purplepulse-work/PurplePulse/data/real",
+        "--results-root",
+        "/data/purplepulse-work/PurplePulse/results/real",
+        "--build-dir",
+        "/data/purplepulse-work/PurplePulse/build-reproduce",
+        "--nlist",
+        "1024",
+        "--nprobes",
+        "32,64,128,160,192,224",
+        "--training-samples",
+        "100000",
+        "--iterations",
+        "15",
+        "--threads",
+        "16",
+        "--batch-size",
+        "64",
+        "--warmup",
+        "1",
+        "--repeat",
+        "5",
+        "--skip-index-build"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/benchmark-yahoo-minilm-384.log"
+    },
+    {
+      "name": "plot:yahoo-minilm-384",
+      "command": [
+        "/usr/bin/python3",
+        "/data/purplepulse-work/PurplePulse/scripts/plot_results.py",
+        "--results-dir",
+        "/data/purplepulse-work/PurplePulse/results/real/yahoo-minilm-384",
+        "--output-dir",
+        "/data/purplepulse-work/PurplePulse/results/real/yahoo-minilm-384/figures"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/plot-yahoo-minilm-384.log"
+    },
+    {
+      "name": "report",
+      "command": [
+        "/usr/bin/python3",
+        "/data/purplepulse-work/PurplePulse/scripts/build_final_report_pdf.py",
+        "--source",
+        "/data/purplepulse-work/PurplePulse/docs/FINAL_REPORT.md",
+        "--output",
+        "/data/purplepulse-work/PurplePulse/output/pdf/WarpFusion_Technical_Report.pdf"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/report.log"
+    },
+    {
+      "name": "validate",
+      "command": [
+        "/usr/bin/python3",
+        "/data/purplepulse-work/PurplePulse/scripts/validate_release.py",
+        "--project-root",
+        "/data/purplepulse-work/PurplePulse",
+        "--report",
+        "/data/purplepulse-work/PurplePulse/output/pdf/WarpFusion_Technical_Report.pdf"
+      ],
+      "log": "/data/purplepulse-work/PurplePulse/results/real/reproducibility/logs/validate.log"
+    }
+  ]
+}
