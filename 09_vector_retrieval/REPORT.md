@@ -409,12 +409,12 @@ id 序列（`test_gpu` 的 round-trip 用例），说明索引序列化格式自
 
 | 平台 | 构建入口 | 编译 `.cu` | 数学库 | 运行时库路径 | 需定义的宏 |
 | --- | --- | --- | --- | --- | --- |
-| NVIDIA（示例） | `CMakeLists.txt` | `nvcc`（CUDA 12.x） | cuBLAS（CUDA Toolkit 自带） | CUDA Toolkit 默认 | — |
+| NVIDIA | `CMakeLists.txt` | `nvcc`（CUDA 12.x） | cuBLAS（CUDA Toolkit 自带） | CUDA Toolkit 默认 | — |
 | 天数智芯 CoreX | `Makefile.corex` | CoreX clang 18（`-x ivcore`） | CoreX cuBLAS 兼容层 | `/usr/local/corex/lib64`、`/usr/local/corex/lib` | `VSEARCH_COREX=1` |
 | 沐曦 MetaX | `Makefile.maca` | `cucc`（nvcc 风格 wrapper） | `libmcblas.so` | `/opt/maca/lib`、`/opt/maca/tools/cu-bridge/lib` | — |
 | 摩尔线程 MUSA | `Makefile.musa` | `mcc -x musa`（clang 14 前端） | `libmublas.so` | `/usr/local/musa/lib`、`/usr/local/musa/lib64` | `VSEARCH_MUSA=1` |
 
-#### 7.1.1 NVIDIA（示例平台）
+#### 7.1.1 NVIDIA
 
 环境要求：CMake ≥ 3.18、CUDA Toolkit（本实验为 12.0 / 12.8）、支持 C++17 的主机
 编译器。构建命令：
