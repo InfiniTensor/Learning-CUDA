@@ -1,7 +1,7 @@
 # NVIDIA 300k 回归数据（2026-09-07）
 
-对应报告 §7.3 表 4：在 NVIDIA RTX 4090 上重新生成 300k 数据并完成
-exact / IVF-Flat / IVF-PQ 三次完整 bench，用于与另两个平台（§7.4、§7.5）
+对应报告 7.3 节的表 4：在 NVIDIA RTX 4090 上重新生成 300k 数据并完成
+exact / IVF-Flat / IVF-PQ 三次完整 bench，用于与另两个平台（7.4 节、7.5 节）
 在相同数据参数下交叉核对。
 
 数据规模：`N=300000, D=128, nq=1000, topK=100, nlist=1024, nprobe=16, pq_m=16`

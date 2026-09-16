@@ -1,6 +1,6 @@
 # 设备能力探测（device_probe）
 
-`device_probe.cu` 是报告 §3.3 与 §7.2 中“平台差异”结论的最小复现用例，检查两项
+`device_probe.cu` 是报告 3.3 节与 7.2 节中“平台差异”结论的最小复现用例，检查两项
 直接影响向量检索正确性的设备能力：
 
 1. `atomicAdd` 是否真正生效（32 位与 64 位）——倒排表的计数与写入游标依赖它；
@@ -41,4 +41,4 @@ LD_LIBRARY_PATH=/usr/local/musa/lib:/usr/local/musa/lib64 ./probe
 | device `float` 长求和 | 与 CPU 参考差约 1e-5 | 与 CPU 参考一致 |
 
 据此，程序在 CoreX 构建下把倒排表计数/游标改为 32 位原子操作、把距离累计改为
-float；NVIDIA、沐曦与摩尔线程的构建保持 64 位原子与 double 累计。详见报告 §7.2。
+float；NVIDIA、沐曦与摩尔线程的构建保持 64 位原子与 double 累计。详见报告 7.2 节。
