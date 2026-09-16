@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="500" viewBox="0 0 940 500">
+<title>图 6 Nsight 瓶颈剖析（FP32 亚式代表负载）</title>
+<desc>左面板为内核时间占比，右面板为 ncu 的 SM/DRAM 与占用率指标。</desc>
+<metadata>{&quot;generator&quot;: &quot;scripts/render_final_report_figures.py&quot;, &quot;result_root&quot;: &quot;final-report-20260915&quot;, &quot;sources&quot;: [{&quot;path&quot;: &quot;convergence/european-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;5c324b4265482661e80e23bcffbd8af570e67732da07b03b6e08f082645c4313&quot;}, {&quot;path&quot;: &quot;convergence/asian-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;ae3da223b6ff9db31c5c0e4f60f6d5ad193b65a1eaacbd63a59fe59c4ee82549&quot;}, {&quot;path&quot;: &quot;benchmark/european-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;3722ad2fcb3bf3b9b6d9ad17718602336445778bb9ebbe59a6a662c2e08d0d9b&quot;}, {&quot;path&quot;: &quot;benchmark/asian-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;0154c83bfb0b26dcc7374541cd8db2c1df452f7069ba5d7b1c7d9ba16c945440&quot;}, {&quot;path&quot;: &quot;block-sweep/asian-fp32/block_sweep.csv&quot;, &quot;sha256&quot;: &quot;e463e14b70bfb5a8334fa609e450a132582c83d00d8a7efc36aef60057700dd6&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_kern_sum_cuda_gpu_kern_sum.csv&quot;, &quot;sha256&quot;: &quot;f1af93a6c26adde4c62a99ffbfc2d70460de55c2585e450088b53de60473520c&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_mem_time_sum_cuda_gpu_mem_time_sum.csv&quot;, &quot;sha256&quot;: &quot;2f1fc8fa2953d96432e314f4f274e9fabcca31ce2665fbfbba0ca41332a57437&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_api_sum_cuda_api_sum.csv&quot;, &quot;sha256&quot;: &quot;728c8aeffa4972c0950a5ba94d6b5572576ab85db524266faaa4eaf0cff1d6dc&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/ncu-details.csv&quot;, &quot;sha256&quot;: &quot;10c85cf76b074afd0a58f41f80f19914cd849e5af5f93a9ee9346abb191044a4&quot;}]}</metadata>
+<style>text{font-family:Noto Sans CJK SC,Source Han Sans SC,WenQuanYi Micro Hei,Microsoft YaHei,SimHei,sans-serif}.axis{stroke:#374151;stroke-width:1}.grid{stroke:#e5e7eb;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<line x1="90.00" y1="380.00" x2="430.00" y2="380.00" class="axis"/>
+<line x1="90.00" y1="96.00" x2="90.00" y2="380.00" class="axis"/>
+<text x="12.00" y="238.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 238.00)">内核时间占比 (%)</text>
+<rect x="150.00" y="101.80" width="150" height="278.20" fill="#d97706"/>
+<rect x="150.00" y="96.00" width="150" height="5.80" fill="#2563eb"/>
+<rect x="150.00" y="96.00" width="150" height="0.00" fill="#6b7280"/>
+<rect x="330.00" y="102.00" width="12" height="12" fill="#d97706"/>
+<text x="348.00" y="113.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">asian_payoff_kernel 97.96%</text>
+<rect x="330.00" y="124.00" width="12" height="12" fill="#2563eb"/>
+<text x="348.00" y="135.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">CUB 归约 2.04%</text>
+<rect x="330.00" y="146.00" width="12" height="12" fill="#6b7280"/>
+<text x="348.00" y="157.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">其他内核 0.00%</text>
+<text x="225.00" y="76.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="bold">内核时间构成</text>
+<text x="225.00" y="410.00" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">内存传输总时长相当于内核时间的 0.0%</text>
+<text x="225.00" y="428.00" font-size="11" text-anchor="middle" fill="#6b7280" font-weight="normal">占比相对内核总时间，不代表完整墙钟时长</text>
+<text x="680.00" y="76.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="bold">ncu 关键指标 (%)</text>
+<text x="520.00" y="120.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">SM 吞吐</text>
+<rect x="630.00" y="106.00" width="260.00" height="18.00" fill="#f3f4f6"/>
+<rect x="630.00" y="106.00" width="220.92" height="18.00" fill="#2563eb"/>
+<text x="898.00" y="120.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">85.0</text>
+<text x="520.00" y="182.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">DRAM 吞吐</text>
+<rect x="630.00" y="168.00" width="260.00" height="18.00" fill="#f3f4f6"/>
+<rect x="630.00" y="168.00" width="5.82" height="18.00" fill="#2563eb"/>
+<text x="898.00" y="182.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">2.2</text>
+<text x="520.00" y="244.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">实际占用率</text>
+<rect x="630.00" y="230.00" width="260.00" height="18.00" fill="#f3f4f6"/>
+<rect x="630.00" y="230.00" width="257.09" height="18.00" fill="#2563eb"/>
+<text x="898.00" y="244.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">98.9</text>
+<text x="520.00" y="306.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">理论占用率</text>
+<rect x="630.00" y="292.00" width="260.00" height="18.00" fill="#f3f4f6"/>
+<rect x="630.00" y="292.00" width="260.00" height="18.00" fill="#2563eb"/>
+<text x="898.00" y="306.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">100.0</text>
+<text x="520.00" y="344.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">每线程寄存器 34</text>
+<text x="520.00" y="366.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">本地内存溢出请求 0 次</text>
+<text x="520.00" y="388.00" font-size="11" text-anchor="start" fill="#374151" font-weight="normal">grid 39062 × block 256</text>
+<text x="470.00" y="462.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">两类占比分别相对内核总时间与 ncu 指标口径，不可写作完整墙钟占比。</text>
+</svg>

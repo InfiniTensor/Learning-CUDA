@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480">
+<title>图 3 正确性与 95% 置信区间（FP64，1000 万路径）</title>
+<desc>CPU/GPU 合并标准误的误差棒，欧式对照 Black–Scholes 参考价。</desc>
+<metadata>{&quot;generator&quot;: &quot;scripts/render_final_report_figures.py&quot;, &quot;result_root&quot;: &quot;final-report-20260915&quot;, &quot;sources&quot;: [{&quot;path&quot;: &quot;convergence/european-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;5c324b4265482661e80e23bcffbd8af570e67732da07b03b6e08f082645c4313&quot;}, {&quot;path&quot;: &quot;convergence/asian-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;ae3da223b6ff9db31c5c0e4f60f6d5ad193b65a1eaacbd63a59fe59c4ee82549&quot;}, {&quot;path&quot;: &quot;benchmark/european-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;3722ad2fcb3bf3b9b6d9ad17718602336445778bb9ebbe59a6a662c2e08d0d9b&quot;}, {&quot;path&quot;: &quot;benchmark/asian-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;0154c83bfb0b26dcc7374541cd8db2c1df452f7069ba5d7b1c7d9ba16c945440&quot;}, {&quot;path&quot;: &quot;block-sweep/asian-fp32/block_sweep.csv&quot;, &quot;sha256&quot;: &quot;e463e14b70bfb5a8334fa609e450a132582c83d00d8a7efc36aef60057700dd6&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_kern_sum_cuda_gpu_kern_sum.csv&quot;, &quot;sha256&quot;: &quot;f1af93a6c26adde4c62a99ffbfc2d70460de55c2585e450088b53de60473520c&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_mem_time_sum_cuda_gpu_mem_time_sum.csv&quot;, &quot;sha256&quot;: &quot;2f1fc8fa2953d96432e314f4f274e9fabcca31ce2665fbfbba0ca41332a57437&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_api_sum_cuda_api_sum.csv&quot;, &quot;sha256&quot;: &quot;728c8aeffa4972c0950a5ba94d6b5572576ab85db524266faaa4eaf0cff1d6dc&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/ncu-details.csv&quot;, &quot;sha256&quot;: &quot;10c85cf76b074afd0a58f41f80f19914cd849e5af5f93a9ee9346abb191044a4&quot;}]}</metadata>
+<style>text{font-family:Noto Sans CJK SC,Source Han Sans SC,WenQuanYi Micro Hei,Microsoft YaHei,SimHei,sans-serif}.axis{stroke:#374151;stroke-width:1}.grid{stroke:#e5e7eb;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<line x1="110.00" y1="380.00" x2="940.00" y2="380.00" class="axis"/>
+<line x1="110.00" y1="80.00" x2="110.00" y2="380.00" class="axis"/>
+<line x1="110.00" y1="380.00" x2="940.00" y2="380.00" class="grid"/>
+<text x="102.00" y="384.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">4.550</text>
+<line x1="110.00" y1="305.00" x2="940.00" y2="305.00" class="grid"/>
+<text x="102.00" y="309.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">5.955</text>
+<line x1="110.00" y1="230.00" x2="940.00" y2="230.00" class="grid"/>
+<text x="102.00" y="234.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">7.361</text>
+<line x1="110.00" y1="155.00" x2="940.00" y2="155.00" class="grid"/>
+<text x="102.00" y="159.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">8.766</text>
+<line x1="110.00" y1="80.00" x2="940.00" y2="80.00" class="grid"/>
+<text x="102.00" y="84.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">10.171</text>
+<text x="525.00" y="422.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">期权类型与后端</text>
+<text x="12.00" y="230.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 230.00)">价格估计</text>
+<text x="317.50" y="400.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">欧式看涨</text>
+<line x1="291.50" y1="119.72" x2="291.50" y2="120.66" stroke="#059669" stroke-width="1.60"/>
+<line x1="287.50" y1="119.72" x2="295.50" y2="119.72" stroke="#059669" stroke-width="1.60"/>
+<line x1="287.50" y1="120.66" x2="295.50" y2="120.66" stroke="#059669" stroke-width="1.60"/>
+<circle cx="291.50" cy="120.19" r="4.5" fill="#059669"/>
+<text x="291.50" y="111.72" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">9.4183</text>
+<line x1="343.50" y1="119.71" x2="343.50" y2="120.64" stroke="#2563eb" stroke-width="1.60"/>
+<line x1="339.50" y1="119.71" x2="347.50" y2="119.71" stroke="#2563eb" stroke-width="1.60"/>
+<line x1="339.50" y1="120.64" x2="347.50" y2="120.64" stroke="#2563eb" stroke-width="1.60"/>
+<circle cx="343.50" cy="120.17" r="4.5" fill="#2563eb"/>
+<text x="343.50" y="111.71" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">9.4186</text>
+<line x1="110.00" y1="120.45" x2="940.00" y2="120.45" stroke="#dc2626" stroke-width="1.60" stroke-dasharray="6,4"/>
+<text x="934.00" y="114.45" font-size="11" text-anchor="end" fill="#dc2626" font-weight="normal">Black–Scholes 9.4134</text>
+<text x="732.50" y="400.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">亚式看涨</text>
+<line x1="706.50" y1="339.67" x2="706.50" y2="340.19" stroke="#059669" stroke-width="1.60"/>
+<line x1="702.50" y1="339.67" x2="710.50" y2="339.67" stroke="#059669" stroke-width="1.60"/>
+<line x1="702.50" y1="340.19" x2="710.50" y2="340.19" stroke="#059669" stroke-width="1.60"/>
+<circle cx="706.50" cy="339.93" r="4.5" fill="#059669"/>
+<text x="706.50" y="331.67" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">5.3007</text>
+<line x1="758.50" y1="339.78" x2="758.50" y2="340.29" stroke="#2563eb" stroke-width="1.60"/>
+<line x1="754.50" y1="339.78" x2="762.50" y2="339.78" stroke="#2563eb" stroke-width="1.60"/>
+<line x1="754.50" y1="340.29" x2="762.50" y2="340.29" stroke="#2563eb" stroke-width="1.60"/>
+<circle cx="758.50" cy="340.04" r="4.5" fill="#2563eb"/>
+<text x="758.50" y="331.78" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">5.2987</text>
+<line x1="130.00" y1="110.00" x2="156.00" y2="110.00" stroke="#059669" stroke-width="2"/>
+<text x="164.00" y="114.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">CPU</text>
+<line x1="130.00" y1="128.00" x2="156.00" y2="128.00" stroke="#2563eb" stroke-width="2"/>
+<text x="164.00" y="132.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">GPU</text>
+<line x1="130.00" y1="146.00" x2="156.00" y2="146.00" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="164.00" y="150.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">Black–Scholes 参考价</text>
+<text x="500.00" y="450.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">误差棒为各后端 95% 置信区间；亚式不虚构解析参考线。</text>
+</svg>

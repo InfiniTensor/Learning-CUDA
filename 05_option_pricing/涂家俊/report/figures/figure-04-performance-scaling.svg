@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520">
+<title>图 4 CPU/GPU 性能尺度（FP64，中位数）</title>
+<desc>左面板比较 total 墙钟时序，右面板给出由 total 之比计算的加速比。</desc>
+<metadata>{&quot;generator&quot;: &quot;scripts/render_final_report_figures.py&quot;, &quot;result_root&quot;: &quot;final-report-20260915&quot;, &quot;sources&quot;: [{&quot;path&quot;: &quot;convergence/european-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;5c324b4265482661e80e23bcffbd8af570e67732da07b03b6e08f082645c4313&quot;}, {&quot;path&quot;: &quot;convergence/asian-fp32/convergence_summary.csv&quot;, &quot;sha256&quot;: &quot;ae3da223b6ff9db31c5c0e4f60f6d5ad193b65a1eaacbd63a59fe59c4ee82549&quot;}, {&quot;path&quot;: &quot;benchmark/european-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;3722ad2fcb3bf3b9b6d9ad17718602336445778bb9ebbe59a6a662c2e08d0d9b&quot;}, {&quot;path&quot;: &quot;benchmark/asian-fp64/benchmark_summary.csv&quot;, &quot;sha256&quot;: &quot;0154c83bfb0b26dcc7374541cd8db2c1df452f7069ba5d7b1c7d9ba16c945440&quot;}, {&quot;path&quot;: &quot;block-sweep/asian-fp32/block_sweep.csv&quot;, &quot;sha256&quot;: &quot;e463e14b70bfb5a8334fa609e450a132582c83d00d8a7efc36aef60057700dd6&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_kern_sum_cuda_gpu_kern_sum.csv&quot;, &quot;sha256&quot;: &quot;f1af93a6c26adde4c62a99ffbfc2d70460de55c2585e450088b53de60473520c&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_gpu_mem_time_sum_cuda_gpu_mem_time_sum.csv&quot;, &quot;sha256&quot;: &quot;2f1fc8fa2953d96432e314f4f274e9fabcca31ce2665fbfbba0ca41332a57437&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/nsys-cuda_api_sum_cuda_api_sum.csv&quot;, &quot;sha256&quot;: &quot;728c8aeffa4972c0950a5ba94d6b5572576ab85db524266faaa4eaf0cff1d6dc&quot;}, {&quot;path&quot;: &quot;profiling/asian-fp32/ncu-details.csv&quot;, &quot;sha256&quot;: &quot;10c85cf76b074afd0a58f41f80f19914cd849e5af5f93a9ee9346abb191044a4&quot;}]}</metadata>
+<style>text{font-family:Noto Sans CJK SC,Source Han Sans SC,WenQuanYi Micro Hei,Microsoft YaHei,SimHei,sans-serif}.axis{stroke:#374151;stroke-width:1}.grid{stroke:#e5e7eb;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="260.00" y="70.00" font-size="14" text-anchor="middle" fill="#111827" font-weight="bold">欧式看涨</text>
+<line x1="60.00" y1="400.00" x2="460.00" y2="400.00" class="axis"/>
+<line x1="60.00" y1="96.00" x2="60.00" y2="400.00" class="axis"/>
+<line x1="60.00" y1="96.00" x2="60.00" y2="400.00" class="grid"/>
+<text x="60.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+04</text>
+<line x1="193.33" y1="96.00" x2="193.33" y2="400.00" class="grid"/>
+<text x="193.33" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+05</text>
+<line x1="326.67" y1="96.00" x2="326.67" y2="400.00" class="grid"/>
+<text x="326.67" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+06</text>
+<line x1="460.00" y1="96.00" x2="460.00" y2="400.00" class="grid"/>
+<text x="460.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+07</text>
+<line x1="60.00" y1="400.00" x2="460.00" y2="400.00" class="grid"/>
+<text x="52.00" y="404.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">0</text>
+<line x1="60.00" y1="324.00" x2="460.00" y2="324.00" class="grid"/>
+<text x="52.00" y="328.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">1</text>
+<line x1="60.00" y1="248.00" x2="460.00" y2="248.00" class="grid"/>
+<text x="52.00" y="252.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">8</text>
+<line x1="60.00" y1="172.00" x2="460.00" y2="172.00" class="grid"/>
+<text x="52.00" y="176.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">60</text>
+<line x1="60.00" y1="96.00" x2="460.00" y2="96.00" class="grid"/>
+<text x="52.00" y="100.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">469</text>
+<text x="260.00" y="442.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">路径数</text>
+<text x="12.00" y="248.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 248.00)">total 时序 (ms)</text>
+<polyline points="60.00,381.06 193.33,288.17 326.67,203.08 460.00,117.79" fill="none" stroke="#059669" stroke-width="2.00"/>
+<circle cx="60.00" cy="381.06" r="3" fill="#059669"/>
+<circle cx="193.33" cy="288.17" r="3" fill="#059669"/>
+<circle cx="326.67" cy="203.08" r="3" fill="#059669"/>
+<circle cx="460.00" cy="117.79" r="3" fill="#059669"/>
+<polyline points="60.00,306.82 193.33,310.13 326.67,279.22 460.00,214.55" fill="none" stroke="#2563eb" stroke-width="2.00"/>
+<circle cx="60.00" cy="306.82" r="3" fill="#2563eb"/>
+<circle cx="193.33" cy="310.13" r="3" fill="#2563eb"/>
+<circle cx="326.67" cy="279.22" r="3" fill="#2563eb"/>
+<circle cx="460.00" cy="214.55" r="3" fill="#2563eb"/>
+<rect x="268.00" y="397.95" width="46.00" height="2.05" fill="#2563eb" rx="2"/>
+<text x="291.00" y="391.95" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">0.1×</text>
+<rect x="326.00" y="372.51" width="46.00" height="27.49" fill="#2563eb" rx="2"/>
+<text x="349.00" y="366.51" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">1.8×</text>
+<rect x="384.00" y="281.45" width="46.00" height="118.55" fill="#2563eb" rx="2"/>
+<text x="407.00" y="275.45" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">7.8×</text>
+<rect x="442.00" y="193.28" width="46.00" height="206.72" fill="#2563eb" rx="2"/>
+<text x="465.00" y="187.28" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">13.6×</text>
+<text x="740.00" y="70.00" font-size="14" text-anchor="middle" fill="#111827" font-weight="bold">亚式看涨</text>
+<line x1="540.00" y1="400.00" x2="940.00" y2="400.00" class="axis"/>
+<line x1="540.00" y1="96.00" x2="540.00" y2="400.00" class="axis"/>
+<line x1="540.00" y1="96.00" x2="540.00" y2="400.00" class="grid"/>
+<text x="540.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+04</text>
+<line x1="673.33" y1="96.00" x2="673.33" y2="400.00" class="grid"/>
+<text x="673.33" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+05</text>
+<line x1="806.67" y1="96.00" x2="806.67" y2="400.00" class="grid"/>
+<text x="806.67" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+06</text>
+<line x1="940.00" y1="96.00" x2="940.00" y2="400.00" class="grid"/>
+<text x="940.00" y="418.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">1e+07</text>
+<line x1="540.00" y1="400.00" x2="940.00" y2="400.00" class="grid"/>
+<text x="532.00" y="404.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">2</text>
+<line x1="540.00" y1="324.00" x2="940.00" y2="324.00" class="grid"/>
+<text x="532.00" y="328.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">32</text>
+<line x1="540.00" y1="248.00" x2="940.00" y2="248.00" class="grid"/>
+<text x="532.00" y="252.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">454</text>
+<line x1="540.00" y1="172.00" x2="940.00" y2="172.00" class="grid"/>
+<text x="532.00" y="176.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">6501</text>
+<line x1="540.00" y1="96.00" x2="940.00" y2="96.00" class="grid"/>
+<text x="532.00" y="100.00" font-size="11" text-anchor="end" fill="#4b5563" font-weight="normal">93040</text>
+<text x="740.00" y="442.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal">路径数</text>
+<text x="12.00" y="248.00" font-size="13" text-anchor="middle" fill="#111827" font-weight="normal" transform="rotate(-90.0 12.00 248.00)">total 时序 (ms)</text>
+<polyline points="540.00,310.53 673.33,244.62 806.67,178.78 940.00,112.79" fill="none" stroke="#059669" stroke-width="2.00"/>
+<circle cx="540.00" cy="310.53" r="3" fill="#059669"/>
+<circle cx="673.33" cy="244.62" r="3" fill="#059669"/>
+<circle cx="806.67" cy="178.78" r="3" fill="#059669"/>
+<circle cx="940.00" cy="112.79" r="3" fill="#059669"/>
+<polyline points="540.00,385.41 673.33,332.10 806.67,279.24 940.00,217.35" fill="none" stroke="#2563eb" stroke-width="2.00"/>
+<circle cx="540.00" cy="385.41" r="3" fill="#2563eb"/>
+<circle cx="673.33" cy="332.10" r="3" fill="#2563eb"/>
+<circle cx="806.67" cy="279.24" r="3" fill="#2563eb"/>
+<circle cx="940.00" cy="217.35" r="3" fill="#2563eb"/>
+<rect x="748.00" y="326.88" width="46.00" height="73.12" fill="#2563eb" rx="2"/>
+<text x="771.00" y="320.88" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">13.8×</text>
+<rect x="806.00" y="286.32" width="46.00" height="113.68" fill="#2563eb" rx="2"/>
+<text x="829.00" y="280.32" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">21.4×</text>
+<rect x="864.00" y="220.90" width="46.00" height="179.10" fill="#2563eb" rx="2"/>
+<text x="887.00" y="214.90" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">33.7×</text>
+<rect x="922.00" y="193.28" width="46.00" height="206.72" fill="#2563eb" rx="2"/>
+<text x="945.00" y="187.28" font-size="11" text-anchor="middle" fill="#374151" font-weight="normal">38.9×</text>
+<line x1="80.00" y1="118.00" x2="106.00" y2="118.00" stroke="#059669" stroke-width="2"/>
+<text x="114.00" y="122.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">CPU total</text>
+<line x1="80.00" y1="136.00" x2="106.00" y2="136.00" stroke="#2563eb" stroke-width="2"/>
+<text x="114.00" y="140.00" font-size="12" text-anchor="start" fill="#111827" font-weight="normal">GPU total</text>
+<text x="500.00" y="470.00" font-size="11" text-anchor="middle" fill="#4b5563" font-weight="normal">加速比由同一档 CPU/GPU total 墙钟之比重新计算；吞吐才使用 GPU compute 时序。</text>
+</svg>
