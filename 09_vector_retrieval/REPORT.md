@@ -17,17 +17,19 @@
 Top-K、索引落盘与重载、主机侧 CPU 参考，以及性能/质量日志。GPU exact baseline 在
 小规模合成数据上已设计为与 CPU 参考逐条一致（含距离与 id 的确定性 tie-break）。
 
-同一份源码已实现并验证**双平台运行**：
+同一份源码已实现并验证**三平台运行**：
 
 | 平台 | 工具链 | 验证状态 |
 | --- | --- | --- |
 | NVIDIA（RTX 4090 24 GB） | CMake + `nvcc`（CUDA 12.0/12.8，驱动 570） | Release 构建、主机/GPU 测试、1e6 与 300k 两档 bench 均通过 |
-| 天数智芯 CoreX（MR-V100 32 GB） | `Makefile.corex` + 定制 clang 18（`-x ivcore`） | 构建、全部测试、300k bench 与 nprobe/batch 扫描均通过 |
+| 天数智芯 CoreX（MR-V100 32 GB） | `Makefile.corex` + 定制 clang 18（`-x ivcore`） | 构建、全部测试、300k bench 与 21 组扫描均通过 |
+| 沐曦 MetaX（MXC500 32 GB） | `Makefile.maca` + `cucc`（MACA 3.5.3） | 构建、全部测试、300k bench 与 21 组扫描均通过，**源码零改动** |
 
 > NVIDIA 实测环境：Ubuntu 24.04，RTX 4090，内核模块与用户态
 > libcuda/libnvidia-ml 570.124.06，CUDA Toolkit 12.0 与 12.8；早期 1e6 实验数据
-> `N=10^6, D=128, nlist=4096, nprobe=16, topK=100, nq=1000`。CoreX 实测环境见
-> §11。
+> `N=10^6, D=128, nlist=4096, nprobe=16, topK=100, nq=1000`。
+> 天数智芯 CoreX（MR-V100，IX-ML 4.4.0）与沐曦 MetaX（MXC500，MACA 3.5.3）的
+> 实测环境与结果见 §11。
 
 ## 2. 系统结构与模块
 
@@ -44,7 +46,7 @@ outputs/                   NVIDIA 平台报告、日志与结果样例
 outputs_corex/             CoreX 平台 perf/quality 日志与扫描汇总
 ```
 
-
+编译对象只有一个静态库和一个 CLI，方便替换评测方要求的文件布局。
 
 ## 3. 向量表示与距离度量
 
@@ -277,7 +279,7 @@ recall@100 均约 0.99（0.9858 / 0.9914），IVF-PQ 均约 0.012——差异只
 
 本次实验使用 Nsight Systems 2024.6.2 对 exact / IVF-Flat / IVF-PQ 三种检索做了
 CUDA kernel 时间线分析，完整命令、统计表与结论见
-[PROFILING.md](PROFILING.md)。
+[outputs/PROFILING.md](outputs/PROFILING.md)。
 
 ### 10.1 收集
 
@@ -313,7 +315,7 @@ GPU 集成测试全部通过，端到端 bench 已生成结果/性能/质量日�
 
 CoreX 的 `/usr/local/corex/bin/nvcc` 只是版本回显 stub，官方未提供 CMake CUDA
 工具链；真实工具链是 CoreX 定制 clang 18（用 `-x ivcore` 编译 `.cu`）。因此
-CoreX 构建使用 [Makefile.corex](../Makefile.corex)，一条命令得到 `vsearch`、
+CoreX 构建使用 [Makefile.corex](Makefile.corex)，一条命令得到 `vsearch`、
 `test_host`、`test_gpu`：
 
 ```bash
@@ -372,7 +374,7 @@ CPU 参考为单线程暴力检索（200 query 子集）。GPU 集成测试另�
 
 batch=32 时 P50 更低（nprobe=16 时 4.14 ms），batch=512 时 QPS 更高但单批延迟
 更大；完整 21 组（nprobe×batch）数据见
-[outputs_corex/experiment_summary.csv](../outputs_corex/experiment_summary.csv)。
+[outputs_corex/experiment_summary.csv](outputs_corex/experiment_summary.csv)。
 
 **PQ 召回限制（作为质量分析的一部分）**：在 300k 高斯聚类合成数据上 IVF-PQ 的
 recall@100≈0.012，而 IVF-Flat≈0.986。用索引文件 + Python 复算 ADC 分数确认并非
@@ -387,9 +389,78 @@ top-256 精排窗口。该实验正是题目要求呈现的“PQ 压缩率 vs �
 得到同一 recall（ivf_flat≈0.986、ivf_pq≈0.012，见 §8.3 表 3b），两平台互相印证
 ADC 打分与码本编码实现一致。
 
-完整测试输出与日志见 `outputs/`（NVIDIA）与 `outputs_corex/`（CoreX）。此外
-§10 的 Nsight Systems 分析在 NVIDIA 平台完成；CoreX 无 nvidia 工具链，故未在
-CoreX 上重复 nsys 采样。
+完整测试输出与日志见 `outputs/`（NVIDIA）、`outputs_corex/`（CoreX）与
+`outputs_maca/`（沐曦）。此外 §10 的 Nsight Systems 分析在 NVIDIA 平台完成；
+CoreX 与沐曦没有对应的 nvidia 工具链，故未在其上重复 nsys 采样。
+
+### 11.4 沐曦 MetaX（MACA）平台适配与实测
+
+#### 11.4.1 构建方式
+
+沐曦通过 `cu-bridge` 提供 CUDA 兼容层：
+
+* 编译器 `cucc`（nvcc 风格 wrapper，内部调用 mxgpu_llvm 的 `mxcc`）；
+* 头文件：`/opt/maca/tools/cu-bridge/include`（cuda_runtime.h、cublas_v2.h、cub）
+  与 `/opt/maca/include`（mcc、mcblas、cub 原生实现）；
+* 数学库：cuBLAS 的对应实现是 `/opt/maca/lib/libmcblas.so`。
+
+构建使用新增的 [Makefile.maca](Makefile.maca)：
+
+```bash
+make -f Makefile.maca -j
+export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
+./build_maca/test_host && ./build_maca/test_gpu
+```
+
+#### 11.4.2 关键结论：该平台**无需修改源码**
+
+与天数智芯 CoreX 不同，沐曦设备端的两项能力实测均正常，因此引擎直接沿用 NVIDIA
+路径（double 累计距离、64 位原子计数），只新增构建脚本：
+
+| 探测项 | CoreX 表现 | 沐曦 MetaX 表现 |
+| --- | --- | --- |
+| `atomicAdd(unsigned long long*)` | 静默失效（计数恒为 0），需改 32 位 | 正确（实测 256 线程累加结果 = 256） |
+| device double 长求和 | 约 1e-4 相对误差，需改 float 累计 | 与主机 double 结果完全一致（误差 0） |
+| PTX 内联汇编 | 寄存器约束分配失败 | 未使用（已提前改为 `__float_as_int` 内建） |
+
+这说明上一轮针对 CoreX 的改动（32 位原子计数、float 累计分支、位转换内建）
+**没有牺牲可移植性**：沐曦走的是与 NVIDIA 完全相同的代码路径，验证了
+“同一份源码适配多平台”的设计目标。
+
+#### 11.4.3 沐曦实测结果
+
+**表 6：MetaX MXC500，300k×128，nq=1000，topK=100，nprobe=16**
+
+| mode | build ms | search ms | QPS | P50 ms | P99 ms | recall@100 | speedup vs CPU |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| exact_gpu | - | 128.2 | 1560 | 64.0 | 82.4 | - | 61.9× |
+| ivf_flat | 856 | 62.8 | 15916 | 8.0 | 8.4 | 0.991 | 137.2× |
+| ivf_pq16+rerank | 1174 | 62.6 | 15985 | 7.9 | 8.5 | 0.012 | 119.4× |
+
+**表 7：沐曦 IVF-Flat nprobe 权衡（batch=128）**
+
+| nprobe | recall@100 | QPS | P50 ms |
+| --- | --- | --- | --- |
+| 1 | 0.0125 | 27109 | 4.59 |
+| 2 | 0.0192 | 21030 | 5.97 |
+| 4 | 0.0636 | 22493 | 5.58 |
+| 8 | 0.5428 | 18627 | 6.64 |
+| 16 | 0.9914 | 15329 | 8.25 |
+| 32 | 1.0000 | 9062 | 13.99 |
+| 64 | 1.0000 | 5710 | 22.30 |
+
+#### 11.4.4 三平台横向对比（同一份源码，300k×128，nprobe=16）
+
+| 平台 | GPU | exact QPS | ivf_flat QPS | recall@100 | ivf_pq QPS |
+| --- | --- | --- | --- | --- | --- |
+| NVIDIA | RTX 4090 | 2029 | 49058 | 0.986 | 45792 |
+| 天数智芯 | MR-V100 | 366 | 9340 | 0.991 | 16974 |
+| 沐曦 | MXC500 | 1560 | 15916 | 0.991 | 15985 |
+
+三平台的检索结果一致：相同生成参数的数据上，CoreX 与沐曦的 IVF-Flat
+recall@100 均为 0.991390（逐位相同），IVF-PQ 均为 ≈0.012，说明算法在各平台行为
+一致，性能差异来自 GPU 算力与访存带宽。沐曦当前只启用了 MXC500 的一个 SGPU
+分片（mx-smi 显示 50% 规格），因此吞吐介于 RTX 4090 与 MR-V100 之间。
 
 ## 12. 可继续提升的方向
 
@@ -415,15 +486,21 @@ make -f Makefile.corex -j
 export LD_LIBRARY_PATH=/usr/local/corex/lib64:/usr/local/corex/lib
 ./build_corex/test_host && ./build_corex/test_gpu
 
-# 3) 生成数据并扫描（NVIDIA 示例；CoreX 将 ./build/ 换成 ./build_corex/）
+# 3) 沐曦 MetaX 构建与正确性自检（源码无需改动）
+make -f Makefile.maca -j
+export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
+./build_maca/test_host && ./build_maca/test_gpu
+
+# 4) 生成数据并扫描（NVIDIA 示例；CoreX 用 ./build_corex/，沐曦用 ./build_maca/）
 python python/gen_dataset.py --out data \
     --n 1000000 --dim 128 --nq 1000 --top-k 100
 python python/run_experiments.py --vsearch ./build/vsearch \
     --nprobe-list 1,2,4,8,16,32,64 --batch-list 32,128,512
 
-# 4) 把生成目录中的 experiment_summary.csv 数字回填到 §8.3
+# 5) 把生成目录中的 experiment_summary.csv 数字回填到 §8.3 / §11.4
 ```
 
-表 1-3（NVIDIA 1e6）、表 3b（NVIDIA 300k 回归）与表 4-5（CoreX 300k）分别对应
-`outputs/`、`outputs/nvidia_300k_regression/`、`outputs_corex/` 下的原始
-perf/quality 日志；代码、测试与脚本均在仓库内。
+表 1-3（NVIDIA 1e6）、表 3b（NVIDIA 300k 回归）、表 4-5（CoreX 300k）与表 6-7
+（沐曦 300k）分别对应 `outputs/`、`outputs/nvidia_300k_regression/`、
+`outputs_corex/`、`outputs_maca/` 下的原始 perf/quality 日志；代码、测试与脚本
+均在仓库内，任何一行运行路径均无需人工改动数据格式。

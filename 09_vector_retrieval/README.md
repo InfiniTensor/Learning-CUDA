@@ -12,19 +12,20 @@
 - 批量查询、K=1/10/50/100、CPU 参考实现、结果/性能/质量日志；
 - 主机与 GPU 正确性测试。
 
-同一份源码可在 **NVIDIA CUDA** 与 **天数智芯 Iluvatar CoreX** 两个平台构建与运行：
+同一份源码可在 **NVIDIA CUDA**、**天数智芯 Iluvatar CoreX** 与 **沐曦 MetaX
+（MACA）** 三个平台构建与运行：
 
-- NVIDIA：CMake + `nvcc`（默认路径），已在 Ubuntu + RTX 4090 环境完成构建、
-  主机/GPU 测试与 1e6×128 全量实验；
-- CoreX：`make -f Makefile.corex`（定制 clang `-x ivcore` 编译 `.cu`），已在
-  天数智芯 MR-V100（IX-ML 4.4.0）上完成构建、全部测试与端到端 bench。
+| 平台 | 构建方式 | 验证情况 |
+| --- | --- | --- |
+| NVIDIA | CMake + `nvcc` | RTX 4090 上构建、主机/GPU 测试与 bench 全部通过 |
+| 天数智芯 CoreX | `make -f Makefile.corex`（clang `-x ivcore`） | MR-V100（IX-ML 4.4.0）上全部通过 |
+| 沐曦 MetaX | `make -f Makefile.maca`（`cucc` + `-lmcblas`） | MXC500（MACA 3.5.3）上全部通过 |
 
-两平台最近一次回归均通过：NVIDIA `test_host` + `test_gpu` 全部 PASS；CoreX 同样
-全部 PASS（详见下文两节实测结果）。平台差异适配均体现在同一份源码中。代表性
-结果见文末与 [REPORT.md](REPORT.md)。
+三平台最近一次回归均通过（`test_host` + `test_gpu` 全部 PASS，端到端 bench 正常），
+且共用同一份源码——平台差异只体现在构建脚本与少量编译期分支上，检索算法与 kernel
+完全一致。代表性结果见文末与 [REPORT.md](REPORT.md)。
 
-验证日期：2026-09-07（NVIDIA RTX 4090 与天数智芯 MR-V100 均重新编译并跑完整测试
-与 bench）。
+验证日期：NVIDIA / CoreX 为 2026-09-07，沐曦 MetaX 为 2026-09-13。
 
 ## 目录
 
@@ -32,6 +33,7 @@
 .
 ├── CMakeLists.txt
 ├── Makefile.corex         # 天数智芯 CoreX 专用构建
+├── Makefile.maca          # 沐曦 MetaX（MACA）专用构建
 ├── README.md
 ├── include/vsearch/        # 公共数据结构/配置/IO/CPU 参考
 ├── src/                    # 主机侧实现与 CLI
@@ -41,7 +43,8 @@
 ├── data/                   # 生成的二进制向量库/查询/参数
 ├── docs/
 ├── outputs/                # NVIDIA 平台报告、日志与交付物
-└── outputs_corex/          # CoreX 平台日志（perf/quality/sweep 汇总）
+├── outputs_corex/          # CoreX 平台日志（perf/quality/sweep 汇总）
+└── outputs_maca/           # 沐曦 MetaX 平台日志（perf/quality/sweep 汇总）
 ```
 
 ## 构建
@@ -88,6 +91,27 @@ export LD_LIBRARY_PATH=/usr/local/corex/lib64:/usr/local/corex/lib
    CUDA 位转换内建 `__float_as_int` / `__int_as_float`（两平台均可）。
 
 CoreX（MR-V100，32 GB）实测见下方「天数智芯实测结果」。
+
+## 沐曦 MetaX（MACA）平台支持
+
+沐曦通过 `cu-bridge` 提供 CUDA 兼容层：编译器是 `cucc`（nvcc 风格 wrapper，
+内部调用 mxgpu_llvm 的 `mxcc`），头文件在 `cu-bridge/include` 与 `/opt/maca/include`
+（含 cub、mcc 等），cuBLAS 对应实现是 `/opt/maca/lib/libmcblas.so`。构建使用仓库
+根目录的 [Makefile.maca](Makefile.maca)：
+
+```bash
+make -f Makefile.maca -j            # 产物在 build_maca/
+export LD_LIBRARY_PATH=/opt/maca/lib:/opt/maca/tools/cu-bridge/lib:/opt/maca/lib64
+./build_maca/test_host              # 主机测试
+./build_maca/test_gpu               # GPU 集成测试
+```
+
+**该平台不需要修改任何源码**：与天数智芯 CoreX 不同，沐曦的设备端
+`atomicAdd(unsigned long long*)` 与 double 累加均正常（实测 64 位原子计数正确、
+double 长求和与主机结果完全一致），因此引擎沿用 NVIDIA 路径（double 累计、
+64 位原子计数），仅新增构建脚本即可跑通全部测试与 bench。
+
+沐曦（MXC500）实测见下方「沐曦 MetaX 实测结果」。
 
 ## 生成数据并运行实验
 
@@ -172,7 +196,7 @@ ids，以及 PQ 码本与压缩码，兼容 IVF-Flat 与 IVF-PQ。完整布局�
 ## 设计与报告
 
 算法、数据布局、优化细节与实验方法见
-[outputs/REPORT.md](outputs/REPORT.md)；开发过程中遇到的取舍与后续方向也在其中。
+[REPORT.md](REPORT.md)；开发过程中遇到的取舍与后续方向也在其中。
 
 ## 实测结果（RTX 4090，1e6×128，nq=1000，topK=100）
 
@@ -220,3 +244,30 @@ recall≈0.01。小规模紧致数据（40k×32、100 个分离簇）上 PQ 的 
 该差异用于说明 "PQ 压缩率 vs 召回" 的系统取舍：PQ 适合低精度高吞吐筛选或作为
 粗排，需配合更大的精排窗口 / 更高 PQ 码率。详见
 [REPORT.md](REPORT.md) 的 CoreX 适配与质量分析。
+
+## 沐曦 MetaX 实测结果（MXC500，300k×128，nq=1000，topK=100）
+
+主机测试 5/5 通过、GPU 集成测试全部通过（exact 与 CPU 参考逐条一致、IVF-Flat
+recall=1.0、IVF-PQ 返回合法 id、索引保存/加载 round-trip 一致），无需改动源码。
+
+| mode | build ms | search ms | QPS | P50 ms | P99 ms | recall@100 | 加速比 vs CPU |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| exact | - | 128.2 | 1560 | 64.0 | 82.4 | - | 61.9× |
+| ivf_flat | 856 | 62.8 | 15916 | 8.0 | 8.4 | 0.991 | 137.2× |
+| ivf_pq16 + rerank | 1174 | 62.6 | 15985 | 7.9 | 8.5 | 0.012（受限于 ADC 量化） | 119.4× |
+
+CPU 参考为单线程暴力精确检索（200 query 子集约 7.5–8.6 s）。nprobe 扫描（batch=128）
+显示 recall 随 nprobe 单调上升：nprobe=1 → 0.012、8 → 0.544、16 → 0.991、
+32/64 → 1.000，与 NVIDIA / CoreX 在相同生成参数下的曲线一致；完整 21 组
+nprobe×batch 数据见 [outputs_maca/experiment_summary.csv](outputs_maca/experiment_summary.csv)。
+
+### 三平台对比（同一份源码，300k×128，nprobe=16）
+
+| 平台 | GPU | exact QPS | ivf_flat QPS | recall@100 | ivf_pq QPS |
+| --- | --- | --- | --- | --- | --- |
+| NVIDIA | RTX 4090 | 2029 | 49058 | 0.986 | 45792 |
+| 天数智芯 | MR-V100 | 366 | 9340 | 0.991 | 16974 |
+| 沐曦 | MXC500 | 1560 | 15916 | 0.991 | 15985 |
+
+三平台的 recall 与排序结果一致（同参数数据下 CoreX / 沐曦为 0.991390），说明检索
+算法在各平台上行为一致，差异来自 GPU 算力与访存带宽。
