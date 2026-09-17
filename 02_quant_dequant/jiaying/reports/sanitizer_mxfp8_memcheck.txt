@@ -1,0 +1,7 @@
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+========= 
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+========= 
+OK 19x1051; NVIDIA GeForce RTX 4070 Laptop GPU; MAE=0.0186803; MSE=0.000860741; quant=6.02304 ms; dequant=0.058432 ms
+========= ERROR SUMMARY: 2 errors

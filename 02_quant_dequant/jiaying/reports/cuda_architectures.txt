@@ -1,0 +1,3 @@
+ELF file    1: cuda_backend.sm_60.cubin
+ELF file    2: cuda_backend.sm_75.cubin
+ELF file    3: cuda_backend.sm_89.cubin
