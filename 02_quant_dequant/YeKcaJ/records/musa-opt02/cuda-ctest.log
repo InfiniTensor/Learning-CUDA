@@ -1,0 +1,24 @@
+Internal ctest changing into directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/Core/build
+Test project /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/Core/build
+    Start 1: core_tools
+1/9 Test #1: core_tools .......................   Passed    0.33 sec
+    Start 2: core_reduction
+2/9 Test #2: core_reduction ...................   Passed    0.69 sec
+    Start 3: core_device_math
+3/9 Test #3: core_device_math .................   Passed    0.22 sec
+    Start 4: mxfp8_pipeline_io
+4/9 Test #4: mxfp8_pipeline_io ................   Passed   11.19 sec
+    Start 5: mxfp8_pipeline_regression
+5/9 Test #5: mxfp8_pipeline_regression ........   Passed    0.93 sec
+    Start 6: mxfp8_frozen_hashes
+6/9 Test #6: mxfp8_frozen_hashes ..............   Passed    0.01 sec
+    Start 7: nvfp4_pipeline_io
+7/9 Test #7: nvfp4_pipeline_io ................   Passed   10.91 sec
+    Start 8: nvfp4_pipeline_regression
+8/9 Test #8: nvfp4_pipeline_regression ........   Passed    0.80 sec
+    Start 9: nvfp4_frozen_hashes
+9/9 Test #9: nvfp4_frozen_hashes ..............   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 9
+
+Total Test time (real) =  25.08 sec

@@ -1,0 +1,17 @@
+  n=16     PASS
+  n=17     PASS
+  n=31     PASS
+  n=32     PASS
+  n=33     PASS
+  n=48     PASS
+  n=255    PASS
+  n=256    PASS
+  n=257    PASS
+  n=512    PASS
+  n=1000   PASS
+  n=4096   PASS
+  n=8191   PASS
+  n=8192   PASS
+  n=8199   PASS
+
+分组边界: 15/15 通过

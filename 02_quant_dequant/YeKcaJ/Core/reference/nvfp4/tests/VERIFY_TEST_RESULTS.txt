@@ -1,0 +1,9 @@
+format_version=1
+algorithm=NVFP4_E2M1_E4M3_BLOCK16
+mode=verify
+zeros rows=2 cols=9 blocks=2 max_dequant_diff=0 max_abs_error=0 mae=0 mse=0
+basic rows=1 cols=16 blocks=1 max_dequant_diff=0 max_abs_error=1 mae=0.328125 mse=0.205078
+outlier_tail rows=3 cols=19 blocks=4 max_dequant_diff=0 max_abs_error=4.14713 mae=0.480489 mse=0.856315
+tail_block rows=1 cols=17 blocks=2 max_dequant_diff=0 max_abs_error=0.523809 mae=0.156863 mse=0.0473189
+random rows=5 cols=32 blocks=10 max_dequant_diff=0 max_abs_error=0.362641 mae=0.0691558 mse=0.00888087
+status=PASS

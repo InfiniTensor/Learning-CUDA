@@ -1,0 +1,10 @@
+[ 25%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/app/run.cu.o
+[ 25%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/app/run.cu.o
+[ 25%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/benchmarks/benchmark.cu.o
+[ 25%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/benchmarks/benchmark.cu.o
+[ 31%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/tests/regression.cu.o
+[ 37%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/tests/regression.cu.o
+[ 43%] Linking CXX executable pipeline_nvfp4
+[ 50%] Linking CXX executable pipeline_mxfp8
+[ 75%] Built target pipeline_nvfp4
+[100%] Built target pipeline_mxfp8

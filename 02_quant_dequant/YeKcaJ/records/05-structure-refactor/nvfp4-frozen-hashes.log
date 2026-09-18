@@ -1,0 +1,15 @@
+tests/data/basic.fp32: OK
+tests/data/outlier_tail.fp32: OK
+tests/data/random.fp32: OK
+tests/data/tail_block.fp32: OK
+tests/data/zeros.fp32: OK
+tests/golden/basic.dequant.fp32: OK
+tests/golden/basic.nvfp4: OK
+tests/golden/outlier_tail.dequant.fp32: OK
+tests/golden/outlier_tail.nvfp4: OK
+tests/golden/random.dequant.fp32: OK
+tests/golden/random.nvfp4: OK
+tests/golden/tail_block.dequant.fp32: OK
+tests/golden/tail_block.nvfp4: OK
+tests/golden/zeros.dequant.fp32: OK
+tests/golden/zeros.nvfp4: OK

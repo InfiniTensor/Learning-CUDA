@@ -1,0 +1,6 @@
+{
+  "before/pipeline_mxfp8": "6888fc57e1bbe4d08e92e9542f3092a77b2c5e97e335a19f5456dd06b68740ed",
+  "after-divide/pipeline_mxfp8": "62ee9f4ca1d12aa83427e4e2ba993b552e2c1552532c9f1d1386404b0e7eda8d",
+  "before/pipeline_nvfp4": "e8a0895d9c9f9532438fec2cdac822bae34ffdd231ba78fefca9cff42bb27e0c",
+  "after-divide/pipeline_nvfp4": "d387acffb06fc74f9fd8fbc633a021d280b1769386f52da4de5d63b5e8364b2a"
+}

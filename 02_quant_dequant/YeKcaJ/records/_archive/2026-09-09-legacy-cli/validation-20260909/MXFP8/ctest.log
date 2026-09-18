@@ -1,0 +1,64 @@
+Internal ctest changing into directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDAMXFP8/build
+Test project /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDAMXFP8/build
+      Start  1: pipeline_io
+ 1/29 Test  #1: pipeline_io ......................   Passed   12.94 sec
+      Start  2: pipeline_regression
+ 2/29 Test  #2: pipeline_regression ..............   Passed    0.71 sec
+      Start  3: regression
+ 3/29 Test  #3: regression .......................   Passed    0.70 sec
+      Start  4: quant_zeros
+ 4/29 Test  #4: quant_zeros ......................   Passed    0.24 sec
+      Start  5: bytes_zeros
+ 5/29 Test  #5: bytes_zeros ......................   Passed    0.01 sec
+      Start  6: dequant_zeros_fp32
+ 6/29 Test  #6: dequant_zeros_fp32 ...............   Passed    0.25 sec
+      Start  7: dequant_zeros_fp16
+ 7/29 Test  #7: dequant_zeros_fp16 ...............   Passed    0.23 sec
+      Start  8: dequant_zeros_bf16
+ 8/29 Test  #8: dequant_zeros_bf16 ...............   Passed    0.23 sec
+      Start  9: quant_basic
+ 9/29 Test  #9: quant_basic ......................   Passed    0.23 sec
+      Start 10: bytes_basic
+10/29 Test #10: bytes_basic ......................   Passed    0.01 sec
+      Start 11: dequant_basic_fp32
+11/29 Test #11: dequant_basic_fp32 ...............   Passed    0.23 sec
+      Start 12: dequant_basic_fp16
+12/29 Test #12: dequant_basic_fp16 ...............   Passed    0.23 sec
+      Start 13: dequant_basic_bf16
+13/29 Test #13: dequant_basic_bf16 ...............   Passed    0.23 sec
+      Start 14: quant_outlier_tail
+14/29 Test #14: quant_outlier_tail ...............   Passed    0.23 sec
+      Start 15: bytes_outlier_tail
+15/29 Test #15: bytes_outlier_tail ...............   Passed    0.01 sec
+      Start 16: dequant_outlier_tail_fp32
+16/29 Test #16: dequant_outlier_tail_fp32 ........   Passed    0.23 sec
+      Start 17: dequant_outlier_tail_fp16
+17/29 Test #17: dequant_outlier_tail_fp16 ........   Passed    0.22 sec
+      Start 18: dequant_outlier_tail_bf16
+18/29 Test #18: dequant_outlier_tail_bf16 ........   Passed    0.24 sec
+      Start 19: quant_tail_block
+19/29 Test #19: quant_tail_block .................   Passed    0.23 sec
+      Start 20: bytes_tail_block
+20/29 Test #20: bytes_tail_block .................   Passed    0.01 sec
+      Start 21: dequant_tail_block_fp32
+21/29 Test #21: dequant_tail_block_fp32 ..........   Passed    0.22 sec
+      Start 22: dequant_tail_block_fp16
+22/29 Test #22: dequant_tail_block_fp16 ..........   Passed    0.23 sec
+      Start 23: dequant_tail_block_bf16
+23/29 Test #23: dequant_tail_block_bf16 ..........   Passed    0.23 sec
+      Start 24: quant_random
+24/29 Test #24: quant_random .....................   Passed    0.22 sec
+      Start 25: bytes_random
+25/29 Test #25: bytes_random .....................   Passed    0.01 sec
+      Start 26: dequant_random_fp32
+26/29 Test #26: dequant_random_fp32 ..............   Passed    0.24 sec
+      Start 27: dequant_random_fp16
+27/29 Test #27: dequant_random_fp16 ..............   Passed    0.23 sec
+      Start 28: dequant_random_bf16
+28/29 Test #28: dequant_random_bf16 ..............   Passed    0.30 sec
+      Start 29: invalid_dtype
+29/29 Test #29: invalid_dtype ....................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 29
+
+Total Test time (real) =  19.09 sec

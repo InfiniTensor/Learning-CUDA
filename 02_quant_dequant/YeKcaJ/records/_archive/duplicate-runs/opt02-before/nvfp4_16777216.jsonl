@@ -1,0 +1,6 @@
+{"format":"nvfp4","op":"quant_enumeration","scope":"resident_gpu","elements":16777216,"repeats":20,"median_ms":4.520959854,"p95_ms":4.765696049,"logical_GBps":16.93137176}
+{"format":"nvfp4","op":"quant_optimized","scope":"resident_gpu","elements":16777216,"repeats":20,"median_ms":1.746431947,"p95_ms":1.753087997,"logical_GBps":43.82996551}
+{"format":"nvfp4","op":"dequant_fp32","scope":"resident_gpu","elements":16777216,"repeats":20,"median_ms":0.3399199992,"p95_ms":0.3430399895,"logical_GBps":225.1884331}
+{"format":"nvfp4","op":"dequant_fp16","scope":"resident_gpu","elements":16777216,"repeats":20,"median_ms":0.303008005,"p95_ms":0.3072000146,"logical_GBps":141.8827862}
+{"format":"nvfp4","op":"dequant_bf16","scope":"resident_gpu","elements":16777216,"repeats":20,"median_ms":0.3352319896,"p95_ms":0.3440639973,"logical_GBps":128.244384}
+{"format":"nvfp4","op":"quant_optimized","scope":"host_api","elements":16777216,"repeats":20,"median_ms":22.733686,"p95_ms":24.075311,"logical_GBps":3.367076153}

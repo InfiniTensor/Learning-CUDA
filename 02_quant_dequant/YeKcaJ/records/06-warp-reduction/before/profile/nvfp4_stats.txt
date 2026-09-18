@@ -1,0 +1,41 @@
+Generating SQLite file /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/nvfp4.sqlite from /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/nvfp4.nsys-rep
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/nvfp4.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     49.8          6414405          9  712711.7  713117.0    708701    715037       1809.8  pipeline::build_scales(const float *, const float *, unsigned char *, unsigned long, bool)          
+     12.7          1630148         26   62698.0   62131.0     61507     65571       1240.7  pipeline::maximum(const float *, float *, unsigned long)                                            
+     12.3          1579744         17   92926.1   92931.0     92612     93188        147.3  pipeline::nvfp4_quantize_fused_kernel(const float *, unsigned char *, unsigned char *, const float …
+      6.4           829059          8  103632.4  103620.5    103525    103780         83.4  void pipeline::dequantize_kernel<__nv_bfloat16>(const unsigned char *, const unsigned char *, const…
+      6.3           805634          9   89514.9   89507.0     89316     89732        139.4  void pipeline::quantize_kernel<(bool)1>(const float *, unsigned char *, const unsigned char *, cons…
+      6.1           778912          8   97364.0   97348.0     97124     97732        223.0  void pipeline::dequantize_kernel<float>(const unsigned char *, const unsigned char *, const float *…
+      5.8           743007          8   92875.9   92804.0     92676     93412        242.9  void pipeline::dequantize_kernel<__half>(const unsigned char *, const unsigned char *, const float …
+      0.7            89092         26    3426.6    3456.0      3264      3584         70.6  pipeline::finalize_max(const float *, float *, unsigned int)                                        
+
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/nvfp4.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)  Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ---------  --------  --------  ---------  -----------  ----------------------
+     73.3        157175233         54  2910652.5  237257.5      2016  147065525   19988297.8  cudaMalloc            
+     14.3         30661325         39   786187.8  139673.0     27613    3797821    1136704.7  cudaMemcpy            
+      7.1         15259739         50   305194.8  163881.5    101960    1089608     287829.6  cudaEventSynchronize  
+      2.9          6237598         54   115511.1  141669.5      1276     335652     114489.6  cudaFree              
+      2.0          4255955        111    38341.9    6789.0      3663    2757470     261210.4  cudaLaunchKernel      
+      0.4           793629        100     7936.3    5546.5      2423      59966       7401.0  cudaEventRecord       
+      0.0            40921         18     2273.4    1730.5       386      10329       2482.0  cudaEventCreate       
+      0.0            24602         18     1366.8    1237.0       286       2756        997.2  cudaEventDestroy      
+      0.0             4782          1     4782.0    4782.0      4782       4782          0.0  cuModuleGetLoadingMode
+
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/nvfp4.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     89.9         20647687      9  2294187.4  2084308.0   1864620   3328040     522804.0  [CUDA memcpy Host-to-Device]
+     10.1          2310333     30    77011.1    21153.0      1120    329102      97347.7  [CUDA memcpy Device-to-Host]
+

@@ -1,0 +1,4 @@
+========= COMPUTE-SANITIZER
+========= Error: Target application terminated before first instrumented API call
+========= Tracking kernels launched by child processes requires the --target-processes all option.
+========= Error: couldn't find exit code.

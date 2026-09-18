@@ -1,0 +1,92 @@
+[
+  {
+    "function": "maximum",
+    "file": "Core/kernels/reduce.cuh",
+    "sha256": "45d35079860c85301fb0560d5cc450f6c98f500c1b4d0ab7723504e7f9057704",
+    "unchanged": true
+  },
+  {
+    "function": "finalize_max",
+    "file": "Core/kernels/reduce.cuh",
+    "sha256": "47f99f173e8e235507830898d5dd9d6bb9bce36eead1613e7a24e4f25a21fbc3",
+    "unchanged": true
+  },
+  {
+    "function": "scale_code",
+    "file": "Core/kernels/scale.cuh",
+    "sha256": "0a141fa8c509a220567f0f0da5df85466a9deb224a9314e6f38ae307e90cbdaa",
+    "unchanged": true
+  },
+  {
+    "function": "effective",
+    "file": "Core/kernels/scale.cuh",
+    "sha256": "9afc9fa59bea9209cc4bd7df1c58d310770c74a7d0331c1eba214218c4e97729",
+    "unchanged": true
+  },
+  {
+    "function": "mxfp8_quantize_fused_kernel",
+    "file": "Core/kernels/mxfp8_quantize.cuh",
+    "sha256": "4bf91168381ceb6777e1dda25793a4beb56807c4a0142fb9beca53060984a468",
+    "unchanged": true
+  },
+  {
+    "function": "nvfp4_quantize_fused_kernel",
+    "file": "Core/kernels/nvfp4_quantize.cuh",
+    "sha256": "afc06c9881482e43d6bdcd0676ab9c709fe8c27402d7b432133c24bb9efd35cd",
+    "unchanged": true
+  },
+  {
+    "function": "build_scales",
+    "file": "Core/kernels/fallback_quantize.cuh",
+    "sha256": "e9e6c3186d8c7f8ba75c2edf7adb63db328c63796398d5308c46b54e8529c473",
+    "unchanged": true
+  },
+  {
+    "function": "build_block_scales",
+    "file": "Core/kernels/fallback_quantize.cuh",
+    "sha256": "0799bfe375cf61e77e3914e7f04a07934747a187ba72bfeb7bbc441db691eecc",
+    "unchanged": true
+  },
+  {
+    "function": "quantize_kernel",
+    "file": "Core/kernels/fallback_quantize.cuh",
+    "sha256": "74081f5a0c8cf81ad237e500122ab447fe2e36e09bdbba34f632a76deb85104d",
+    "unchanged": true
+  },
+  {
+    "function": "dequantize_kernel",
+    "file": "Core/kernels/dequantize.cuh",
+    "sha256": "de70a4316abf3e9868789823789b228bc873874db9c88f0cb89e9282fde1e7e8",
+    "unchanged": true
+  },
+  {
+    "function": "encode_e4m3_nearest",
+    "file": "Core/kernels/codec.cuh",
+    "sha256": "7b3c6773fc4ffe179b8a553aac5bdf0ceb64437033f066b9a14843eb9695494c",
+    "unchanged": true
+  },
+  {
+    "function": "encode",
+    "file": "Core/kernels/codec.cuh",
+    "sha256": "204f1a09f12ba743deb8dbda2dd0424b0043a6397a823bb9eca5569c20acf36a",
+    "unchanged": true
+  },
+  {
+    "function": "decode_e4m3",
+    "file": "Core/kernels/codec.cuh",
+    "sha256": "d327c97c5632871a0b59552c00cf12cf0f42c95dd0ef5879e11510410da44d24",
+    "unchanged": true
+  },
+  {
+    "function": "encode_e4m3",
+    "file": "Core/kernels/codec.cuh",
+    "sha256": "b4d3bc021947de5775ef33d29fc156cdf54596fe972c56a1c76c955aa1466145",
+    "unchanged": true
+  },
+  {
+    "function": "encode_e2m1",
+    "file": "Core/kernels/codec.cuh",
+    "sha256": "4ab9038393ae5b24c279cd2c0dda6a42ba04fe3c23782552859916e0d06177ce",
+    "unchanged": true
+  }
+]

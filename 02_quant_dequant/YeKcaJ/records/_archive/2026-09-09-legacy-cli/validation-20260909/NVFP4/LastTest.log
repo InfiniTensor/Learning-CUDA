@@ -1,0 +1,1359 @@
+Start testing: Sep 09 16:26 CST
+----------------------------------------------------------
+1/29 Testing: pipeline_io
+1/29 Test: pipeline_io
+Command: "/usr/bin/python3" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CUDACommon/tests/test_pipeline.py" "nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/pipeline"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"pipeline_io" start time: Sep 09 16:26 CST
+Output:
+----------------------------------------------------------
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 10.747s
+
+OK
+<end of output>
+Test time =  10.80 sec
+----------------------------------------------------------
+Test Passed.
+"pipeline_io" end time: Sep 09 16:27 CST
+"pipeline_io" time elapsed: 00:00:10
+----------------------------------------------------------
+
+2/29 Testing: pipeline_regression
+2/29 Test: pipeline_regression
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/pipeline" "--self-test" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"pipeline_regression" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+encoder_samples=10046 stochastic_high_fraction=0.4936293052 status=PASS
+pipeline_cases=299 status=PASS
+<end of output>
+Test time =   0.59 sec
+----------------------------------------------------------
+Test Passed.
+"pipeline_regression" end time: Sep 09 16:27 CST
+"pipeline_regression" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/29 Testing: regression
+3/29 Test: regression
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/regression" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"regression" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+rounding_samples=800 status=PASS
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+golden_cases=5 generated_cases=141 output_types=fp32,fp16,bf16 regression=PASS
+<end of output>
+Test time =   0.65 sec
+----------------------------------------------------------
+Test Passed.
+"regression" end time: Sep 09 16:27 CST
+"regression" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/29 Testing: quant_zeros
+4/29 Test: quant_zeros
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--quantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/data/zeros.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/zeros.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"quant_zeros" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+cuda_quantize=pass kernel_ms=36.7473 effective_bandwidth_GBps=2.25867e-06 global_scale=1 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4
+<end of output>
+Test time =   0.26 sec
+----------------------------------------------------------
+Test Passed.
+"quant_zeros" end time: Sep 09 16:27 CST
+"quant_zeros" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/29 Testing: bytes_zeros
+5/29 Test: bytes_zeros
+Command: "/usr/bin/cmake" "-E" "compare_files" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/zeros.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"bytes_zeros" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"bytes_zeros" end time: Sep 09 16:27 CST
+"bytes_zeros" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/29 Testing: dequant_zeros_fp32
+6/29 Test: dequant_zeros_fp32
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/zeros.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.fp32" "--output-dtype" "fp32"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_zeros_fp32" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+cuda_dequant=pass kernel_ms=35.2563 output_bytes=72 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.fp32
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_zeros_fp32" end time: Sep 09 16:27 CST
+"dequant_zeros_fp32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/29 Testing: dequant_zeros_fp16
+7/29 Test: dequant_zeros_fp16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/zeros.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.fp16" "--output-dtype" "fp16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_zeros_fp16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=31.6631 output_bytes=36 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.fp16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_zeros_fp16" end time: Sep 09 16:27 CST
+"dequant_zeros_fp16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/29 Testing: dequant_zeros_bf16
+8/29 Test: dequant_zeros_bf16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/zeros.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.bf16" "--output-dtype" "bf16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_zeros_bf16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=31.1747 output_bytes=36 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/zeros.cuda.dequant.bf16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_zeros_bf16" end time: Sep 09 16:27 CST
+"dequant_zeros_bf16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/29 Testing: quant_basic
+9/29 Test: quant_basic
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--quantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/data/basic.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/basic.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"quant_basic" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+cuda_quantize=pass kernel_ms=31.6877 effective_bandwidth_GBps=2.30373e-06 global_scale=0.00279018 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"quant_basic" end time: Sep 09 16:27 CST
+"quant_basic" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/29 Testing: bytes_basic
+10/29 Test: bytes_basic
+Command: "/usr/bin/cmake" "-E" "compare_files" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/basic.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"bytes_basic" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"bytes_basic" end time: Sep 09 16:27 CST
+"bytes_basic" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/29 Testing: dequant_basic_fp32
+11/29 Test: dequant_basic_fp32
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/basic.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.fp32" "--output-dtype" "fp32"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_basic_fp32" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+cuda_dequant=pass kernel_ms=29.9233 output_bytes=64 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.fp32
+<end of output>
+Test time =   0.22 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_basic_fp32" end time: Sep 09 16:27 CST
+"dequant_basic_fp32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/29 Testing: dequant_basic_fp16
+12/29 Test: dequant_basic_fp16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/basic.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.fp16" "--output-dtype" "fp16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_basic_fp16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=30.5613 output_bytes=32 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.fp16
+<end of output>
+Test time =   0.22 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_basic_fp16" end time: Sep 09 16:27 CST
+"dequant_basic_fp16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/29 Testing: dequant_basic_bf16
+13/29 Test: dequant_basic_bf16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/basic.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.bf16" "--output-dtype" "bf16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_basic_bf16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=31.6559 output_bytes=32 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/basic.cuda.dequant.bf16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_basic_bf16" end time: Sep 09 16:27 CST
+"dequant_basic_bf16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/29 Testing: quant_outlier_tail
+14/29 Test: quant_outlier_tail
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--quantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/data/outlier_tail.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/outlier_tail.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"quant_outlier_tail" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+cuda_quantize=pass kernel_ms=30.6125 effective_bandwidth_GBps=8.52593e-06 global_scale=0.0372024 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"quant_outlier_tail" end time: Sep 09 16:27 CST
+"quant_outlier_tail" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/29 Testing: bytes_outlier_tail
+15/29 Test: bytes_outlier_tail
+Command: "/usr/bin/cmake" "-E" "compare_files" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/outlier_tail.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"bytes_outlier_tail" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"bytes_outlier_tail" end time: Sep 09 16:27 CST
+"bytes_outlier_tail" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/29 Testing: dequant_outlier_tail_fp32
+16/29 Test: dequant_outlier_tail_fp32
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/outlier_tail.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.fp32" "--output-dtype" "fp32"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_outlier_tail_fp32" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+cuda_dequant=pass kernel_ms=32.2939 output_bytes=228 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.fp32
+<end of output>
+Test time =   0.24 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_outlier_tail_fp32" end time: Sep 09 16:27 CST
+"dequant_outlier_tail_fp32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/29 Testing: dequant_outlier_tail_fp16
+17/29 Test: dequant_outlier_tail_fp16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/outlier_tail.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.fp16" "--output-dtype" "fp16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_outlier_tail_fp16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=33.2032 output_bytes=114 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.fp16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_outlier_tail_fp16" end time: Sep 09 16:27 CST
+"dequant_outlier_tail_fp16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/29 Testing: dequant_outlier_tail_bf16
+18/29 Test: dequant_outlier_tail_bf16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/outlier_tail.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.bf16" "--output-dtype" "bf16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_outlier_tail_bf16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=33.0506 output_bytes=114 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/outlier_tail.cuda.dequant.bf16
+<end of output>
+Test time =   0.25 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_outlier_tail_bf16" end time: Sep 09 16:27 CST
+"dequant_outlier_tail_bf16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/29 Testing: quant_tail_block
+19/29 Test: quant_tail_block
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--quantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/data/tail_block.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/tail_block.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"quant_tail_block" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+cuda_quantize=pass kernel_ms=33.5165 effective_bandwidth_GBps=2.35704e-06 global_scale=0.0014881 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4
+<end of output>
+Test time =   0.25 sec
+----------------------------------------------------------
+Test Passed.
+"quant_tail_block" end time: Sep 09 16:27 CST
+"quant_tail_block" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/29 Testing: bytes_tail_block
+20/29 Test: bytes_tail_block
+Command: "/usr/bin/cmake" "-E" "compare_files" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/tail_block.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"bytes_tail_block" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"bytes_tail_block" end time: Sep 09 16:27 CST
+"bytes_tail_block" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/29 Testing: dequant_tail_block_fp32
+21/29 Test: dequant_tail_block_fp32
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/tail_block.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.fp32" "--output-dtype" "fp32"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_tail_block_fp32" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+cuda_dequant=pass kernel_ms=34.4074 output_bytes=68 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.fp32
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_tail_block_fp32" end time: Sep 09 16:27 CST
+"dequant_tail_block_fp32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/29 Testing: dequant_tail_block_fp16
+22/29 Test: dequant_tail_block_fp16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/tail_block.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.fp16" "--output-dtype" "fp16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_tail_block_fp16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=30.5203 output_bytes=34 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.fp16
+<end of output>
+Test time =   0.24 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_tail_block_fp16" end time: Sep 09 16:27 CST
+"dequant_tail_block_fp16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/29 Testing: dequant_tail_block_bf16
+23/29 Test: dequant_tail_block_bf16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/tail_block.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.bf16" "--output-dtype" "bf16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_tail_block_bf16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=30.463 output_bytes=34 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/tail_block.cuda.dequant.bf16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_tail_block_bf16" end time: Sep 09 16:27 CST
+"dequant_tail_block_bf16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/29 Testing: quant_random
+24/29 Test: quant_random
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--quantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/data/random.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/random.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"quant_random" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+global_scale_mismatches=0 packed_byte_mismatches=0 block_scale_byte_mismatches=0
+cuda_quantize=pass kernel_ms=30.763 effective_bandwidth_GBps=2.37298e-05 global_scale=0.00117363 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"quant_random" end time: Sep 09 16:27 CST
+"quant_random" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/29 Testing: bytes_random
+25/29 Test: bytes_random
+Command: "/usr/bin/cmake" "-E" "compare_files" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/random.nvfp4"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"bytes_random" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"bytes_random" end time: Sep 09 16:27 CST
+"bytes_random" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/29 Testing: dequant_random_fp32
+26/29 Test: dequant_random_fp32
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/random.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.fp32" "--output-dtype" "fp32"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_random_fp32" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+cuda_dequant=pass kernel_ms=30.8121 output_bytes=640 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.fp32
+<end of output>
+Test time =   0.22 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_random_fp32" end time: Sep 09 16:27 CST
+"dequant_random_fp32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/29 Testing: dequant_random_fp16
+27/29 Test: dequant_random_fp16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/random.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.fp16" "--output-dtype" "fp16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_random_fp16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=32.9032 output_bytes=320 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.fp16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_random_fp16" end time: Sep 09 16:27 CST
+"dequant_random_fp16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/29 Testing: dequant_random_bf16
+28/29 Test: dequant_random_bf16
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--dequantize" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.nvfp4" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/../CPUNVFP4/tests/golden/random.dequant.fp32" "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.bf16" "--output-dtype" "bf16"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"dequant_random_bf16" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+cuda_dequant=pass kernel_ms=31.1665 output_bytes=320 output=/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/tests/results/random.cuda.dequant.bf16
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dequant_random_bf16" end time: Sep 09 16:27 CST
+"dequant_random_bf16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/29 Testing: invalid_dtype
+29/29 Test: invalid_dtype
+Command: "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build/cuda_nvfp4" "--output-dtype" "invalid"
+Directory: /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/CUDANVFP4/build
+"invalid_dtype" start time: Sep 09 16:27 CST
+Output:
+----------------------------------------------------------
+error: invalid output dtype: invalid
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"invalid_dtype" end time: Sep 09 16:27 CST
+"invalid_dtype" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 09 16:27 CST

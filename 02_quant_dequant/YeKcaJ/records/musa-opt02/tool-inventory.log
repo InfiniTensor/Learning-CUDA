@@ -1,0 +1,17 @@
+DEVICE_NODES
+crw-rw---- 1 root video 226,   2 Sep 15 14:26 /dev/dri/card2
+crw-rw---- 1 root   109 226, 129 Sep 15 14:26 /dev/dri/renderD129
+crw-rw-rw- 1 root root   10, 130 Sep 15 14:26 /dev/mtgpu.1
+MUSA_MUPTI_VERSION
+MUPTI:
+{
+	"version":	"1.2.0",
+	"git branch":	"release_musa_5.1.0",
+	"git tag":	"No tag",
+	"commit id":	"453615f9e030b4c0bd101ce44d60346a1ffee11b",
+	"commit date":	"2026-04-28 12:40:08 +0800"
+}
+PROFILER_SANITIZER_SEARCH
+/usr/lib/x86_64-linux-gnu/libmtperf_target.so
+GPU_SANITIZER_COMPILER_HELP
+  -fgpu-sanitize          Enable sanitizer for AMDGPU target

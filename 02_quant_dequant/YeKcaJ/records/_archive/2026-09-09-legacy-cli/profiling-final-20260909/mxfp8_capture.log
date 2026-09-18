@@ -1,0 +1,20 @@
+{"format":"mxfp8","op":"quant_enumeration","scope":"resident_gpu","elements":4194304,"repeats":5,"median_ms":2.661344051,"p95_ms":3.401247978,"logical_GBps":7.929298728}
+{"format":"mxfp8","op":"quant_optimized","scope":"resident_gpu","elements":4194304,"repeats":5,"median_ms":0.7475839853,"p95_ms":0.7681919932,"logical_GBps":28.22772078}
+{"format":"mxfp8","op":"dequant_fp32","scope":"resident_gpu","elements":4194304,"repeats":5,"median_ms":0.1183039993,"p95_ms":0.1243840009,"logical_GBps":178.3759816}
+{"format":"mxfp8","op":"dequant_fp16","scope":"resident_gpu","elements":4194304,"repeats":5,"median_ms":0.1126080006,"p95_ms":0.1174720004,"logical_GBps":112.9048019}
+{"format":"mxfp8","op":"dequant_bf16","scope":"resident_gpu","elements":4194304,"repeats":5,"median_ms":0.1176000014,"p95_ms":0.1226880029,"logical_GBps":108.1121076}
+{"format":"mxfp8","op":"quant_optimized","scope":"host_api","elements":4194304,"repeats":5,"median_ms":6.334243,"p95_ms":6.957199,"logical_GBps":3.331509701}
+Collecting data...
+Generating '/tmp/nsys-report-23fe.qdstrm'
+
+[1/1] [0%                          ] mxfp8.nsys-rep
+[1/1] [0%                          ] mxfp8.nsys-rep
+[1/1] [7%                          ] mxfp8.nsys-rep
+[1/1] [12%                         ] mxfp8.nsys-rep
+[1/1] [13%                         ] mxfp8.nsys-rep
+[1/1] [============55%             ] mxfp8.nsys-rep
+[1/1] [============56%             ] mxfp8.nsys-rep
+[1/1] [========================100%] mxfp8.nsys-rep
+[1/1] [========================100%] mxfp8.nsys-rep
+Generated:
+	/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/results/profiling-final-20260909/mxfp8.nsys-rep

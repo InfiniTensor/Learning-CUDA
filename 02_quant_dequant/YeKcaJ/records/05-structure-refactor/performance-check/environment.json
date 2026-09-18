@@ -1,0 +1,18 @@
+{
+  "snapshot_sha256": "6ee4f91fea590b6e42775c60fb943dcc91718e6bc929cd60a7277804c73b2125",
+  "before_directory": "/tmp/lp-before-structure-e5d625rk",
+  "repeats": 20,
+  "warmups": 3,
+  "input": "FP32 normal, seed=20260909",
+  "scale_mode": "block",
+  "rounding": "nearest",
+  "build": "Release, sm_75, CUDA 12.0",
+  "gpu_before": "NVIDIA GeForce RTX 3060 Laptop GPU, 52, P0, 1702 MHz, 7001 MHz",
+  "binaries": {
+    "mxfp8_before": "47f7eba54571936bfcf884354d89e7d4dfbbd88d04d25a29a2856f44c37f7676",
+    "mxfp8_after": "98bd3ab87fbcde9c291347885fb295898aa98d32876d24b48a0adcee4090e914",
+    "nvfp4_before": "d3bdff66c0fdb8a07e1601b881e9b0def8184acf63771e95e9486e19f3388d90",
+    "nvfp4_after": "fb9420281167b2fed53e50b6b400a040780828ae1c52f2b5201b60233543918a"
+  },
+  "gpu_after": "NVIDIA GeForce RTX 3060 Laptop GPU, 58, P0, 2002 MHz, 7001 MHz"
+}

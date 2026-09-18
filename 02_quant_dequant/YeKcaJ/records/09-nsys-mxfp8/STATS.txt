@@ -1,0 +1,39 @@
+Generating SQLite file records/09-nsys-mxfp8/mxfp8.sqlite from records/09-nsys-mxfp8/mxfp8.nsys-rep
+Processing [records/09-nsys-mxfp8/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     72.3         52141230         24  2172551.3  1963533.0   1963269   3364762     396591.4  void pipeline::quantize_kernel<(bool)1>(const float *, unsigned char *, const unsigned char *, cons…
+     11.9          8608944         24   358706.0   359115.5    353249    362477       2308.7  pipeline::build_scales(const float *, const float *, unsigned char *, unsigned long, bool)          
+      4.6          3332855         47    70911.8    69114.0     66543     86055       5055.9  pipeline::mxfp8_quantize_vectorized_kernel(const float *, unsigned char *, unsigned char *, unsigne…
+      3.8          2724740         23   118467.0   118025.0    117431    123067       1242.9  void pipeline::dequantize_kernel<float>(const unsigned char *, const unsigned char *, const float *…
+      3.7          2702493         23   117499.7   117398.0    117035    119046        456.3  void pipeline::dequantize_kernel<__nv_bfloat16>(const unsigned char *, const unsigned char *, const…
+      3.6          2570954         23   111780.6   111729.0    111466    112257        198.2  void pipeline::dequantize_kernel<__half>(const unsigned char *, const unsigned char *, const float …
+
+Processing [records/09-nsys-mxfp8/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)  Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ---------  --------  --------  ---------  -----------  ----------------------
+     52.0        208520653        144  1448060.1  207312.0      1290  186493347   15529208.4  cudaMalloc            
+     22.2         89134069         74  1204514.4  747248.0     55736    3237592    1161734.7  cudaMemcpy            
+     19.9         79878664        140   570561.9  135971.0     79481    3743473     923777.4  cudaEventSynchronize  
+      4.0         16161752        144   112234.4  142111.0      1137     422744     116282.0  cudaFree              
+      1.1          4430867        164    27017.5    5138.5      3754    2447423     190893.7  cudaLaunchKernel      
+      0.5          2047223        280     7311.5    3701.5      2369     450939      27219.3  cudaEventRecord       
+      0.1           470485         48     9801.8    1616.5       387     388443      55830.0  cudaEventCreate       
+      0.0            66889         48     1393.5    1297.0       284       3485        944.9  cudaEventDestroy      
+      0.0             4967          1     4967.0    4967.0      4967       4967          0.0  cuModuleGetLoadingMode
+
+Processing [records/09-nsys-mxfp8/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     77.4         56936093     24  2372337.2  2337150.0   2117811   2868869     218936.6  [CUDA memcpy Host-to-Device]
+     22.6         16650943     50   333018.9   304569.5     13216    923100     327797.5  [CUDA memcpy Device-to-Host]
+

@@ -1,0 +1,7 @@
+# nsys 采集命令（2026-09-11）
+# 工作目录：~/Learning-CUDA-project/02_quant_dequant/YeKcaJ
+nsys profile --trace=cuda --sample=none --cpuctxsw=none \
+  -o records/04-nvfp4-e4m3-scale-fused/profile/nvfp4 --force-overwrite true \
+  ./Core/build/pipeline_nvfp4 --benchmark 4194304 5
+nsys stats --force-export=true --report cuda_gpu_kern_sum \
+  records/04-nvfp4-e4m3-scale-fused/profile/nvfp4.nsys-rep

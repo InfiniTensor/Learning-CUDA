@@ -1,0 +1,4 @@
+{"stage":"maximum","median_ms":0.08452571929,"p95_ms":0.08534856886}
+{"stage":"finalize_max","median_ms":0.08265142143,"p95_ms":0.08799999952}
+{"stage":"quantize_vectorized","median_ms":0.4435200095,"p95_ms":0.4452571571}
+{"stage":"dequantize_fp32","median_ms":0.2237257063,"p95_ms":0.224411428}

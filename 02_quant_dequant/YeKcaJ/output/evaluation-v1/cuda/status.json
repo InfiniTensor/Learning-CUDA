@@ -1,0 +1,15 @@
+{
+  "backend": "cuda",
+  "state": "complete",
+  "completed": 144,
+  "expected": 144,
+  "input_directory": "/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/input/evaluation-v1",
+  "input_sha256": {
+    "uniform.fp32": "d58e48e4e0cce24bbb94afb27bb01657f0b7a09594ec7e61f0638b4f77e3a410",
+    "normal.fp32": "30e8ccd6a9d385cdb9256c6d5c5e919a8bb62fdab4708b24c21dd7fa71ff94a0",
+    "outlier.fp32": "4490b6ae54c6e1c17c08eb3eadb05ab317756fe21c27b6e5d4f43adf502ba9bc",
+    "uniform.fp16": "77446c244996bdea73d8035f0c48f8789ca4f3ab412332d8e51f382868f88d18",
+    "normal.fp16": "5788f7166065da189d7d018d3d6889c3633c49fa80c3a0a97fbf4d8e16bba55a",
+    "outlier.fp16": "e049546cd6f696b7210762b4b35e8d3e21c0e6b3f405db48a8061786f3888f98"
+  }
+}

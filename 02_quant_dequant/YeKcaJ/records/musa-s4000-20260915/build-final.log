@@ -1,0 +1,10 @@
+[ 10%] Built target reduction_test
+[ 15%] Building CXX object CMakeFiles/device_math_test.dir/tests/device_math.cu.o
+[ 20%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/tests/regression.cu.o
+[ 25%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/tests/regression.cu.o
+[ 30%] Linking CXX executable device_math_test
+[ 30%] Built target device_math_test
+[ 35%] Linking CXX executable pipeline_nvfp4
+[ 70%] Built target pipeline_nvfp4
+[ 70%] Linking CXX executable pipeline_mxfp8
+[100%] Built target pipeline_mxfp8

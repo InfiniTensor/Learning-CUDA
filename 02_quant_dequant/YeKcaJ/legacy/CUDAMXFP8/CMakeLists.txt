@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.18)
+if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+  set(CMAKE_CUDA_ARCHITECTURES 75)
+endif()
+project(cuda_mxfp8 LANGUAGES CXX CUDA)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+
+add_executable(cuda_mxfp8 main.cu)
+set_target_properties(cuda_mxfp8 PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+add_executable(benchmark ../CUDACommon/benchmark.cu)
+set_target_properties(benchmark PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+include(CTest)
+add_executable(pipeline ../CUDACommon/pipeline_main.cu ../CUDACommon/tests/reference.cpp)
+target_compile_options(pipeline PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>)
+# MXFP8 使用默认编译分支。
+if(BUILD_TESTING)
+  find_package(Python3 3.11 REQUIRED COMPONENTS Interpreter)
+  add_test(NAME pipeline_io COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../CUDACommon/tests/test_pipeline.py mxfp8 $<TARGET_FILE:pipeline>)
+  add_test(NAME pipeline_regression COMMAND pipeline --self-test ${CMAKE_CURRENT_SOURCE_DIR}/../CPUMXFP8)
+  add_executable(regression ../CUDACommon/tests/regression.cu ../CUDACommon/tests/reference.cpp)
+  target_compile_options(regression PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>)
+  add_test(NAME regression COMMAND regression ${CMAKE_CURRENT_SOURCE_DIR}/../CPUMXFP8)
+  set_tests_properties(regression PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  set(CPU_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../CPUMXFP8)
+  set(RESULT_DIR ${CMAKE_CURRENT_BINARY_DIR}/tests/results)
+  file(MAKE_DIRECTORY ${RESULT_DIR})
+  foreach(CASE zeros basic outlier_tail tail_block random)
+    add_test(NAME quant_${CASE} COMMAND cuda_mxfp8 --quantize
+      ${CPU_DIR}/tests/data/${CASE}.fp32 ${RESULT_DIR}/${CASE}.cuda.mxfp8
+      ${CPU_DIR}/tests/golden/${CASE}.mxfp8)
+    set_tests_properties(quant_${CASE} PROPERTIES FIXTURES_SETUP quant_${CASE})
+    add_test(NAME bytes_${CASE} COMMAND ${CMAKE_COMMAND} -E compare_files
+      ${RESULT_DIR}/${CASE}.cuda.mxfp8 ${CPU_DIR}/tests/golden/${CASE}.mxfp8)
+    set_tests_properties(bytes_${CASE} PROPERTIES FIXTURES_REQUIRED quant_${CASE})
+    foreach(DTYPE fp32 fp16 bf16)
+      add_test(NAME dequant_${CASE}_${DTYPE} COMMAND cuda_mxfp8
+        ${RESULT_DIR}/${CASE}.cuda.mxfp8 ${CPU_DIR}/tests/golden/${CASE}.dequant.fp32
+        ${RESULT_DIR}/${CASE}.cuda.dequant.${DTYPE} --output-dtype ${DTYPE})
+      set_tests_properties(dequant_${CASE}_${DTYPE} PROPERTIES FIXTURES_REQUIRED quant_${CASE})
+    endforeach()
+  endforeach()
+  add_test(NAME invalid_dtype COMMAND cuda_mxfp8 --output-dtype invalid)
+  set_tests_properties(invalid_dtype PROPERTIES WILL_FAIL TRUE)
+endif()

@@ -1,0 +1,39 @@
+Generating SQLite file /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/mxfp8.sqlite from /home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/mxfp8.nsys-rep
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     70.0         18770005          9  2085556.1  1906554.0   1906426   2764002     302312.8  void pipeline::quantize_kernel<(bool)1>(const float *, unsigned char *, const unsigned char *, cons…
+     11.7          3147285          9   349698.3   350417.0    345040    352945       2401.0  pipeline::build_scales(const float *, const float *, unsigned char *, unsigned long, bool)          
+      8.3          2214568         17   130268.7   130214.0    129766    130662        269.5  pipeline::mxfp8_quantize_fused_kernel(const float *, unsigned char *, unsigned char *, unsigned lon…
+      3.4           916653          8   114581.6   114501.0    114246    115334        369.3  void pipeline::dequantize_kernel<float>(const unsigned char *, const unsigned char *, const float *…
+      3.4           912297          8   114037.1   114101.0    113829    114245        154.0  void pipeline::dequantize_kernel<__nv_bfloat16>(const unsigned char *, const unsigned char *, const…
+      3.2           868520          8   108565.0   108517.0    108421    108837        144.1  void pipeline::dequantize_kernel<__half>(const unsigned char *, const unsigned char *, const float …
+
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)  Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ---------  --------  --------  ---------  -----------  ----------------------
+     68.4        172778712         54  3199605.8  225926.0      1592  163440337   22218214.2  cudaMalloc            
+     15.1         38100032         29  1313794.2  869717.0     57423    3762602    1296898.3  cudaMemcpy            
+     11.7         29429643         50   588592.9  151873.0    125689    3128450     901525.4  cudaEventSynchronize  
+      2.6          6526588         54   120862.7  142722.5      1312     437164     123943.1  cudaFree              
+      1.7          4215519         59    71449.5    6601.0      3972    3270048     424072.8  cudaLaunchKernel      
+      0.4           975646        100     9756.5    3942.5      2354     388767      38604.2  cudaEventRecord       
+      0.2           401074         18    22281.9    1850.5       390     370902      87014.8  cudaEventCreate       
+      0.0            27694         18     1538.6    1586.5       328       3371       1046.5  cudaEventDestroy      
+      0.0            26567          1    26567.0   26567.0     26567      26567          0.0  cuModuleGetLoadingMode
+
+Processing [/home/jky/Learning-CUDA-project/02_quant_dequant/YeKcaJ/records/06-warp-reduction/before/profile/mxfp8.sqlite] with [/opt/nvidia/nsight-systems/2026.1.3/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     75.8         24141620      9  2682402.2  2528471.0   2325966   3378496     344895.4  [CUDA memcpy Host-to-Device]
+     24.2          7697133     20   384856.7   316655.0     14657    951917     384973.6  [CUDA memcpy Device-to-Host]
+

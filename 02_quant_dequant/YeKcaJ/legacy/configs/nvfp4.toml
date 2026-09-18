@@ -1,0 +1,7 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+output_type = "bf16"
+rounding = "nearest"
+seed = 1234
+target_gpu = "RTX 3060 Laptop"

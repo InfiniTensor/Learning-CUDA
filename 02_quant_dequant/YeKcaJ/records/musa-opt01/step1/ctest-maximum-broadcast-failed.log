@@ -1,0 +1,308 @@
+Test project /data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa
+      Start  1: core_tools
+ 1/10 Test  #1: core_tools .......................   Passed    0.25 sec
+      Start  2: core_reduction
+ 2/10 Test  #2: core_reduction ...................   Passed    0.55 sec
+      Start  3: core_device_math
+ 3/10 Test  #3: core_device_math .................   Passed    0.06 sec
+      Start  4: musa_shuffle
+ 4/10 Test  #4: musa_shuffle .....................   Passed    0.07 sec
+      Start  5: mxfp8_pipeline_io
+ 5/10 Test  #5: mxfp8_pipeline_io ................***Failed    3.37 sec
+E.F.E.F.FFFFFF.F
+======================================================================
+ERROR: test_automatic_output_roundtrip (__main__.PipelineTests.test_automatic_output_roundtrip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 153, in test_automatic_output_roundtrip
+    first = run(cfg, source)
+            ^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tools/quantize.py", line 223, in run
+    result = subprocess.run(command, text=True, capture_output=True, check=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa/pipeline_mxfp8', '/tmp/lowprecision-tests-us7aqvz_/input/915/1.fp16', '/tmp/lowprecision-tests-us7aqvz_/output/915/1/mxfp8/fp16_fp32.lpq', '/tmp/lowprecision-tests-us7aqvz_/output/915/1/mxfp8/fp16_fp32.fp32', 'block', 'nearest', 'fp32', '32', '1234', 'verify']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_console_summary_and_json (__main__.PipelineTests.test_console_summary_and_json)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 130, in test_console_summary_and_json
+    record = run(cfg, source, prefix, console_json=raw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tools/quantize.py", line 223, in run
+    result = subprocess.run(command, text=True, capture_output=True, check=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa/pipeline_mxfp8', '/tmp/lowprecision-tests-co4a4qn1/input', '/tmp/lowprecision-tests-co4a4qn1/pretty.lpq', '/tmp/lowprecision-tests-co4a4qn1/pretty.fp32', 'block', 'nearest', 'fp32', '32', '1234', 'verify']' returned non-zero exit status 1.
+
+======================================================================
+FAIL: test_bad_packed_headers (__main__.PipelineTests.test_bad_packed_headers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 99, in test_bad_packed_headers
+    q, _, _ = self.run_pipeline(self.input([1, -2, 0]))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=120
+
+
+======================================================================
+FAIL: test_fp16_means_actual_half_values (__main__.PipelineTests.test_fp16_means_actual_half_values)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 69, in test_fp16_means_actual_half_values
+    q1, _, _ = self.run_pipeline(raw, prefix="half")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=135
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='fp32')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='fp16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='bf16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='fp32')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='fp16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='bf16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=121
+
+
+======================================================================
+FAIL: test_overflow_output_logged (__main__.PipelineTests.test_overflow_output_logged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 85, in test_overflow_output_logged
+    _, _, result = self.run_pipeline(self.input([1e30]), output="fp16")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=127 expected=218
+
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.269s
+
+FAILED (failures=9, errors=2)
+
+      Start  6: mxfp8_pipeline_regression
+ 6/10 Test  #6: mxfp8_pipeline_regression ........***Failed    0.06 sec
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+pipeline=FAIL scale mismatch at 0: got=127 expected=120
+
+      Start  7: mxfp8_frozen_hashes
+ 7/10 Test  #7: mxfp8_frozen_hashes ..............   Passed    0.00 sec
+      Start  8: nvfp4_pipeline_io
+ 8/10 Test  #8: nvfp4_pipeline_io ................***Failed    3.42 sec
+E.F.E...FFFFFF..
+======================================================================
+ERROR: test_automatic_output_roundtrip (__main__.PipelineTests.test_automatic_output_roundtrip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 153, in test_automatic_output_roundtrip
+    first = run(cfg, source)
+            ^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tools/quantize.py", line 223, in run
+    result = subprocess.run(command, text=True, capture_output=True, check=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa/pipeline_nvfp4', '/tmp/lowprecision-tests-q88jpw3p/input/915/1.fp16', '/tmp/lowprecision-tests-q88jpw3p/output/915/1/nvfp4/fp16_bf16.lpq', '/tmp/lowprecision-tests-q88jpw3p/output/915/1/nvfp4/fp16_bf16.bf16', 'block', 'nearest', 'bf16', '16', '1234', 'verify']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_console_summary_and_json (__main__.PipelineTests.test_console_summary_and_json)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 130, in test_console_summary_and_json
+    record = run(cfg, source, prefix, console_json=raw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tools/quantize.py", line 223, in run
+    result = subprocess.run(command, text=True, capture_output=True, check=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa/pipeline_nvfp4', '/tmp/lowprecision-tests-884sagp0/input', '/tmp/lowprecision-tests-884sagp0/pretty.lpq', '/tmp/lowprecision-tests-884sagp0/pretty.bf16', 'block', 'nearest', 'bf16', '16', '1234', 'verify']' returned non-zero exit status 1.
+
+======================================================================
+FAIL: test_bad_packed_headers (__main__.PipelineTests.test_bad_packed_headers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 99, in test_bad_packed_headers
+    q, _, _ = self.run_pipeline(self.input([1, -2, 0]))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=126
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='fp32')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='fp16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp32', mode='block', rounding='nearest', output='bf16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='fp32')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='fp16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+======================================================================
+FAIL: test_modes_and_output_roundtrip (__main__.PipelineTests.test_modes_and_output_roundtrip) (dtype='fp16', mode='block', rounding='nearest', output='bf16')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 53, in test_modes_and_output_roundtrip
+    q, y, record = self.run_pipeline(source, mode, rounding, output)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/tests/test_pipeline.py", line 42, in run_pipeline
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : pipeline=FAIL scale mismatch at 0: got=0 expected=117
+
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.324s
+
+FAILED (failures=7, errors=2)
+
+      Start  9: nvfp4_pipeline_regression
+ 9/10 Test  #9: nvfp4_pipeline_regression ........***Failed    0.06 sec
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=fp32 element_mismatches=0 max_abs_diff=0
+output_dtype=fp16 element_mismatches=0 comparison=rounded_cpu_bits
+output_dtype=bf16 element_mismatches=0 comparison=rounded_cpu_bits
+pipeline=FAIL scale mismatch at 0: got=0 expected=126
+
+      Start 10: nvfp4_frozen_hashes
+10/10 Test #10: nvfp4_frozen_hashes ..............   Passed    0.00 sec
+
+60% tests passed, 4 tests failed out of 10
+
+Total Test time (real) =   7.86 sec
+
+The following tests FAILED:
+	  5 - mxfp8_pipeline_io (Failed)
+	  6 - mxfp8_pipeline_regression (Failed)
+	  8 - nvfp4_pipeline_io (Failed)
+	  9 - nvfp4_pipeline_regression (Failed)
+Errors while running CTest

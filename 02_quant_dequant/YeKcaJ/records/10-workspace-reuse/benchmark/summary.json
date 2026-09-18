@@ -1,0 +1,462 @@
+[
+  {
+    "format": "mxfp8",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.5688319802,
+    "p95_ms": 0.5744640231,
+    "logical_GBps": 9.274527775
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.02457600087,
+    "p95_ms": 0.02559999935,
+    "logical_GBps": 214.6666591
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.03481600061,
+    "p95_ms": 0.03481600061,
+    "logical_GBps": 151.5294091
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.02867200039,
+    "p95_ms": 0.03052799962,
+    "logical_GBps": 110.8571413
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.03071999922,
+    "p95_ms": 0.03155200183,
+    "logical_GBps": 103.4666693
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 2.171398,
+    "p95_ms": 3.004206,
+    "logical_GBps": 2.429608943
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 1.0373725,
+    "p95_ms": 1.737259,
+    "logical_GBps": 5.085586903
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_reference",
+    "scope": "cpu",
+    "elements": 1048576,
+    "repeats": 3,
+    "median_ms": 1304.556152,
+    "p95_ms": 1341.786778,
+    "logical_GBps": 0.00404401757
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp32",
+    "scope": "cpu",
+    "elements": 1048576,
+    "repeats": 3,
+    "median_ms": 14.33776,
+    "p95_ms": 14.89856,
+    "logical_GBps": 0.367954827
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 2.236416101,
+    "p95_ms": 3.311615944,
+    "logical_GBps": 9.435897008
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.07219200209,
+    "p95_ms": 0.07872000337,
+    "logical_GBps": 292.3120483
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.1130240001,
+    "p95_ms": 0.1198080033,
+    "logical_GBps": 186.7089466
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.1039359979,
+    "p95_ms": 0.1146880016,
+    "logical_GBps": 122.3251256
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.1105920002,
+    "p95_ms": 0.1136640012,
+    "logical_GBps": 114.9629628
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 4.777892,
+    "p95_ms": 5.551659,
+    "logical_GBps": 4.416715991
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 2.7927935,
+    "p95_ms": 3.19315,
+    "logical_GBps": 7.55608748
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 8.716800213,
+    "p95_ms": 9.269248009,
+    "logical_GBps": 9.683641467
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.2723839879,
+    "p95_ms": 0.3010559976,
+    "logical_GBps": 309.8947506
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.40704,
+    "p95_ms": 0.4125120044,
+    "logical_GBps": 207.3761006
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.3666239977,
+    "p95_ms": 0.3706879914,
+    "logical_GBps": 138.7141494
+  },
+  {
+    "format": "mxfp8",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.3829759955,
+    "p95_ms": 0.4034560025,
+    "logical_GBps": 132.7914454
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 16.6608355,
+    "p95_ms": 17.843077,
+    "logical_GBps": 5.066394659
+  },
+  {
+    "format": "mxfp8",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 11.4505595,
+    "p95_ms": 14.257691,
+    "logical_GBps": 7.371724325
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.1990879998,
+    "p95_ms": 0.2140160054,
+    "logical_GBps": 24.03023791
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.05119999871,
+    "p95_ms": 0.06646399945,
+    "logical_GBps": 93.44008049
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.02867200039,
+    "p95_ms": 0.0294720009,
+    "logical_GBps": 166.8572801
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.02251200005,
+    "p95_ms": 0.02326400019,
+    "logical_GBps": 119.3576756
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.02556800004,
+    "p95_ms": 0.02636799961,
+    "logical_GBps": 105.0915205
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 1.7468775,
+    "p95_ms": 2.255017,
+    "logical_GBps": 2.738676295
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 1048576,
+    "repeats": 20,
+    "median_ms": 0.963798,
+    "p95_ms": 1.332427,
+    "logical_GBps": 4.96383267
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_reference",
+    "scope": "cpu",
+    "elements": 1048576,
+    "repeats": 3,
+    "median_ms": 92.75094,
+    "p95_ms": 93.309709,
+    "logical_GBps": 0.05158041525
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp32",
+    "scope": "cpu",
+    "elements": 1048576,
+    "repeats": 3,
+    "median_ms": 11.915275,
+    "p95_ms": 14.047686,
+    "logical_GBps": 0.4015125123
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.7268799841,
+    "p95_ms": 0.9594879746,
+    "logical_GBps": 26.32692661
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.1428319961,
+    "p95_ms": 0.1474560052,
+    "logical_GBps": 133.979196
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.09113600105,
+    "p95_ms": 0.0931520015,
+    "logical_GBps": 209.9775696
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.08191999793,
+    "p95_ms": 0.08390399814,
+    "logical_GBps": 131.2000521
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 0.0901120007,
+    "p95_ms": 0.09113600105,
+    "logical_GBps": 119.2727707
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 4.5982685,
+    "p95_ms": 6.197192,
+    "logical_GBps": 4.161678684
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 4194304,
+    "repeats": 20,
+    "median_ms": 2.726448,
+    "p95_ms": 3.332351,
+    "logical_GBps": 7.018845032
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_enumeration",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 2.852864027,
+    "p95_ms": 3.653631926,
+    "logical_GBps": 26.8313005
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.5220959783,
+    "p95_ms": 0.5622400045,
+    "logical_GBps": 146.6129892
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp32",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.3428799957,
+    "p95_ms": 0.3467839956,
+    "logical_GBps": 223.2444382
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_fp16",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.3059519976,
+    "p95_ms": 0.3079679906,
+    "logical_GBps": 140.5175332
+  },
+  {
+    "format": "nvfp4",
+    "op": "dequant_bf16",
+    "scope": "resident_gpu",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 0.3369439989,
+    "p95_ms": 0.3417600095,
+    "logical_GBps": 127.5927755
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_optimized",
+    "scope": "host_api",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 14.593807,
+    "p95_ms": 16.115012,
+    "logical_GBps": 5.245105133
+  },
+  {
+    "format": "nvfp4",
+    "op": "quant_reused_workspace",
+    "scope": "host_api",
+    "elements": 16777216,
+    "repeats": 20,
+    "median_ms": 9.8785305,
+    "p95_ms": 12.850389,
+    "logical_GBps": 7.748728619
+  }
+]

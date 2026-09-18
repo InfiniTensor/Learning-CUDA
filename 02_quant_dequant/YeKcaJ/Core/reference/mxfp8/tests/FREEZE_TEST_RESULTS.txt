@@ -1,0 +1,9 @@
+format_version=1
+algorithm=MXFP8_E4M3FN_E8M0_BLOCK32
+mode=freeze
+zeros rows=2 cols=17 blocks=2 max_dequant_diff=0 max_abs_error=0 mae=0 mse=0
+basic rows=2 cols=16 blocks=1 max_dequant_diff=0 max_abs_error=0.5 mae=0.25 mse=0.125
+outlier_tail rows=5 cols=37 blocks=6 max_dequant_diff=0 max_abs_error=24 mae=0.188162 mse=3.12006
+tail_block rows=1 cols=33 blocks=2 max_dequant_diff=0 max_abs_error=0.25 mae=0.0606061 mse=0.0151515
+random rows=7 cols=64 blocks=14 max_dequant_diff=0 max_abs_error=0.109201 mae=0.017787 mse=0.000663108
+status=PASS

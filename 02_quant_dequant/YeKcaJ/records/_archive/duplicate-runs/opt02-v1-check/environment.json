@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-10T14:57:36.362147+08:00",
+  "repeats": 20,
+  "warmups": 3,
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU, 596.08, 6144 MiB",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2023 NVIDIA Corporation\nBuilt on Fri_Jan__6_16:45:21_PST_2023\nCuda compilation tools, release 12.0, V12.0.140\nBuild cuda_12.0.r12.0/compiler.32267302_0",
+  "cpu": "Architecture:                         x86_64\nCPU op-mode(s):                       32-bit, 64-bit\nAddress sizes:                        39 bits physical, 48 bits virtual\nByte Order:                           Little Endian\nCPU(s):                               16\nOn-line CPU(s) list:                  0-15\nVendor ID:                            GenuineIntel\nModel name:                           11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz\nCPU family:                           6\nModel:                                141\nThread(s) per core:                   2\nCore(s) per socket:                   8\nSocket(s):                            1\nStepping:                             1\nBogoMIPS:                             4607.99\nFlags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves vnmi avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect md_clear flush_l1d arch_capabilities\nVirtualization:                       VT-x\nHypervisor vendor:                    Microsoft\nVirtualization type:                  full\nL1d cache:                            384 KiB (8 instances)\nL1i cache:                            256 KiB (8 instances)\nL2 cache:                             10 MiB (8 instances)\nL3 cache:                             24 MiB (1 instance)\nNUMA node(s):                         1\nNUMA node0 CPU(s):                    0-15\nVulnerability Gather data sampling:   Not affected\nVulnerability Itlb multihit:          Not affected\nVulnerability L1tf:                   Not affected\nVulnerability Mds:                    Not affected\nVulnerability Meltdown:               Not affected\nVulnerability Mmio stale data:        Not affected\nVulnerability Reg file data sampling: Not affected\nVulnerability Retbleed:               Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:   Not affected\nVulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                  Not affected\nVulnerability Tsx async abort:        Not affected",
+  "source_sha256": {
+    "CMakeLists.txt": "1b7f6238b69f84c76230f3f621da1cfb7701738086a52acedd9c26752b8036ef",
+    "codec.cuh": "d3dd47babe68291666606aca135c11d626f4843d392fa47d8786d6a97d256bc4",
+    "configs/mxfp8.toml": "d3493ac99839ef4ba6183f3d4c569c7eeb430d0898512c221d08df30f479fdad",
+    "configs/nvfp4.toml": "fcd7dde5477854f8fdb827dae1e44bf4102f40e501606169d18860027873b544",
+    "output.cuh": "b07507e295cd4e52ee3d8e7a04797a6bbcd21e1c31376b4578d0dccf89ea748f",
+    "pipeline.cuh": "d7d4324d8b1a6f268e459d706badb2c7e3a41be40dc80588811d81721c6b3e5a",
+    "pipeline_io.h": "3e7817732631496386eac559d0bf77cd1bb69d721b1034ff180ff75c2069547a",
+    "pipeline_main.cu": "ed8a9aee24cc01dbe6912ecbe9a547f009abd6006884baadbe18b73d510116b1",
+    "tests/reference.cpp": "95a5f26e2a3dec6e3857168376e384d56802a36aa69f97ead235985711990eb3",
+    "tests/reference.h": "f6b0c9480c3723f9955b9fb259ea3fb51dedcb6479a6645fdb008bab8fb54bb4",
+    "tests/test_pipeline.py": "db4dbd9dce173d0eda4c5404943b59bf494f0027f3c7a33021fa2089858b97c4",
+    "tests/test_tools.py": "338ced8abbcadd6ad2aad2ba162d94ab4a8d73415b23c9e615b96e2df51865af",
+    "tools/benchmark.py": "36b7624966b73147fa224251f411148333359b865fffb3534b3216554ac1e96e",
+    "tools/profile.py": "ee21c6f0343550bd8d3dd01ab0d7d188e48bb423c3bf10dbd65cf4b141b1ee57",
+    "tools/quantize.py": "544206e524820e6e65a9314d8b08cb9ab2d5f788b320c953268d733fa6194b85",
+    "../CPUMXFP8/main.cpp": "7688acab7bda37054f68dae61d40d6deea7046d2b362dafaefd4ed62446daff0",
+    "../CPUNVFP4/main.cpp": "c84661b6793c40318766b7350f204ee12016eca24b0fa9c044b7f13e7ee19f1e"
+  }
+}

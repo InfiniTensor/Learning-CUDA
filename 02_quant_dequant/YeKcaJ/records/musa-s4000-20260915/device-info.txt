@@ -1,0 +1,46 @@
+compiler: mcc
+--------------------------------------------------------------------------------
+device#                          0
+Name:                            MTT S4000
+Driver Version:                  5.1
+Runtime Version:                 5.1
+compute capability:              2.2
+pciBusID:                        0x9
+pciDeviceID:                     0x0
+pciDomainID:                     0x0
+multiProcessorCount:             64
+maxThreadsPerMultiProcessor:     6144
+isMultiGpuBoard:                 1
+clockRate:                       1791 Mhz
+memoryClockRate:                 8006 Mhz
+memoryBusWidth:                  384
+totalGlobalMem:                  47.91 GB
+sharedMemPerMultiprocessor:      72.00 KB
+totalConstMem:                   8192
+sharedMemPerBlock:               72.00 KB
+canMapHostMemory:                1
+regsPerBlock:                    131072
+warpSize:                        128
+l2CacheSize:                     25165824
+computeMode:                     0
+maxThreadsPerBlock:              1024
+maxThreadsDim.x:                 1024
+maxThreadsDim.y:                 1024
+maxThreadsDim.z:                 1024
+maxGridSize.x:                   2147483647
+maxGridSize.y:                   2147483647
+maxGridSize.z:                   2147483647
+concurrentKernels:               1
+cooperativeLaunch:               1
+cooperativeMultiDeviceLaunch:    0
+isIntegrated:                    0
+maxTexture1D:                    32768
+maxTexture2D.width:              32768
+maxTexture2D.height:             32768
+maxTexture3D.width:              16384
+maxTexture3D.height:             16384
+maxTexture3D.depth:              2048
+peers:                           
+non-peers:                       device#0 
+memInfo.total:                   47.91 GB
+memInfo.free:                    45.81 GB (96%)

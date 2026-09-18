@@ -1,0 +1,2 @@
+{"stage":"quantize_vectorized","median_ms":0.3998285532,"p95_ms":0.401120007}
+{"stage":"dequantize_fp32","median_ms":0.1462857127,"p95_ms":0.1471085697}

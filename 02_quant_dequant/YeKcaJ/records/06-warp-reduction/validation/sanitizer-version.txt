@@ -1,0 +1,3 @@
+NVIDIA (R) Compute Sanitizer
+Copyright (c) 2020-2025 NVIDIA Corporation
+Version 2025.2.1.0 (build 35969825) (public-release)

@@ -1,0 +1,7 @@
+format = "mxfp8"
+block_size = 32
+scale_mode = "block" # tensor 为整个张量共享 scale 的对照模式
+output_type = "fp16"
+rounding = "nearest" # stochastic 时仅元素编码随机舍入，scale 仍用 nearest
+seed = 1234
+target_gpu = "RTX 3060 Laptop"

@@ -1,0 +1,7 @@
+format = "mxfp8"
+block_size = 32
+scale_mode = "block"
+rounding = "nearest"
+output_type = "fp16"
+seed = 1234
+target_gpu = "MTT S4000"

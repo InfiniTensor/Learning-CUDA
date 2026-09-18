@@ -1,0 +1,15 @@
+{
+  "evaluation_cases": 144,
+  "formats": {
+    "MXFP8": {
+      "ctest_passed": 29,
+      "frozen_hashes": 15,
+      "legacy_and_pipeline_sanitizers": "PASS"
+    },
+    "NVFP4": {
+      "ctest_passed": 29,
+      "frozen_hashes": 15,
+      "legacy_and_pipeline_sanitizers": "PASS"
+    }
+  }
+}

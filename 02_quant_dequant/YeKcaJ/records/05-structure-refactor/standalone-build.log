@@ -1,0 +1,16 @@
+[ 28%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/app/main.cpp.o
+[ 28%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/app/run.cu.o
+[ 28%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/app/run.cu.o
+[ 28%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/app/main.cpp.o
+[ 35%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/runtime/workspace.cu.o
+[ 42%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/runtime/workspace.cu.o
+[ 50%] Building CUDA object CMakeFiles/pipeline_nvfp4.dir/benchmarks/benchmark.cu.o
+[ 57%] Building CUDA object CMakeFiles/pipeline_mxfp8.dir/benchmarks/benchmark.cu.o
+[ 64%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/reference/oracle.cpp.o
+[ 71%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/reference/oracle.cpp.o
+[ 78%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/reference/frozen.cpp.o
+[ 85%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/reference/frozen.cpp.o
+[ 92%] Linking CXX executable pipeline_mxfp8
+[100%] Linking CXX executable pipeline_nvfp4
+[100%] Built target pipeline_mxfp8
+[100%] Built target pipeline_nvfp4

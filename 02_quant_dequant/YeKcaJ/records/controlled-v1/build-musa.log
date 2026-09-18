@@ -1,0 +1,15 @@
+[  9%] Built target reduction_test
+[ 18%] Built target device_math_test
+[ 27%] Built target musa_shuffle_test
+[ 31%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/app/main.cpp.o
+[ 36%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/app/run.cu.o
+[ 40%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/benchmarks/benchmark.cu.o
+[ 45%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/app/main.cpp.o
+[ 50%] Building CXX object CMakeFiles/pipeline_mxfp8.dir/tests/regression.cu.o
+[ 54%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/app/run.cu.o
+[ 59%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/benchmarks/benchmark.cu.o
+[ 63%] Building CXX object CMakeFiles/pipeline_nvfp4.dir/tests/regression.cu.o
+[ 68%] Linking CXX executable pipeline_mxfp8
+[ 81%] Built target pipeline_mxfp8
+[ 86%] Linking CXX executable pipeline_nvfp4
+[100%] Built target pipeline_nvfp4

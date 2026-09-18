@@ -1,0 +1,25 @@
+Test project /data/Learning-CUDA/02_quant_dequant/YeKcaJ/Core/build-musa
+      Start  1: core_tools
+ 1/10 Test  #1: core_tools .......................   Passed    0.25 sec
+      Start  2: core_reduction
+ 2/10 Test  #2: core_reduction ...................   Passed    0.58 sec
+      Start  3: core_device_math
+ 3/10 Test  #3: core_device_math .................   Passed    0.12 sec
+      Start  4: musa_shuffle
+ 4/10 Test  #4: musa_shuffle .....................   Passed    0.09 sec
+      Start  5: mxfp8_pipeline_io
+ 5/10 Test  #5: mxfp8_pipeline_io ................   Passed    4.43 sec
+      Start  6: mxfp8_pipeline_regression
+ 6/10 Test  #6: mxfp8_pipeline_regression ........   Passed    0.79 sec
+      Start  7: mxfp8_frozen_hashes
+ 7/10 Test  #7: mxfp8_frozen_hashes ..............   Passed    0.00 sec
+      Start  8: nvfp4_pipeline_io
+ 8/10 Test  #8: nvfp4_pipeline_io ................   Passed    4.14 sec
+      Start  9: nvfp4_pipeline_regression
+ 9/10 Test  #9: nvfp4_pipeline_regression ........   Passed    0.53 sec
+      Start 10: nvfp4_frozen_hashes
+10/10 Test #10: nvfp4_frozen_hashes ..............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 10
+
+Total Test time (real) =  10.95 sec
