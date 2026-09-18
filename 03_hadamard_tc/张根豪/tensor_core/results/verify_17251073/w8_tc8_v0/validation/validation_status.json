@@ -1,0 +1,8 @@
+{
+  "cases": 132,
+  "rows": 1272,
+  "failed_rows": 47,
+  "harness_consistent": true,
+  "all_pass": false,
+  "reference": "cpu"
+}

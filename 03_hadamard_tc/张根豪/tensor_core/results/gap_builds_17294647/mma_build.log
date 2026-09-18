@@ -1,0 +1,25 @@
+make: Entering directory '/home/gz2522/FastHadamard-CUDA/tensor_core'
+mkdir -p /scratch/gz2522/gz2522/tmp/hadamard/runs/gap_builds_17294647/mma
+nvcc -O3 -std=c++17 -gencode arch=compute_90,code=sm_90 -I../include -Iinclude -DHADAMARD_WARPS_PER_BLOCK=0 -DHADAMARD_FUSED_WARPS_PER_BLOCK=0 -DHADAMARD_QUANT_VECTOR_STORE=2 -DHADAMARD_TC_WARPS_PER_BLOCK=4 -DHADAMARD_TC_VECTOR_SMEM=0 -DHADAMARD_MMA_PRECISION=3 -shared -Xcompiler -fPIC -DHADAMARD_BRIDGE_TC -DHADAMARD_BRIDGE_MMA ../src/hadamard.cu ../src/hadamard_warp.cu src/hadamard_tc.cu src/hadamard_mma_experimental.cu src/python_bridge.cu -o /scratch/gz2522/gz2522/tmp/hadamard/runs/gap_builds_17294647/mma/libhadamard_mma.so
+nvcc -O3 -std=c++17 -gencode arch=compute_90,code=sm_90 -I../include -Iinclude -DHADAMARD_WARPS_PER_BLOCK=0 -DHADAMARD_FUSED_WARPS_PER_BLOCK=0 -DHADAMARD_QUANT_VECTOR_STORE=2 -DHADAMARD_TC_WARPS_PER_BLOCK=4 -DHADAMARD_TC_VECTOR_SMEM=0 -DHADAMARD_MMA_PRECISION=3 ../src/hadamard.cu ../src/hadamard_warp.cu src/hadamard_tc.cu src/hadamard_mma_experimental.cu src/mma_smoke.cu -o /scratch/gz2522/gz2522/tmp/hadamard/runs/gap_builds_17294647/mma/mma_smoke
+src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=1024]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=512]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+
+src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=1024]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=512]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+
+make: Leaving directory '/home/gz2522/FastHadamard-CUDA/tensor_core'

@@ -1,0 +1,10 @@
+/home/gz2522/FastHadamard-CUDA/tensor_core/src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=1024]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/gz2522/FastHadamard-CUDA/tensor_core/src/hadamard_tc.cu(84): warning #177-D: member "<unnamed>::TcShape<HEAD_DIM>::kLanesPerToken [with HEAD_DIM=512]" was declared but never referenced
+    static constexpr int kLanesPerToken = HEAD_DIM < kTileElems ? HEAD_DIM / 8 : 32;
+                         ^
+

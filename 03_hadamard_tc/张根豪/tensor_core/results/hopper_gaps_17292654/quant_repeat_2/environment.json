@@ -1,0 +1,24 @@
+{
+  "variant": [
+    "f4_q0=/scratch/gz2522/gz2522/tmp/hadamard/runs/hopper_gaps_17292654/f4_q0.so",
+    "f4_q1=/scratch/gz2522/gz2522/tmp/hadamard/runs/hopper_gaps_17292654/f4_q1.so",
+    "f8_q1=/scratch/gz2522/gz2522/tmp/hadamard/runs/hopper_gaps_17292654/f8_q1.so"
+  ],
+  "output_dir": "/home/gz2522/FastHadamard-CUDA/tensor_core/results/hopper_gaps_17292654/quant_repeat_2",
+  "tokens": "16384,131072",
+  "dims": "512,1024",
+  "norms": "1",
+  "backends": "fused_warp",
+  "rounds": 9,
+  "nodes": 16,
+  "replays": 10,
+  "gpu": "NVIDIA H200",
+  "torch": "2.5.1+cu121",
+  "cuda": "12.1",
+  "reference": "Dao v1.1.0 unmodified",
+  "measurement": "CUDA Graph replay: resident same input, amortized device time",
+  "allocation": "output allocations during capture, excluded from timed replay",
+  "quant_reference": "Dao transform + this project standalone INT4 quantizer",
+  "seed": 20260909,
+  "order": "rotate and reverse backend order each round"
+}

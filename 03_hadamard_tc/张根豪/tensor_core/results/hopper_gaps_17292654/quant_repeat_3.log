@@ -1,0 +1,8 @@
+torch.float16 512 16384 1 checked 5
+torch.float16 512 131072 1 checked 5
+torch.float16 1024 16384 1 checked 5
+torch.float16 1024 131072 1 checked 5
+torch.bfloat16 512 16384 1 checked 5
+torch.bfloat16 512 131072 1 checked 5
+torch.bfloat16 1024 16384 1 checked 5
+torch.bfloat16 1024 131072 1 checked 5

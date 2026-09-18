@@ -1,0 +1,8 @@
+2026-09-06T20:33:05-04:00
+gh115.hpc.nyu.edu
+NVIDIA H200, 9.0, 580.82.07
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.3.1.0 (build 36398880) (public-release)

@@ -1,0 +1,133 @@
+000_fp16_d64_n1_norm1_normal PASS
+001_fp16_d64_n5_norm1_normal PASS
+002_fp16_d64_n2048_norm1_normal PASS
+003_fp16_d64_n1_norm0_normal PASS
+004_fp16_d64_n5_norm0_normal FAIL(abs or fusion)
+005_fp16_d64_n2048_norm0_normal FAIL(abs or fusion)
+006_fp16_d128_n1_norm1_normal PASS
+007_fp16_d128_n5_norm1_normal PASS
+008_fp16_d128_n2048_norm1_normal PASS
+009_fp16_d128_n1_norm0_normal PASS
+010_fp16_d128_n5_norm0_normal FAIL(abs or fusion)
+011_fp16_d128_n2048_norm0_normal FAIL(abs or fusion)
+012_fp16_d256_n1_norm1_normal PASS
+013_fp16_d256_n5_norm1_normal PASS
+014_fp16_d256_n2048_norm1_normal PASS
+015_fp16_d256_n1_norm0_normal FAIL(abs or fusion)
+016_fp16_d256_n5_norm0_normal FAIL(abs or fusion)
+017_fp16_d256_n2048_norm0_normal FAIL(abs or fusion)
+018_fp16_d512_n1_norm1_normal PASS
+019_fp16_d512_n5_norm1_normal PASS
+020_fp16_d512_n2048_norm1_normal PASS
+021_fp16_d512_n1_norm0_normal FAIL(abs or fusion)
+022_fp16_d512_n5_norm0_normal FAIL(abs or fusion)
+023_fp16_d512_n2048_norm0_normal FAIL(abs or fusion)
+024_fp16_d1024_n1_norm1_normal PASS
+025_fp16_d1024_n5_norm1_normal PASS
+026_fp16_d1024_n2048_norm1_normal PASS
+027_fp16_d1024_n1_norm0_normal FAIL(abs or fusion)
+028_fp16_d1024_n5_norm0_normal FAIL(abs or fusion)
+029_fp16_d1024_n2048_norm0_normal FAIL(abs or fusion)
+030_bf16_d64_n1_norm1_normal PASS
+031_bf16_d64_n5_norm1_normal PASS
+032_bf16_d64_n2048_norm1_normal PASS
+033_bf16_d64_n1_norm0_normal PASS
+034_bf16_d64_n5_norm0_normal FAIL(abs or fusion)
+035_bf16_d64_n2048_norm0_normal FAIL(abs or fusion)
+036_bf16_d128_n1_norm1_normal PASS
+037_bf16_d128_n5_norm1_normal PASS
+038_bf16_d128_n2048_norm1_normal PASS
+039_bf16_d128_n1_norm0_normal PASS
+040_bf16_d128_n5_norm0_normal FAIL(abs or fusion)
+041_bf16_d128_n2048_norm0_normal FAIL(abs or fusion)
+042_bf16_d256_n1_norm1_normal PASS
+043_bf16_d256_n5_norm1_normal PASS
+044_bf16_d256_n2048_norm1_normal PASS
+045_bf16_d256_n1_norm0_normal FAIL(abs or fusion)
+046_bf16_d256_n5_norm0_normal FAIL(abs or fusion)
+047_bf16_d256_n2048_norm0_normal FAIL(abs or fusion)
+048_bf16_d512_n1_norm1_normal PASS
+049_bf16_d512_n5_norm1_normal PASS
+050_bf16_d512_n2048_norm1_normal PASS
+051_bf16_d512_n1_norm0_normal FAIL(abs or fusion)
+052_bf16_d512_n5_norm0_normal FAIL(abs or fusion)
+053_bf16_d512_n2048_norm0_normal FAIL(abs or fusion)
+054_bf16_d1024_n1_norm1_normal PASS
+055_bf16_d1024_n5_norm1_normal PASS
+056_bf16_d1024_n2048_norm1_normal PASS
+057_bf16_d1024_n1_norm0_normal FAIL(abs or fusion)
+058_bf16_d1024_n5_norm0_normal FAIL(abs or fusion)
+059_bf16_d1024_n2048_norm0_normal FAIL(abs or fusion)
+060_fp16_d64_n5_norm1_zeros PASS
+061_fp16_d64_n5_norm1_constant PASS
+062_fp16_d64_n5_norm1_alternating PASS
+063_fp16_d64_n5_norm1_impulse PASS
+064_fp16_d64_n5_norm1_uniform PASS
+065_fp16_d64_n5_norm1_outlier PASS
+066_fp16_d64_n5_norm0_zeros PASS
+067_fp16_d64_n5_norm0_constant PASS
+068_fp16_d64_n5_norm0_alternating PASS
+069_fp16_d64_n5_norm0_impulse PASS
+070_fp16_d64_n5_norm0_uniform PASS
+071_fp16_d64_n5_norm0_outlier FAIL(abs or fusion)
+072_fp16_d128_n5_norm1_zeros PASS
+073_fp16_d128_n5_norm1_constant PASS
+074_fp16_d128_n5_norm1_alternating PASS
+075_fp16_d128_n5_norm1_impulse PASS
+076_fp16_d128_n5_norm1_uniform PASS
+077_fp16_d128_n5_norm1_outlier PASS
+078_fp16_d128_n5_norm0_zeros PASS
+079_fp16_d128_n5_norm0_constant PASS
+080_fp16_d128_n5_norm0_alternating PASS
+081_fp16_d128_n5_norm0_impulse PASS
+082_fp16_d128_n5_norm0_uniform PASS
+083_fp16_d128_n5_norm0_outlier FAIL(abs or fusion)
+084_fp16_d256_n5_norm1_zeros PASS
+085_fp16_d256_n5_norm1_constant PASS
+086_fp16_d256_n5_norm1_alternating PASS
+087_fp16_d256_n5_norm1_impulse PASS
+088_fp16_d256_n5_norm1_uniform PASS
+089_fp16_d256_n5_norm1_outlier PASS
+090_fp16_d256_n5_norm0_zeros PASS
+091_fp16_d256_n5_norm0_constant PASS
+092_fp16_d256_n5_norm0_alternating PASS
+093_fp16_d256_n5_norm0_impulse PASS
+094_fp16_d256_n5_norm0_uniform FAIL(abs or fusion)
+095_fp16_d256_n5_norm0_outlier FAIL(abs or fusion)
+096_bf16_d64_n5_norm1_zeros PASS
+097_bf16_d64_n5_norm1_constant PASS
+098_bf16_d64_n5_norm1_alternating PASS
+099_bf16_d64_n5_norm1_impulse PASS
+100_bf16_d64_n5_norm1_uniform PASS
+101_bf16_d64_n5_norm1_outlier PASS
+102_bf16_d64_n5_norm0_zeros PASS
+103_bf16_d64_n5_norm0_constant PASS
+104_bf16_d64_n5_norm0_alternating PASS
+105_bf16_d64_n5_norm0_impulse PASS
+106_bf16_d64_n5_norm0_uniform FAIL(abs or fusion)
+107_bf16_d64_n5_norm0_outlier FAIL(abs or fusion)
+108_bf16_d128_n5_norm1_zeros PASS
+109_bf16_d128_n5_norm1_constant PASS
+110_bf16_d128_n5_norm1_alternating PASS
+111_bf16_d128_n5_norm1_impulse PASS
+112_bf16_d128_n5_norm1_uniform PASS
+113_bf16_d128_n5_norm1_outlier PASS
+114_bf16_d128_n5_norm0_zeros PASS
+115_bf16_d128_n5_norm0_constant PASS
+116_bf16_d128_n5_norm0_alternating PASS
+117_bf16_d128_n5_norm0_impulse PASS
+118_bf16_d128_n5_norm0_uniform FAIL(abs or fusion)
+119_bf16_d128_n5_norm0_outlier FAIL(abs or fusion)
+120_bf16_d256_n5_norm1_zeros PASS
+121_bf16_d256_n5_norm1_constant PASS
+122_bf16_d256_n5_norm1_alternating PASS
+123_bf16_d256_n5_norm1_impulse PASS
+124_bf16_d256_n5_norm1_uniform PASS
+125_bf16_d256_n5_norm1_outlier PASS
+126_bf16_d256_n5_norm0_zeros PASS
+127_bf16_d256_n5_norm0_constant PASS
+128_bf16_d256_n5_norm0_alternating PASS
+129_bf16_d256_n5_norm0_impulse PASS
+130_bf16_d256_n5_norm0_uniform FAIL(abs or fusion)
+131_bf16_d256_n5_norm0_outlier FAIL(abs or fusion)
+{"cases": 132, "rows": 1272, "failed_rows": 47, "harness_consistent": true, "all_pass": false, "reference": "library"}

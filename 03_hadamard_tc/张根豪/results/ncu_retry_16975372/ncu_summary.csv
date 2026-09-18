@@ -1,0 +1,3 @@
+implementation,kernel_name,duration_us,sm_throughput_pct,dram_throughput_pct,dram_bandwidth_gbs,achieved_occupancy_pct,l2_hit_rate_pct,registers_per_thread,static_shared,waves_per_sm,stall_barrier,stall_long_scoreboard,stall_short_scoreboard,stall_wait,derived_dram_bytes
+optimized,"void hadamard_optimized_kernel<__half, 128, 1>(const T1 *, T1 *, int, float)",7.552,34.730652,11.630496,555.898305,58.393899,53.994221,19.0,1024.0,3.88,1.545165,7.734677,3.924673,1.558845,4198143.99936
+fused_int4,"void hadamard_fused_quant_int4_kernel<__half, 128, 1>(const T1 *, unsigned char *, float *, int, float)",12.896,34.123479,6.793582,325.816377,46.691452,34.826506,20.0,524.0,3.88,1.649307,4.990176,3.776613,1.928228,4201727.997792

@@ -1,0 +1,2 @@
+stage=verify reference=library install_rc=prebuilt
+completed=true

@@ -1,0 +1,11 @@
+2026-09-04T19:08:39-04:00
+host=gl021.hpc.nyu.edu
+NVIDIA L40S, GPU-859e6f9f-f432-4704-1787-c306a6f206a1, 8.9, 46068 MiB, 580.82.07
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.3.1.0 (build 36398880) (public-release)

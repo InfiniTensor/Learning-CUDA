@@ -1,0 +1,4 @@
+# Profiler exports and experiment logs are evidence, not source code formatting.
+# Preserve their original bytes (including vendor CRLF and trailing whitespace).
+/results/** -text -whitespace
+/tensor_core/results/** -text -whitespace

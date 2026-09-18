@@ -1,0 +1,7 @@
+{
+  "timing_dir": "tensor_core/results/audit_17249309",
+  "verify_dir": null,
+  "output_dir": "tensor_core/results/audit_17249309/summary",
+  "dram_peak_gbs": null,
+  "fp32_peak_tflops": null
+}

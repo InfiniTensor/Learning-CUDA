@@ -1,0 +1,4 @@
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==ERROR== Unable to write to file wmma_split_d128_none.ncu-rep. Please verify this file is not locked, and writable.
+==ERROR== The application returned an error code (15).

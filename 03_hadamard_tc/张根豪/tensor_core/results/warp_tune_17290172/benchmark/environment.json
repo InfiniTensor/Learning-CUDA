@@ -1,0 +1,28 @@
+{
+  "variant": [
+    "w0_f0_q0=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w0_f0_q0.so",
+    "w2_f2_q0=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w2_f2_q0.so",
+    "w4_f4_q0=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w4_f4_q0.so",
+    "w8_f8_q0=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w8_f8_q0.so",
+    "w0_f2_q1=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w0_f2_q1.so",
+    "w0_f4_q1=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w0_f4_q1.so",
+    "w0_f8_q1=/scratch/gz2522/gz2522/tmp/hadamard/runs/warp_tune_17290172/w0_f8_q1.so"
+  ],
+  "output_dir": "/home/gz2522/FastHadamard-CUDA/tensor_core/results/warp_tune_17290172/benchmark",
+  "tokens": "1,128,16384,131072",
+  "dims": "64,128,256,512,1024",
+  "norms": "1",
+  "backends": "warp,fused_warp",
+  "rounds": 5,
+  "nodes": 8,
+  "replays": 10,
+  "gpu": "NVIDIA H200",
+  "torch": "2.5.1+cu121",
+  "cuda": "12.1",
+  "reference": "Dao v1.1.0 unmodified",
+  "measurement": "CUDA Graph replay: resident same input, amortized device time",
+  "allocation": "output allocations during capture, excluded from timed replay",
+  "quant_reference": "Dao transform + this project standalone INT4 quantizer",
+  "seed": 20260909,
+  "order": "rotate and reverse backend order each round"
+}

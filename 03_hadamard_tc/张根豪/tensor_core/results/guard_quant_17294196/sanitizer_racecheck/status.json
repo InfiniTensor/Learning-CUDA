@@ -1,0 +1,10 @@
+{
+  "cases": 108,
+  "variants": [
+    "guard"
+  ],
+  "rows": 108,
+  "failed": [],
+  "reference": "Dao v1.1.0",
+  "all_pass": true
+}

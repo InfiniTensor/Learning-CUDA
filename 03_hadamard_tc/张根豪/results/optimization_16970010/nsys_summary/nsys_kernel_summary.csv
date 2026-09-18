@@ -1,0 +1,5 @@
+gpu_name,kernel_name,calls,total_ms,avg_us,min_us,max_us,registers_per_thread,grid,block,static_shared_bytes,dynamic_shared_bytes,resource_limit_occupancy_pct
+NVIDIA L40S,hadamard_kernel,26,0.386306,14.8579231,14.464,15.424,18,16384x1x1,128x1x1,512,0,100
+NVIDIA L40S,hadamard_optimized_kernel,52,0.303043,5.82775,5.728,6.112,20,8192x1x1,128x1x1,1024,0,100
+NVIDIA L40S,hadamard_fused_quant_int4_kernel,26,0.267138,10.2745385,10.08,10.432,18,16384x1x1,64x1x1,524,0,100
+NVIDIA L40S,quantize_int4_kernel,26,0.257602,9.90776923,9.888,9.952,18,16384x1x1,64x1x1,12,0,100

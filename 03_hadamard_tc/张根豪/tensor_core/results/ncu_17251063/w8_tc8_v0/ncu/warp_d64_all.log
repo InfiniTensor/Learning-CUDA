@@ -1,0 +1,26 @@
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==PROF== Connected to process 2106847 (/scratch/gz2522/gz2522/tmp/hadamard/runs/ncu_17251063/w8_tc8_v0/hadamard_tc_bench)
+==PROF== Profiling "hadamard_warp_kernel" - 0 (1/1): 0%....50%....100% - 18 passes
+[tc] GPU=NVIDIA H100 80GB HBM3 sm_90 dtype=fp16 head_dim=64 tokens=16384 normalize=true
+[tc] full-tensor absolute check: reference=optimized_regression elements=1048576
+[tc] accuracy vs FP64 reference (first 256 tokens, threshold 1e-02)
+       baseline   max_abs=1.900673e-03 max_rel=4.566036e-04 max_ulp=0.500 rmse=2.101645e-04 bit_exact_vs_optimized=1.0000 reference_max_abs=0.000000e+00 REGRESSION_PASS(not PDF verified)
+       warp       max_abs=1.900673e-03 max_rel=4.566036e-04 max_ulp=0.500 rmse=2.101645e-04 bit_exact_vs_optimized=1.0000 reference_max_abs=0.000000e+00 REGRESSION_PASS(not PDF verified)
+       tc_fast    max_abs=1.900673e-03 max_rel=6.526349e-04 max_ulp=1.011 rmse=2.993744e-04 bit_exact_vs_optimized=0.5980 reference_max_abs=3.906250e-03 REGRESSION_PASS(not PDF verified)
+       tc_split   max_abs=1.900673e-03 max_rel=4.566036e-04 max_ulp=0.500 rmse=2.101645e-04 bit_exact_vs_optimized=1.0000 reference_max_abs=1.220703e-04 REGRESSION_PASS(not PDF verified)
+[tc] fused vs same-algorithm unfused: opt(9.2)=bit-exact warp=bit-exact tc_fast=bit-exact tc_split=bit-exact
+[tc] fused_tc_split vs fused_warp (FP32 FHT) INT4 bytes: bit-exact
+[tc] transform timings (avg ms, speedup vs baseline / vs best non-TC)
+       baseline   0.075296  1.00x  0.96x
+       optimized  0.071936  1.05x  1.00x
+       warp       0.075168  1.00x  0.96x
+       tc_fast    0.071648  1.05x  1.00x
+       tc_split   0.066656  1.13x  1.08x
+[tc] fused INT4 timings (avg ms, speedup vs unfused / vs best non-TC fused)
+       unfused_int4         0.137824  1.00x  0.48x  quant=reference
+       fused_opt_int4       0.067808  2.03x  0.98x  quant=bit-exact
+       fused_warp_int4      0.066432  2.07x  1.00x  quant=bit-exact
+       fused_tc_fast_int4   0.065824  2.09x  1.01x  quant=bit-exact
+       fused_tc_split_int4  0.065600  2.10x  1.01x  quant=bit-exact
+==PROF== Disconnected from process 2106847
+==PROF== Report: /home/gz2522/FastHadamard-CUDA/tensor_core/results/ncu_17251063/w8_tc8_v0/ncu/warp_d64_all.ncu-rep

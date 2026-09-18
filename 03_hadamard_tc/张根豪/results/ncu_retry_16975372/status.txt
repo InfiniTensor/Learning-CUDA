@@ -1,0 +1,2 @@
+optimized=success
+fused_int4=success

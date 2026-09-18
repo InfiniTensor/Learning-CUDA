@@ -1,0 +1,2 @@
+gpu_name,compute_capability,sm_count,clock_rate_hz,memory_bandwidth_bytes_per_s,l2_cache_bytes,max_warps_per_sm,max_blocks_per_sm,max_registers_per_sm,max_shared_memory_per_sm
+NVIDIA L40S,8.9,142,2520000000,864096000000,100663296,48,24,65536,102400

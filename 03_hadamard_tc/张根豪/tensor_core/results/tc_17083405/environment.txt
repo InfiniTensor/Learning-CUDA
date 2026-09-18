@@ -1,0 +1,8 @@
+2026-09-06T20:13:14-04:00
+NVIDIA L40S, GPU-f14110c0-16dc-4763-bf97-93c250ee26ae, 8.9, 46068 MiB, 580.82.07, 2520 MHz, 9001 MHz
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+CUDA_ARCH=89

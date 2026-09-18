@@ -1,0 +1,5 @@
+validation_rc=1
+benchmark_rc=1
+ncu_failed=ptx_fast
+ncu_failed=wmma_fast
+completed=true

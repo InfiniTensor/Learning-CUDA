@@ -1,0 +1,2 @@
+stage=verify reference=cpu install_rc=1
+completed=true

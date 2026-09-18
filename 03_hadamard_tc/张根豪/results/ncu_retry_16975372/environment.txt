@@ -1,0 +1,11 @@
+2026-09-04T20:43:13-04:00
+host=gh112.hpc.nyu.edu
+NVIDIA H200, GPU-17b30c78-48ad-59f0-2ec4-bccd79b83f28, 9.0, 143771 MiB, 580.82.07
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.3.1.0 (build 36398880) (public-release)

@@ -1,0 +1,11 @@
+{
+  "reference": "cpu",
+  "torch": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "seed": 20260908,
+  "thresholds": {
+    "fp16": 0.01,
+    "bf16": 0.05
+  },
+  "full_tensor": true
+}

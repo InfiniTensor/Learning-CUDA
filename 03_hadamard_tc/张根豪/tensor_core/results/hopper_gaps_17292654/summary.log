@@ -1,0 +1,2 @@
+/home/gz2522/FastHadamard-CUDA/tensor_core/scripts/summarize_library.py:75: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  ax.grid(alpha=.2); ax.legend(fontsize=6)

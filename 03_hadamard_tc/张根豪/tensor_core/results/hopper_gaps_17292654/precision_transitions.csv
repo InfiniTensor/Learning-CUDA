@@ -1,0 +1,9 @@
+case,dtype,dim,normalize,tokens,pattern,variant,backend,max_abs,passed,sha256,original_passed,original_max_abs
+11,fp16,128,False,2048,normal,p1,mma_split,0.00390625,True,74cbc1e4e1f64ab737f1b9c5e23aeb7baa627349c3a0065828c2d2631950b056,False,0.015625
+17,fp16,256,False,2048,normal,p1,mma_split,0.0078125,True,9dd5a9053705f548bbb73c02668014d95417060406a018212268fb25ec86f929,False,0.015625
+11,fp16,128,False,2048,normal,p2,mma_split,0.00390625,True,029516d10624e299a6a895c35ca5159c3ec4fd0b759f6cb078898178d349ba64,False,0.015625
+17,fp16,256,False,2048,normal,p2,mma_split,0.0078125,True,492386d3bda0b6beddafea66dcdb3f6d5aa78f3b96031bfb69a441d5843eb4af,False,0.015625
+35,bf16,64,False,2048,normal,p2,mma_split,0.0,True,b74c7853277e99a5311bb67101d64dfc6f89fcd14beaddbd54d4bb11cea57499,False,0.0625
+41,bf16,128,False,2048,normal,p2,mma_split,0.0,True,ea5b00540bcc7928ee7ca97a596f53192127c5472b9ee8249b3859cda699197d,False,0.125
+47,bf16,256,False,2048,normal,p2,mma_split,0.0,True,e1e4c728b1fe3fb12402f75785d62b206296e7d1eabf357446d0655db7e3dc90,False,0.125
+107,bf16,64,False,5,outlier,p2,mma_split,0.0,True,c708ceb87e585feda4b0182dab92525d4b9b6634d423ced147dc2c2cf30e894b,False,0.25

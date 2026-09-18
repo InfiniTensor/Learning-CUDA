@@ -1,0 +1,14 @@
+WARNING: While bind mounting '/scratch:/scratch': destination is already in the mount point list
+Processing /scratch/gz2522/gz2522/tmp/hadamard/runs/reference_17251238/source
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: fast_hadamard_transform
+  Building wheel for fast_hadamard_transform (pyproject.toml): started
+  Building wheel for fast_hadamard_transform (pyproject.toml): still running...
+  Building wheel for fast_hadamard_transform (pyproject.toml): still running...
+  Building wheel for fast_hadamard_transform (pyproject.toml): finished with status 'done'
+  Created wheel for fast_hadamard_transform: filename=fast_hadamard_transform-1.1.0-cp312-cp312-linux_x86_64.whl size=39332999 sha256=be3812195497b1c32733860bf920dd74da1b418c5adacdadf975300ef112b5dd
+  Stored in directory: /tmp/pip-ephem-wheel-cache-tsup4azu/wheels/bf/cf/5d/288b960b80093d60a4d3ecdc0313dbe4e48b63da1f59c1484c
+Successfully built fast_hadamard_transform
+Installing collected packages: fast_hadamard_transform
+Successfully installed fast_hadamard_transform-1.1.0

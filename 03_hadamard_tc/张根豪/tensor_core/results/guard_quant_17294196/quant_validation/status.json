@@ -1,0 +1,11 @@
+{
+  "cases": 132,
+  "variants": [
+    "control",
+    "selective"
+  ],
+  "rows": 528,
+  "failed": [],
+  "reference": "Dao v1.1.0",
+  "all_pass": true
+}

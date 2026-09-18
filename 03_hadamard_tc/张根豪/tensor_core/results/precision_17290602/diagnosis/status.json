@@ -1,0 +1,5 @@
+{
+  "cases": 11,
+  "trace_bit_exact": true,
+  "note": "FP64 decomposition is a diagnostic, not a replacement PDF acceptance reference"
+}

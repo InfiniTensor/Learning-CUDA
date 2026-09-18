@@ -1,0 +1,5 @@
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+31.8,386306,26,14857.9,14848.0,14464,15424,179.0,"void hadamard_kernel<__half, (int)128, (bool)1>(const T1 *, T1 *, int, float)"
+25.0,303043,52,5827.8,5824.0,5728,6112,49.3,"void hadamard_optimized_kernel<__half, (int)128, (bool)1>(const T1 *, T1 *, int, float)"
+22.0,267138,26,10274.5,10272.0,10080,10432,76.8,"void hadamard_fused_quant_int4_kernel<__half, (int)128, (bool)1>(const T1 *, unsigned char *, float *, int, float)"
+21.2,257602,26,9907.8,9904.5,9888,9952,22.3,"void quantize_int4_kernel<__half, (int)128>(const T1 *, unsigned char *, float *, int)"

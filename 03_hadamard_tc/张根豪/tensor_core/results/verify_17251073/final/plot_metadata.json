@@ -1,0 +1,8 @@
+{
+  "timing_dir": "tensor_core/results/verify_17251073",
+  "verify_dir": "tensor_core/results/verify_17251073",
+  "profile_dir": "tensor_core/results/ncu_17251063",
+  "output_dir": "tensor_core/results/verify_17251073/final",
+  "dram_peak_gbs": 3350.0,
+  "fp32_peak_tflops": 67.0
+}

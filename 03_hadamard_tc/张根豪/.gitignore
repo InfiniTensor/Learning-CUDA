@@ -1,0 +1,32 @@
+# 本地保存的训练营原始题目材料，不属于代码交付物。
+/2026夏季训练营 CUDA 方向项目.pdf
+
+# 构建与 Python 缓存
+/build/
+/musa/build/
+/muxi/build/
+/tianshu/build/
+__pycache__/
+*.pyc
+
+# 正确性测试产生的大体积中间 dump；只提交 CSV 摘要。
+/results/dumps/
+/results/dumps_lib/
+
+# 原始二进制留在 scratch；Git 保留 CSV/JSON、关键日志与图表。
+/results/**/*.bin
+/results/**/*.qdstrm
+/results/**/*.nsys-rep
+/results/**/*.sqlite
+/results/**/*.ncu-rep
+/results/**/source_snapshot.tar.gz
+/results/profile_*/ncu_raw/
+/tensor_core/build/
+/tensor_core/results/**/*.bin
+/tensor_core/results/**/*.qdstrm
+/tensor_core/results/**/*.nsys-rep
+/tensor_core/results/**/*.sqlite
+/tensor_core/results/**/*.ncu-rep
+/tensor_core/results/**/source_snapshot.tar.gz
+/tensor_core/results/**/validation/failures
+/tensor_core/results/**/validation/[0-9][0-9][0-9]_*.log
