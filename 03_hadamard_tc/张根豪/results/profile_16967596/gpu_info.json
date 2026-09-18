@@ -1,0 +1,15 @@
+{
+  "device_index": 0,
+  "name": "NVIDIA L40S",
+  "compute_capability_major": 8,
+  "compute_capability_minor": 9,
+  "sm_count": 142,
+  "clock_rate_khz": 2520000,
+  "memory_clock_rate_khz": 9001000,
+  "memory_bus_width_bits": 384,
+  "total_global_memory_bytes": 47665709056,
+  "l2_cache_bytes": 100663296,
+  "shared_memory_per_block_bytes": 49152,
+  "registers_per_block": 65536,
+  "warp_size": 32
+}

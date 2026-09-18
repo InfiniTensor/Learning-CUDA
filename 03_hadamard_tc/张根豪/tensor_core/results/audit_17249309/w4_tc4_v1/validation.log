@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/gz2522/FastHadamard-CUDA/tensor_core/scripts/validate_tc.py", line 148, in <module>
+    raise SystemExit(main())
+  File "/home/gz2522/FastHadamard-CUDA/tensor_core/scripts/validate_tc.py", line 41, in main
+    import torch
+ModuleNotFoundError: No module named 'torch'

@@ -1,0 +1,7 @@
+==PROF== Connected to process 4174846 (/scratch/gz2522/gz2522/tmp/hadamard/runs/profile_16967596/build/hadamard_bench)
+
+==ERROR== An error was reported by the driver:
+==ERROR== Profiling failed because a driver resource was unavailable. Ensure that no other tool (like DCGM) is concurrently collecting profiling data. See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq for more details.
+==ERROR== Failed to profile "hadamard_kernel" in process 4174846
+==PROF== Trying to shutdown target application
+==ERROR== The application returned an error code (9).

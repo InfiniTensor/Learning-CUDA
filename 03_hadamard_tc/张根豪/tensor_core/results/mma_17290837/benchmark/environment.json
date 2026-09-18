@@ -1,0 +1,22 @@
+{
+  "variant": [
+    "experiment=/scratch/gz2522/gz2522/tmp/hadamard/runs/mma_17290837/mma.so"
+  ],
+  "output_dir": "/home/gz2522/FastHadamard-CUDA/tensor_core/results/mma_17290837/benchmark",
+  "tokens": "1,128,16384,131072",
+  "dims": "64,128,256",
+  "norms": "0,1",
+  "backends": "warp,wmma_fast,wmma_split,mma_fast,mma_split",
+  "rounds": 5,
+  "nodes": 16,
+  "replays": 10,
+  "gpu": "NVIDIA L40S",
+  "torch": "2.5.1+cu121",
+  "cuda": "12.1",
+  "reference": "Dao v1.1.0 unmodified",
+  "measurement": "CUDA Graph replay: resident same input, amortized device time",
+  "allocation": "output allocations during capture, excluded from timed replay",
+  "quant_reference": "Dao transform + this project standalone INT4 quantizer",
+  "seed": 20260909,
+  "order": "rotate and reverse backend order each round"
+}

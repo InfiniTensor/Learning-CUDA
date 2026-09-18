@@ -1,0 +1,7 @@
+gpu_name,compute_capability,dtype,head_dim,total_tokens,kernel_duration_us,algorithmic_gflops,arithmetic_intensity_flop_per_byte,dram_bytes,minimum_io_bytes,intensity_byte_source,effective_io_bandwidth_gbs,measured_dram_bandwidth_gbs,achieved_occupancy_pct,sm_throughput_pct,dram_throughput_pct,registers_per_thread,shared_bank_conflicts,barrier_stall_pct,long_scoreboard_stall_pct,theoretical_fp32_peak_tflops,theoretical_memory_peak_gbs,source_file
+NVIDIA L40S,8.9,fp16,64,131072,73.9318,680.784831,1.5,,33554432,minimum_io_fallback,453.856554,,,,,,,,,91.60704,864.096,timings.csv
+NVIDIA L40S,8.9,fp16,128,131072,110.011,1067.53426,1.75,,67108864,minimum_io_fallback,610.01958,,,,,,,,,91.60704,864.096,timings.csv
+NVIDIA L40S,8.9,fp16,256,131072,241.17,1113.05492,2,,134217728,minimum_io_fallback,556.527462,,,,,,,,,91.60704,864.096,timings.csv
+NVIDIA L40S,8.9,bf16,64,131072,73.927,680.829034,1.5,,33554432,minimum_io_fallback,453.886023,,,,,,,,,91.60704,864.096,timings.csv
+NVIDIA L40S,8.9,bf16,128,131072,110.965,1058.35635,1.75,,67108864,minimum_io_fallback,604.775055,,,,,,,,,91.60704,864.096,timings.csv
+NVIDIA L40S,8.9,bf16,256,131072,241.118,1113.29497,2,,134217728,minimum_io_fallback,556.647484,,,,,,,,,91.60704,864.096,timings.csv

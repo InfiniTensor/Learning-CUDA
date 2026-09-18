@@ -1,0 +1,21 @@
+[tc] GPU=NVIDIA H200 sm_90 dtype=bf16 head_dim=128 tokens=131072 normalize=true
+[tc] full-tensor absolute check: reference=optimized_regression elements=16777216
+[tc] accuracy vs FP64 reference (first 4096 tokens, threshold 5e-02)
+       baseline   max_abs=1.552525e-02 max_rel=3.866114e-03 max_ulp=0.500 rmse=1.659436e-03 bit_exact_vs_optimized=1.0000 reference_max_abs=0.000000e+00 REGRESSION_PASS(not PDF verified)
+       warp       max_abs=1.552525e-02 max_rel=3.866114e-03 max_ulp=0.500 rmse=1.659436e-03 bit_exact_vs_optimized=1.0000 reference_max_abs=0.000000e+00 REGRESSION_PASS(not PDF verified)
+       tc_fast    max_abs=1.669480e-02 max_rel=5.227909e-03 max_ulp=1.013 rmse=2.350751e-03 bit_exact_vs_optimized=0.5867 reference_max_abs=3.125000e-02 REGRESSION_PASS(not PDF verified)
+       tc_split   max_abs=1.552525e-02 max_rel=3.866114e-03 max_ulp=0.500 rmse=1.659436e-03 bit_exact_vs_optimized=0.9997 reference_max_abs=1.562500e-02 REGRESSION_PASS(not PDF verified)
+[tc] fused vs same-algorithm unfused: opt(9.2)=bit-exact warp=bit-exact tc_fast=bit-exact tc_split=bit-exact
+[tc] fused_tc_split vs fused_warp (FP32 FHT) INT4 bytes: differs
+[tc] transform timings (avg ms, speedup vs baseline / vs best non-TC)
+       baseline   0.100258  1.00x  0.26x
+       optimized  0.045294  2.21x  0.57x
+       warp       0.025795  3.89x  1.00x
+       tc_fast    0.038367  2.61x  0.67x
+       tc_split   0.043586  2.30x  0.59x
+[tc] fused INT4 timings (avg ms, speedup vs unfused / vs best non-TC fused)
+       unfused_int4         0.107437  1.00x  0.30x  quant=reference
+       fused_opt_int4       0.084943  1.26x  0.37x  quant=bit-exact
+       fused_warp_int4      0.031716  3.39x  1.00x  quant=bit-exact
+       fused_tc_fast_int4   0.038679  2.78x  0.82x  quant=bit-exact
+       fused_tc_split_int4  0.044056  2.44x  0.72x  quant=bit-exact

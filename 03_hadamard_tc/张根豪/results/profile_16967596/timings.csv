@@ -1,0 +1,7 @@
+dtype,batch_size,seq_len,num_heads,head_dim,total_tokens,normalize,dist,seed,warmup_runs,bench_runs,avg_kernel_ms,min_kernel_ms,max_kernel_ms,check_enabled,max_abs_error,mean_abs_error,rmse,max_rel_error,threshold,pass
+fp16,4,1024,32,64,131072,true,normal,42,20,100,0.0739318,0.073056,0.083072,false,,,,,,
+fp16,4,1024,32,128,131072,true,normal,42,20,100,0.110011,0.109152,0.112768,false,,,,,,
+fp16,4,1024,32,256,131072,true,normal,42,20,100,0.24117,0.240384,0.24432,false,,,,,,
+bf16,4,1024,32,64,131072,true,normal,42,20,100,0.073927,0.073184,0.079776,false,,,,,,
+bf16,4,1024,32,128,131072,true,normal,42,20,100,0.110965,0.109664,0.11584,false,,,,,,
+bf16,4,1024,32,256,131072,true,normal,42,20,100,0.241118,0.24032,0.24576,false,,,,,,

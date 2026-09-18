@@ -1,0 +1,10 @@
+[ 12%] Building CUDA object CMakeFiles/hadamard_advanced_bench.dir/src/hadamard.cu.o
+[ 50%] Building CUDA object CMakeFiles/hadamard_advanced_bench.dir/src/advanced_bench.cu.o
+[ 50%] Building CUDA object CMakeFiles/hadamard_bench.dir/src/main.cu.o
+[ 50%] Building CUDA object CMakeFiles/hadamard_advanced_bench.dir/src/hadamard_warp.cu.o
+[ 62%] Building CUDA object CMakeFiles/hadamard_bench.dir/src/hadamard.cu.o
+[ 75%] Building CUDA object CMakeFiles/hadamard_bench.dir/src/hadamard_warp.cu.o
+[ 87%] Linking CUDA executable hadamard_advanced_bench
+[ 87%] Built target hadamard_advanced_bench
+[100%] Linking CUDA executable hadamard_bench
+[100%] Built target hadamard_bench

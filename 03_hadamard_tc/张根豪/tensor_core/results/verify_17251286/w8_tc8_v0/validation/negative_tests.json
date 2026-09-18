@@ -1,0 +1,26 @@
+[
+  {
+    "test": "zero_ref_tokens",
+    "pass": true
+  },
+  {
+    "test": "negative_batch",
+    "pass": true
+  },
+  {
+    "test": "overflow_shape",
+    "pass": true
+  },
+  {
+    "test": "short_input",
+    "pass": true
+  },
+  {
+    "test": "long_input",
+    "pass": true
+  },
+  {
+    "test": "forged_reference",
+    "pass": true
+  }
+]

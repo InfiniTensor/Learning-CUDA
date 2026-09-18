@@ -1,0 +1,7 @@
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==PROF== Connected to process 2915513 (/scratch/gz2522/gz2522/tmp/hadamard/runs/hopper_gaps_17291971/profile)
+==PROF== Profiling "hadamard_tc_kernel" - 0 (1/1): 0%....50%....100% - 17 passes
+dim=256 mode=1 tokens=16384 launches=4 finite=true
+==PROF== Disconnected from process 2915513
+==PROF== Report: /home/gz2522/FastHadamard-CUDA/tensor_core/results/hopper_gaps_17291971/ncu/wmma_fast_d256_none.ncu-rep

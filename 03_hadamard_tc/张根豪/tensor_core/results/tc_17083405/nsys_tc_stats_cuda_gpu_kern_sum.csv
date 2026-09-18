@@ -1,0 +1,11 @@
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+19.4,385603,26,14830.9,14816.0,14496,15520,193.7,"void hadamard_kernel<__half, (int)128, (bool)1>(const T1 *, T1 *, int, float)"
+14.5,287266,29,9905.7,9888.0,9888,10048,43.3,"void quantize_int4_kernel<__half, (int)128>(const T1 *, unsigned char *, float *, int)"
+13.4,265858,26,10225.3,10240.0,10080,10368,61.5,"void hadamard_fused_quant_int4_kernel<__half, (int)128, (bool)1>(const T1 *, unsigned char *, float *, int, float)"
+9.8,194659,52,3743.4,3712.0,3616,4160,97.0,"void <unnamed>::hadamard_warp_kernel<__half, (int)128, (bool)1>(const T1 *, T1 *, int, float)"
+8.1,161473,26,6210.5,6208.0,5984,6336,92.2,"void <unnamed>::hadamard_tc_fused_int4_kernel<__half, (int)128, (bool)1, (bool)1>(const T1 *, unsigned char *, float *, int, float)"
+7.6,151682,26,5833.9,5824.0,5696,6016,57.8,"void <unnamed>::hadamard_tc_kernel<__half, (int)128, (bool)1, (bool)1>(const T1 *, T1 *, int, float)"
+7.6,151489,26,5826.5,5824.0,5696,6208,83.9,"void hadamard_optimized_kernel<__half, (int)128, (bool)1>(const T1 *, T1 *, int, float)"
+6.8,134976,26,5191.4,5184.0,5056,5280,48.2,"void <unnamed>::hadamard_tc_fused_int4_kernel<__half, (int)128, (bool)1, (bool)0>(const T1 *, unsigned char *, float *, int, float)"
+6.5,128193,26,4930.5,4928.0,4832,5024,43.3,"void <unnamed>::hadamard_tc_kernel<__half, (int)128, (bool)1, (bool)0>(const T1 *, T1 *, int, float)"
+6.2,123809,26,4761.9,4688.0,4352,5120,233.6,"void <unnamed>::hadamard_warp_fused_int4_kernel<__half, (int)128, (bool)1>(const T1 *, unsigned char *, float *, int, float)"

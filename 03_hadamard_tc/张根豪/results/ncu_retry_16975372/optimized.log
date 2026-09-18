@@ -1,0 +1,9 @@
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==PROF== Connected to process 3551862 (/scratch/gz2522/gz2522/tmp/hadamard/runs/ncu_retry_16975372/build/hadamard_advanced_bench)
+==PROF== Profiling "hadamard_optimized_kernel" - 0 (1/1): 0%....50%....100% - 18 passes
+[advanced] GPU=NVIDIA H200 dtype=fp16 head_dim=128 tokens=16384
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.239264 ms optimized=0.108928 ms (2.20x) unfused_int4=0.171456 ms fused_int4=0.091136 ms (1.88x) compression=3.765x
+[advanced] INT4 error: max=3.671875e-01 mae=1.003226e-01 rmse=1.173918e-01
+==PROF== Disconnected from process 3551862
+==PROF== Report: /home/gz2522/FastHadamard-CUDA/results/ncu_retry_16975372/optimized.ncu-rep

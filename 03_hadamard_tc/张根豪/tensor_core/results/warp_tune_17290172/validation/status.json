@@ -1,0 +1,16 @@
+{
+  "cases": 132,
+  "variants": [
+    "w0_f0_q0",
+    "w2_f2_q0",
+    "w4_f4_q0",
+    "w8_f8_q0",
+    "w0_f2_q1",
+    "w0_f4_q1",
+    "w0_f8_q1"
+  ],
+  "rows": 1848,
+  "failed": [],
+  "reference": "Dao v1.1.0",
+  "all_pass": true
+}

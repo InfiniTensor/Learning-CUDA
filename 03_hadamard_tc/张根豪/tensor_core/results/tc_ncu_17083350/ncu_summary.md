@@ -1,0 +1,19 @@
+# Tensor Core kernel 的 NCU 硬件计数器
+
+kernel: warp, tc_fast, tc_split；配置 FP16 / head_dim=128 / 16384 tokens。
+计数器用于 kernel 结构诊断，不与无 profiler 的端到端计时混算。
+
+| 指标 | warp | tc_fast | tc_split |
+|---|---:|---:|---:|
+| NCU duration us | 4.992 | 7.712 | 9.248 |
+| SM throughput % | 33.88 | 21.65 | 21.99 |
+| DRAM throughput % | 17.58 | 11.36 | 9.47 |
+| DRAM GB/s | 841.1 | 544.5 | 454.2 |
+| achieved occupancy % | 65.25 | 72.01 | 65.67 |
+| L2 hit % | 53.44 | 53.46 | 53.73 |
+| registers/thread | 21 | 30 | 32 |
+| dynamic shared KB/block | 0.000 | 9.728 | 12.800 |
+| stall long scoreboard | 10.64 | 4.10 | 2.97 |
+| stall short scoreboard | 1.90 | 12.94 | 11.07 |
+| stall mio throttle | 1.34 | 10.52 | 12.82 |
+| stall barrier | 0.00 | 1.06 | 1.32 |

@@ -1,0 +1,96 @@
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=32 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005920 ms optimized=0.004672 ms (1.27x) unfused_int4=0.007248 ms fused_int4=0.004352 ms (1.67x) compression=3.200x
+[advanced] INT4 error: max=2.656250e-01 mae=8.492195e-02 rmse=1.022491e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=64 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005696 ms optimized=0.004224 ms (1.35x) unfused_int4=0.007424 ms fused_int4=0.004368 ms (1.70x) compression=3.556x
+[advanced] INT4 error: max=2.349330e-01 mae=9.057385e-02 rmse=1.076232e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=128 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005568 ms optimized=0.004560 ms (1.22x) unfused_int4=0.007376 ms fused_int4=0.004992 ms (1.48x) compression=3.765x
+[advanced] INT4 error: max=2.479074e-01 mae=9.852363e-02 rmse=1.155610e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=256 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006528 ms optimized=0.004752 ms (1.37x) unfused_int4=0.007200 ms fused_int4=0.004576 ms (1.57x) compression=3.879x
+[advanced] INT4 error: max=2.696359e-01 mae=1.049804e-01 rmse=1.221515e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=512 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.008800 ms optimized=0.004592 ms (1.92x) unfused_int4=0.007168 ms fused_int4=0.004640 ms (1.54x) compression=3.938x
+[advanced] INT4 error: max=2.773438e-01 mae=1.151211e-01 rmse=1.336868e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=1024 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006784 ms optimized=0.005200 ms (1.30x) unfused_int4=0.007472 ms fused_int4=0.005984 ms (1.25x) compression=3.969x
+[advanced] INT4 error: max=2.833426e-01 mae=1.226738e-01 rmse=1.421777e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=32 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006016 ms optimized=0.004480 ms (1.34x) unfused_int4=0.007792 ms fused_int4=0.004608 ms (1.69x) compression=3.200x
+[advanced] INT4 error: max=1.505580e+00 mae=4.802948e-01 rmse=5.783299e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=64 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005696 ms optimized=0.004496 ms (1.27x) unfused_int4=0.007200 ms fused_int4=0.004560 ms (1.58x) compression=3.556x
+[advanced] INT4 error: max=1.879464e+00 mae=7.245908e-01 rmse=8.609854e-01
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=128 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006080 ms optimized=0.004448 ms (1.37x) unfused_int4=0.007584 ms fused_int4=0.004576 ms (1.66x) compression=3.765x
+[advanced] INT4 error: max=2.816964e+00 mae=1.114681e+00 rmse=1.307414e+00
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=256 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.010240 ms optimized=0.004432 ms (2.31x) unfused_int4=0.007104 ms fused_int4=0.004496 ms (1.58x) compression=3.879x
+[advanced] INT4 error: max=4.314174e+00 mae=1.679686e+00 rmse=1.954425e+00
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=512 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005936 ms optimized=0.004800 ms (1.24x) unfused_int4=0.007280 ms fused_int4=0.004368 ms (1.67x) compression=3.938x
+[advanced] INT4 error: max=6.279017e+00 mae=2.604706e+00 rmse=3.024796e+00
+[advanced] GPU=NVIDIA L40S dtype=fp16 head_dim=1024 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006336 ms optimized=0.004512 ms (1.40x) unfused_int4=0.007264 ms fused_int4=0.005168 ms (1.41x) compression=3.969x
+[advanced] INT4 error: max=9.066963e+00 mae=3.925561e+00 rmse=4.549685e+00
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=32 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006080 ms optimized=0.004448 ms (1.37x) unfused_int4=0.007472 ms fused_int4=0.004432 ms (1.69x) compression=3.200x
+[advanced] INT4 error: max=2.672991e-01 mae=8.503033e-02 rmse=1.023856e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=64 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006304 ms optimized=0.004960 ms (1.27x) unfused_int4=0.007696 ms fused_int4=0.005072 ms (1.52x) compression=3.556x
+[advanced] INT4 error: max=2.354910e-01 mae=9.056874e-02 rmse=1.075805e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=128 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006784 ms optimized=0.005056 ms (1.34x) unfused_int4=0.008544 ms fused_int4=0.005648 ms (1.51x) compression=3.765x
+[advanced] INT4 error: max=2.488840e-01 mae=9.850921e-02 rmse=1.155786e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=256 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005840 ms optimized=0.004560 ms (1.28x) unfused_int4=0.007152 ms fused_int4=0.004480 ms (1.60x) compression=3.879x
+[advanced] INT4 error: max=2.689732e-01 mae=1.050154e-01 rmse=1.221830e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=512 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005840 ms optimized=0.004352 ms (1.34x) unfused_int4=0.007024 ms fused_int4=0.004976 ms (1.41x) compression=3.938x
+[advanced] INT4 error: max=2.779017e-01 mae=1.151056e-01 rmse=1.336870e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=1024 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.009632 ms optimized=0.004768 ms (2.02x) unfused_int4=0.007472 ms fused_int4=0.004512 ms (1.66x) compression=3.969x
+[advanced] INT4 error: max=2.834821e-01 mae=1.227128e-01 rmse=1.422314e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=32 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005920 ms optimized=0.004784 ms (1.24x) unfused_int4=0.007280 ms fused_int4=0.004368 ms (1.67x) compression=3.200x
+[advanced] INT4 error: max=1.513393e+00 mae=4.803771e-01 rmse=5.785258e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=64 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006080 ms optimized=0.004368 ms (1.39x) unfused_int4=0.006992 ms fused_int4=0.004400 ms (1.59x) compression=3.556x
+[advanced] INT4 error: max=1.883928e+00 mae=7.245499e-01 rmse=8.606440e-01
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=128 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005904 ms optimized=0.004352 ms (1.36x) unfused_int4=0.007408 ms fused_int4=0.004320 ms (1.71x) compression=3.765x
+[advanced] INT4 error: max=2.821428e+00 mae=1.114982e+00 rmse=1.308085e+00
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=256 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.005792 ms optimized=0.004192 ms (1.38x) unfused_int4=0.007296 ms fused_int4=0.004176 ms (1.75x) compression=3.879x
+[advanced] INT4 error: max=4.303572e+00 mae=1.680246e+00 rmse=1.954928e+00
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=512 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.006640 ms optimized=0.004496 ms (1.48x) unfused_int4=0.007040 ms fused_int4=0.004672 ms (1.51x) compression=3.938x
+[advanced] INT4 error: max=6.285713e+00 mae=2.604352e+00 rmse=3.024475e+00
+[advanced] GPU=NVIDIA L40S dtype=bf16 head_dim=1024 tokens=32
+[advanced] checks: optimized_vs_baseline=BIT-EXACT fused_vs_unfused=BIT-EXACT gpu_vs_cpu_quant=BIT-EXACT
+[advanced] baseline=0.007184 ms optimized=0.005504 ms (1.31x) unfused_int4=0.007872 ms fused_int4=0.005200 ms (1.51x) compression=3.969x
+[advanced] INT4 error: max=9.071426e+00 mae=3.926809e+00 rmse=4.551405e+00

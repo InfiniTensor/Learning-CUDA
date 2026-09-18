@@ -1,0 +1,172 @@
+WARNING: While bind mounting '/scratch:/scratch': destination is already in the mount point list
+Collecting fast_hadamard_transform==1.1.0
+  Using cached fast_hadamard_transform-1.1.0.tar.gz (7.5 kB)
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: fast_hadamard_transform
+  Building wheel for fast_hadamard_transform (pyproject.toml): started
+  Building wheel for fast_hadamard_transform (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Building wheel for fast_hadamard_transform (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [150 lines of output]
+      /scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+        warn(
+      No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+      /scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+      !!
+      
+              ********************************************************************************
+              Please consider removing the following classifiers in favor of a SPDX license expression:
+      
+              License :: OSI Approved :: BSD License
+      
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+      
+      !!
+        self._finalize_license_expression()
+      
+      
+      torch.__version__  = 2.5.1+cu121
+      
+      
+      running bdist_wheel
+      Guessing wheel URL:  https://github.com/Dao-AILab/fast-hadamard-transform/releases/download/v1.1.0/fast_hadamard_transform-1.1.0+cu122torch2.5cxx11abiFALSE-cp312-cp312-linux_x86_64.whl
+      Precompiled wheel not found. Building from source...
+      running build
+      running build_py
+      creating build/lib.linux-x86_64-cpython-312/fast_hadamard_transform
+      copying fast_hadamard_transform/__init__.py -> build/lib.linux-x86_64-cpython-312/fast_hadamard_transform
+      copying fast_hadamard_transform/fast_hadamard_transform_interface.py -> build/lib.linux-x86_64-cpython-312/fast_hadamard_transform
+      running build_ext
+      /scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py:416: UserWarning: The detected CUDA version (12.8) has a minor version mismatch with the version that was used to compile PyTorch (12.1). Most likely this shouldn't be a problem.
+        warnings.warn(CUDA_MISMATCH_WARN.format(cuda_str_version, torch.version.cuda))
+      /scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py:426: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+        warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')
+      building 'fast_hadamard_transform_cuda' extension
+      Emitting ninja build file /tmp/pip-install-_1upenv2/fast-hadamard-transform_9b0be50cb3ee4838a8aaedf7ffa69b10/build/temp.linux-x86_64-cpython-312/build.ninja...
+      Compiling objects...
+      Using envvar MAX_JOBS (2) as the number of workers...
+      ninja: error: '/tmp/pip-install-_1upenv2/fast-hadamard-transform_9b0be50cb3ee4838a8aaedf7ffa69b10/csrc/fast_hadamard_transform.cpp', needed by '/tmp/pip-install-_1upenv2/fast-hadamard-transform_9b0be50cb3ee4838a8aaedf7ffa69b10/build/temp.linux-x86_64-cpython-312/csrc/fast_hadamard_transform.o', missing and no known rule to make it
+      Traceback (most recent call last):
+        File "<string>", line 218, in run
+        File "/usr/lib/python3.12/urllib/request.py", line 240, in urlretrieve
+          with contextlib.closing(urlopen(url, data)) as fp:
+                                  ^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+          return opener.open(url, data, timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+          response = meth(req, response)
+                     ^^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+          response = self.parent.error(
+                     ^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+          return self._call_chain(*args)
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+          result = func(*args)
+                   ^^^^^^^^^^^
+        File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+          raise HTTPError(req.full_url, code, msg, hdrs, fp)
+      urllib.error.HTTPError: HTTP Error 404: Not Found
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2104, in _run_ninja_build
+          subprocess.run(
+        File "/usr/lib/python3.12/subprocess.py", line 571, in run
+          raise CalledProcessError(retcode, process.args,
+      subprocess.CalledProcessError: Command '['ninja', '-v', '-j', '2']' returned non-zero exit status 1.
+      
+      The above exception was the direct cause of the following exception:
+      
+      Traceback (most recent call last):
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
+          main()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 280, in build_wheel
+          return _build_backend().build_wheel(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/build_meta.py", line 441, in build_wheel
+          return _build(['bdist_wheel', '--dist-info-dir', str(metadata_directory)])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/build_meta.py", line 429, in _build
+          return self._build_with_temp_dir(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/build_meta.py", line 410, in _build_with_temp_dir
+          self.run_setup()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/build_meta.py", line 520, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())  # noqa: S102 # exec is intentional here
+          ^^^^^^^^^^^^^^^^^^^^
+        File "<string>", line 238, in <module>
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/__init__.py", line 117, in setup
+          return distutils.core.setup(**attrs)  # type: ignore[return-value]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/core.py", line 168, in setup
+          return run_commands(dist)
+                 ^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/core.py", line 184, in run_commands
+          dist.run_commands()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1028, in run_commands
+          self.run_command(cmd)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/dist.py", line 1106, in run_command
+          super().run_command(command)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1047, in run_command
+          cmd_obj.run()
+        File "<string>", line 235, in run
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/command/bdist_wheel.py", line 385, in run
+          self.run_command("build")
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/cmd.py", line 342, in run_command
+          self.distribution.run_command(command)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/dist.py", line 1106, in run_command
+          super().run_command(command)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1047, in run_command
+          cmd_obj.run()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/command/build.py", line 137, in run
+          self.run_command(cmd_name)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/cmd.py", line 342, in run_command
+          self.distribution.run_command(command)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/dist.py", line 1106, in run_command
+          super().run_command(command)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1047, in run_command
+          cmd_obj.run()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/command/build_ext.py", line 95, in run
+          _build_ext.run(self)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 382, in run
+          self.build_extensions()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 868, in build_extensions
+          build_ext.build_extensions(self)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 498, in build_extensions
+          self._build_extensions_serial()
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 524, in _build_extensions_serial
+          self.build_extension(ext)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/command/build_ext.py", line 260, in build_extension
+          _build_ext.build_extension(self, ext)
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 585, in build_extension
+          objects = self.compiler.compile(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 681, in unix_wrap_ninja_compile
+          _write_ninja_file_and_compile_objects(
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 1784, in _write_ninja_file_and_compile_objects
+          _run_ninja_build(
+        File "/scratch/gz2522/gz2522/tmp/micro-hackthon/env/dynax-py312/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2120, in _run_ninja_build
+          raise RuntimeError(message) from e
+      RuntimeError: Error compiling objects for extension
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for fast_hadamard_transform
+Failed to build fast_hadamard_transform
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> fast_hadamard_transform
