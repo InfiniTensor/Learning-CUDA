@@ -1,0 +1,7 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+rounding = "stochastic"
+stochastic_seed = 20260917
+output_type = "fp16"
+target_gpu = "RTX 4060"
