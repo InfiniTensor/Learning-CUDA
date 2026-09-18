@@ -1,0 +1,60 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "QUANT_DEQUANT_BUILD_APPS": "ON",
+        "QUANT_DEQUANT_BUILD_BENCHMARKS": "ON",
+        "QUANT_DEQUANT_BUILD_TESTS": "ON",
+        "QUANT_DEQUANT_CUDA_ARCHITECTURES": "89"
+      }
+    },
+    {
+      "name": "rtx4060-release",
+      "displayName": "RTX 4060 Release",
+      "description": "为 NVIDIA RTX 4060（compute capability 8.9）构建 Release 版本。",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "rtx4060-debug",
+      "displayName": "RTX 4060 Debug",
+      "description": "为 NVIDIA RTX 4060（compute capability 8.9）构建 Debug 版本。",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "rtx4060-release",
+      "configurePreset": "rtx4060-release"
+    },
+    {
+      "name": "rtx4060-debug",
+      "configurePreset": "rtx4060-debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "rtx4060-release",
+      "configurePreset": "rtx4060-release"
+    },
+    {
+      "name": "rtx4060-debug",
+      "configurePreset": "rtx4060-debug"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+rounding = "nearest"
+output_type = "bf16"
+target_gpu = "RTX 4060"

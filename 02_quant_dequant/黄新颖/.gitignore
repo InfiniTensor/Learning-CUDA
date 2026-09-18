@@ -1,0 +1,32 @@
+# CMake 与本地构建目录
+/build/
+/cmake-build-*/
+/CMakeCache.txt
+/CMakeFiles/
+/CTestTestfile.cmake
+/Testing/
+/compile_commands.json
+/CMakeUserPresets.json
+
+# 程序运行产生的文件
+/outputs/
+/logs/
+*.log
+*.jsonl
+*.csv
+
+# Python 实验脚本的解释器缓存
+__pycache__/
+*.pyc
+
+# 大型或临时二进制数据；小型测试样例可显式保留在 tests/data/。
+*.bin
+!tests/data/
+!tests/data/**/*.bin
+
+# CUDA 分析和编译中间产物
+*.ptx
+*.cubin
+*.fatbin
+*.nsys-rep
+*.ncu-rep
