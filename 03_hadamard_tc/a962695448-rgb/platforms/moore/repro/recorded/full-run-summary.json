@@ -1,0 +1,533 @@
+{
+  "status": "PASS",
+  "platform": "moore",
+  "target_model": "MTT S4000",
+  "base_commit": "cb82ea6e1d5c8f78b48b6922b0f7af279696cc44",
+  "source_sha256": {
+    "platforms/moore/hadamard_api.h": "cba4d5c187defec8f70083a02ba252da8d73f5fba5b1b7692efb91dd1a0c4d93",
+    "platforms/moore/hadamard_api.mu": "f9c7fb325cbdc19e57e5c02ce58ec973197b75039fff38eb4b1fbac4daec4a80",
+    "platforms/moore/validate_and_benchmark.mu": "2a23a7938bd3140742b3c45f6b85db08d539bf03d4cb44ee9a48be41a268459e",
+    "platforms/moore/probe.mu": "2e777447c5153b55a7eee8bd7729170517637c4e04cb3cdbe89c6c51ec58bccd",
+    "platforms/moore/run_platform.py": "d92b236ca4bcaff910921e2d0ef21f452968bb66f1bd98a1a157c0a7c8a88773",
+    "platforms/moore/exact_int4.hpp": "784078d707dc6834ada435842a1a721b28acd953ecdb78f32e70b94ec6805f7a",
+    "include/reference.hpp": "1ff2c70cc8849020bd413a1d174718683bd89d5b6d8f25ee0a01d1c9b8876888"
+  },
+  "started_utc": "2026-09-15T16:42:54Z",
+  "python": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+  "arch": "mp_22",
+  "quick": false,
+  "shuffle32_enabled": true,
+  "scope": "validation",
+  "stages": [
+    {
+      "command": [
+        "/usr/local/musa-5.1.0/bin/mcc",
+        "-std=c++17",
+        "-O2",
+        "-fno-fast-math",
+        "-ffp-contract=off",
+        "--offload-arch=mp_22",
+        "-I/data/moore-opt-20260916/project/include",
+        "/data/moore-opt-20260916/project/platforms/moore/probe.mu",
+        "-L/usr/local/musa-5.1.0/lib",
+        "-lmusart",
+        "-o",
+        "/data/moore-opt-20260916/runs/full/probe"
+      ],
+      "log": "probe_build.log",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "wall_seconds": 1.679499724006746,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/probe"
+      ],
+      "log": "probe.log",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "wall_seconds": 0.06223989499267191,
+      "sha256": "185e3405158ba1df91d2b5337045438c522c08d26b06ade0e0226ad075c6a4a1"
+    },
+    {
+      "command": [
+        "/usr/local/musa-5.1.0/bin/mcc",
+        "-std=c++17",
+        "-O2",
+        "-fno-fast-math",
+        "-ffp-contract=off",
+        "--offload-arch=mp_22",
+        "-I/data/moore-opt-20260916/project/include",
+        "-DHADAMARD_MOORE_SHUFFLE32",
+        "/data/moore-opt-20260916/project/platforms/moore/hadamard_api.mu",
+        "/data/moore-opt-20260916/project/platforms/moore/validate_and_benchmark.mu",
+        "-L/usr/local/musa-5.1.0/lib",
+        "-lmusart",
+        "-o",
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark"
+      ],
+      "log": "build.log",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "wall_seconds": 12.295903087011538,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark"
+      ],
+      "log": "invalid_00.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0017629349604249,
+      "sha256": "57a02a5ddbdd1c62c445fa1feac13e27585b3837bd9d9ed0d3cd869a33e3c26e"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--dim",
+        "0"
+      ],
+      "log": "invalid_01.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0016300660208798945,
+      "sha256": "db18b9f8d2040efced14ec6027b078290f358387206be6945f703d8bd4b5d7b7"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--dim",
+        "3"
+      ],
+      "log": "invalid_02.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0015659669879823923,
+      "sha256": "fe9b4ea505976f30aab4a65234e33296fa2f61a7068429b2611ff99644178709"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--dim",
+        "512"
+      ],
+      "log": "invalid_03.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0015901500009931624,
+      "sha256": "699f1f70340c77149d3bae4063f00207638e87be51bb3bb02bb2a99a650e68a1"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--dtype",
+        "fp32"
+      ],
+      "log": "invalid_04.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014455250347964466,
+      "sha256": "5d1c70e05b6561f86a8c8c5bec7d168cbfc043fdfb9e1e7af32b5a87c1b1ff90"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--batch",
+        "-1"
+      ],
+      "log": "invalid_05.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014556659734807909,
+      "sha256": "3bac927d06f4ce7258f9c037afb2b3a5dfdc51f7504c16e4b1dae94bcc91cf1b"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--seq",
+        "0"
+      ],
+      "log": "invalid_06.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.001422279980033636,
+      "sha256": "49316fe0d2d4c9660cf5218d6ee6bc3708e737c38cfc3b53775f0636dc194997"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--heads",
+        "x"
+      ],
+      "log": "invalid_07.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014643610338680446,
+      "sha256": "6d69299a2872ffc0a140db9fc171769b85e3f61111a5e73399436d32cb0fc27b"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--batch",
+        "18446744073709551615",
+        "--seq",
+        "2"
+      ],
+      "log": "invalid_08.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.001547265041153878,
+      "sha256": "439fd2b48f724414272ea4a69fae98cf1809e904afe56e2e8edd677e50993d56"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--heads",
+        "999999999999999999999999999999"
+      ],
+      "log": "invalid_09.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014633550308644772,
+      "sha256": "4b8c91252c32d2f7cbcebc21561c29defe89809c97c23be7ab6a3577d4b74a3d"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--dim"
+      ],
+      "log": "invalid_10.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014155349927023053,
+      "sha256": "76dd633500e539227532274081e41835e98a9cb82d73ba955f92c00ee1606cd0"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--unknown",
+        "1"
+      ],
+      "log": "invalid_11.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014265060308389366,
+      "sha256": "be700711fd27b9719a4f6d490ef528894b371271344313d04298e25d9879ba54"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--benchmark",
+        "--repeats",
+        "0"
+      ],
+      "log": "invalid_12.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.0014229940134100616,
+      "sha256": "eaddd4706d0da47a6fccbd2f81b6ace09f4f708d23cfc9b844f35d94f39d6241"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--benchmark",
+        "--groups",
+        "10001"
+      ],
+      "log": "invalid_13.log",
+      "returncode": 2,
+      "expected_returncode": 2,
+      "wall_seconds": 0.001408968004398048,
+      "sha256": "2116fe98f2998004c6367f99717fa82db3c3f77374b5c86cbeab03ca8922256e"
+    },
+    {
+      "command": [
+        "/data/moore-opt-20260916/runs/full/validate_and_benchmark",
+        "--validate",
+        "--json",
+        "/data/moore-opt-20260916/runs/full/validation.json"
+      ],
+      "log": "validation.log",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "wall_seconds": 7.062892174988519,
+      "sha256": "70bd5a3305631837b480b31abea36dc67277bb48c89ccc73090dd4062357153b"
+    }
+  ],
+  "compiler": {
+    "command": [
+      "/usr/local/musa-5.1.0/bin/mcc",
+      "--version"
+    ],
+    "returncode": 0,
+    "output": "clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git 61c54cd8e5c72ef146656c7beee1889a837ed7bc)\nmcc version 5.1.0\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /usr/local/musa-5.1.0/bin\n"
+  },
+  "device_before": {
+    "command": [
+      "mthreads-gmi"
+    ],
+    "returncode": 0,
+    "output": "Wed Sep 16 00:42:54 2026\n---------------------------------------------------------------------\n    mthreads-gmi:2.4.1           Driver Version:5.1.0-server\n---------------------------------------------------------------------\nID   Name                 |PCIe                |%GPU  Mem             \n     Device Type   Perf   |Pcie Lane Width     |Temp  MPC Capable     \n                                               |      ECC Mode        \n+-------------------------------------------------------------------+\n0    MTT S4000            |00000000:08:00.0    |0%    0MiB(49152MiB)\n     Physical      N/A    |16x(16x)            |50C   YES             \n                                               |      N/A             \n---------------------------------------------------------------------\n\n---------------------------------------------------------------------\nProcesses:\nID   PID           Process name                           GPU Memory\n                                                               Usage\n+-------------------------------------------------------------------+\n   No running processes found\n---------------------------------------------------------------------\n"
+  },
+  "sdk_version": {
+    "musa_toolkits": {
+      "version": "5.1.0",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "AIMODULE_1.4.0",
+      "commit id": "e1481406739bd545c45c4b852450a81ac5feee6c",
+      "commit date": "2026-03-06 20:38:51 +0800"
+    },
+    "CUB": {
+      "version": "1.17.2",
+      "git branch": "develop-1.17",
+      "git tag": "No tag",
+      "commit id": "2aa7e2b6a2e82ca339ca132d345377d6faef6024",
+      "commit date": "2026-04-22 21:48:03 +0800"
+    },
+    "mcc": {
+      "version": "5.1.0",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "61c54cd8e5c72ef146656c7beee1889a837ed7bc",
+      "commit date": "2026-04-28 15:32:37 +0800"
+    },
+    "mtjpeg": {
+      "version": "1.0.5",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "070f3ff97088cfdef12da04b09af22bfc862874c",
+      "commit date": "2026-03-23 13:40:41 +0800"
+    },
+    "mublasLt": {
+      "version": "1.12.0",
+      "build archs": "22,31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "AIMODULE_1.4.0",
+      "commit id": "b99c7919a587a92ec1f24b75a633d18da754377b",
+      "commit date": "2026-04-07 14:08:36 +0800"
+    },
+    "mublas": {
+      "version": "1.12.0",
+      "build archs": "22,31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "4bced69bfb393863c43c23e9d21fbce6e2ff9ffd",
+      "commit date": "2026-04-23 19:16:27 +0800"
+    },
+    "mufft": {
+      "version": "1.12.0",
+      "build archs": "22;31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "AIMODULE_1.4.0",
+      "commit id": "0a2e9ac103e2d54c384947561076c682c6811c1e",
+      "commit date": "2026-03-11 19:24:16 +0800"
+    },
+    "muPP": {
+      "version": "1.13.0",
+      "build archs": "22;31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "AIMODULE_1.4.0",
+      "commit id": "0a8b4f2b1c8f9928130fa882a97705be2fc693e2",
+      "commit date": "2026-03-12 14:48:07 +0800"
+    },
+    "MUPTI": {
+      "version": "1.2.0",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "453615f9e030b4c0bd101ce44d60346a1ffee11b",
+      "commit date": "2026-04-28 12:40:08 +0800"
+    },
+    "murand": {
+      "version": "1.3.0",
+      "build archs": "22;31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "AIMODULE_1.4.0",
+      "commit id": "525224ed521b4cb0af25ada59b84583241e57761",
+      "commit date": "2026-03-27 19:58:21 +0800"
+    },
+    "musa_runtime": {
+      "version": "5.1.0",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "73921cd20f278bd905e50dbd920c976d93cc18b4",
+      "commit date": "2026-04-24 13:42:11 +0800"
+    },
+    "musify": {
+      "version": "1.2.0",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "a5f79eb9e507dd7bfa1b5bd8b6b833f671c6b8c1",
+      "commit date": "2026-04-08 14:58:40 +0800"
+    },
+    "musolver": {
+      "version": "1.6.0",
+      "build archs": "22,31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "f6062eb2da90ad3b5091a91d3348423649275d12",
+      "commit date": "2026-04-25 19:06:04 +0800"
+    },
+    "musparse": {
+      "version": "1.7.0",
+      "build archs": "22,31",
+      "git branch": "release_musa_5.1.0",
+      "git tag": "No tag",
+      "commit id": "3b5df2ca75c504c98821bc2cd71a9160ddf4eb55",
+      "commit date": "2026-04-27 17:08:43 +0800"
+    },
+    "Thrust": {
+      "version": "1.17.2",
+      "git branch": "develop-1.17",
+      "git tag": "No tag",
+      "commit id": "bffd03bde9af75266cc1a51d46cde48f4bcd9280",
+      "commit date": "2026-04-22 21:51:23 +0800"
+    }
+  },
+  "probe_sha256": "694c0d6f3e751e63976999ee0cd42c655835eb158c52cbfbef618ea6c20e1de0",
+  "binary_sha256": "1155d721fe4e48c51bcde8c6fa0cf1f962be313e742ea102962c0a3353a91cd8",
+  "cli_rejection_cases": 14,
+  "validation": {
+    "status": "PASS",
+    "platform": "moore",
+    "warp_size": 128,
+    "full_matrix": true,
+    "shuffle32_enabled": true,
+    "methods": [
+      "baseline",
+      "optimized",
+      "shuffle32"
+    ],
+    "oracle": "all-element FP64 dense, rounded to output dtype",
+    "fp16_tolerance_strict": 0.01,
+    "bf16_tolerance_strict": 0.05,
+    "warmup_not_counted": true,
+    "dtypes": {
+      "fp16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 0.00390625,
+        "max_abs_error_unrounded_fp64": 0.015620231628418,
+        "api_contract_checks": 96
+      },
+      "bf16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 3.814697265625e-06,
+        "max_abs_error_unrounded_fp64": 0.124984741210938,
+        "api_contract_checks": 96
+      }
+    }
+  },
+  "finished_utc": "2026-09-15T16:43:15Z",
+  "artifacts": {
+    "validation.log": {
+      "bytes": 2449,
+      "sha256": "70bd5a3305631837b480b31abea36dc67277bb48c89ccc73090dd4062357153b"
+    },
+    "invalid_10.log": {
+      "bytes": 41,
+      "sha256": "76dd633500e539227532274081e41835e98a9cb82d73ba955f92c00ee1606cd0"
+    },
+    "invalid_00.log": {
+      "bytes": 55,
+      "sha256": "57a02a5ddbdd1c62c445fa1feac13e27585b3837bd9d9ed0d3cd869a33e3c26e"
+    },
+    "validate_and_benchmark": {
+      "bytes": 1010176,
+      "sha256": "1155d721fe4e48c51bcde8c6fa0cf1f962be313e742ea102962c0a3353a91cd8"
+    },
+    "invalid_08.log": {
+      "bytes": 48,
+      "sha256": "439fd2b48f724414272ea4a69fae98cf1809e904afe56e2e8edd677e50993d56"
+    },
+    "invalid_11.log": {
+      "bytes": 44,
+      "sha256": "be700711fd27b9719a4f6d490ef528894b371271344313d04298e25d9879ba54"
+    },
+    "probe.log": {
+      "bytes": 293,
+      "sha256": "185e3405158ba1df91d2b5337045438c522c08d26b06ade0e0226ad075c6a4a1"
+    },
+    "invalid_04.log": {
+      "bytes": 50,
+      "sha256": "5d1c70e05b6561f86a8c8c5bec7d168cbfc043fdfb9e1e7af32b5a87c1b1ff90"
+    },
+    "probe_build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "invalid_03.log": {
+      "bytes": 41,
+      "sha256": "699f1f70340c77149d3bae4063f00207638e87be51bb3bb02bb2a99a650e68a1"
+    },
+    "invalid_12.log": {
+      "bytes": 58,
+      "sha256": "eaddd4706d0da47a6fccbd2f81b6ace09f4f708d23cfc9b844f35d94f39d6241"
+    },
+    "invalid_06.log": {
+      "bytes": 54,
+      "sha256": "49316fe0d2d4c9660cf5218d6ee6bc3708e737c38cfc3b53775f0636dc194997"
+    },
+    "build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "invalid_13.log": {
+      "bytes": 45,
+      "sha256": "2116fe98f2998004c6367f99717fa82db3c3f77374b5c86cbeab03ca8922256e"
+    },
+    "invalid_02.log": {
+      "bytes": 55,
+      "sha256": "fe9b4ea505976f30aab4a65234e33296fa2f61a7068429b2611ff99644178709"
+    },
+    "validation.json": {
+      "bytes": 1046,
+      "sha256": "f7c7af273bc74c40d602227ef0014eb23ce07b07380bbeb893622f294cbee19e"
+    },
+    "invalid_09.log": {
+      "bytes": 24,
+      "sha256": "4b8c91252c32d2f7cbcebc21561c29defe89809c97c23be7ab6a3577d4b74a3d"
+    },
+    "invalid_07.log": {
+      "bytes": 52,
+      "sha256": "6d69299a2872ffc0a140db9fc171769b85e3f61111a5e73399436d32cb0fc27b"
+    },
+    "probe": {
+      "bytes": 25872,
+      "sha256": "694c0d6f3e751e63976999ee0cd42c655835eb158c52cbfbef618ea6c20e1de0"
+    },
+    "invalid_01.log": {
+      "bytes": 54,
+      "sha256": "db18b9f8d2040efced14ec6027b078290f358387206be6945f703d8bd4b5d7b7"
+    },
+    "invalid_05.log": {
+      "bytes": 52,
+      "sha256": "3bac927d06f4ce7258f9c037afb2b3a5dfdc51f7504c16e4b1dae94bcc91cf1b"
+    }
+  }
+}

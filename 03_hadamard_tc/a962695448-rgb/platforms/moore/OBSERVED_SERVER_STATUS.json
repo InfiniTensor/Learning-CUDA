@@ -1,0 +1,61 @@
+{
+  "scope": "实机状态及验证摘要的历史快照，GitHub 提交状态以分支历史为准。",
+  "base_commit": "cb82ea6e1d5c8f78b48b6922b0f7af279696cc44",
+  "device": "MTT S4000",
+  "sdk": "MUSA 5.1.0",
+  "driver": "5.1.0-server",
+  "target_arch": "mp_22",
+  "reported_warp_size": 128,
+  "device_code_warp_size": 32,
+  "pipeline_status": "PASS",
+  "full_validation": {
+    "status": "PASS",
+    "platform": "moore",
+    "warp_size": 128,
+    "full_matrix": true,
+    "shuffle32_enabled": true,
+    "methods": [
+      "baseline",
+      "optimized",
+      "shuffle32"
+    ],
+    "oracle": "all-element FP64 dense, rounded to output dtype",
+    "fp16_tolerance_strict": 0.01,
+    "bf16_tolerance_strict": 0.05,
+    "warmup_not_counted": true,
+    "dtypes": {
+      "fp16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 0.00390625,
+        "max_abs_error_unrounded_fp64": 0.015620231628418,
+        "api_contract_checks": 96
+      },
+      "bf16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 3.814697265625e-06,
+        "max_abs_error_unrounded_fp64": 0.124984741210938,
+        "api_contract_checks": 96
+      }
+    }
+  },
+  "cli_rejection_cases": 14,
+  "paired_observations": 6750,
+  "power_state_at_delivery": "OFF_CONFIRMED",
+  "text_files_verified": 77,
+  "fixture_verified_locally": true,
+  "all_server_binaries_downloaded": false
+}

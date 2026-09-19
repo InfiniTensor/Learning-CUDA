@@ -1,0 +1,561 @@
+{
+  "archive_commit": "3676727fc21ea27bda668d743d10e52d7e138f68",
+  "upstream_base": "a17ce401ad3e49d0871e946d6ac6d7d09c35cb74",
+  "historical_results_files_referenced_externally": 2586,
+  "computation_and_build_sources_unchanged": false,
+  "sources": [
+    {
+      "path": "Makefile",
+      "git_blob_sha": "97e13167aabe95e5461df101aaaf6cbf4be30d96",
+      "sha256": "61ff9c3d8ecd66773e8d59b6496201bbbfb661a12232e690d776dc8a1630e93f",
+      "archive_git_blob_sha": "288f6b6cfefc7f8e63e469ed9fa7d16d4021c9ca",
+      "archive_sha256": "8f15a347ded757dfcb6c54cb2444265e549c3245d928e2652d8195e342cd4d73"
+    },
+    {
+      "path": "include/contiguous256.cuh",
+      "git_blob_sha": "00937d7680368b6ffe54f3c91ea282b497148bf7",
+      "sha256": "885894d568009fdf75ae9131b317ae5a5df4e4272d2f69843e355f86877f0e57",
+      "archive_git_blob_sha": "5e940d50e42ddc3048c68d07e2d0a75ab5ef864b",
+      "archive_sha256": "dd25a633e6740a20b77c1c19ab375ca4ee8190e4a63ea4b82b17669406c46102"
+    },
+    {
+      "path": "include/kernels.cuh",
+      "git_blob_sha": "9c32fcfcd7f592d2f752d08b20e9b96162947e0e",
+      "sha256": "f5098f9e5e7c1934a2fd21a4d665bf19da6aeda11f58abd4bc555c88672ae4bc",
+      "archive_git_blob_sha": "4618f3fd2964dff2341b6cdbfd402da00e55ae26",
+      "archive_sha256": "12bf5330c4a9825312421fee9836f9fb8a1eeae83ebff346990aac2a29e275fe"
+    },
+    {
+      "path": "include/packed_rows.cuh",
+      "git_blob_sha": "ca599d395e25992000ffb8c58d0fce678fc7141c",
+      "sha256": "6a0dfe4c020cd8c3fba5da4c35f1ceabdb2b2b948e1ab90553bc0cd1b9c93b30"
+    },
+    {
+      "path": "include/reference.hpp",
+      "git_blob_sha": "e06ce3fef99a5b431ef0a0c23e0e59bbb5a582a7",
+      "sha256": "5be2751c9ebf3729bf6a59e19c9b91ad52a6b3a7d86720de4a23880f76deb3c4"
+    },
+    {
+      "path": "include/row_policy.hpp",
+      "git_blob_sha": "84f9fce567cb156dab9e9d3642f4fb4a20f26653",
+      "sha256": "9f4bea3233106a446d650e8d4b9f96dfae22571abc2eed8a1cce0b4b5215253d",
+      "archive_git_blob_sha": "b2d64d5437446cecd69c49e1e1460afc4ff38c10",
+      "archive_sha256": "57c319d22f5e9c74539134bf6cb077a43ab81e4c0f4dacf23348379f1e562a62"
+    },
+    {
+      "path": "platforms/ascend/CMakeLists.txt",
+      "git_blob_sha": "993c61ac0377441133a2431f2ec944788fac9daf",
+      "sha256": "3ce9073967af0d0be8016fe23c0b1e3b0fa1c90e1536276d896fec9c276cb6ef"
+    },
+    {
+      "path": "platforms/ascend/hadamard_api.cpp",
+      "git_blob_sha": "8c4456af283714e9412f4eadaeddef075bbb97b9",
+      "sha256": "da5777047a5228d2a05e4149223f162ea27eeaed6ea28fd134563ff06ecc46a6"
+    },
+    {
+      "path": "platforms/ascend/hadamard_api.h",
+      "git_blob_sha": "203f83a9af82e5020d790847a17cd1bbddc99c46",
+      "sha256": "e6e6197708bdbfedc9826f693a5dfe905121e488069efad2468453b9f27745f6"
+    },
+    {
+      "path": "platforms/ascend/hadamard_kernel.cpp",
+      "git_blob_sha": "832bd7b344f48070fdff45c6302fc6405fd393cf",
+      "sha256": "a1e1d4c19d38058cf4875931abd8eda187d87b314539549d50f8a710dca771eb"
+    },
+    {
+      "path": "platforms/ascend/run_platform.py",
+      "git_blob_sha": "d8609abb475012bd08beb53e213d122dcfad2944",
+      "sha256": "a1c08ec5fc9d0571a72e050fef74243b1f21a1d2fbee0654096183a4d3a484dd"
+    },
+    {
+      "path": "platforms/ascend/validate_and_benchmark.cpp",
+      "git_blob_sha": "8aadb0254ac6dd5b9c64035f52d8724dd151ae49",
+      "sha256": "cbdbe64e0cecc4d8af6e3ea1e6acb318dabc03cb990090b2343c7f3085d58a4f"
+    },
+    {
+      "path": "platforms/biren/hadamard_api.h",
+      "git_blob_sha": "1e8d545bfd309e64b9807f0bd44834bd3557c095",
+      "sha256": "1fb2e487891aa8aca3b5f03bef2647654af7f2fe8f41b76a2d57a6ae741b38e6"
+    },
+    {
+      "path": "platforms/biren/hadamard_api.su",
+      "git_blob_sha": "6a4b0cdf34b398864ca4777ba417b97c67c92354",
+      "sha256": "310b54d1818c9b518f70c481a02ba6bd86e472c126ef261beff4524aef021396"
+    },
+    {
+      "path": "platforms/biren/run_platform.py",
+      "git_blob_sha": "386e6e59c900a21624500a235c7712d7529662fe",
+      "sha256": "dfcdf9d7a4030ad8337c41f0f3fd53e0c5a88af9031af38ead36dd9cc6b41585"
+    },
+    {
+      "path": "platforms/biren/validate_and_benchmark.su",
+      "git_blob_sha": "e4a976b8e80db8b80fef75b01d7588b4d6d18325",
+      "sha256": "fb8ce24e1250dcc7a0ebcfe845201be7892a5596ba6f7a96b9170e19a7517adb"
+    },
+    {
+      "path": "platforms/iluvatar/analyze_runs.py",
+      "git_blob_sha": "700e7ba2d2c78a2015298c5fb79ec9ea3ced6a45",
+      "sha256": "ec9a66a6d33f8b84d0970f5e2e8ad5932885884f48914966119ec6be7f9e1142"
+    },
+    {
+      "path": "platforms/iluvatar/hadamard_api.cu",
+      "git_blob_sha": "c4191e64a9fe77293cc5f6c1a087f8d3f1fb7921",
+      "sha256": "7b33cd38339efaeb36b5829338fda044109a9b1cd38f1b925cc79cbe063c7330"
+    },
+    {
+      "path": "platforms/iluvatar/hadamard_api.h",
+      "git_blob_sha": "9beb6db9852c1e88ae1db937865e3f4499f316fc",
+      "sha256": "aaf22b677b43f67e3d8489529f03dcaea21a962a947a50927d05f55ed5e2f570"
+    },
+    {
+      "path": "platforms/iluvatar/run_platform.py",
+      "git_blob_sha": "61d044c7dfddee9df8731d32ef6668fe24b18cfc",
+      "sha256": "f48906d8536822631a2c41e0bbd4e574b3ec09da8917fa7265b6049da0276bbe"
+    },
+    {
+      "path": "platforms/iluvatar/shared_baseline.cu",
+      "git_blob_sha": "e6763cbc4bc0da18cba86e8e083290ee58a94459",
+      "sha256": "d8b00f6e60feaf0dd450ca66255e05bd7e0e01a060d911a9fc7c61779023f180"
+    },
+    {
+      "path": "platforms/iluvatar/validate_and_benchmark.cu",
+      "git_blob_sha": "686b7b9b05cc5005f4ecbb6432b99f8358586975",
+      "sha256": "3712dc8513b5a298d572d32a6faacac468a47d21d73a7cc37a724613a7f7405d"
+    },
+    {
+      "path": "platforms/metax/hadamard_api.cu",
+      "git_blob_sha": "b0c828ba755e56c5610545c01b59d10c5c875c7a",
+      "sha256": "407e6b7e962f9f14c910a6714c5443446bd4b99e33ea2c15fb018065c7f15b71"
+    },
+    {
+      "path": "platforms/metax/hadamard_api.h",
+      "git_blob_sha": "324032daf4184fe40bf575dc2acf85621dfd6d3e",
+      "sha256": "d8e6d120dc38aa7256daef411e08956c4a045989b3975fb22c663bf50b2f9a4d"
+    },
+    {
+      "path": "platforms/metax/run_platform.py",
+      "git_blob_sha": "a1fb213a05346838f665d681cf6d43659832d3c9",
+      "sha256": "1667504c3f15b1010ab36ad0c75c7524c4325cdee69ddf8e3d56ad4337677e08"
+    },
+    {
+      "path": "platforms/metax/validate_and_benchmark.cu",
+      "git_blob_sha": "eccd6d3a5b123dcb8ca2ce8174ad3e53d64f42ab",
+      "sha256": "cce649557ed63f8459c5b03e6fc8943aef47dcf8dc26b10d24a659995752ad47"
+    },
+    {
+      "path": "platforms/moore/Makefile",
+      "git_blob_sha": "67318f7889d58bb82b38030fd79a45d95b9e8140",
+      "sha256": "ccd363d6e1152d1fb3e47f856ecf05bbd431519329effb9f46924cc434e4917c"
+    },
+    {
+      "path": "platforms/moore/analyze_results.py",
+      "git_blob_sha": "c9be695d6f643f43af54ef281bc729a9d11b8eed",
+      "sha256": "68efa54dda9b5d95d35746c5ca66a79fda1f77980c617c06218867897f4df0e2"
+    },
+    {
+      "path": "platforms/moore/exact_int4.hpp",
+      "git_blob_sha": "2a1cd4043bc4af5282a63f1a6453f2948608dcc3",
+      "sha256": "784078d707dc6834ada435842a1a721b28acd953ecdb78f32e70b94ec6805f7a"
+    },
+    {
+      "path": "platforms/moore/hadamard_api.h",
+      "git_blob_sha": "1c437ef4c5382a7471b3fff47c3f4fea67ca73f6",
+      "sha256": "cba4d5c187defec8f70083a02ba252da8d73f5fba5b1b7692efb91dd1a0c4d93"
+    },
+    {
+      "path": "platforms/moore/hadamard_api.mu",
+      "git_blob_sha": "28a29c63950a230045be6b6856cd8ef2da97ec88",
+      "sha256": "f9c7fb325cbdc19e57e5c02ce58ec973197b75039fff38eb4b1fbac4daec4a80"
+    },
+    {
+      "path": "platforms/moore/probe.mu",
+      "git_blob_sha": "da10eb7451460c4696563dcbdd1d6aac7cb3d2df",
+      "sha256": "2e777447c5153b55a7eee8bd7729170517637c4e04cb3cdbe89c6c51ec58bccd"
+    },
+    {
+      "path": "platforms/moore/repro/analyze_optimization.py",
+      "git_blob_sha": "0536e7d642928679c37e42f5c9676b171e345c13",
+      "sha256": "8d6f11ca3fd7b8c709a0885502272d472d8169027fe29b652afd2d8c70f758d0"
+    },
+    {
+      "path": "platforms/moore/repro/check_quant_cpu.cpp",
+      "git_blob_sha": "77c32413cf53d53685406e7c544cdae3a538c0c4",
+      "sha256": "8d4c6702c36a81f1cdef27df8e4b6bb413b92585d5169f21053d97ac1a450d1a"
+    },
+    {
+      "path": "platforms/moore/repro/check_quant_cpu.py",
+      "git_blob_sha": "cb236b18cd9c7cb6478acffd227d6dded4aed9bc",
+      "sha256": "50d2a8115079c039541818765317bb6efb0efac24ed85b4586bef79e14c49227"
+    },
+    {
+      "path": "platforms/moore/repro/check_quant_gpu.mu",
+      "git_blob_sha": "2455fabb0a8b37e5368f9e975bb61a4a31b59225",
+      "sha256": "e51771809fb54db5cdb9e63c142f5266f2105ce0777d24577e428941f89f3b5d"
+    },
+    {
+      "path": "platforms/moore/repro/control/control_api.h",
+      "git_blob_sha": "744e12d740f1b494ce7c397f64ffa86070db49bf",
+      "sha256": "b40c05f707e806381b3b7440537a435fdb4137cf27b78d403b336b32bf722014"
+    },
+    {
+      "path": "platforms/moore/repro/control/control_api.mu",
+      "git_blob_sha": "bda8354d20b68cb0a6f600de96b62573c91bc4af",
+      "sha256": "d3ebe8f53f076a66db0cdc5d8cca5092fa821c729336949c3e2913d45e5ad56c"
+    },
+    {
+      "path": "platforms/moore/repro/paired_benchmark.mu",
+      "git_blob_sha": "7cc7fde3a512d661156a7bca0071cc4bdea90794",
+      "sha256": "138e6dd6ec9f9fd959162ae5edc0d27727e355ba5354cd1bd70bf702cfc69043"
+    },
+    {
+      "path": "platforms/moore/repro/test_analyze_optimization.py",
+      "git_blob_sha": "069ad03ed2f19935c687466d0d0db8119ed7490a",
+      "sha256": "d05f1426a406c21aa37efccd5f0d09e3856f281ad84aa6706c13a6806216156e"
+    },
+    {
+      "path": "platforms/moore/run_platform.py",
+      "git_blob_sha": "124bd82dc75aa8d2b9a9a2ec1ccd54c744ce7571",
+      "sha256": "d92b236ca4bcaff910921e2d0ef21f452968bb66f1bd98a1a157c0a7c8a88773"
+    },
+    {
+      "path": "platforms/moore/validate_and_benchmark.mu",
+      "git_blob_sha": "2cb2977f5be413c81b409164dfcb6b8f43cce9ee",
+      "sha256": "2a23a7938bd3140742b3c45f6b85db08d539bf03d4cb44ee9a48be41a268459e"
+    },
+    {
+      "path": "scripts/build_torch_extension.py",
+      "git_blob_sha": "8883aa543690dbb1ba61052b62842fcd222482fb",
+      "sha256": "b27c9f2e4867ca7a0de79554f1591689124c7b13eb9fb47f0d0300cb7d62402a"
+    },
+    {
+      "path": "scripts/compare_reference.py",
+      "git_blob_sha": "392acd6158c2c0ae651cfc3b28e18232b8b50a39",
+      "sha256": "aca622b5768141b8f0da6d264e693d632f1f25ad6b64e8abc222cb099a704171"
+    },
+    {
+      "path": "scripts/run_validation.py",
+      "git_blob_sha": "c309ce669a5fae89783251d2fd2c05f6e0135d92",
+      "sha256": "986ab36b0ba347ef3bfdabbf133f9c7123bd587ffa21aced76091f033136c55a"
+    },
+    {
+      "path": "scripts/verify_block_threads.py",
+      "git_blob_sha": "0da6570b0628441bd774fce6f2958dabf00026f5",
+      "sha256": "689d9c6116f13571a37dc4853a99323b1aa08203e83b7128ba78e4430783b141"
+    },
+    {
+      "path": "scripts/verify_tensor_metadata.py",
+      "git_blob_sha": "a176dbec5d88ded23b65b90a0c7074e7681be3c1",
+      "sha256": "c0e7e33bd82a1a582a31035ced93cd4a2b0df8f9d8c81a39df0892a76a6eaf12"
+    },
+    {
+      "path": "src/main.cu",
+      "git_blob_sha": "24b1ca90681de9ebf7d9512cd7c14baf39913d73",
+      "sha256": "e3a584baf163f4d6e991c92304dce52bde9c8eeb81d24a93527cad2299287d0d",
+      "archive_git_blob_sha": "6433184a6de7d3ba2abbe661c39728b733c92d16",
+      "archive_sha256": "a77680855fe3bdd907b45651dc5144f6f067c134e7a3e22775d8d27713cac9bc"
+    },
+    {
+      "path": "src/torch_binding.cu",
+      "git_blob_sha": "de75b974d66c574e971aa8fe6feafd0e956c3e1d",
+      "sha256": "d3c4ff3e70c31f9a2866ec9a7511eb725230012e6ddf6f6094d8def81dd2944a",
+      "archive_git_blob_sha": "8919d8e441a2972bc78edb4e0d5b7a23079ad276",
+      "archive_sha256": "0939e6e08f06080c245a171124c1c04a2342298eb69663d4aef4b583f346bed8"
+    },
+    {
+      "path": "src/tune_launch.cu",
+      "git_blob_sha": "4d5f5b8650de2033bae1ca97ddb14951895ebc47",
+      "sha256": "5632eda25a53aa24ff9823ce57443b3901602de4f4c995d5f1b7eb1723a92850",
+      "archive_git_blob_sha": "942b15c7d28befedb01fa099471a7312f86110c4",
+      "archive_sha256": "8a9899f5180180752af20659aca31275279e3c2b1fc1d1baaea69a8b87198212"
+    },
+    {
+      "path": "tests/cpu_reference_test.cpp",
+      "git_blob_sha": "9895de71da56836136db12ef0904e71e3f4bbc96",
+      "sha256": "d436dd007f22669dcb80df7057e1536b223b8e03f7f11f10a6257163939597cc"
+    }
+  ],
+  "closeout_checks": {
+    "cpu_reference": "PASS: 9 matrix-oracle/involution cases, rounding, packing, zero, invalid shape",
+    "moore_offline_analysis": "6750 observations; complete result equals the previously validated analysis",
+    "moore_analysis_tests": 6,
+    "new_gpu_tests": false
+  },
+  "supplemental_test_sources": [
+    {
+      "path": "scripts/verify_execution_context.py",
+      "git_blob_sha": "c9034a55d357025c455a3f48fba3ea7a04f4d68f",
+      "sha256": "a2c1e11c233e388b0b6beec3f6ccadf9cdaa0628f894a7711aaf5de16a165c53"
+    },
+    {
+      "path": "tests/row_policy_test.cpp",
+      "git_blob_sha": "26207f53a5165d4f44c83f1b850ad226c180fbf4",
+      "sha256": "f40bf7370539863f61630a98501f096908bc13fd5115e663ce33c37a679606d4"
+    },
+    {
+      "path": "scripts/verify_out_buffers.py",
+      "sha256": "07daf545e33a099e530586526c19afb79c80efdf2d78273150d1b659312a5cd8",
+      "git_blob_sha": "b3bccd0f09ea513cd8901c8c5be227db1e566b55"
+    },
+    {
+      "path": "scripts/verify_quantize_packed.py",
+      "git_blob_sha": "92b63effad45ff1e125c6460cd1d24193d833078",
+      "sha256": "a3cfa1fb9e7b08e2e24f5c4855f497e0c1eafd7a79ace722c4822e6c41e7d57d"
+    },
+    {
+      "path": "scripts/verify_singleton_quantization.py",
+      "sha256": "e839ed36f6f40c6c07be10d424e750570511b8066ad2f8c83275dc9c520d4977",
+      "git_blob_sha": "660b61300e21942499d8bd6a1725c53c3215c800"
+    },
+    {
+      "path": "scripts/verify_paired_quantization.py",
+      "sha256": "e752d64fd429d6923bd2f94bb30d63f682214fc5771951b48199ced908c604c6",
+      "git_blob_sha": "f0249a5fe5cbf7d6a405d76c521994d37384b9bd"
+    },
+    {
+      "path": "scripts/verify_hadamard_packed.py",
+      "sha256": "78c24e33b34d95dba6b5e55959eabf97e3be16428a9116015616b7d96a72b090",
+      "git_blob_sha": "326b4112d4bb7e8c113ef63821d0dfe0344f3911",
+      "validated_origin": "initial/isolated source/scripts/verify_paired_hadamard.py; byte-identical body"
+    }
+  ],
+  "supplemental_test_scope": "Prior packed Hadamard verifier and rejected low-dimensional paired-transform candidates retain their original scope. The separate N32-256 aligned-IO candidate is now adopted after full frozen three-round validation; see current_validation.",
+  "original_source_changes": [
+    "Makefile",
+    "include/contiguous256.cuh",
+    "include/kernels.cuh",
+    "include/row_policy.hpp",
+    "src/main.cu",
+    "src/torch_binding.cu",
+    "src/tune_launch.cu"
+  ],
+  "original_sources_unchanged_count": 44,
+  "compute_kernels_unchanged": false,
+  "previous_validations": [
+    {
+      "base_commit": "c591085756fec139c55f3de59c2a4ba0742dc5cc",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "unique_configurations": 180,
+      "paired_rounds": 3,
+      "comparisons": 540,
+      "new_route_context_configurations": 16,
+      "cpu_row_policy_checks": 270,
+      "decision": "ACCEPT"
+    },
+    {
+      "base_commit": "bce004ecb2097a20207080f7507e4cfd2ee49d06",
+      "feature": "reusable output APIs",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "positive_configurations": 372,
+      "negative_checks": 63,
+      "mutation_checks": 4,
+      "execution_context_configurations": 24,
+      "paired_rounds": 3,
+      "benchmark_configurations": 72,
+      "benchmark_records": 216,
+      "decision": "ACCEPT",
+      "metric": "synchronized ordinary Python host wall time"
+    },
+    {
+      "base_commit": "28fb3a95ca8bcdf53a66949cfde23820bf7e4005",
+      "feature": "explicit packed quantize-only APIs preserving legacy signatures",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "positive_configurations": 700,
+      "negative_condition_groups": 4,
+      "execution_context_configurations": 16,
+      "graph_replays": 64,
+      "detected_context_negative_controls": 32,
+      "legacy_positive_configurations": 372,
+      "legacy_negative_checks": 63,
+      "mutation_checks": 4,
+      "paired_rounds": 3,
+      "device_benchmark_records": 240,
+      "host_benchmark_records": 240,
+      "decision": "ACCEPT",
+      "metric": "CUDA Graph device event timing and separate synchronized ordinary Python host wall time",
+      "archive_commit": "29bb34a0b2817e282a9554bd92c3911a3c010762",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/29bb34a0b2817e282a9554bd92c3911a3c010762/03_hadamard_tc/a962695448-rgb/results/quantize-packed-20260917"
+    },
+    {
+      "base_commit": "f9da76087f6cbf6aad52e9effa6cf3ac3aabccf0",
+      "feature": "exhaustive singleton INT4 verification; retain existing production kernel",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "unique_storage_encodings": 131072,
+      "unique_finite_values": 128768,
+      "exhaustive_configurations": 8,
+      "production_kernel_unchanged": true,
+      "correctness": "PASS for control and candidate",
+      "candidate_benchmark_decision": "REJECT",
+      "paired_rounds": 3,
+      "device_benchmark_records": 132,
+      "host_benchmark_records": 132,
+      "candidate_target_geomean_range": [
+        1.0265712845681487,
+        1.0436901022093767
+      ],
+      "minimum_target_geomean": 1.1,
+      "archive_commit": "5e80eadd156c82a299e7cc7991bf46d1904243e6",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/5e80eadd156c82a299e7cc7991bf46d1904243e6/03_hadamard_tc/a962695448-rgb/results/singleton-quantization-20260917"
+    },
+    {
+      "base_commit": "fabe4aa1beb4f623564ba02ce8cdf24af5932b11",
+      "feature": "paired explicit quantize-only kernels with compile-time launch dimensions",
+      "device": "NVIDIA GeForce RTX 4090",
+      "finite_component_encodings": 128768,
+      "component_offset_configurations": 64,
+      "packed_positive_configurations": 700,
+      "packed_negative_conditions": 4,
+      "execution_context_configurations": 16,
+      "legacy_positive_configurations": 372,
+      "legacy_negative_checks": 63,
+      "mutation_checks": 4,
+      "paired_rounds": 3,
+      "device_benchmark_records": 288,
+      "host_benchmark_records": 288,
+      "same_function_calibrations": 9,
+      "decision": "ACCEPT",
+      "previous_candidate_decisions": [
+        "REJECT generic launcher",
+        "REJECT runtime-dimension dispatcher",
+        "REJECT long-sampling runtime dispatcher"
+      ],
+      "target_device_geomean_range": [
+        1.3609850971796464,
+        1.4253554874534755
+      ],
+      "archive_commit": "9b3bb79f3c67b6c5e284be7ded9559148b5ae448",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/9b3bb79f3c67b6c5e284be7ded9559148b5ae448/03_hadamard_tc/a962695448-rgb/results/paired-quantization-20260917"
+    },
+    {
+      "base_commit": "b49fff4ac57ae6702213077ebf7ff848cb8715d9",
+      "feature": "packed Hadamard verifier and rejected transform-pair experiments",
+      "device": "NVIDIA GeForce RTX 4090",
+      "production_computation_and_build_unchanged_from_base": true,
+      "baseline_component_offset_configurations": 128,
+      "baseline_execution_context_configurations": 24,
+      "finite_component_encodings": 128768,
+      "candidate_overflow_compatibility_cases_each": 512,
+      "candidate_trials": [
+        {
+          "name": "initial",
+          "device_records": 588,
+          "host_records": 588,
+          "failed_host_records": 3,
+          "decision": "REJECT"
+        },
+        {
+          "name": "isolated fused host dispatch",
+          "device_records": 588,
+          "host_records": 588,
+          "failed_host_records": 5,
+          "decision": "REJECT"
+        }
+      ],
+      "verification_decision": "PASS",
+      "optimization_adoption_decision": "REJECT",
+      "decision": "KEEP_BASELINE",
+      "archive_commit": "3ff75126f3b29458c9a2dfb2665349afb3a4e58e",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/3ff75126f3b29458c9a2dfb2665349afb3a4e58e/03_hadamard_tc/a962695448-rgb/results/paired-hadamard-20260917"
+    }
+  ],
+  "current_validation": {
+    "base_commit": "3d80bf2e6a9fa595187bf1b1b471c91f3b1aff06",
+    "feature": "aligned 32-bit pair IO for N32-256 with small-batch and alignment fallback",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "decision": "ACCEPT",
+    "preregistered_commit": "a11ae35c5324864c4945311744e6b3aec2150e57",
+    "archive_commit": "89dbadfa47197c9ada14007c7cc18039f32c1302",
+    "finite_component_configurations": 416,
+    "overflow_compatibility_configurations": 1024,
+    "new_execution_contexts": 128,
+    "full_execution_contexts": 120,
+    "device_records": 1050,
+    "host_records": 2064,
+    "target_groups": 24,
+    "same_source_calibrations": 18,
+    "failed_gates": 0,
+    "sources_unchanged_during_run": true,
+    "frozen_input_count": 254,
+    "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/89dbadfa47197c9ada14007c7cc18039f32c1302/03_hadamard_tc/a962695448-rgb/results/wide-pairs-io-20260918"
+  },
+  "supplemental_kernel_sources": [
+    {
+      "path": "include/packed_pairs.cuh",
+      "sha256": "0678a75afe8b02a0841bb2baad839404bb6ba6e7cdd27e9e42a0258b970d3add",
+      "git_blob_sha": "5314139ffb0aaff02f5330fc6720de214b90deeb"
+    }
+  ],
+  "diagnostic_followups": [
+    {
+      "kind": "module-buffer-order host timing diagnostic",
+      "production_head": "55c8f48e3c75698ce1537c541e3f25831c74c4ed",
+      "processes": 3,
+      "cases": 4,
+      "conditions": 5,
+      "timed_blocks": 3240,
+      "same_source_calibrations_within_five_percent": true,
+      "adoption_decision": "NOT_APPLICABLE_DIAGNOSTIC_ONLY",
+      "prior_rejections_preserved": true,
+      "archive_commit": "dbe195f4a4c60947e42eb11cafe8aab689c6b7bc",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/dbe195f4a4c60947e42eb11cafe8aab689c6b7bc/03_hadamard_tc/a962695448-rgb/results/host-attribution-20260917"
+    },
+    {
+      "kind": "integrated kernel entry candidate complete validation",
+      "base_commit": "4516fd4b1cd9afdd7cee499f09a4f614ef637400",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "candidate_cli_selftest_configurations": 6,
+      "cases_per_cli_configuration": 1876,
+      "device_records": 588,
+      "host_records": 588,
+      "target_groups": 24,
+      "same_source_calibrations": 18,
+      "relative_performance_gates_passed": true,
+      "absolute_time_stability_failures": 1,
+      "candidate_decision": "REJECT",
+      "production_compute_unchanged": true,
+      "archive_commit": "704b0b3625cf93048b21ec47ac578f9bc0c32c0b",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/704b0b3625cf93048b21ec47ac578f9bc0c32c0b/03_hadamard_tc/a962695448-rgb/results/integrated-pairs-20260917"
+    },
+    {
+      "kind": "preregistered relative stability confirmation",
+      "production_head": "c72d7b723dae14cc7dc880bd8f2ed83cbbaef41a",
+      "preregistration_commit": "1f97d437370af9f5c102797308ad5fd1a8db9bef",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "overflow_compatibility_cases": 512,
+      "device_records": 588,
+      "host_records": 588,
+      "target_groups": 24,
+      "same_source_calibrations": 18,
+      "relative_stability_failures": 1,
+      "round_decisions": [
+        "ACCEPT",
+        "REJECT",
+        "ACCEPT"
+      ],
+      "candidate_decision": "REJECT",
+      "production_compute_unchanged": true,
+      "prior_rejections_preserved": true,
+      "repeat_confirmation_stopped": true,
+      "archive_commit": "06b985425e3192fb58e0500ddaffde3476de78ef",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/06b985425e3192fb58e0500ddaffde3476de78ef/03_hadamard_tc/a962695448-rgb/results/relative-stability-confirm-20260918"
+    },
+    {
+      "kind": "wide transform half-warp candidate complete validation",
+      "base_commit": "bde0256944778d3749547b798045c5a05d0dab35",
+      "device": "NVIDIA GeForce RTX 4090 D",
+      "finite_component_configurations": 416,
+      "overflow_compatibility_configurations": 512,
+      "new_execution_contexts": 64,
+      "full_execution_contexts": 120,
+      "device_records": 678,
+      "host_records": 1356,
+      "target_groups": 24,
+      "same_source_calibrations": 18,
+      "failed_gates": 210,
+      "candidate_decision": "REJECT",
+      "production_compute_unchanged": true,
+      "preregistered_commit": "95b13fa0f9519936e004b3ac6f120ab0a04e84ef",
+      "archive_commit": "c0a105c725343e3332c3465e125384bbd815d8eb",
+      "evidence_url": "https://github.com/a962695448-rgb/Learning-CUDA/tree/c0a105c725343e3332c3465e125384bbd815d8eb/03_hadamard_tc/a962695448-rgb/results/wide-pairs-20260918"
+    }
+  ]
+}

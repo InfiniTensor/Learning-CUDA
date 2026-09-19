@@ -1,0 +1,10 @@
+/build/
+__pycache__/
+*.pyc
+*.nsys-rep
+*.sqlite
+/results/iluvatar/**/validate_and_benchmark
+/results/metax/**/validate_and_benchmark
+/results/biren/**/validate_and_benchmark
+/results/ascend/**/validate_and_benchmark
+/results/ascend/**/build/

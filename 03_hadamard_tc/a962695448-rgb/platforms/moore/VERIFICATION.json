@@ -1,0 +1,237 @@
+{
+  "status": "VERIFIED_AND_ACCEPTED",
+  "verified_date_asia_shanghai": "2026-09-16",
+  "base_commit": "cb82ea6e1d5c8f78b48b6922b0f7af279696cc44",
+  "pipeline_started_utc": "2026-09-15T16:42:52Z",
+  "pipeline_finished_utc": "2026-09-15T16:47:23Z",
+  "text_export_sha256": "dbb499c30755c376894eb93022919df4c3a426758e0cf727a80e57e86ad13d01",
+  "text_files_verified": 77,
+  "tested_source_sha256": {
+    "platforms/moore/hadamard_api.h": "cba4d5c187defec8f70083a02ba252da8d73f5fba5b1b7692efb91dd1a0c4d93",
+    "platforms/moore/hadamard_api.mu": "f9c7fb325cbdc19e57e5c02ce58ec973197b75039fff38eb4b1fbac4daec4a80",
+    "platforms/moore/validate_and_benchmark.mu": "2a23a7938bd3140742b3c45f6b85db08d539bf03d4cb44ee9a48be41a268459e",
+    "platforms/moore/probe.mu": "2e777447c5153b55a7eee8bd7729170517637c4e04cb3cdbe89c6c51ec58bccd",
+    "platforms/moore/run_platform.py": "d92b236ca4bcaff910921e2d0ef21f452968bb66f1bd98a1a157c0a7c8a88773",
+    "platforms/moore/exact_int4.hpp": "784078d707dc6834ada435842a1a721b28acd953ecdb78f32e70b94ec6805f7a",
+    "include/reference.hpp": "1ff2c70cc8849020bd413a1d174718683bd89d5b6d8f25ee0a01d1c9b8876888"
+  },
+  "recorded_makefile_sha256": "ccd363d6e1152d1fb3e47f856ecf05bbd431519329effb9f46924cc434e4917c",
+  "makefile_note": "The Makefile was an experiment input; actual GPU builds used run_platform.py and explicit mcc commands.",
+  "cpu_checks": 17527208,
+  "gpu_fixture_checks": 2074568,
+  "cpu_gpu_counts_overlap": true,
+  "fixture_bytes": 24894816,
+  "fixture_sha256": "b404de04128361ed75347666113cfe2545f7c6e52aa828b070c1812c967ce230",
+  "fixture_verified_locally": true,
+  "full_validation": {
+    "status": "PASS",
+    "platform": "moore",
+    "warp_size": 128,
+    "full_matrix": true,
+    "shuffle32_enabled": true,
+    "methods": [
+      "baseline",
+      "optimized",
+      "shuffle32"
+    ],
+    "oracle": "all-element FP64 dense, rounded to output dtype",
+    "fp16_tolerance_strict": 0.01,
+    "bf16_tolerance_strict": 0.05,
+    "warmup_not_counted": true,
+    "dtypes": {
+      "fp16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 0.00390625,
+        "max_abs_error_unrounded_fp64": 0.015620231628418,
+        "api_contract_checks": 96
+      },
+      "bf16": {
+        "cases": 752,
+        "elements": 4891672,
+        "exact_baseline_optimized_elements": 4891672,
+        "shuffle32_cases": 752,
+        "exact_baseline_shuffle32_elements": 4891672,
+        "shuffle32_grid_stride_cases": 2,
+        "shuffle32_grid_stride_elements": 1572843,
+        "unsupported_shuffle32_checks": 0,
+        "max_abs_error_rounded_fp64": 3.814697265625e-06,
+        "max_abs_error_unrounded_fp64": 0.124984741210938,
+        "api_contract_checks": 96
+      }
+    }
+  },
+  "cli_rejection_cases": 14,
+  "disabled_validation": {
+    "status": "PASS",
+    "platform": "moore",
+    "warp_size": 128,
+    "full_matrix": false,
+    "shuffle32_enabled": false,
+    "methods": [
+      "baseline",
+      "optimized"
+    ],
+    "oracle": "all-element FP64 dense, rounded to output dtype",
+    "fp16_tolerance_strict": 0.01,
+    "bf16_tolerance_strict": 0.05,
+    "warmup_not_counted": true,
+    "dtypes": {
+      "fp16": {
+        "cases": 25,
+        "elements": 9615,
+        "exact_baseline_optimized_elements": 9615,
+        "shuffle32_cases": 0,
+        "exact_baseline_shuffle32_elements": 0,
+        "shuffle32_grid_stride_cases": 0,
+        "shuffle32_grid_stride_elements": 0,
+        "unsupported_shuffle32_checks": 6,
+        "max_abs_error_rounded_fp64": 0,
+        "max_abs_error_unrounded_fp64": 0.00782299041748047,
+        "api_contract_checks": 65
+      },
+      "bf16": {
+        "cases": 25,
+        "elements": 9615,
+        "exact_baseline_optimized_elements": 9615,
+        "shuffle32_cases": 0,
+        "exact_baseline_shuffle32_elements": 0,
+        "shuffle32_grid_stride_cases": 0,
+        "shuffle32_grid_stride_elements": 0,
+        "unsupported_shuffle32_checks": 6,
+        "max_abs_error_rounded_fp64": 0,
+        "max_abs_error_unrounded_fp64": 0.062225341796875,
+        "api_contract_checks": 65
+      }
+    }
+  },
+  "paired_benchmark_observations": 6750,
+  "paired_benchmark_rounds": 3,
+  "paired_benchmark_summary": [
+    {
+      "method": "optimized",
+      "operation": "transform",
+      "configurations": 30,
+      "minimum_speedup": 0.9856188401474171,
+      "maximum_speedup": 1.0142284761551534,
+      "faster_every_round": 3,
+      "at_least_five_percent_every_round": 0
+    },
+    {
+      "method": "optimized",
+      "operation": "split",
+      "configurations": 30,
+      "minimum_speedup": 1.8477204187342988,
+      "maximum_speedup": 2.759253803464851,
+      "faster_every_round": 30,
+      "at_least_five_percent_every_round": 30
+    },
+    {
+      "method": "optimized",
+      "operation": "fused",
+      "configurations": 30,
+      "minimum_speedup": 2.0122778318800956,
+      "maximum_speedup": 2.897511084201142,
+      "faster_every_round": 30,
+      "at_least_five_percent_every_round": 30
+    },
+    {
+      "method": "shuffle32",
+      "operation": "transform",
+      "configurations": 30,
+      "minimum_speedup": 0.9850463266345918,
+      "maximum_speedup": 1.0106747041757898,
+      "faster_every_round": 1,
+      "at_least_five_percent_every_round": 0
+    },
+    {
+      "method": "shuffle32",
+      "operation": "split",
+      "configurations": 30,
+      "minimum_speedup": 2.61086478258448,
+      "maximum_speedup": 7.345290638104018,
+      "faster_every_round": 30,
+      "at_least_five_percent_every_round": 30
+    },
+    {
+      "method": "shuffle32",
+      "operation": "fused",
+      "configurations": 30,
+      "minimum_speedup": 2.8836821850668595,
+      "maximum_speedup": 7.780916092345045,
+      "faster_every_round": 30,
+      "at_least_five_percent_every_round": 30
+    }
+  ],
+  "paired_csv_sha256": {
+    "paired-round1.csv": "90a10dcfe163bb44425ada09f28e84c6a5cf0159872728b2b0a2975ceadd0cdb",
+    "paired-round2.csv": "a90fc97aee1ede505c0c83b86d5369bba8931ead53149a3a4e5c36a506dbb363",
+    "paired-round3.csv": "a9846fc8bb1d8efba317b3aba1929a5cf5102335833c2e2799475653a6eee033"
+  },
+  "acceptance": "Default Optimized split/fused: exact results and at least 5% time reduction in all three rounds for every one of 30 shape/dtype configurations.",
+  "acceptance_passed": true,
+  "new_binary_build_artifacts_not_downloaded": [
+    {
+      "path": "libcheck_quant.dylib",
+      "bytes": 15456,
+      "sha256": "560b68ba97d02f0076eba1f3b56a40232bf49fe6c76513a3eb6adab7ac64b805"
+    },
+    {
+      "path": "runs/disabled/probe",
+      "bytes": 25872,
+      "sha256": "694c0d6f3e751e63976999ee0cd42c655835eb158c52cbfbef618ea6c20e1de0"
+    },
+    {
+      "path": "runs/disabled/validate_and_benchmark",
+      "bytes": 331272,
+      "sha256": "593faf17d6b34c45ff826b103ceb2957d71cd9befdaa51ecb0cfa8312c6e141a"
+    },
+    {
+      "path": "runs/full/probe",
+      "bytes": 25872,
+      "sha256": "694c0d6f3e751e63976999ee0cd42c655835eb158c52cbfbef618ea6c20e1de0"
+    },
+    {
+      "path": "runs/full/validate_and_benchmark",
+      "bytes": 1010176,
+      "sha256": "1155d721fe4e48c51bcde8c6fa0cf1f962be313e742ea102962c0a3353a91cd8"
+    },
+    {
+      "path": "runs/paired_benchmark",
+      "bytes": 2720056,
+      "sha256": "151500968b461a024b62de40a0c80adf6d4d42f9b8b566335c170494cbb2e38f"
+    },
+    {
+      "path": "runs/quant_gpu",
+      "bytes": 34752,
+      "sha256": "77178f5e0a0a7cd41be4a2c25de63a578e23b48a1d9a3a1162482ed97994e3fb"
+    }
+  ],
+  "prior_port_text_files_verified": 145,
+  "prior_port_binary_executables_not_downloaded": 10,
+  "server_power_state_at_delivery": "OFF_CONFIRMED",
+  "server_retention_hours_after_stop": 36,
+  "post_test_changes": "发布阶段仅更新文档和状态说明；六份 Moore 执行相关源文件与实测字节一致。共享参考的末尾空行差异单独记录。",
+  "repository_reference": {
+    "path": "03_hadamard_tc/a962695448-rgb/include/reference.hpp",
+    "git_blob_sha": "e06ce3fef99a5b431ef0a0c23e0e59bbb5a582a7",
+    "sha256": "5be2751c9ebf3729bf6a59e19c9b91ad52a6b3a7d86720de4a23880f76deb3c4",
+    "gpu_tested_sha256": "1ff2c70cc8849020bd413a1d174718683bd89d5b6d8f25ee0a01d1c9b8876888",
+    "difference": "实测副本比仓库文件多一个末尾空行；代码内容一致，仓库参考文件未修改。"
+  },
+  "publication_record": "实际提交及分支状态以 GitHub 历史为准；此文件记录实机验证证据。",
+  "public_reproduction": {
+    "directory": "repro",
+    "manifest": "repro/MANIFEST.json",
+    "recorded_text_files": 14,
+    "gpu_binaries_included": false,
+    "fixture_regenerable": true,
+    "new_gpu_run_for_publication": false
+  }
+}

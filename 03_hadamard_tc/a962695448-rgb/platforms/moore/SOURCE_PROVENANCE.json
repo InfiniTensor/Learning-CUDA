@@ -1,0 +1,21 @@
+{
+  "base_repository": "https://github.com/a962695448-rgb/Learning-CUDA",
+  "base_commit": "cb82ea6e1d5c8f78b48b6922b0f7af279696cc44",
+  "note": "原始源码由已连接的 GitHub 读取；MUSA 实现和共享参考的实机字节哈希见 VERIFICATION.json。",
+  "source_files": {
+    "platforms/metax/hadamard_api.h": "26705d5a10487fce2588d52fe6d4d10a7953c7159d220874ab450d26564ec147",
+    "platforms/metax/hadamard_api.cu": "afb08180a1fb9e1cb567b2c5f0fbeaa20449056675cf9fa7e204d24c4f7fbdc5",
+    "platforms/metax/validate_and_benchmark.cu": "d9049bba5f8df7ef2a37572ed31dc230724bf394bb1c732bc5a893b6826fb065",
+    "platforms/metax/run_platform.py": "6a11acfd6679b1493df0b8518c0ece1ba34c30f330206cebde7ac88f2f7056c3",
+    "include/reference.hpp": "1ff2c70cc8849020bd413a1d174718683bd89d5b6d8f25ee0a01d1c9b8876888"
+  },
+  "optimization": {
+    "name": "exact_int4_integer_comparisons",
+    "date_asia_shanghai": "2026-09-16",
+    "contract_reference_sha256": "1ff2c70cc8849020bd413a1d174718683bd89d5b6d8f25ee0a01d1c9b8876888",
+    "previous_hadamard_api_sha256": "5d0b7b3db74bc3649831269cbb4736e731cf95e2b6baa270658c529475e17776",
+    "tested_hadamard_api_sha256": "f9c7fb325cbdc19e57e5c02ce58ec973197b75039fff38eb4b1fbac4daec4a80",
+    "verification": "VERIFICATION.json"
+  },
+  "preparation_method": "从固定提交读取源码后在独立本地快照中准备 MUSA 移植，实机验证后集成到项目分支。"
+}

@@ -1,0 +1,111 @@
+{
+  "scope": "Public reproduction package for the recorded 2026-09-16 S4000 experiment",
+  "implementation_commit": "9f4515491a1d8302693e311d4746cf72f2361f98",
+  "recorded_files": {
+    "optimization.json": {
+      "server_relative_path": "runs/optimization.json",
+      "bytes": 15655,
+      "sha256": "e1056f72c16310c39837f5ab330c911bbf92ee3ba96735e68dd4f4e289225f27"
+    },
+    "quant-gpu.log": {
+      "server_relative_path": "runs/quant-gpu.log",
+      "bytes": 112,
+      "sha256": "10f4b76d5a433cce1626a0d3146b354a47550363ec36688d7e990e61e61531f4"
+    },
+    "full-run-summary.json": {
+      "server_relative_path": "runs/full/run_summary.json",
+      "bytes": 18467,
+      "sha256": "f6a50f6e1defee88fa752b69bf63544850c20d53e5bacb9e42152a94501608e5"
+    },
+    "full-validation.json": {
+      "server_relative_path": "runs/full/validation.json",
+      "bytes": 1046,
+      "sha256": "f7c7af273bc74c40d602227ef0014eb23ce07b07380bbeb893622f294cbee19e"
+    },
+    "disabled-run-summary.json": {
+      "server_relative_path": "runs/disabled/run_summary.json",
+      "bytes": 18442,
+      "sha256": "a505ad08186225ad344b0ce825384436daf1a0e71a629aee111f2d8e25ac6cc5"
+    },
+    "disabled-validation.json": {
+      "server_relative_path": "runs/disabled/validation.json",
+      "bytes": 970,
+      "sha256": "9e3cf608dc9880c4922d9ef8978b7c16f9e0f75b3051c3d2904c73e19179e368"
+    },
+    "cpu-equivalence-linux.json": {
+      "server_relative_path": "cpu-equivalence.json",
+      "bytes": 530,
+      "sha256": "1b2d4104c5d4bc3da97a6c25f5374474c5d849945d0695091c25448cb3d8a61a"
+    },
+    "paired-round1.csv": {
+      "server_relative_path": "runs/paired-round1.csv",
+      "bytes": 265111,
+      "sha256": "90a10dcfe163bb44425ada09f28e84c6a5cf0159872728b2b0a2975ceadd0cdb"
+    },
+    "paired-round1.log": {
+      "server_relative_path": "runs/paired-round1.log",
+      "bytes": 1455,
+      "sha256": "cd2e2073bf6985304eb8ccb19fbd7e3799d62d3937d1b807804424ad5ed7f6c8"
+    },
+    "paired-round2.csv": {
+      "server_relative_path": "runs/paired-round2.csv",
+      "bytes": 265090,
+      "sha256": "a90fc97aee1ede505c0c83b86d5369bba8931ead53149a3a4e5c36a506dbb363"
+    },
+    "paired-round2.log": {
+      "server_relative_path": "runs/paired-round2.log",
+      "bytes": 1455,
+      "sha256": "cd2e2073bf6985304eb8ccb19fbd7e3799d62d3937d1b807804424ad5ed7f6c8"
+    },
+    "paired-round3.csv": {
+      "server_relative_path": "runs/paired-round3.csv",
+      "bytes": 265132,
+      "sha256": "a9846fc8bb1d8efba317b3aba1929a5cf5102335833c2e2799475653a6eee033"
+    },
+    "paired-round3.log": {
+      "server_relative_path": "runs/paired-round3.log",
+      "bytes": 1455,
+      "sha256": "cd2e2073bf6985304eb8ccb19fbd7e3799d62d3937d1b807804424ad5ed7f6c8"
+    },
+    "cpu-equivalence-macos.json": {
+      "local_origin": "macOS CPU validation before S4000 run",
+      "bytes": 528,
+      "sha256": "0cab7e46a5057ff23ba7b1742539be76f0275950eee42e60ca8d67b8992a3132"
+    }
+  },
+  "frozen_source_sha256": {
+    "check_quant_cpu.cpp": "8d4c6702c36a81f1cdef27df8e4b6bb413b92585d5169f21053d97ac1a450d1a",
+    "check_quant_gpu.mu": "e51771809fb54db5cdb9e63c142f5266f2105ce0777d24577e428941f89f3b5d",
+    "paired_benchmark.mu": "138e6dd6ec9f9fd959162ae5edc0d27727e355ba5354cd1bd70bf702cfc69043",
+    "control/control_api.h": "b40c05f707e806381b3b7440537a435fdb4137cf27b78d403b336b32bf722014",
+    "control/control_api.mu": "d3ebe8f53f076a66db0cdc5d8cca5092fa821c729336949c3e2913d45e5ad56c"
+  },
+  "adapted_entry_points": {
+    "check_quant_cpu.py": {
+      "sha256": "50d2a8115079c039541818765317bb6efb0efac24ed85b4586bef79e14c49227",
+      "change": "Portable paths and explicit output directory; offline input validation for the analyzer."
+    },
+    "analyze_optimization.py": {
+      "sha256": "8d6f11ca3fd7b8c709a0885502272d472d8169027fe29b652afd2d8c70f758d0",
+      "change": "Portable paths and explicit output directory; offline input validation for the analyzer."
+    }
+  },
+  "test_script_sha256": "d05f1426a406c21aa37efccd5f0d09e3856f281ad84aa6706c13a6806216156e",
+  "fixture": {
+    "records": 2074568,
+    "bytes": 24894816,
+    "sha256": "b404de04128361ed75347666113cfe2545f7c6e52aa828b070c1812c967ce230",
+    "binary_committed": false
+  },
+  "publication_validation": {
+    "cpu_cases": 17527208,
+    "fixture_matches_original_bytes": true,
+    "analysis_matches_original_values": true,
+    "analysis_csv_matches_original_bytes": true,
+    "negative_and_positive_analysis_tests": 6,
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "platform": "Darwin",
+    "gpu_rerun": false
+  }
+}

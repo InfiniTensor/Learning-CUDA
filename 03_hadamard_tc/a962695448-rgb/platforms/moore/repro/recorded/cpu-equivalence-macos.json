@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "cpu_cases": 17527208,
+  "per_dtype": {
+    "fp16": 8158468,
+    "bf16": 8388740
+  },
+  "boundary_cases": 980000,
+  "gpu_fixture_cases": 2074568,
+  "fixture_sha256": "b404de04128361ed75347666113cfe2545f7c6e52aa828b070c1812c967ce230",
+  "header_sha256": "784078d707dc6834ada435842a1a721b28acd953ecdb78f32e70b94ec6805f7a",
+  "seconds": 7.429811832960695,
+  "numpy_version": "2.3.5",
+  "scope": "Actual C++ bit-comparison implementation versus existing CPU divide/round reference; this is not a GPU test"
+}

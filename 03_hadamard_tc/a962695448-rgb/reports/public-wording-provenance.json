@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-06",
+  "public_snapshot_commit": "e902aee9ad3ce38e4c64843bbb19f24c07ac50ee",
+  "record_scope": "The following fingerprints describe the documentation-cleanup snapshot at public_snapshot_commit. Later tested implementation or documentation updates on this branch are separate revisions.",
+  "scope": "Narrative-only public documentation update; no GPU execution, mathematical code, test thresholds, measured results or historical build identities changed.",
+  "historical_identity_rule": "Existing source_manifest, transfer_manifest, result JSON experiment-script hashes and pinned commits still identify actual executed originals. Public archive manifests identify current annotated copies. These are distinct fingerprints, not a rewrite of history.",
+  "a100_original_archive": {
+    "original_server_files": 48,
+    "current_public_byte_identical_files": 47,
+    "annotated_public_script_files": 1,
+    "annotated_file": "results/nvidia_a100_20260906/retrieved/promotion_a100.py"
+  },
+  "technical_identifiers_retained": "Existing promotion experiment IDs, file names, binary names and dtype-promotion terminology retained.",
+  "original_storage": "Private original working-tree byte copies retained outside the public repository. No local user paths or original narrative phrases are included here.",
+  "new_plan": "reports/implementation-optimization-plan.md",
+  "records": [
+    {
+      "project_relative_path": "platforms/biren/README.md",
+      "original_bytes": 31658,
+      "original_sha256": "ec493e176bb5f3abaa21a1545ef4a0a9cfc0b367504f12ec837066ec1cc4bd87",
+      "public_bytes": 31706,
+      "public_sha256": "977252c6fdc9a35850275154002fb643ad4161e52c3cf6856139ffe91c18369e",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "platforms/iluvatar/README.md",
+      "original_bytes": 28852,
+      "original_sha256": "02edeb2c497ec7f2cc96315ef00d9562ae32fa88fced3cb0e36a5c39fae9d98b",
+      "public_bytes": 28804,
+      "public_sha256": "4c1e768e00fe49c5e8f1fd84e39f147299d7684316ce2645a48a130b7d066fe7",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "platforms/metax/README.md",
+      "original_bytes": 18221,
+      "original_sha256": "5ab898e7c2fea9dfadaf71925d048b979900c0d37a5f19df2175a8551050a1bf",
+      "public_bytes": 18265,
+      "public_sha256": "69f25d8fe94f90f74555755922d215660fe8edbbef43a84a5d894af16ed382be",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "reports/a100-validation.md",
+      "original_bytes": 5067,
+      "original_sha256": "0f58f4944f60b37404aa2b956310a185de21b6ffde582bb08ebedf1ae9d28b74",
+      "public_bytes": 5408,
+      "public_sha256": "2f8feafb107aa02e2b1093bb0e1b58222c23e283b7c7c3def8dbfe2379475042",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "results/nvidia_a100_20260906/retrieved/promotion_a100.py",
+      "original_bytes": 14366,
+      "original_sha256": "f19f94444fb7e86583676985c2294d1a72b7a35936029581e51775944170f576",
+      "public_bytes": 14372,
+      "public_sha256": "b3c79dcf280af95087a6d584bf36009c547a7c1514ad245709d2c033bd82cf3b",
+      "change_scope": "Module docstring only; executable AST unchanged",
+      "private_original_retained": true,
+      "executable_ast_unchanged": true
+    },
+    {
+      "project_relative_path": "results/nvidia_thread_promotion_20260905/run_experiment.py",
+      "original_bytes": 14582,
+      "original_sha256": "0a7a13e869c29fb3479847e26fbc495da714ef7192c3b00a7f185f938642f553",
+      "public_bytes": 14588,
+      "public_sha256": "5cda45e0d624da9a7472845bc47d7d5154347c9f0ffcc88e0cc2fe5035c019ec",
+      "change_scope": "Module docstring only; executable AST unchanged",
+      "private_original_retained": true,
+      "executable_ast_unchanged": true
+    },
+    {
+      "project_relative_path": "results/nvidia_a100_20260906/README.md",
+      "original_bytes": 5024,
+      "original_sha256": "28ba5765ce362c606577162ecbe0c7bf415d8225894d97976bc45a673abe1ec7",
+      "public_bytes": 5749,
+      "public_sha256": "48aa1d4a75eb99ea97af59ebc5cf6e64e09e16ff7cfcf9e0f45b1174092c2cd9",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "results/nvidia_thread_promotion_20260905/README.md",
+      "original_bytes": 2643,
+      "original_sha256": "10853f665828bbfd1469d41b95452184ec46488aee29b493c3640452d766e72c",
+      "public_bytes": 3179,
+      "public_sha256": "7907b7c45645cf23aa8e5074aa6a6a303137a1a09183fda5fe04c2c4f8d1e424",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "results/nvidia_a100_20260906/public_derivation_provenance.json",
+      "original_bytes": 2103,
+      "original_sha256": "639e247471bd5126aaaa04316b7501fece849e214f22a16a0592f3a8fcd5c5bd",
+      "public_bytes": 2740,
+      "public_sha256": "be9350e343331d4ceeb8fc87a4fb3ff1a144330f68b088ee5ccb172eaef3c3dc",
+      "change_scope": "Inventory/provenance update for one annotated public source snapshot",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "results/nvidia_a100_20260906/archive_manifest.json",
+      "original_bytes": 25272,
+      "original_sha256": "d373d36cd1abf6cd4cba0f39f0615c598a1ea1382c4756f648ffec42a325f821",
+      "public_bytes": 25915,
+      "public_sha256": "679fdeac22dc5424e95861b362fab270c944af4711ae0a0ef7e0c35c8aa932fe",
+      "change_scope": "Current public inventory hashes and source-annotation metadata only",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "results/nvidia_thread_promotion_20260905/archive_manifest.json",
+      "original_bytes": 10401,
+      "original_sha256": "8b399f3f9a0732bb3b7c1eca7f8a77d2c34dc8d3015e6d2e2a9fb4b326298e3b",
+      "public_bytes": 10817,
+      "public_sha256": "e01a2c013d81303c5e347436354219a6785f94dd27b04acc96551ef028082b05",
+      "change_scope": "Current public inventory hashes and source-annotation metadata only",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "README.md",
+      "original_bytes": 26681,
+      "original_sha256": "e652e1706e7b8618b41812d30f9dbf32482a288c6a4c9f9a7f39153a34127311",
+      "public_bytes": 26608,
+      "public_sha256": "3781e6132101772425d20f3926ae4f9abaa9bff0bb76f659c4585f41cccdb9cd",
+      "change_scope": "Public plan link and A100 validation status; mixed working-tree line endings normalized to the existing Git LF form.",
+      "private_original_retained": true
+    },
+    {
+      "project_relative_path": "platforms/ascend/README.md",
+      "original_bytes": 20854,
+      "original_sha256": "5184449504389dbf168f366819831440cd090a157f26d16445b42dec2056982c",
+      "public_bytes": 20872,
+      "public_sha256": "74ec23610a632ea55e6afc63f2016d2ac3b3a4e320ffc590062bcf75276da362",
+      "change_scope": "Public documentation wording and evidence-boundary clarification",
+      "private_original_retained": true
+    }
+  ],
+  "provenance_self_hash_rule": "This file does not include its own hash; outer Git commit identifies it.",
+  "baseline_public_git_commit": "9f5fdc363b4149d4a211701f24ab0548084ca3e5"
+}

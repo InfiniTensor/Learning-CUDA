@@ -1,0 +1,2 @@
+DEVICE MTT S4000 arch=2.2 reported_warp=128
+RESULT cases=2074568 legacy_errors=0 candidate_errors=0 different=0

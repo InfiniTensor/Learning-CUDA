@@ -1,0 +1,19 @@
+# Keep the experimental source hash reproducible across platforms.
+src/tune_launch.cu text eol=lf
+platforms/iluvatar/shared_baseline.cu text eol=lf
+platforms/iluvatar/hadamard_api.h text eol=lf
+platforms/iluvatar/hadamard_api.cu text eol=lf
+platforms/iluvatar/validate_and_benchmark.cu text eol=lf
+platforms/iluvatar/run_platform.py text eol=lf
+platforms/metax/hadamard_api.h text eol=lf
+platforms/metax/hadamard_api.cu text eol=lf
+platforms/metax/validate_and_benchmark.cu text eol=lf
+platforms/metax/run_platform.py text eol=lf
+platforms/biren/hadamard_api.h text eol=lf
+platforms/biren/hadamard_api.su text eol=lf
+platforms/biren/validate_and_benchmark.su text eol=lf
+platforms/biren/run_platform.py text eol=lf
+platforms/ascend/*.h text eol=lf
+platforms/ascend/*.cpp text eol=lf
+platforms/ascend/*.py text eol=lf
+platforms/ascend/CMakeLists.txt text eol=lf
