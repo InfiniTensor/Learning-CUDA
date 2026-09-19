@@ -1,0 +1,7 @@
+option_type = barrier_call
+spot = 100.0
+strike = 100.0
+risk_free_rate = 0.03
+volatility = 0.2
+maturity = 1.0
+barrier = 130.0

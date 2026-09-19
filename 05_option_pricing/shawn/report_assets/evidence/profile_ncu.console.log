@@ -1,0 +1,12 @@
+==PROF== Connected to process 9710 (/root/infra_cuda_2026/task-05-derivatives-pricing/build-cuda128-root/derivatives_pricer)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+price=5.299021408 standard_error=0.00462454832 ci95=[5.28995746, 5.308085356] backend=cuda-curand-philox
+==PROF== Disconnected from process 9710
+Traceback (most recent call last):
+  File "/root/infra_cuda_2026/task-05-derivatives-pricing/scripts/profile_cuda.py", line 53, in <module>
+    main()
+  File "/root/infra_cuda_2026/task-05-derivatives-pricing/scripts/profile_cuda.py", line 49, in main
+    subprocess.run(command, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/local/bin/ncu', '--set', 'full', '--target-processes', 'all', '--export', 'outputs/task5_report_6a6b582/profile_ncu/profile_ncu', 'build-cuda128-root/derivatives_pricer', '--option', 'configs/asian_call.txt', '--simulation', 'configs/simulation_profile.txt', '--backend', 'cuda', '--reference-paths', '0', '--output', 'outputs/task5_report_6a6b582/profile_ncu/profile.result.txt', '--performance', 'outputs/task5_report_6a6b582/profile_ncu/profile.performance.log']' returned non-zero exit status 1.

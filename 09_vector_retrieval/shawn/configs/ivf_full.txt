@@ -1,0 +1,10 @@
+top_k = 10
+search_mode = ivf_flat
+batch_size = 128
+nlist = 4096
+nprobe = 16
+pq_m = 16
+kmeans_iterations = 2
+training_samples = 65536
+quality_queries = 10
+seed = 1234

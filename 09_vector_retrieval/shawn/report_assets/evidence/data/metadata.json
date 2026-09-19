@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "generator": "clustered-synthetic-v2-chunked-fp32",
+  "generated_utc": "2026-09-10T04:13:04.772782+00:00",
+  "num_vectors": 1000000,
+  "num_queries": 1000,
+  "dim": 128,
+  "dtype": "fp32",
+  "metric": "l2",
+  "clusters": 4096,
+  "seed": 20260910,
+  "numpy_version": "1.26.4",
+  "files": {
+    "database.bin": {
+      "bytes": 512000028,
+      "sha256": "f28d0b017c16de47dda3d1327695ba81bf861a240326b150304474520d299f10"
+    },
+    "queries.bin": {
+      "bytes": 512028,
+      "sha256": "6c06c745295173a04a72f21221b3a18ecf0787d107b6df356ea5533fb1e0e27d"
+    }
+  }
+}

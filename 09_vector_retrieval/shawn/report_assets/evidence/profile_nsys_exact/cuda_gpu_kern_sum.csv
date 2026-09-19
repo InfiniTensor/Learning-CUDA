@@ -1,0 +1,7 @@
+Processing [outputs/task9_report_b3e629a/profile_nsys_exact/exact_nsys.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+89.5,443363020,1000,443363.0,443261.0,435358,451805,2471.6,"vector_search::<unnamed>::score_candidates_kernel(const float *, long, int, const float *, const long *, long, int, float *, long *)"
+9.2,45457820,4000,11364.5,11776.0,9248,12832,975.1,"void cub::CUB_200700_1200_NS::DeviceRadixSortOnesweepKernel<cub::CUB_200700_1200_NS::DeviceRadixSortPolicy<float, long, unsigned int>::Policy900, (bool)0, float, long, unsigned int, int, int, cub::CUB_200700_1200_NS::detail::identity_decomposer_t>(T7 *, T7 *, T5 *, const T5 *, T3 *, const T3 *, T4 *, const T4 *, T6, int, int, T8)"
+1.2,5792238,1000,5792.2,5792.0,5696,6144,40.2,"void cub::CUB_200700_1200_NS::DeviceRadixSortHistogramKernel<cub::CUB_200700_1200_NS::DeviceRadixSortPolicy<float, long, unsigned int>::Policy900, (bool)0, float, unsigned int, cub::CUB_200700_1200_NS::detail::identity_decomposer_t>(T4 *, const T3 *, T4, int, int, T5)"
+0.2,921916,1000,921.9,928.0,895,960,16.4,"void cub::CUB_200700_1200_NS::DeviceRadixSortExclusiveSumKernel<cub::CUB_200700_1200_NS::DeviceRadixSortPolicy<float, long, unsigned int>::Policy900, unsigned int>(T2 *)"
+

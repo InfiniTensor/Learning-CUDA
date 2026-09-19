@@ -1,0 +1,408 @@
+{
+  "experiment_commit": "b3e629a",
+  "description": "Byte-identical selected formal experiment evidence; not a new GPU run.",
+  "files": [
+    {
+      "file": "validation/summary.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/validation/summary.csv",
+      "bytes": 10163,
+      "sha256": "82e710d8a1134a17dc64441a0e93960006854a969b6e47e1e48ccc7338e3710d"
+    },
+    {
+      "file": "data/metadata.json",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/data/metadata.json",
+      "bytes": 593,
+      "sha256": "7e61abb1c28cf344f198b8ac16ba0d16603ffaa198884e9a6e02fc7c42f35a77"
+    },
+    {
+      "file": "index/build.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/index/build.performance.log",
+      "bytes": 195,
+      "sha256": "87f558b1d2d1e73c2032cd408833d0fe4ce8defe967e790bf92a2ba4ec316d62"
+    },
+    {
+      "file": "exact_topk/summary.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/summary.csv",
+      "bytes": 4036,
+      "sha256": "c7b0396778aeaa96f52ef84fe099315843008e39e5569e17e78bde53614d63f6"
+    },
+    {
+      "file": "exact_topk/aggregate.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/aggregate.csv",
+      "bytes": 1166,
+      "sha256": "43da19b5af6955ac5db5426f975cece331219fe0c11272add9137a2b96fccc1f"
+    },
+    {
+      "file": "ivf_nprobe/summary.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/summary.csv",
+      "bytes": 9647,
+      "sha256": "5abb8c1e246a2f3f30ca36a3c77bcf15a24218df03748bfc04788775856d7a79"
+    },
+    {
+      "file": "ivf_nprobe/aggregate.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/aggregate.csv",
+      "bytes": 1432,
+      "sha256": "df2c02b1ce7c9f1958addb319a22ed8e5ee1c5767b9d7e1ab2690888c89a421f"
+    },
+    {
+      "file": "ivf_batch/summary.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/summary.csv",
+      "bytes": 5938,
+      "sha256": "bdb8a7d6e5d21ded77178959443d1d1fdab50d99fbd13f0f21f9114b5b1bce90"
+    },
+    {
+      "file": "ivf_batch/aggregate.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/aggregate.csv",
+      "bytes": 975,
+      "sha256": "40f4540ef1388fa1624387ae05231f5abb6b4c248995dd51e7157e984f400942"
+    },
+    {
+      "file": "profile_nsys_exact/cuda_api_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_exact/cuda_api_sum.csv",
+      "bytes": 830,
+      "sha256": "18466ff8dfed2c71f0fe1397b764bdc67012fa420685b2cb7130d3232875dc3e"
+    },
+    {
+      "file": "profile_nsys_exact/cuda_gpu_kern_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_exact/cuda_gpu_kern_sum.csv",
+      "bytes": 1382,
+      "sha256": "7c8075860aee8eb8f036dae66b2be18af94d3ea1d9824e159dc3f7377a0536f6"
+    },
+    {
+      "file": "profile_nsys_exact/cuda_gpu_mem_time_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_exact/cuda_gpu_mem_time_sum.csv",
+      "bytes": 491,
+      "sha256": "f5d21464ae429f680f073aa816e4bcbf50830d41d9cd90da757fd1c99e6d2a91"
+    },
+    {
+      "file": "profile_nsys_ivf/cuda_api_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_ivf/cuda_api_sum.csv",
+      "bytes": 831,
+      "sha256": "ada640cb182d19257ddb76ff972a93caea412ff6f24bc2fabc2bb3b96a400618"
+    },
+    {
+      "file": "profile_nsys_ivf/cuda_gpu_kern_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_ivf/cuda_gpu_kern_sum.csv",
+      "bytes": 1375,
+      "sha256": "9429106993fb9a761d0c48b09352cfcb8b1b562cba523b57992991c82ad58dba"
+    },
+    {
+      "file": "profile_nsys_ivf/cuda_gpu_mem_time_sum.csv",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/profile_nsys_ivf/cuda_gpu_mem_time_sum.csv",
+      "bytes": 495,
+      "sha256": "8760912efc59d63611577617254982de2e9be9edecfcd8efd88bb1d2d7ea3a8f"
+    },
+    {
+      "file": "exact_topk/raw/k100_p1_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k100_p1_b128/r000.performance.log",
+      "bytes": 752,
+      "sha256": "78c63f1ccf6ef0b9069bad90a1a45853aa24153122ea3de781dd0560981ea210"
+    },
+    {
+      "file": "exact_topk/raw/k100_p1_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k100_p1_b128/r001.performance.log",
+      "bytes": 749,
+      "sha256": "bdcf2cdcd19fa2409d7a206281207d0e3213d533430eb94ba6891da241f8134e"
+    },
+    {
+      "file": "exact_topk/raw/k100_p1_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k100_p1_b128/r002.performance.log",
+      "bytes": 754,
+      "sha256": "d67d10777d2c3097e90f6e128afafb7a288788376bbe0f6bee7192392833395a"
+    },
+    {
+      "file": "exact_topk/raw/k10_p1_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k10_p1_b128/r000.performance.log",
+      "bytes": 752,
+      "sha256": "ab2ca88047be4073182f846d5213266e064944c821300ae11c66ebfecc87ebd2"
+    },
+    {
+      "file": "exact_topk/raw/k10_p1_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k10_p1_b128/r001.performance.log",
+      "bytes": 752,
+      "sha256": "f62d9f7a7933c9367646d7f7b20529b5fcbd33a6908d186b5fe6c4678dcaf613"
+    },
+    {
+      "file": "exact_topk/raw/k10_p1_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k10_p1_b128/r002.performance.log",
+      "bytes": 752,
+      "sha256": "c1125dc4998af5c1e665244a558390858b49557dd3d256633d67a430ca0bc7d7"
+    },
+    {
+      "file": "exact_topk/raw/k1_p1_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k1_p1_b128/r000.performance.log",
+      "bytes": 752,
+      "sha256": "3217aee4ce0b728c556cef3f05fd194b1bab2fbc698c107ca9b1bceb06349796"
+    },
+    {
+      "file": "exact_topk/raw/k1_p1_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k1_p1_b128/r001.performance.log",
+      "bytes": 752,
+      "sha256": "57508d42d1636e7a07dc4f6b88438c9c8ba7492159590bca22b0d69a145a17a8"
+    },
+    {
+      "file": "exact_topk/raw/k1_p1_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k1_p1_b128/r002.performance.log",
+      "bytes": 751,
+      "sha256": "6ee7dd630487c0d15e923c58927c5e7963c718a760d946f734280e8a3ce6a1a9"
+    },
+    {
+      "file": "exact_topk/raw/k50_p1_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k50_p1_b128/r000.performance.log",
+      "bytes": 749,
+      "sha256": "1ef2acef805add0a28a0f63b8de1b3ae013e42ef72fb50320e0eda42fb7e5ed5"
+    },
+    {
+      "file": "exact_topk/raw/k50_p1_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k50_p1_b128/r001.performance.log",
+      "bytes": 752,
+      "sha256": "fa239988cb513e7baad5d7cda6d61b7ad57e62b0a6e6e339b87f6a24d9beca8e"
+    },
+    {
+      "file": "exact_topk/raw/k50_p1_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/exact_topk/raw/k50_p1_b128/r002.performance.log",
+      "bytes": 752,
+      "sha256": "4262a72f98b44a5c0c1ad5bb5194bcdc8a2e0d6988ad1b6c7ab20f816ecc8cdb"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p16_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p16_b128/r000.performance.log",
+      "bytes": 759,
+      "sha256": "ac1c52c9b8e2d96e71b9e2974886d93112e4cd7226b88921dfc4f66e96ee5119"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p16_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p16_b128/r001.performance.log",
+      "bytes": 758,
+      "sha256": "7921a099416836a352ebe3a2c4d35ff567a7548e79c3c7293d272ee2e555d0b9"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p16_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p16_b128/r002.performance.log",
+      "bytes": 758,
+      "sha256": "f27063559b9e26180c87472a068816ae57770ae5c47c5d30d8ad06080af6ddba"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p16_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p16_b128/r003.performance.log",
+      "bytes": 757,
+      "sha256": "b94a8c91196acf5f74250676c319419543db4b046633b4d7734e594b47f2af78"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p16_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p16_b128/r004.performance.log",
+      "bytes": 759,
+      "sha256": "1dadf121b5f9e42f84f618fae186b24af071f7f4136689d7bb3f06cd42af6f74"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p1_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p1_b128/r000.performance.log",
+      "bytes": 750,
+      "sha256": "3264105c7554880d3b57dbff1c764748010e202c227bf778b0b4985c98f8eabc"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p1_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p1_b128/r001.performance.log",
+      "bytes": 752,
+      "sha256": "2b80a41e9de0993dfd68ef73569fe7b794fd12b5728e61d70b8e80ec0e78f37f"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p1_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p1_b128/r002.performance.log",
+      "bytes": 750,
+      "sha256": "2340d81ef347700dedadc7106f80b7dc79be4c03ca08df6a54fe8f8318c86449"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p1_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p1_b128/r003.performance.log",
+      "bytes": 751,
+      "sha256": "ada07f3314358519d73821ae4a783b51ae2c35915516ba23186b21d83c2fdc92"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p1_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p1_b128/r004.performance.log",
+      "bytes": 751,
+      "sha256": "83782fd55920e91eaf0e6bd838d0a340d94d013c4ccd2eae974ed94b465b8b71"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p256_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p256_b128/r000.performance.log",
+      "bytes": 765,
+      "sha256": "6dec3df1252471906a9547dcbeab3bb213ea97d89173b4fbc68c2413bebb4312"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p256_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p256_b128/r001.performance.log",
+      "bytes": 763,
+      "sha256": "99fd41c55aca084cc4d64fe25ddee03840ef02a5ad9ac64ba639ab85069d28bc"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p256_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p256_b128/r002.performance.log",
+      "bytes": 764,
+      "sha256": "94ec609615efa7433816b06f9c3c5565bddfffbdcb01cbda98361087caa571aa"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p256_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p256_b128/r003.performance.log",
+      "bytes": 764,
+      "sha256": "0a379474be093c3d14b70c923800a3291005226a3aff2fbb9075e63f6807cf83"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p256_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p256_b128/r004.performance.log",
+      "bytes": 765,
+      "sha256": "b4276ea2beb943a13e48a164a19f17c36b372b7745b3897b1cf117096e4f4c1c"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p4_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p4_b128/r000.performance.log",
+      "bytes": 755,
+      "sha256": "f2377ce6e683565e6395851c7f5ac079c9497a977266254265aede268a85228f"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p4_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p4_b128/r001.performance.log",
+      "bytes": 755,
+      "sha256": "9cdec651802d5bbbc5f75cd967b38223165f9cd467cc1d3256f3ea409a57f71b"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p4_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p4_b128/r002.performance.log",
+      "bytes": 754,
+      "sha256": "29ce879251e725ac28ce7f2dcfd8b83ec83bcd9e3af768fb5d4e659b7a978032"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p4_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p4_b128/r003.performance.log",
+      "bytes": 755,
+      "sha256": "389f11f1dbe6b4cef06d48481c2a4063d2815697aa524063f1b7ffbc4f6df1aa"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p4_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p4_b128/r004.performance.log",
+      "bytes": 754,
+      "sha256": "b63bbb60c05a40a0d02776a3067c6380f2b19c88da1da42ca99469faf0a7d66e"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p64_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p64_b128/r000.performance.log",
+      "bytes": 758,
+      "sha256": "72a3dae019efae5a677a0d6d58fe90d2ca410831e466b3688ffff9e34dedfd94"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p64_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p64_b128/r001.performance.log",
+      "bytes": 758,
+      "sha256": "9139f2cbddd0a37181d37b6aa58c0a4208263617074f50c2d986e2a2f26147e3"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p64_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p64_b128/r002.performance.log",
+      "bytes": 757,
+      "sha256": "46552258d2f37ba53f4a8e9f038a6b023b8a41da69f4e04e2b2220585f891cb0"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p64_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p64_b128/r003.performance.log",
+      "bytes": 758,
+      "sha256": "8d6d34855d8ab8551376457c1c81a7f04f0e58acd6975039b29f3a56f5257700"
+    },
+    {
+      "file": "ivf_nprobe/raw/k10_p64_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_nprobe/raw/k10_p64_b128/r004.performance.log",
+      "bytes": 758,
+      "sha256": "8f09d8cfe5a5dad77531c186fbadd9cd9ddb73d43667d976cb6ed5fbd49296b4"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b1/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b1/r000.performance.log",
+      "bytes": 753,
+      "sha256": "a6b6b16be136ab3331a638668f6825b3c6694f0e33208cc759e31ae9bb5f1fe1"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b1/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b1/r001.performance.log",
+      "bytes": 757,
+      "sha256": "3c9b7f55e4d9d64f650b2b3a8d60d42267e2caecc662cd2405a1bc1267a29419"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b1/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b1/r002.performance.log",
+      "bytes": 753,
+      "sha256": "ddeab917430e069b19146958e013c63b40f5c44de928aefc2da866c457a31123"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b1/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b1/r003.performance.log",
+      "bytes": 756,
+      "sha256": "40d32aed75f4851287b0c9eb7f30c914b79d4e947e9d866f3b755a5211cb2445"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b1/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b1/r004.performance.log",
+      "bytes": 755,
+      "sha256": "70cde090b48c1d3edf138f197ec8019bea85e726e523c0529017ece43568de6d"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b128/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b128/r000.performance.log",
+      "bytes": 759,
+      "sha256": "08babcf1994d05f3d5c4000c32ba3b6db2a889f56d82c8b691237e340e77346e"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b128/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b128/r001.performance.log",
+      "bytes": 759,
+      "sha256": "6418ed6e4220b45a327209ac7c7c38e4a7d40bcb283ff8bacd132c1e8b8e3b0e"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b128/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b128/r002.performance.log",
+      "bytes": 759,
+      "sha256": "a560a13b857637de98e764cc5a35689f5e97ce85e47cac212c0467daf6bb79c4"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b128/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b128/r003.performance.log",
+      "bytes": 757,
+      "sha256": "e17e68d2d94574440b546f0e06dfa7eb10e2cd007f38067450717bd3a56d2b8d"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b128/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b128/r004.performance.log",
+      "bytes": 755,
+      "sha256": "1740d73b333f5ed4eef6092923816c96049055d27b0c433072f724a463bb48a1"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b32/r000.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b32/r000.performance.log",
+      "bytes": 758,
+      "sha256": "cb54270a17ff5d6bc81f03a4f7b060599eac6cbf6e3171d6ae69ad901cbcb8b0"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b32/r001.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b32/r001.performance.log",
+      "bytes": 757,
+      "sha256": "db5013dc6840f0734734919962f1d8e07b106f47de728cac5b49a06ddf4b9709"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b32/r002.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b32/r002.performance.log",
+      "bytes": 756,
+      "sha256": "c4495d61b71e13ef22c3fe464d540cbfa649a03aa8ccc3a1c77d7f0740fde1ae"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b32/r003.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b32/r003.performance.log",
+      "bytes": 756,
+      "sha256": "0b4a3b3a763123a7f24577172a357f97401197775a2b1ffc832c5ccb601dc8ea"
+    },
+    {
+      "file": "ivf_batch/raw/k10_p16_b32/r004.performance.log",
+      "source": "output_task/task-09-gpu-vector-search/outputs/task9_report_b3e629a/ivf_batch/raw/k10_p16_b32/r004.performance.log",
+      "bytes": 756,
+      "sha256": "d5b47fea57e92e5657e9347881322a939e5362f675febba7aace03ed8e3a2992"
+    }
+  ]
+}

@@ -1,0 +1,557 @@
+{
+  "generator": "scripts/redraw_report_figures.py",
+  "figure_size_inches": [
+    7.2,
+    4.3
+  ],
+  "font": "Arial",
+  "png_dpi": 300,
+  "svg_text": "editable text",
+  "palette": {
+    "blue": "#0F4D92",
+    "teal": "#42949E",
+    "warm": "#B64342",
+    "grey": "#767676"
+  },
+  "input_identity": [
+    {
+      "path": "exact_topk/summary.csv",
+      "sha256": "c7b0396778aeaa96f52ef84fe099315843008e39e5569e17e78bde53614d63f6"
+    },
+    {
+      "path": "ivf_nprobe/summary.csv",
+      "sha256": "5abb8c1e246a2f3f30ca36a3c77bcf15a24218df03748bfc04788775856d7a79"
+    },
+    {
+      "path": "ivf_batch/summary.csv",
+      "sha256": "bdb8a7d6e5d21ded77178959443d1d1fdab50d99fbd13f0f21f9114b5b1bce90"
+    },
+    {
+      "path": "profile_nsys_exact/cuda_gpu_kern_sum.csv",
+      "sha256": "7c8075860aee8eb8f036dae66b2be18af94d3ea1d9824e159dc3f7377a0536f6"
+    },
+    {
+      "path": "profile_nsys_ivf/cuda_gpu_kern_sum.csv",
+      "sha256": "9429106993fb9a761d0c48b09352cfcb8b1b562cba523b57992991c82ad58dba"
+    }
+  ],
+  "statistical_notes": "SD uses n-1. P99 SD is between runs, not a within-query tail confidence interval. Repeated quality uses the same 20 queries.",
+  "figures": {
+    "exact_topk_qps": {
+      "files": [
+        "exact_topk_qps.svg",
+        "exact_topk_qps.png",
+        "exact_topk_qps.pdf"
+      ],
+      "metric": "qps",
+      "parameter": "top_k",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 3,
+          "mean": 1491.8481611466666,
+          "sample_sd": 2.4751947037099176,
+          "observations": [
+            1494.70607618,
+            1490.44801453,
+            1490.39039273
+          ]
+        },
+        {
+          "parameter": 10,
+          "runs": 3,
+          "mean": 1488.2068878266666,
+          "sample_sd": 3.2419631722804403,
+          "observations": [
+            1485.25696508,
+            1491.6777931,
+            1487.6859053
+          ]
+        },
+        {
+          "parameter": 50,
+          "runs": 3,
+          "mean": 1489.0052326333334,
+          "sample_sd": 2.3618288673098626,
+          "observations": [
+            1487.92703149,
+            1487.37492146,
+            1491.71374495
+          ]
+        },
+        {
+          "parameter": 100,
+          "runs": 3,
+          "mean": 1486.49105285,
+          "sample_sd": 1.9410968969718063,
+          "observations": [
+            1486.59776958,
+            1488.37659,
+            1484.49879897
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "process run",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        1800
+      ],
+      "reference_mean": null
+    },
+    "exact_topk_p99": {
+      "files": [
+        "exact_topk_p99.svg",
+        "exact_topk_p99.png",
+        "exact_topk_p99.pdf"
+      ],
+      "metric": "p99_latency_ms",
+      "parameter": "top_k",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 3,
+          "mean": 0.529546,
+          "sample_sd": 0.000255806567546657,
+          "observations": [
+            0.529833,
+            0.529342,
+            0.529463
+          ]
+        },
+        {
+          "parameter": 10,
+          "runs": 3,
+          "mean": 0.530047,
+          "sample_sd": 0.0002929624549323329,
+          "observations": [
+            0.530384,
+            0.529853,
+            0.529904
+          ]
+        },
+        {
+          "parameter": 50,
+          "runs": 3,
+          "mean": 0.5303343333333334,
+          "sample_sd": 0.00019718096595086447,
+          "observations": [
+            0.530364,
+            0.530515,
+            0.530124
+          ]
+        },
+        {
+          "parameter": 100,
+          "runs": 3,
+          "mean": 0.53008,
+          "sample_sd": 0.00032376998007844777,
+          "observations": [
+            0.530133,
+            0.529733,
+            0.530374
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "per-run P99 estimate",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        0.65
+      ],
+      "reference_mean": null
+    },
+    "ivf_nprobe_qps": {
+      "files": [
+        "ivf_nprobe_qps.svg",
+        "ivf_nprobe_qps.png",
+        "ivf_nprobe_qps.pdf"
+      ],
+      "metric": "qps",
+      "parameter": "nprobe",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 5,
+          "mean": 1327.587843246,
+          "sample_sd": 3.1364493415959274,
+          "observations": [
+            1327.89228055,
+            1330.06740602,
+            1322.30477378,
+            1329.85591792,
+            1327.81883796
+          ]
+        },
+        {
+          "parameter": 4,
+          "runs": 5,
+          "mean": 1086.390821928,
+          "sample_sd": 2.829200728467115,
+          "observations": [
+            1087.56844922,
+            1082.16560756,
+            1086.5321034,
+            1085.77818215,
+            1089.90976731
+          ]
+        },
+        {
+          "parameter": 16,
+          "runs": 5,
+          "mean": 633.0628001726,
+          "sample_sd": 0.6799515283084073,
+          "observations": [
+            632.889983499,
+            633.331930018,
+            633.071234478,
+            632.07729121,
+            633.943561658
+          ]
+        },
+        {
+          "parameter": 64,
+          "runs": 5,
+          "mean": 246.51681584119999,
+          "sample_sd": 0.09893068087497103,
+          "observations": [
+            246.587015017,
+            246.402330273,
+            246.638470805,
+            246.518883063,
+            246.437380048
+          ]
+        },
+        {
+          "parameter": 256,
+          "runs": 5,
+          "mean": 97.92739519775999,
+          "sample_sd": 1.4883303349841086,
+          "observations": [
+            98.452057091,
+            98.6341533042,
+            98.6165111349,
+            95.2690957656,
+            98.6651586931
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "process run",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        1800
+      ],
+      "reference_mean": 1488.2068878266666
+    },
+    "ivf_nprobe_p99": {
+      "files": [
+        "ivf_nprobe_p99.svg",
+        "ivf_nprobe_p99.png",
+        "ivf_nprobe_p99.pdf"
+      ],
+      "metric": "p99_latency_ms",
+      "parameter": "nprobe",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 5,
+          "mean": 0.6349646,
+          "sample_sd": 0.0010109840750476809,
+          "observations": [
+            0.634658,
+            0.635609,
+            0.63546,
+            0.63577,
+            0.633326
+          ]
+        },
+        {
+          "parameter": 4,
+          "runs": 5,
+          "mean": 0.88383,
+          "sample_sd": 0.002666903916529419,
+          "observations": [
+            0.882428,
+            0.884331,
+            0.880756,
+            0.887925,
+            0.88371
+          ]
+        },
+        {
+          "parameter": 16,
+          "runs": 5,
+          "mean": 1.6714822,
+          "sample_sd": 0.003619089070470637,
+          "observations": [
+            1.671749,
+            1.669475,
+            1.674532,
+            1.666461,
+            1.675194
+          ]
+        },
+        {
+          "parameter": 64,
+          "runs": 5,
+          "mean": 4.307572,
+          "sample_sd": 0.009695436967976005,
+          "observations": [
+            4.311268,
+            4.315714,
+            4.29295,
+            4.315224,
+            4.302704
+          ]
+        },
+        {
+          "parameter": 256,
+          "runs": 5,
+          "mean": 11.390438,
+          "sample_sd": 0.6420696960646096,
+          "observations": [
+            11.094532,
+            11.099439,
+            11.095202,
+            12.5388,
+            11.124217
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "per-run P99 estimate",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        13.5
+      ],
+      "reference_mean": 0.530047
+    },
+    "ivf_batch_qps": {
+      "files": [
+        "ivf_batch_qps.svg",
+        "ivf_batch_qps.png",
+        "ivf_batch_qps.pdf"
+      ],
+      "metric": "qps",
+      "parameter": "batch_size",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 5,
+          "mean": 630.617573344,
+          "sample_sd": 6.5466628556537305,
+          "observations": [
+            618.992210549,
+            633.406923077,
+            632.4600885,
+            634.687156284,
+            633.54148831
+          ]
+        },
+        {
+          "parameter": 32,
+          "runs": 5,
+          "mean": 618.5648931618,
+          "sample_sd": 32.47781716895256,
+          "observations": [
+            633.762621043,
+            632.237544027,
+            560.47858742,
+            632.663932315,
+            633.681781004
+          ]
+        },
+        {
+          "parameter": 128,
+          "runs": 5,
+          "mean": 631.3022011394,
+          "sample_sd": 2.9325558173464223,
+          "observations": [
+            631.735952106,
+            633.549630303,
+            632.406463075,
+            626.186416618,
+            632.632543595
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "process run",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        800
+      ],
+      "reference_mean": null
+    },
+    "ivf_batch_p99": {
+      "files": [
+        "ivf_batch_p99.svg",
+        "ivf_batch_p99.png",
+        "ivf_batch_p99.pdf"
+      ],
+      "metric": "p99_latency_ms",
+      "parameter": "batch_size",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 5,
+          "mean": 1.6734444,
+          "sample_sd": 0.011731046385553208,
+          "observations": [
+            1.694193,
+            1.668782,
+            1.670636,
+            1.665759,
+            1.667852
+          ]
+        },
+        {
+          "parameter": 32,
+          "runs": 5,
+          "mean": 1.6743676,
+          "sample_sd": 0.010651018369151393,
+          "observations": [
+            1.667391,
+            1.672158,
+            1.691739,
+            1.675974,
+            1.664576
+          ]
+        },
+        {
+          "parameter": 128,
+          "runs": 5,
+          "mean": 1.6703356,
+          "sample_sd": 0.005477382887839748,
+          "observations": [
+            1.665378,
+            1.675133,
+            1.666831,
+            1.677336,
+            1.667
+          ]
+        }
+      ],
+      "error_bars": "sample standard deviation, ddof=1",
+      "sampling_unit": "per-run P99 estimate",
+      "x_axis": "categorical evaluated settings; connecting lines guide the eye",
+      "y_limits": [
+        0,
+        2.15
+      ],
+      "reference_mean": null
+    },
+    "ivf_nprobe_recall": {
+      "files": [
+        "ivf_nprobe_recall.svg",
+        "ivf_nprobe_recall.png",
+        "ivf_nprobe_recall.pdf"
+      ],
+      "metric": "recall_at_k",
+      "statistics": [
+        {
+          "parameter": 1,
+          "runs": 5,
+          "mean": 1.0,
+          "sample_sd": 0.0,
+          "observations": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "parameter": 4,
+          "runs": 5,
+          "mean": 1.0,
+          "sample_sd": 0.0,
+          "observations": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "parameter": 16,
+          "runs": 5,
+          "mean": 1.0,
+          "sample_sd": 0.0,
+          "observations": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "parameter": 64,
+          "runs": 5,
+          "mean": 1.0,
+          "sample_sd": 0.0,
+          "observations": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "parameter": 256,
+          "runs": 5,
+          "mean": 1.0,
+          "sample_sd": 0.0,
+          "observations": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "quality_queries": 20,
+      "error_bars": "none; same quality sample reused",
+      "y_limits": [
+        0,
+        1.05
+      ]
+    },
+    "kernel_time_share": {
+      "files": [
+        "kernel_time_share.svg",
+        "kernel_time_share.png",
+        "kernel_time_share.pdf"
+      ],
+      "mode_statistics": {
+        "exact": {
+          "scoring_ms": 443.36302,
+          "sorting_ms": 52.171974,
+          "total_ms": 495.534994,
+          "scoring_percent": 89.4715863396723,
+          "sorting_percent": 10.52841366032769
+        },
+        "ivf_flat": {
+          "scoring_ms": 13.444356,
+          "sorting_ms": 27.411319,
+          "total_ms": 40.855675,
+          "scoring_percent": 32.906948667473976,
+          "sorting_percent": 67.09305133252602
+        }
+      },
+      "denominator": "sum of GPU kernel execution durations in one mode's trace",
+      "error_bars": "none; single trace per mode"
+    }
+  }
+}

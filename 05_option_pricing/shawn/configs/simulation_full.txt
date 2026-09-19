@@ -1,0 +1,5 @@
+num_paths = 10000000
+num_steps = 256
+seed = 1234
+rng = curand
+variance_reduction = control_variate

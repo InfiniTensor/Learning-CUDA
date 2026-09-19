@@ -1,0 +1,8 @@
+option_type = european_call
+model = local_volatility
+spot = 100.0
+strike = 100.0
+risk_free_rate = 0.03
+volatility = 0.20
+maturity = 1.0
+local_vol_beta = -0.25
