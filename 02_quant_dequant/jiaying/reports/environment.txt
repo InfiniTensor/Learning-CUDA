@@ -1,0 +1,18 @@
+Linux SQBLXHQ 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 GNU/Linux
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Thu_Mar_28_02:18:24_PDT_2024
+Cuda compilation tools, release 12.4, V12.4.131
+Build cuda_12.4.r12.4/compiler.34097967_0
+g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+cmake version 4.2.3
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+Python 3.14.4
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4070 Laptop GPU, 616.56, 8188 MiB
+a17ce401ad3e49d0871e946d6ac6d7d09c35cb74

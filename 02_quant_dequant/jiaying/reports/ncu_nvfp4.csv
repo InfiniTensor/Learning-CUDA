@@ -1,0 +1,9 @@
+==WARNING== Could not deploy stock section files to "/home/jiaying/Documents/NVIDIA Nsight Compute/2024.1.1/Sections".
+Set the HOME environment variable to a writable directory.
+==WARNING== Using "/usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/../../sections" instead.
+==WARNING== See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq.
+==PROF== Connected to process 461 (/mnt/d/Jiaying/Documents/ChatGPT/InfiniTensor/Learning-CUDA/02_quant_dequant/jiaying/build/low_precision)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+OK 1024x4096; NVIDIA GeForce RTX 4070 Laptop GPU; MAE=0.0714289; MSE=0.009041; quant=13.3258 ms; dequant=0.510976 ms
+==PROF== Disconnected from process 461
+==WARNING== No kernels were profiled.

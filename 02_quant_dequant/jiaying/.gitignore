@@ -1,0 +1,9 @@
+/build*/
+/data/
+/output/
+__pycache__/
+*.ncu-rep
+*.nsys-rep
+*.sqlite
+*.qdstrm
+*.zip
