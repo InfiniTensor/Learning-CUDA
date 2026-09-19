@@ -1,0 +1,7 @@
+option_type = american_put
+model = black_scholes
+spot = 100.0
+strike = 100.0
+risk_free_rate = 0.03
+volatility = 0.20
+maturity = 1.0

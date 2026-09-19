@@ -1,0 +1,5 @@
+num_paths = 200000
+num_steps = 64
+seed = 1234
+rng = curand
+variance_reduction = antithetic

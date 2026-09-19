@@ -1,0 +1,84 @@
+{
+  "experiment_commit": "6a6b582",
+  "description": "Byte-identical selected formal experiment evidence; not a new GPU run.",
+  "files": [
+    {
+      "file": "validation/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/validation/summary.csv",
+      "bytes": 8924,
+      "sha256": "0252d7dd4969c1ab27ff787db9dde6f6f5260b718ce327b67a47e72707a986e7"
+    },
+    {
+      "file": "profile_nsys.console.log",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/profile_nsys.console.log",
+      "bytes": 13271,
+      "sha256": "296f2f39082ad2d1d7ecc67475d049553e3707b3dcd8d7830976123324cceec0"
+    },
+    {
+      "file": "profile_ncu.console.log",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/profile_ncu.console.log",
+      "bytes": 1470,
+      "sha256": "b18b75d05a0ccf83569a4fa4fa4fbce511e087405e3c3b7b6ff4a66e59d474eb"
+    },
+    {
+      "file": "european_mc/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/european_mc/summary.csv",
+      "bytes": 42427,
+      "sha256": "a80a5815f4abaecbe78e773b029b6f94292b7558f0b1de73c9408ce552c927a3"
+    },
+    {
+      "file": "european_mc/aggregate.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/european_mc/aggregate.csv",
+      "bytes": 4719,
+      "sha256": "7a6573a43631df7d68c8da3ac0e4e5b92b7e01a3f592f0a8caace58f6c1720a2"
+    },
+    {
+      "file": "asian_mc/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/asian_mc/summary.csv",
+      "bytes": 49523,
+      "sha256": "eb542f42b0bee387c3a63c5448a6086254890da726da55d17e402d7ea59f2086"
+    },
+    {
+      "file": "asian_mc/aggregate.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/asian_mc/aggregate.csv",
+      "bytes": 4981,
+      "sha256": "54cfabed89acd08b254c5cad3f82d81c8f89700352387aaddc959113a4e8d75b"
+    },
+    {
+      "file": "barrier_mc/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/barrier_mc/summary.csv",
+      "bytes": 49544,
+      "sha256": "b943709750ff8360423072bf0b86e13a01a9dafb075350b6101996b9855af1f8"
+    },
+    {
+      "file": "barrier_mc/aggregate.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/barrier_mc/aggregate.csv",
+      "bytes": 4977,
+      "sha256": "22ea5871ba65610ef09ae54cc3df4e67673932d216ea05beae7477e7f76ee784"
+    },
+    {
+      "file": "european_qmc/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/european_qmc/summary.csv",
+      "bytes": 14871,
+      "sha256": "3ae208b03ca85446226775a4ec76da4b5e160812a7e7d84b0e13c381315af8f5"
+    },
+    {
+      "file": "european_qmc/aggregate.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/european_qmc/aggregate.csv",
+      "bytes": 1994,
+      "sha256": "76772f1b985c2266aa14498499289990e4a4933b0ce5f73514d3e28a7f730896"
+    },
+    {
+      "file": "asian_performance/summary.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/asian_performance/summary.csv",
+      "bytes": 3002,
+      "sha256": "a4295f0bb36fc44da638e33f5b6e1138067a9ad64dbed82efd01e59aa0b05910"
+    },
+    {
+      "file": "asian_performance/aggregate.csv",
+      "source": "output_task/task-05-derivatives-pricing/task5_report_6a6b582/asian_performance/aggregate.csv",
+      "bytes": 881,
+      "sha256": "7b0e5f5ca040ca09597950808c32e400c795bf1178f6df487eff358771ce0d4a"
+    }
+  ]
+}

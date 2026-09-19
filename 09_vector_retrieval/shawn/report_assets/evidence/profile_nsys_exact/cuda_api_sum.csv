@@ -1,0 +1,10 @@
+Generating SQLite file outputs/task9_report_b3e629a/profile_nsys_exact/exact_nsys.sqlite from outputs/task9_report_b3e629a/profile_nsys_exact/exact_nsys.nsys-rep
+Processing [outputs/task9_report_b3e629a/profile_nsys_exact/exact_nsys.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+75.5,512167343,3001,170665.6,6871.0,2234,27421463,545195.6,cudaMemcpy
+19.4,131401939,7,18771705.6,90791.0,87867,130824530,49410652.7,cudaMalloc
+2.8,19240155,7000,2748.6,2574.0,2383,99014,1545.0,cudaLaunchKernel
+2.2,14655986,6000,2442.7,2584.0,1522,14903,732.6,cudaMemsetAsync
+0.2,1174218,7,167745.4,99755.0,84121,398370,132614.1,cudaFree
+0.0,1543,1,1543.0,1543.0,1543,1543,0.0,cuModuleGetLoadingMode
+

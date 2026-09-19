@@ -1,0 +1,10 @@
+num_paths = 1048576
+num_steps = 256
+seed = 20260824
+rng = curand
+variance_reduction = control_variate
+qmc_replications = 8
+num_gpus = 1
+compute_greeks = false
+spot_bump_relative = 0.001
+volatility_bump_absolute = 0.001

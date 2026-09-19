@@ -1,0 +1,10 @@
+top_k = 10
+search_mode = exact
+batch_size = 32
+nlist = 64
+nprobe = 8
+pq_m = 16
+kmeans_iterations = 2
+training_samples = 4096
+quality_queries = 10
+seed = 1234

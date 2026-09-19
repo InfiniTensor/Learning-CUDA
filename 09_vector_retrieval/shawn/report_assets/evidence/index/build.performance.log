@@ -1,0 +1,11 @@
+operation=build_index
+search_mode=ivf_flat
+backend=cuda
+num_vectors=1000000
+dim=128
+metric=l2
+nlist=4096
+training_samples=65536
+kmeans_iterations=2
+build_time_ms=1596.375828
+index_bytes=10129960

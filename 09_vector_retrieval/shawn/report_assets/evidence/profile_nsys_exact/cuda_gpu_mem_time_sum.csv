@@ -1,0 +1,6 @@
+Processing [outputs/task9_report_b3e629a/profile_nsys_exact/exact_nsys.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+Time (%),Total Time (ns),Count,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Operation
+84.5,27619844,1001,27592.3,288.0,255,27342089,864192.0,[CUDA memcpy Host-to-Device]
+13.4,4366536,6000,727.8,768.0,255,1888,153.5,[CUDA memset]
+2.1,699518,2000,349.8,352.0,320,960,16.4,[CUDA memcpy Device-to-Host]
+

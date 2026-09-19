@@ -1,0 +1,10 @@
+Generating SQLite file outputs/task9_report_b3e629a/profile_nsys_ivf/ivf_flat_nsys.sqlite from outputs/task9_report_b3e629a/profile_nsys_ivf/ivf_flat_nsys.nsys-rep
+Processing [outputs/task9_report_b3e629a/profile_nsys_ivf/ivf_flat_nsys.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+57.2,234999557,4001,58735.2,11718.0,2233,163095999,2578260.3,cudaMemcpy
+34.2,140480171,8,17560021.4,3766.0,1833,140358871,49618239.4,cudaMalloc
+4.8,19848133,7000,2835.4,2654.0,2384,98703,1379.0,cudaLaunchKernel
+3.5,14167021,6000,2361.2,2524.0,1472,20983,758.1,cudaMemsetAsync
+0.3,1128204,8,141025.5,3751.0,2473,740212,271558.5,cudaFree
+0.0,1713,1,1713.0,1713.0,1713,1713,0.0,cuModuleGetLoadingMode
+
