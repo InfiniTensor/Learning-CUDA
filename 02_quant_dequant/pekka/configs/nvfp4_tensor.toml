@@ -1,0 +1,7 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "tensor"
+output_type = "bf16"
+rounding = "nearest"
+target_gpu = "local"
+seed = 20260827

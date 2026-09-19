@@ -1,0 +1,5 @@
+/build/
+/data/
+/tools/__pycache__/
+/results/**/*.qdat
+/results/**/*.qlow
