@@ -1,0 +1,50 @@
+| input | dim | format | scale | SQNR plain (dB) | SQNR rotated (dB) | gain (dB) | MSE plain / rotated |
+|---|---|---|---|---|---|---|---|
+| gaussian | 64 | fp8 | row | 32.02 | 32.01 | -0.02 | 1.00x |
+| gaussian | 64 | fp8 | block 32 | 32.41 | 32.38 | -0.03 | 0.99x |
+| gaussian | 64 | int4 | row | 19.37 | 19.37 | -0.00 | 1.00x |
+| gaussian | 64 | int4 | block 32 | 20.27 | 20.27 | -0.01 | 1.00x |
+| gaussian | 128 | fp8 | row | 31.79 | 31.79 | -0.00 | 1.00x |
+| gaussian | 128 | fp8 | block 32 | 32.41 | 32.40 | -0.01 | 1.00x |
+| gaussian | 128 | int4 | row | 18.61 | 18.59 | -0.02 | 1.00x |
+| gaussian | 128 | int4 | block 32 | 20.26 | 20.25 | -0.01 | 1.00x |
+| gaussian | 256 | fp8 | row | 31.66 | 31.68 | +0.01 | 1.00x |
+| gaussian | 256 | fp8 | block 32 | 32.40 | 32.40 | +0.01 | 1.00x |
+| gaussian | 256 | int4 | row | 17.96 | 17.99 | +0.03 | 1.01x |
+| gaussian | 256 | int4 | block 32 | 20.27 | 20.27 | -0.01 | 1.00x |
+| gaussian | 1024 | fp8 | row | 31.57 | 31.56 | -0.00 | 1.00x |
+| gaussian | 1024 | fp8 | block 32 | 32.40 | 32.40 | +0.00 | 1.00x |
+| gaussian | 1024 | int4 | row | 16.92 | 16.92 | -0.01 | 1.00x |
+| gaussian | 1024 | int4 | block 32 | 20.27 | 20.27 | +0.00 | 1.00x |
+| outlier | 64 | fp8 | row | 40.23 | 31.57 | -8.66 | 0.14x |
+| outlier | 64 | fp8 | block 32 | 40.66 | 31.83 | -8.83 | 0.13x |
+| outlier | 64 | int4 | row | 12.65 | 23.11 | +10.45 | 11.09x |
+| outlier | 64 | int4 | block 32 | 15.63 | 23.63 | +8.00 | 6.31x |
+| outlier | 128 | fp8 | row | 37.04 | 31.53 | -5.51 | 0.28x |
+| outlier | 128 | fp8 | block 32 | 40.59 | 32.00 | -8.58 | 0.14x |
+| outlier | 128 | int4 | row | 10.82 | 21.64 | +10.81 | 12.06x |
+| outlier | 128 | int4 | block 32 | 15.62 | 22.62 | +6.99 | 5.00x |
+| outlier | 256 | fp8 | row | 34.90 | 31.52 | -3.38 | 0.46x |
+| outlier | 256 | fp8 | block 32 | 38.51 | 32.10 | -6.41 | 0.23x |
+| outlier | 256 | int4 | row | 9.64 | 20.20 | +10.56 | 11.38x |
+| outlier | 256 | int4 | block 32 | 16.13 | 22.07 | +5.94 | 3.93x |
+| outlier | 1024 | fp8 | row | 32.79 | 31.52 | -1.27 | 0.75x |
+| outlier | 1024 | fp8 | block 32 | 38.57 | 32.34 | -6.24 | 0.24x |
+| outlier | 1024 | int4 | row | 8.63 | 17.80 | +9.17 | 8.26x |
+| outlier | 1024 | int4 | block 32 | 16.12 | 20.56 | +4.44 | 2.78x |
+| student_t | 64 | fp8 | row | 33.48 | 31.90 | -1.58 | 0.70x |
+| student_t | 64 | fp8 | block 32 | 34.19 | 32.28 | -1.91 | 0.64x |
+| student_t | 64 | int4 | row | 14.76 | 20.04 | +5.28 | 3.37x |
+| student_t | 64 | int4 | block 32 | 16.73 | 20.85 | +4.12 | 2.58x |
+| student_t | 128 | fp8 | row | 33.03 | 31.72 | -1.31 | 0.74x |
+| student_t | 128 | fp8 | block 32 | 34.15 | 32.30 | -1.85 | 0.65x |
+| student_t | 128 | int4 | row | 13.04 | 19.21 | +6.17 | 4.14x |
+| student_t | 128 | int4 | block 32 | 16.89 | 20.72 | +3.83 | 2.42x |
+| student_t | 256 | fp8 | row | 32.66 | 31.64 | -1.02 | 0.79x |
+| student_t | 256 | fp8 | block 32 | 34.13 | 32.34 | -1.79 | 0.66x |
+| student_t | 256 | int4 | row | 11.22 | 18.41 | +7.18 | 5.23x |
+| student_t | 256 | int4 | block 32 | 16.83 | 20.56 | +3.73 | 2.36x |
+| student_t | 1024 | fp8 | row | 32.19 | 31.55 | -0.64 | 0.86x |
+| student_t | 1024 | fp8 | block 32 | 34.14 | 32.36 | -1.77 | 0.66x |
+| student_t | 1024 | int4 | row | 8.05 | 17.17 | +9.12 | 8.16x |
+| student_t | 1024 | int4 | block 32 | 16.83 | 20.40 | +3.57 | 2.28x |

@@ -1,0 +1,151 @@
+Per-layer group scheduling: a node-level profile of `--mode loop --group-entry`
+=================================================================================
+
+    cd C:\fhwt
+    nsys profile --force-overwrite true --cuda-event-trace=false \
+        --cuda-graph-trace=node -o g_w6 \
+        -- .\build\fhwt.exe --mode loop --rows 512 --dims 128 --layers 8 \
+           --tensors 6 --group-entry --streams 6 --iters 20 --reps 3
+
+The report is this directory's loop_group_width.nsys-rep; this file is the export.
+RTX 5060 Ti / sm_120 / 36 SM / L2 32 MiB / CUDA 12.9 / Windows.  Workload: 8 layers
+x 6 tensors = 48 [512,128] fp16 rotations per pass, each layer's 6 tensors sharing
+one anchor -- strategy D built with --group-entry (report 7.13).
+
+The run covers strategy C and strategy D: 1 correctness pass + 2 warm-up passes
++ 3 reps x 20 timed passes each.  A CUDA Graph is one opaque record at the default
+granularity, so --cuda-graph-trace=node is what makes a node visible at all; with it
+every graph node is its own kernel record and the records of one replay share a
+correlation id, which is what the split below uses.
+
+1. The kernels
+--------------
+Kernel records: 15696, of which 15120 are the single kernel
+`fhwt_reg_kernel<__half, Native2<__half>, 7, 5>`, all with the same launch geometry
+128x128, median 1376 ns (min 832 / p90 1664 / max 517131).  C and D therefore
+execute an identical node list and everything below is scheduling.
+The other 576 records are the correctness probe's device-to-host compares, the
+memsets between phases and the buffer fills.
+
+2. Chain (C) vs per-layer fork/join (D)
+---------------------------------------
+A replay is a correlation id carrying all 48 nodes.  There are 126 of them:
+1 correctness + 2 warm-up + 60 timed each for C and D.  Per replay, span = last-node
+end - first-node start, busy = sum of node durations, concurrency = peak number of
+nodes in flight at once (a sweep over start/end events).
+
+| strategy | replays | span p50 (us) | span p10 | span p90 | busy p50 (us) | span/busy | peak concurrency |
+|---|---|---|---|---|---|---|---|
+| C, 48-node chain | 60 | 58.0 | 57.9 | 58.1 | 47.0 | 1.23 | 1 |
+| D, 8 x (1+5) fork/join | 60 | 25.0 | 24.9 | 25.1 | 54.3 | 0.46 | 5 |
+
+The chain is one node wide by construction: span (58.0 us) *exceeds* busy (47.0 us)
+by 10.9 us -- a ~232 ns bubble between consecutive nodes -- and peak concurrency is 1.
+Each rotation only fills a fraction of the 36 SMs, yet the pass costs the sum of
+their durations.
+
+The forked graph inverts it: span 25.0 us < busy 54.3 us, span/busy 0.46, peak
+concurrency 5.  With 6 tensors per layer one node is the anchor and the other 5 run
+together, so the pass pays 8 serialisation points instead of 48.  Per transform:
+C 1.207 us (= 58.0 / 48), D 0.520 us (= 25.0 / 48).  D's 0.52 us is *below* the
+1.376 us median duration of the kernel itself, which is only possible because the
+siblings really do overlap.  Both reproduce the event-timed figures in
+data/group.csv (1.18 us for C, 0.60 us for D) from a second, independent
+measurement -- which is the point of keeping a profile as well as a stopwatch.
+
+3. Host side: cudaGraphLaunch, and what a node costs
+----------------------------------------------------
+| graph | launches | p50 (us) | p90 (us) | max (us) |
+|---|---|---|---|---|
+| single node (strategy B) | 3024 | 5.2 | 8.4 | 136.8 |
+| C, 48-node chain | 60 | 50.9 | 67.0 | 155.7 |
+| D, 48-node fork/join | 60 | 39.0 | 52.3 | 91.8 |
+
+All three have a single root (layer 0's anchor is queued with add()), so none of
+them pays the multi-root tax of 5.8 / 8.6 -- 1 root submits at ~12 us there, 8 roots
+at 35-58 us.  The 7.13 win therefore comes from the DAG shape, not the submit path.
+
+What this capture does add is a second, independent warning: the submit cost grows
+with the node count.  A 1-node graph costs 5.2 us at p50 and a 48-node one 39.0 us,
+a difference of ~34 us for the 47 extra nodes (~0.7 us/node, which fits 8.6's
+8-node single-root graph at 11.7-12.0 us).  Read at face value, D's host cost exceeds
+its own GPU span (25.0 us) -- but D's measured pass time is 0.602 us per transform,
+i.e. 28.9 us per pass, *below* that.  So these submit figures are inflated by the
+profiler and the desktop load; the inflation-robust reading is the difference, ~34
+us for 47 extra nodes.  At 48 nodes the submit path is the same order of magnitude as
+the work, which is why the next lever here is to put *more passes* into one graph,
+not to reshape the graph again.
+
+4. What it says
+---------------
+1. Independence is only worth anything if it is expressed as *width*: a chain of 48
+   nodes and a per-layer fork/join of the same 48 nodes differ by 2.3x at the GPU,
+   on identical kernels.
+2. Width has to sit *inside* a layer.  Making all 48 nodes independent (the flat
+   fan-out of 7.11) does not help; at 48 nodes it was the worst of the shapes, and
+   the reason is visible here -- the only useful overlap is between the 5 siblings of
+   one layer, and nothing else.
+3. The remaining distance to ideal (48 nodes of busy packed into 25.0 us rather than
+   54.3 us, span/busy 0.46) is DRAM traffic, not scheduling: at [512,128] a pass
+   touches 2 MiB and the 5 siblings contend for the same L2/DRAM, so they overlap
+   only partially.  That is why the win disappears at rows = 16384 (report 7.13).
+
+Raw `nsys stats` summaries
+--------------------------
+Generating SQLite file C:\fhwt_tmp\g_w6.sqlite from C:\fhwt_tmp\g_w6.nsys-rep
+Processing [C:\fhwt_tmp\g_w6.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0         20489563      15120    1355.1    1376.0       832    517131       4207.5  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+
+Generating SQLite file C:\fhwt_tmp\g_w6.sqlite from C:\fhwt_tmp\g_w6.nsys-rep
+Processing [C:\fhwt_tmp\g_w6.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                 Name                
+ --------  ---------------  ---------  ----------  ---------  --------  --------  -----------  -----------------------------------
+     43.4        168652689         15  11243512.6   932888.0    291873  29255276   13463921.4  cudaEventSynchronize               
+     21.6         83720269        144    581390.8     1432.5      1052  82989867    6915420.0  cudaMalloc                         
+     16.6         64552892       6192     10425.2     5250.0       541  18280877     232623.9  cudaLaunchKernel                   
+      7.5         28964644       3150      9195.1     5210.0      3506    155655      12981.1  cudaGraphLaunch_v10000             
+      5.2         20125371        432     46586.5    42365.5     11672    292485      26495.0  cudaMemcpy                         
+      2.9         11128681          9   1236520.1   984616.0    284679   3930028    1094946.2  cudaStreamSynchronize              
+      0.9          3527896          1   3527896.0  3527896.0   3527896   3527896          0.0  cuLibraryUnload                    
+      0.7          2808952         50     56179.0     9057.0      3847   1564626     222378.8  cudaGraphInstantiate_v12000        
+      0.5          1815322        144     12606.4     1272.5       851    362617      48946.3  cudaFree                           
+      0.2           956309        144      6641.0     5040.0      3356     55445       6354.2  cudaMemsetAsync                    
+      0.2           645524         50     12910.5     8666.5      4950     55064      11301.0  cudaGraphUpload_v10000             
+      0.1           424427        408      1040.3      401.0       340     20910       2396.8  cudaEventRecord                    
+      0.1           360462         50      7209.2     4313.5      3046     87185      12763.8  cudaGraphExecDestroy_v10000        
+      0.1           250334        378       662.3      541.0       420     18845       1004.7  cudaStreamWaitEvent                
+      0.0           108069         48      2251.4      802.0       591     58601       8382.6  cudaGraphAddKernelNode_v10000      
+      0.0            98828         98      1008.4      776.5       341     11241       1333.7  cudaGraphDestroy_v10000            
+      0.0            73914         97       762.0      450.0       270      8216       1131.0  cudaStreamBeginCapture_v10000      
+      0.0            69947         57      1227.1     1133.0       541      7114        842.9  cudaStreamDestroy                  
+      0.0            68848         57      1207.9      902.0       461     15810       2033.5  cudaStreamCreateWithFlags          
+      0.0            25981         97       267.8      221.0       190      3286        316.8  cudaStreamEndCapture_v10000        
+      0.0            17969         96       187.2      151.0       130      3126        304.0  cudaGraphGetNodes_v10000           
+      0.0            16691         48       347.7      281.0       270      3146        413.7  cudaGraphKernelNodeGetParams_v10000
+      0.0             9518          6      1586.3      456.0       350      5581       2095.6  cudaEventCreateWithFlags           
+      0.0             8579         48       178.7      150.0       140      1463        189.4  cudaGraphNodeGetType_v10000        
+      0.0             4639          8       579.9      325.5       211      2234        680.6  cudaEventDestroy                   
+      0.0             4448          1      4448.0     4448.0      4448      4448          0.0  cuCtxSynchronize                   
+      0.0             3446          1      3446.0     3446.0      3446      3446          0.0  cuModuleGetLoadingMode             
+      0.0             2926          2      1463.0     1463.0       571      2355       1261.5  cudaEventCreate                    
+      0.0             2625          1      2625.0     2625.0      2625      2625          0.0  cudaGraphCreate_v10000             
+      0.0              291          1       291.0      291.0       291       291          0.0  cuDeviceGetLuid
+
+Generating SQLite file C:\fhwt_tmp\g_w6.sqlite from C:\fhwt_tmp\g_w6.nsys-rep
+Processing [C:\fhwt_tmp\g_w6.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_kern_exec_sum.py]... 
+
+ ** CUDA Kernel Launch & Exec Time Summary (cuda_kern_exec_sum):
+
+  PID    TID   DevId  Count  QCount  TAvg (ns)  TMed (ns)  TMin (ns)  TMax (ns)  TStdDev (ns)  AAvg (ns)  AMed (ns)  AMin (ns)  AMax (ns)  AStdDev (ns)  QAvg (ns)  QMed (ns)  QMin (ns)  QMax (ns)  QStdDev (ns)  KAvg (ns)  KMed (ns)  KMin (ns)  KMax (ns)  KStdDev (ns)         API Name                                                     Kernel Name                                             
+ -----  -----  -----  -----  ------  ---------  ---------  ---------  ---------  ------------  ---------  ---------  ---------  ---------  ------------  ---------  ---------  ---------  ---------  ------------  ---------  ---------  ---------  ---------  ------------  ----------------------  ----------------------------------------------------------------------------------------------------
+ 52596  28532      0   6048    6048  7053365.1  1532029.5       6912   29264991     8728280.0     7629.3     5300.0       3277     418313       13786.2  7044254.9  1524343.5        267   29257902     8728559.7     1480.9     1408.0        992       4352         362.8  cudaLaunchKernel        void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+ 52596  28532      0   9072    9056  4438363.8   459425.0     131924   26927380     7236524.1    36349.3    39265.0       3506     155655       25798.2  4408520.7   409146.5      69628   26921637     7256253.9     1271.3     1184.0        832     517131        5422.3  cudaGraphLaunch_v10000  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+

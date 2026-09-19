@@ -1,0 +1,75 @@
+# 收尾复核复跑记录（报告 5.10 / 7.1）：warp shuffle 掩码修复 + block_size 范围检查
+# + 未融合访存量口径更正（7 / 6.5 B/elem）之后，用最终源码重新编译，跑 `make check`
+# （程序自带的 --mode verify / --mode quant 自检）。
+#
+# 注意：本次复跑不在报告 6 节的主测机上，而是在一台备用机上完成。
+# 因此下面的**时间/带宽数字与报告正文不可比**，本文件只用于佐证「修复后功能仍然正确」。
+# 报告正文的性能读数仍以 data/device_info.txt 记录的 RTX 5060 Ti 为准。
+#
+# Host   : NVIDIA GeForce RTX 4060 Laptop GPU (sm_89), 24 SM, 8 GiB
+# Toolkit: CUDA 12.6 (nvcc V12.6.85), Linux x86_64
+# Command: make BUILD=build_linux check 2>&1 | tee data/check.log
+# Date   : 2026-09-18
+#
+# 判定：7 条 --mode verify 全部 PASS（fp16 阈值 1e-2 / bf16 阈值 5e-2）；
+#       5 条 --mode quant 的 `check` 行全部 PASS（融合输出与「先旋转再量化」逐位一致，
+#       packed 字节与 scale 数组都相等）。
+#
+build_linux/fhwt.exe --mode verify --dim 64  --rows 4096
+verify   rows=4096 dim=64 fp16 kernel=reg acc=native scale=0.125
+         max_abs_err=2.0514e-03  max|ref|=2.5821e+00  rel=7.9446e-04  rms=3.1749e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode verify --dim 128 --rows 4096
+verify   rows=4096 dim=128 fp16 kernel=reg acc=native scale=0.0883883
+         max_abs_err=2.7343e-03  max|ref|=2.9952e+00  rel=9.1290e-04  rms=3.6346e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode verify --dim 256 --rows 4096
+verify   rows=4096 dim=256 fp16 kernel=reg acc=native scale=0.0625
+         max_abs_err=2.5647e-03  max|ref|=3.2359e+00  rel=7.9258e-04  rms=3.5388e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode verify --dim 512 --rows 4096
+verify   rows=4096 dim=512 fp16 kernel=reg acc=native scale=0.0441942
+         max_abs_err=3.0865e-03  max|ref|=3.2703e+00  rel=9.4378e-04  rms=3.8008e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode verify --dim 1024 --rows 4096
+verify   rows=4096 dim=1024 fp16 kernel=reg acc=native scale=0.03125
+         max_abs_err=2.5370e-03  max|ref|=3.1249e+00  rel=8.1185e-04  rms=3.6745e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode verify --dim 128 --rows 4096 --kernel tc --dtype bf16
+verify   rows=4096 dim=128 bf16 kernel=tensorcore acc=native scale=0.0883883
+         max_abs_err=1.2672e-02  max|ref|=2.9943e+00  rel=4.2321e-03  rms=1.6573e-03
+         PASS (absolute error < 5e-02)
+build_linux/fhwt.exe --mode verify --dim 4096 --rows 512 --kernel smem --acc fp32
+verify   rows=512 dim=4096 fp16 kernel=smem acc=fp32 scale=0.015625
+         max_abs_err=2.0521e-03  max|ref|=3.0625e+00  rel=6.7006e-04  rms=1.5538e-04
+         PASS (absolute error < 1e-02)
+build_linux/fhwt.exe --mode quant --quant fp8  --dim 64   --rows 4096 --iters 5 --warmup 1
+fused quant fp16 fp8e4m3 dim=64 rows=4096 tpr=0 rpb=0
+  fused   :    0.0033 ms     240.0 GB/s (effective, 3.00 B/elem)
+  unfused :    0.0108 ms  (rotate 0.0030 + quantise 0.0078)     169.8 GB/s (7.00 B/elem)
+  speedup :   3.30x   (bandwidth 93.7% of peak 256 GB/s)
+  check   : PASS (fused vs rotate-then-quantise, bitwise: 262144 bytes equal, 4096 scales equal)
+build_linux/fhwt.exe --mode quant --quant fp8  --dim 256  --rows 4096 --iters 5 --warmup 1 --dtype bf16
+fused quant bf16 fp8e4m3 dim=256 rows=4096 tpr=0 rpb=0
+  fused   :    0.0070 ms     451.8 GB/s (effective, 3.00 B/elem)
+  unfused :    0.0133 ms  (rotate 0.0055 + quantise 0.0078)     550.9 GB/s (7.00 B/elem)
+  speedup :   1.91x   (bandwidth 176.4% of peak 256 GB/s)
+  check   : PASS (fused vs rotate-then-quantise, bitwise: 1048576 bytes equal, 4096 scales equal)
+build_linux/fhwt.exe --mode quant --quant int4 --dim 128  --rows 4096 --iters 5 --warmup 1
+fused quant fp16 int4 dim=128 rows=4096 tpr=0 rpb=0
+  fused   :    0.0049 ms     266.7 GB/s (effective, 2.50 B/elem)
+  unfused :    0.0127 ms  (rotate 0.0039 + quantise 0.0088)     268.7 GB/s (6.50 B/elem)
+  speedup :   2.58x   (bandwidth 104.2% of peak 256 GB/s)
+  check   : PASS (fused vs rotate-then-quantise, bitwise: 262144 bytes equal, 4096 scales equal)
+build_linux/fhwt.exe --mode quant --quant int4 --dim 1024 --rows 4096 --iters 5 --warmup 1 --block-size 32
+fused quant fp16 int4 dim=1024 rows=4096 tpr=0 rpb=0
+  fused   :    0.0308 ms     341.0 GB/s (effective, 2.50 B/elem)
+  unfused :    0.0444 ms  (rotate 0.0253 + quantise 0.0190)     614.3 GB/s (6.50 B/elem)
+  speedup :   1.44x   (bandwidth 133.2% of peak 256 GB/s)
+  check   : PASS (fused vs rotate-then-quantise, bitwise: 2097152 bytes equal, 131072 scales equal)
+build_linux/fhwt.exe --mode quant --quant fp8  --dim 512  --rows 4096 --iters 5 --warmup 1 --block-size 128
+fused quant fp16 fp8e4m3 dim=512 rows=4096 tpr=0 rpb=0
+  fused   :    0.0125 ms     503.6 GB/s (effective, 3.00 B/elem)
+  unfused :    0.0198 ms  (rotate 0.0094 + quantise 0.0104)     739.9 GB/s (7.00 B/elem)
+  speedup :   1.59x   (bandwidth 196.7% of peak 256 GB/s)
+  check   : PASS (fused vs rotate-then-quantise, bitwise: 2097152 bytes equal, 16384 scales equal)

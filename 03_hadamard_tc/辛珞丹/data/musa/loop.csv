@@ -1,0 +1,1 @@
+rows,dims,layers,passes,quant,dtype,plain_ms,per_step_ms,sequence_ms,parallel_ms,plain_us,per_step_us,sequence_us,parallel_us,speedup_b,speedup_c,speedup_d,capture_b_ms,capture_c_ms,capture_d_ms,runs,speedup_c_min,speedup_c_max,speedup_d_min,speedup_d_max,parallel_sr_us,speedup_d_sr,capture_d_sr_ms,speedup_d_sr_min,speedup_d_sr_max

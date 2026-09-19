@@ -1,0 +1,201 @@
+### dim=64 quant=fp8 tpr=8 rpb=16
+fused quant fp16 fp8e4m3 dim=64 rows=262144 tpr=8 rpb=16
+  fused   :    0.1029 ms     489.1 GB/s (effective, 3.00 B/elem)
+  unfused :    0.4513 ms  (rotate 0.1927 + quantise 0.2587)     185.9 GB/s (5.00 B/elem)
+  speedup :   4.39x   (bandwidth 109.2% of peak 448 GB/s)
+### dim=64 quant=fp8 tpr=32 rpb=4
+fused quant fp16 fp8e4m3 dim=64 rows=262144 tpr=32 rpb=4
+  fused   :    0.1063 ms     473.3 GB/s (effective, 3.00 B/elem)
+  unfused :    0.4470 ms  (rotate 0.1742 + quantise 0.2728)     187.7 GB/s (5.00 B/elem)
+  speedup :   4.20x   (bandwidth 105.6% of peak 448 GB/s)
+### dim=64 quant=fp8 tpr=32 rpb=16
+fused quant fp16 fp8e4m3 dim=64 rows=262144 tpr=32 rpb=16
+  fused   :    0.1051 ms     478.9 GB/s (effective, 3.00 B/elem)
+  unfused :    0.4627 ms  (rotate 0.1816 + quantise 0.2812)     181.3 GB/s (5.00 B/elem)
+  speedup :   4.40x   (bandwidth 106.9% of peak 448 GB/s)
+### dim=64 quant=fp8 tpr=16 rpb=8
+fused quant fp16 fp8e4m3 dim=64 rows=262144 tpr=16 rpb=8
+  fused   :    0.1044 ms     481.9 GB/s (effective, 3.00 B/elem)
+  unfused :    0.4449 ms  (rotate 0.1725 + quantise 0.2724)     188.5 GB/s (5.00 B/elem)
+  speedup :   4.26x   (bandwidth 107.6% of peak 448 GB/s)
+### dim=64 quant=int4 tpr=8 rpb=16
+fused quant fp16 int4 dim=64 rows=262144 tpr=8 rpb=16
+  fused   :    0.0892 ms     470.2 GB/s (effective, 2.50 B/elem)
+  unfused :    0.4653 ms  (rotate 0.1725 + quantise 0.2928)     162.3 GB/s (4.50 B/elem)
+  speedup :   5.22x   (bandwidth 104.9% of peak 448 GB/s)
+### dim=64 quant=int4 tpr=32 rpb=4
+fused quant fp16 int4 dim=64 rows=262144 tpr=32 rpb=4
+  fused   :    0.1046 ms     401.1 GB/s (effective, 2.50 B/elem)
+  unfused :    0.4612 ms  (rotate 0.1825 + quantise 0.2787)     163.7 GB/s (4.50 B/elem)
+  speedup :   4.41x   (bandwidth 89.5% of peak 448 GB/s)
+### dim=64 quant=int4 tpr=32 rpb=16
+fused quant fp16 int4 dim=64 rows=262144 tpr=32 rpb=16
+  fused   :    0.0885 ms     473.8 GB/s (effective, 2.50 B/elem)
+  unfused :    0.4835 ms  (rotate 0.1895 + quantise 0.2940)     156.2 GB/s (4.50 B/elem)
+  speedup :   5.46x   (bandwidth 105.7% of peak 448 GB/s)
+### dim=64 quant=int4 tpr=16 rpb=8
+fused quant fp16 int4 dim=64 rows=262144 tpr=16 rpb=8
+  fused   :    0.0873 ms     480.3 GB/s (effective, 2.50 B/elem)
+  unfused :    0.4644 ms  (rotate 0.1857 + quantise 0.2787)     162.6 GB/s (4.50 B/elem)
+  speedup :   5.32x   (bandwidth 107.2% of peak 448 GB/s)
+### dim=128 quant=fp8 tpr=8 rpb=16
+fused quant fp16 fp8e4m3 dim=128 rows=262144 tpr=8 rpb=16
+  fused   :    0.2613 ms     385.2 GB/s (effective, 3.00 B/elem)
+  unfused :    0.6434 ms  (rotate 0.3546 + quantise 0.2888)     260.8 GB/s (5.00 B/elem)
+  speedup :   2.46x   (bandwidth 86.0% of peak 448 GB/s)
+### dim=128 quant=fp8 tpr=32 rpb=4
+fused quant fp16 fp8e4m3 dim=128 rows=262144 tpr=32 rpb=4
+  fused   :    0.2683 ms     375.2 GB/s (effective, 3.00 B/elem)
+  unfused :    0.6516 ms  (rotate 0.3631 + quantise 0.2885)     257.5 GB/s (5.00 B/elem)
+  speedup :   2.43x   (bandwidth 83.7% of peak 448 GB/s)
+### dim=128 quant=fp8 tpr=32 rpb=16
+fused quant fp16 fp8e4m3 dim=128 rows=262144 tpr=32 rpb=16
+  fused   :    0.2543 ms     395.8 GB/s (effective, 3.00 B/elem)
+  unfused :    0.6581 ms  (rotate 0.3629 + quantise 0.2952)     254.9 GB/s (5.00 B/elem)
+  speedup :   2.59x   (bandwidth 88.3% of peak 448 GB/s)
+### dim=128 quant=fp8 tpr=16 rpb=8
+fused quant fp16 fp8e4m3 dim=128 rows=262144 tpr=16 rpb=8
+  fused   :    0.2543 ms     395.8 GB/s (effective, 3.00 B/elem)
+  unfused :    0.6542 ms  (rotate 0.3653 + quantise 0.2889)     256.5 GB/s (5.00 B/elem)
+  speedup :   2.57x   (bandwidth 88.3% of peak 448 GB/s)
+### dim=128 quant=int4 tpr=8 rpb=16
+fused quant fp16 int4 dim=128 rows=262144 tpr=8 rpb=16
+  fused   :    0.2001 ms     419.2 GB/s (effective, 2.50 B/elem)
+  unfused :    0.6588 ms  (rotate 0.3606 + quantise 0.2982)     229.2 GB/s (4.50 B/elem)
+  speedup :   3.29x   (bandwidth 93.6% of peak 448 GB/s)
+### dim=128 quant=int4 tpr=32 rpb=4
+fused quant fp16 int4 dim=128 rows=262144 tpr=32 rpb=4
+  fused   :    0.1870 ms     448.7 GB/s (effective, 2.50 B/elem)
+  unfused :    0.6693 ms  (rotate 0.3557 + quantise 0.3135)     225.6 GB/s (4.50 B/elem)
+  speedup :   3.58x   (bandwidth 100.1% of peak 448 GB/s)
+### dim=128 quant=int4 tpr=32 rpb=16
+fused quant fp16 int4 dim=128 rows=262144 tpr=32 rpb=16
+  fused   :    0.2002 ms     418.9 GB/s (effective, 2.50 B/elem)
+  unfused :    0.6492 ms  (rotate 0.3495 + quantise 0.2997)     232.6 GB/s (4.50 B/elem)
+  speedup :   3.24x   (bandwidth 93.5% of peak 448 GB/s)
+### dim=128 quant=int4 tpr=16 rpb=8
+fused quant fp16 int4 dim=128 rows=262144 tpr=16 rpb=8
+  fused   :    0.2021 ms     415.1 GB/s (effective, 2.50 B/elem)
+  unfused :    0.6436 ms  (rotate 0.3522 + quantise 0.2914)     234.6 GB/s (4.50 B/elem)
+  speedup :   3.19x   (bandwidth 92.7% of peak 448 GB/s)
+### dim=256 quant=fp8 tpr=8 rpb=16
+fused quant fp16 fp8e4m3 dim=256 rows=262144 tpr=8 rpb=16
+  fused   :    0.5222 ms     385.6 GB/s (effective, 3.00 B/elem)
+  unfused :    1.2355 ms  (rotate 0.7132 + quantise 0.5223)     271.6 GB/s (5.00 B/elem)
+  speedup :   2.37x   (bandwidth 86.1% of peak 448 GB/s)
+### dim=256 quant=fp8 tpr=32 rpb=4
+fused quant fp16 fp8e4m3 dim=256 rows=262144 tpr=32 rpb=4
+  fused   :    0.5210 ms     386.4 GB/s (effective, 3.00 B/elem)
+  unfused :    1.2308 ms  (rotate 0.7078 + quantise 0.5230)     272.6 GB/s (5.00 B/elem)
+  speedup :   2.36x   (bandwidth 86.2% of peak 448 GB/s)
+### dim=256 quant=fp8 tpr=32 rpb=16
+fused quant fp16 fp8e4m3 dim=256 rows=262144 tpr=32 rpb=16
+  fused   :    0.5297 ms     380.1 GB/s (effective, 3.00 B/elem)
+  unfused :    1.2372 ms  (rotate 0.7149 + quantise 0.5223)     271.2 GB/s (5.00 B/elem)
+  speedup :   2.34x   (bandwidth 84.8% of peak 448 GB/s)
+### dim=256 quant=fp8 tpr=16 rpb=8
+fused quant fp16 fp8e4m3 dim=256 rows=262144 tpr=16 rpb=8
+  fused   :    0.5315 ms     378.8 GB/s (effective, 3.00 B/elem)
+  unfused :    1.2540 ms  (rotate 0.7177 + quantise 0.5363)     267.6 GB/s (5.00 B/elem)
+  speedup :   2.36x   (bandwidth 84.5% of peak 448 GB/s)
+### dim=256 quant=int4 tpr=8 rpb=16
+fused quant fp16 int4 dim=256 rows=262144 tpr=8 rpb=16
+  fused   :    0.4445 ms     377.4 GB/s (effective, 2.50 B/elem)
+  unfused :    1.1540 ms  (rotate 0.7198 + quantise 0.4343)     261.7 GB/s (4.50 B/elem)
+  speedup :   2.60x   (bandwidth 84.2% of peak 448 GB/s)
+### dim=256 quant=int4 tpr=32 rpb=4
+fused quant fp16 int4 dim=256 rows=262144 tpr=32 rpb=4
+  fused   :    0.4316 ms     388.7 GB/s (effective, 2.50 B/elem)
+  unfused :    1.1462 ms  (rotate 0.7116 + quantise 0.4346)     263.5 GB/s (4.50 B/elem)
+  speedup :   2.66x   (bandwidth 86.8% of peak 448 GB/s)
+### dim=256 quant=int4 tpr=32 rpb=16
+fused quant fp16 int4 dim=256 rows=262144 tpr=32 rpb=16
+  fused   :    0.4243 ms     395.4 GB/s (effective, 2.50 B/elem)
+  unfused :    1.1242 ms  (rotate 0.7102 + quantise 0.4140)     268.6 GB/s (4.50 B/elem)
+  speedup :   2.65x   (bandwidth 88.2% of peak 448 GB/s)
+### dim=256 quant=int4 tpr=16 rpb=8
+fused quant fp16 int4 dim=256 rows=262144 tpr=16 rpb=8
+  fused   :    0.4185 ms     400.9 GB/s (effective, 2.50 B/elem)
+  unfused :    1.1455 ms  (rotate 0.7189 + quantise 0.4266)     263.6 GB/s (4.50 B/elem)
+  speedup :   2.74x   (bandwidth 89.5% of peak 448 GB/s)
+### dim=512 quant=fp8 tpr=8 rpb=16
+fused quant fp16 fp8e4m3 dim=512 rows=262144 tpr=8 rpb=16
+  fused   :    1.0374 ms     388.1 GB/s (effective, 3.00 B/elem)
+  unfused :    2.4802 ms  (rotate 1.4325 + quantise 1.0477)     270.6 GB/s (5.00 B/elem)
+  speedup :   2.39x   (bandwidth 86.6% of peak 448 GB/s)
+### dim=512 quant=fp8 tpr=32 rpb=4
+fused quant fp16 fp8e4m3 dim=512 rows=262144 tpr=32 rpb=4
+  fused   :    1.0528 ms     382.5 GB/s (effective, 3.00 B/elem)
+  unfused :    2.4869 ms  (rotate 1.4380 + quantise 1.0489)     269.9 GB/s (5.00 B/elem)
+  speedup :   2.36x   (bandwidth 85.4% of peak 448 GB/s)
+### dim=512 quant=fp8 tpr=32 rpb=16
+fused quant fp16 fp8e4m3 dim=512 rows=262144 tpr=32 rpb=16
+  fused   :    1.0521 ms     382.7 GB/s (effective, 3.00 B/elem)
+  unfused :    2.4722 ms  (rotate 1.4306 + quantise 1.0416)     271.5 GB/s (5.00 B/elem)
+  speedup :   2.35x   (bandwidth 85.4% of peak 448 GB/s)
+### dim=512 quant=fp8 tpr=16 rpb=8
+fused quant fp16 fp8e4m3 dim=512 rows=262144 tpr=16 rpb=8
+  fused   :    1.0393 ms     387.4 GB/s (effective, 3.00 B/elem)
+  unfused :    2.5006 ms  (rotate 1.4479 + quantise 1.0527)     268.4 GB/s (5.00 B/elem)
+  speedup :   2.41x   (bandwidth 86.5% of peak 448 GB/s)
+### dim=512 quant=int4 tpr=8 rpb=16
+fused quant fp16 int4 dim=512 rows=262144 tpr=8 rpb=16
+  fused   :    0.8600 ms     390.2 GB/s (effective, 2.50 B/elem)
+  unfused :    2.3182 ms  (rotate 1.4607 + quantise 0.8575)     260.5 GB/s (4.50 B/elem)
+  speedup :   2.70x   (bandwidth 87.1% of peak 448 GB/s)
+### dim=512 quant=int4 tpr=32 rpb=4
+fused quant fp16 int4 dim=512 rows=262144 tpr=32 rpb=4
+  fused   :    0.8639 ms     388.4 GB/s (effective, 2.50 B/elem)
+  unfused :    2.3121 ms  (rotate 1.4500 + quantise 0.8621)     261.2 GB/s (4.50 B/elem)
+  speedup :   2.68x   (bandwidth 86.7% of peak 448 GB/s)
+### dim=512 quant=int4 tpr=32 rpb=16
+fused quant fp16 int4 dim=512 rows=262144 tpr=32 rpb=16
+  fused   :    0.8506 ms     394.5 GB/s (effective, 2.50 B/elem)
+  unfused :    2.3013 ms  (rotate 1.4387 + quantise 0.8626)     262.4 GB/s (4.50 B/elem)
+  speedup :   2.71x   (bandwidth 88.0% of peak 448 GB/s)
+### dim=512 quant=int4 tpr=16 rpb=8
+fused quant fp16 int4 dim=512 rows=262144 tpr=16 rpb=8
+  fused   :    0.8713 ms     385.1 GB/s (effective, 2.50 B/elem)
+  unfused :    2.3086 ms  (rotate 1.4521 + quantise 0.8565)     261.6 GB/s (4.50 B/elem)
+  speedup :   2.65x   (bandwidth 86.0% of peak 448 GB/s)
+### dim=1024 quant=fp8 tpr=8 rpb=16
+fused quant fp16 fp8e4m3 dim=1024 rows=262144 tpr=8 rpb=16
+  fused   :    2.1036 ms     382.8 GB/s (effective, 3.00 B/elem)
+  unfused :    4.9912 ms  (rotate 2.8859 + quantise 2.1053)     268.9 GB/s (5.00 B/elem)
+  speedup :   2.37x   (bandwidth 85.4% of peak 448 GB/s)
+### dim=1024 quant=fp8 tpr=32 rpb=4
+fused quant fp16 fp8e4m3 dim=1024 rows=262144 tpr=32 rpb=4
+  fused   :    2.1146 ms     380.8 GB/s (effective, 3.00 B/elem)
+  unfused :    4.9868 ms  (rotate 2.8878 + quantise 2.0990)     269.1 GB/s (5.00 B/elem)
+  speedup :   2.36x   (bandwidth 85.0% of peak 448 GB/s)
+### dim=1024 quant=fp8 tpr=32 rpb=16
+fused quant fp16 fp8e4m3 dim=1024 rows=262144 tpr=32 rpb=16
+  fused   :    2.1060 ms     382.4 GB/s (effective, 3.00 B/elem)
+  unfused :    5.0031 ms  (rotate 2.8934 + quantise 2.1097)     268.3 GB/s (5.00 B/elem)
+  speedup :   2.38x   (bandwidth 85.3% of peak 448 GB/s)
+### dim=1024 quant=fp8 tpr=16 rpb=8
+fused quant fp16 fp8e4m3 dim=1024 rows=262144 tpr=16 rpb=8
+  fused   :    2.0852 ms     386.2 GB/s (effective, 3.00 B/elem)
+  unfused :    4.9896 ms  (rotate 2.8919 + quantise 2.0976)     269.0 GB/s (5.00 B/elem)
+  speedup :   2.39x   (bandwidth 86.2% of peak 448 GB/s)
+### dim=1024 quant=int4 tpr=8 rpb=16
+fused quant fp16 int4 dim=1024 rows=262144 tpr=8 rpb=16
+  fused   :    1.7047 ms     393.7 GB/s (effective, 2.50 B/elem)
+  unfused :    4.6134 ms  (rotate 2.8807 + quantise 1.7327)     261.8 GB/s (4.50 B/elem)
+  speedup :   2.71x   (bandwidth 87.9% of peak 448 GB/s)
+### dim=1024 quant=int4 tpr=32 rpb=4
+fused quant fp16 int4 dim=1024 rows=262144 tpr=32 rpb=4
+  fused   :    1.6938 ms     396.2 GB/s (effective, 2.50 B/elem)
+  unfused :    4.6201 ms  (rotate 2.9079 + quantise 1.7122)     261.5 GB/s (4.50 B/elem)
+  speedup :   2.73x   (bandwidth 88.4% of peak 448 GB/s)
+### dim=1024 quant=int4 tpr=32 rpb=16
+fused quant fp16 int4 dim=1024 rows=262144 tpr=32 rpb=16
+  fused   :    1.6947 ms     396.0 GB/s (effective, 2.50 B/elem)
+  unfused :    4.5922 ms  (rotate 2.8893 + quantise 1.7030)     263.0 GB/s (4.50 B/elem)
+  speedup :   2.71x   (bandwidth 88.4% of peak 448 GB/s)
+### dim=1024 quant=int4 tpr=16 rpb=8
+fused quant fp16 int4 dim=1024 rows=262144 tpr=16 rpb=8
+  fused   :    1.7317 ms     387.5 GB/s (effective, 2.50 B/elem)
+  unfused :    4.5879 ms  (rotate 2.8918 + quantise 1.6961)     263.3 GB/s (4.50 B/elem)
+  speedup :   2.65x   (bandwidth 86.5% of peak 448 GB/s)
+SWEEP_DONE

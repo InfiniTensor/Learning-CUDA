@@ -1,0 +1,6 @@
+rows,dims,layers,passes,quant,dtype_nodes,nodes,forks,node_kind,plain_ms,per_step_ms,sequence_ms,parallel_ms,parallel_sr_ms,speedup_d,speedup_d_sr,sequence_over_parallel_sr
+512,"64,128,256",2,20,none,f16,2,2,"child graphs",0.0453,0.0997,0.0896,0.5454,0.5943,0.1643,0.1508,0.1508
+512,"64,128,256",4,20,none,f16,4,4,"child graphs",0.0936,0.3699,0.1477,1.0161,1.0967,0.1454,0.1347,0.1347
+512,"64,128,256",8,20,none,f16,8,8,"child graphs",0.1854,1.4975,0.2417,2.2714,2.1634,0.1064,0.1117,0.1117
+512,"64,128,256",16,20,none,f16,16,16,"child graphs",0.374,3.6717,0.4293,4.2405,4.3191,0.1012,0.0994,0.0994
+512,"64,128,256",32,20,none,f16,32,32,"child graphs",0.7127,7.5964,0.7665,10.4338,10.1485,0.0735,0.0755,0.0755

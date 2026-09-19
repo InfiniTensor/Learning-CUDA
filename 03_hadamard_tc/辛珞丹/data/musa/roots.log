@@ -1,0 +1,5 @@
+layers=2   child graphs | nodes  2 forks  2  A   22.650 us  B   49.850 us  C   44.800 us | D   272.700 us (0.16x vs C)  D single-root  297.150 us (0.15x vs C)
+layers=4   child graphs | nodes  4 forks  4  A   23.400 us  B   92.475 us  C   36.925 us | D   254.025 us (0.15x vs C)  D single-root  274.175 us (0.13x vs C)
+layers=8   child graphs | nodes  8 forks  8  A   23.175 us  B  187.188 us  C   30.212 us | D   283.925 us (0.11x vs C)  D single-root  270.425 us (0.11x vs C)
+layers=16  child graphs | nodes 16 forks 16  A   23.375 us  B  229.481 us  C   26.831 us | D   265.031 us (0.10x vs C)  D single-root  269.944 us (0.10x vs C)
+layers=32  child graphs | nodes 32 forks 32  A   22.272 us  B  237.387 us  C   23.953 us | D   326.056 us (0.07x vs C)  D single-root  317.141 us (0.08x vs C)

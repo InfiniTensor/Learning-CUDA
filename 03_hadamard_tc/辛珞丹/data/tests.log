@@ -1,0 +1,17 @@
+# Correctness suite, re-run after the final clang-format pass.
+# Host: RTX 5060 Ti (sm_120, CUDA 12.9, 36 SM, L2 32 MiB), build = Release -O3.
+# Date: 2026-09-18 10:20
+# Command: scripts/build.ps1 -Target tests  then each binary in build/
+#
+=== test_correctness: 560 checks, 0 failures ===
+# test_correctness exit code = 0
+=== test_fusion: 132 checks, 0 failures ===
+# test_fusion exit code = 0
+=== test_fp8: 2 checks, 0 failures ===
+# test_fp8 exit code = 0
+=== test_graph: 158 checks, 0 failures ===
+# test_graph exit code = 0
+=== test_gemm: 124 checks, 0 failures ===
+# test_gemm exit code = 0
+#
+# total: 976 checks, 0 failures

@@ -1,0 +1,19 @@
+# build artefacts
+build/
+build_*/
+*.exe
+*.lib
+*.exp
+*.o
+
+# local / process material (not part of the submission)
+_server_snapshot/
+_submit/
+*.zip
+.workbuddy-ai/
+审计报告*.md
+
+# python / OS
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,42 @@
+BUILD_OK
+### batch 1
+== test_correctness
+[dim=16384]
+[in-place]
+=== test_correctness: 380 checks, 0 failures ===
+== test_fusion
+--- fused rotate+quantise consistency ---
+=== test_fusion: 132 checks, 0 failures ===
+== test_fp8
+  hw encoder built: no (software fallback)
+  max |round(x) - x| over the sample = 15.999 (max half step 16)
+=== test_fp8: 2 checks, 0 failures ===
+== test_graph
+--- fhwt::inplace_pays_off on a [batch, heads, seq, dim] view ---
+  [skip] 65536x256 fp16 = 32 MiB is the 2.15x point on a 32 MiB L2; this device reports 24.0 MiB
+=== test_graph: 143 checks, 0 failures ===
+== test_gemm
+--- tile height override ---
+--- guards ---
+=== test_gemm: 124 checks, 0 failures ===
+### batch 2
+== test_correctness
+[dim=16384]
+[in-place]
+=== test_correctness: 380 checks, 0 failures ===
+== test_fusion
+--- fused rotate+quantise consistency ---
+=== test_fusion: 132 checks, 0 failures ===
+== test_fp8
+  hw encoder built: no (software fallback)
+  max |round(x) - x| over the sample = 15.999 (max half step 16)
+=== test_fp8: 2 checks, 0 failures ===
+== test_graph
+--- fhwt::inplace_pays_off on a [batch, heads, seq, dim] view ---
+  [skip] 65536x256 fp16 = 32 MiB is the 2.15x point on a 32 MiB L2; this device reports 24.0 MiB
+=== test_graph: 143 checks, 0 failures ===
+== test_gemm
+--- tile height override ---
+--- guards ---
+=== test_gemm: 124 checks, 0 failures ===
+FINAL4_DONE

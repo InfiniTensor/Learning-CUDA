@@ -1,0 +1,7 @@
+rows=1024     dim=64    iters=1000  raw=  0.0218ms     12.0GB/s | graph=  0.2434ms      1.1GB/s | speedup=0.09x
+rows=4096     dim=128   iters=1000  raw=  0.0239ms     87.9GB/s | graph=  0.2374ms      8.8GB/s | speedup=0.10x
+rows=16384    dim=128   iters=2000  raw=  0.0452ms    185.5GB/s | graph=  0.1478ms     56.8GB/s | speedup=0.31x
+rows=16384    dim=256   iters=2000  raw=  0.0607ms    276.2GB/s | graph=  0.1560ms    107.6GB/s | speedup=0.39x
+rows=65536    dim=256   iters=150   raw=  0.1763ms    380.6GB/s | graph=  0.1779ms    377.3GB/s | speedup=0.99x
+rows=131072   dim=256   iters=150   raw=  0.3173ms    423.0GB/s | graph=  0.3188ms    421.1GB/s | speedup=1.00x
+rows=262144   dim=256   iters=50    raw=  0.6014ms    446.4GB/s | graph=  0.6028ms    445.3GB/s | speedup=1.00x

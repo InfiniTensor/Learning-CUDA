@@ -1,0 +1,70 @@
+跨架构 / 无专有指令路径验证
+=====================================
+
+目的：证明本实现不依赖 sm_120（本机）独有的指令，也就是证明算法本身可移植。
+
+[1] -arch=sm_75（无原生 bf16 算术，无 mma.m16n8k16）
+    结果：编译失败 —— 类型层需要 sm_80 的原生 __nv_bfloat162 算术：
+      types.cuh(146): error: no suitable user-defined conversion from
+      fhwt::Native2<__nv_bfloat16>::vec_t (aka __nv_bfloat162) to __half2
+    说明：bf16 是选题书要求的输入格式，因此最低要求是 sm_80。
+
+[2] -arch=sm_80（有 mma，无 sm_89 的 FP8 硬件 cvt）
+    结果：编译通过，全部测试在 sm_120 设备上通过。
+      test_correctness: === test_correctness: 560 checks, 0 failures ===
+      test_fusion: === test_fusion: 132 checks, 0 failures ===
+      test_fp8:   hw encoder built: no (software fallback) | === test_fp8: 2 checks, 0 failures ===
+
+    其中 test_fp8 明确走到软件回退分支（hw encoder built: no），
+    即 E4M3 编解码由 common.cuh::float_to_e4m3_rne 完成，与硬件指令等价。
+
+[3] -arch=sm_80 补验两个新增的测试套件（本轮补做）
+    起因：上面的 [2] 是在 test_graph / test_gemm 写出来之前跑的，只覆盖了 694 项；
+    报告号称"935 项在 sm_80 下通过"时不成立，所以补验。
+    命令：
+      nvcc -std=c++17 -O3 -Iinclude -I. -arch=sm_80 -Xcudafe --unicode_source_kind=UTF-8 \
+           tests/test_graph.cu src/ops.cu -o build/_sm80_test_graph.exe
+      nvcc ... tests/test_gemm.cu  src/ops.cu -o build/_sm80_test_gemm.exe
+    结果：两个二进制都在 sm_120 设备上直接跑通，无需重新编译或 JIT 干预。
+      test_graph: === test_graph: 156 checks, 0 failures ===
+      test_gemm:  === test_gemm: 85 checks, 0 failures ===
+
+    合计：五个套件 935 项检查在 sm_80 构建下 0 失败，与 sm_120 构建的读数一致。
+    这说明内核路径（含 mma.m16n8k16 的 Tensor Core 分解、共享内存两级分治、
+    融合量化）没有用到 sm_89 / sm_120 专有指令；唯一按架构分叉的是 E4M3 的
+    硬件 cvt，它在 sm_80 构建下自动换成软件编解码，且两者被 test_fp8 证明等价。
+
+[4] -arch=sm_80 二次补验（fork/join 改成真 kernel node 之后）
+    起因：本轮把 record_fork_join() 从 cudaGraphAddChildGraphNode 改成
+    cudaGraphAddKernelNode（配 cudaGraphGetNodes / cudaGraphNodeGetType /
+    cudaGraphKernelNodeGetParams），ops.cu 变了，所以 [3] 的结论需要重跑一遍。
+    命令（与 [3] 相同）：
+      nvcc -std=c++17 -O3 -Iinclude -I. -arch=sm_80 -Xcompiler /utf-8 -Xcompiler /wd4129 \
+           -Xcudafe --unicode_source_kind=UTF-8 -diag-suppress 192,177,20012 -lineinfo \
+           tests/test_graph.cu src/ops.cu -o build/_sm80_test_graph.exe
+      nvcc ... tests/test_gemm.cu  src/ops.cu -o build/_sm80_test_gemm.exe
+    结果：两个二进制都在 sm_120 设备上直接跑通。
+      test_graph: === test_graph: 157 checks, 0 failures ===
+      test_gemm:  === test_gemm: 85 checks, 0 failures ===
+
+    差异说明：新增的四个 API 全是 host 侧的图接口（CUDA 12 运行时提供），
+    与 SM 目标无关；sm_80 构建下同样可用，所以这两个套件在两条目标上读数一致。
+
+
+[5] 用当前源码重验（本轮补做：`test_graph` 已扩到 158 项、`test_gemm` 已扩到 124 项）
+    起因：[3][4] 的 156/157 项与 85 项是当时那份测试文件的读数；测试文件随后扩充
+    （`test_gemm` 增加了按形状覆盖、bank-conflict 置换、tile 高度覆盖、守卫等 39 项），
+    报告里"976 项在 sm_80 下通过"这句话需要一次与当前源码一一对应的读数。
+    命令：
+      nvcc -std=c++17 -O3 -Iinclude -I. -arch=sm_80 -Xcompiler /utf-8 -Xcompiler /wd4129 \
+           -Xcudafe --unicode_source_kind=UTF-8 -diag-suppress 192,177,20012 \
+           tests/test_graph.cu src/ops.cu -o build/_sm80_tg.exe
+      nvcc ... tests/test_gemm.cu  src/ops.cu -o build/_sm80_tg2.exe
+    结果：两个二进制都在 sm_120 设备上直接跑通，无需重新编译或 JIT 干预。
+      test_graph: === test_graph: 158 checks, 0 failures ===
+      test_gemm:  === test_gemm: 124 checks, 0 failures ===
+
+    合计：560 + 132 + 2 + 158 + 124 = 976 项检查在 sm_80 构建下 0 失败，与 sm_120
+    构建（当前源码）读数逐项一致。结论与 [2]–[4] 相同：内核路径不依赖 sm_89 /
+    sm_120 专有指令；唯一的架构分叉（E4M3 硬件 cvt）在 sm_80 下自动走软件回退，
+    且被 test_fp8 证明等价。

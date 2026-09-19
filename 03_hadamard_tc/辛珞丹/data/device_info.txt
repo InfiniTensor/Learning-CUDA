@@ -1,0 +1,9 @@
+Device        : NVIDIA GeForce RTX 5060 Ti (sm_120)
+SMs           : 36
+Max thr/SM    : 1536
+Shared/SM     : 102400 bytes
+L2            : 32.0 MiB
+SM clock      : 2.57 GHz
+Mem clock/bus : 14.00 GHz / 128 bit
+D2D memcpy ceiling      :    380.3 GB/s (2.823 ms for 512 MiB copy)
+Theoretical DRAM bandwidth:    448.0 GB/s

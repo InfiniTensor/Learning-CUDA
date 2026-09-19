@@ -1,0 +1,27 @@
+# .clang-format -- one style for the whole project (source + tests + headers).
+#
+# The project brief accepts the clang-format defaults; this file pins them so a
+# bare `clang-format -i` gives the same result on every machine (without a
+# config file the outcome depends on the local ~/.clang-format and version).
+#
+# Deviations from the pure LLVM default, and why:
+#   * ColumnLimit 100        -- the default 80 re-wraps 700+ already readable
+#                               lines (template parameter lists, CUDA launch
+#                               configs); 100 keeps the diff small without
+#                               hiding logic.
+#   * ReflowComments: false  -- the hand-laid-out comment blocks and the ASCII
+#                               separators survive untouched.
+#   * SortIncludes: false    -- the relative includes (common.cuh, types.cuh)
+#                               are ordered by dependency, not alphabetically.
+#   * AlignConsecutiveMacros -- keeps the cuda->musa alias table in
+#                               backend.cuh readable (the LLVM default would
+#                               flatten it).
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++17
+ColumnLimit: 100
+ReflowComments: false
+SortIncludes: false
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+...

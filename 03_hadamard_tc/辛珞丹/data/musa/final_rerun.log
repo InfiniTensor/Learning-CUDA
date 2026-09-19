@@ -1,0 +1,40 @@
+=== test_correctness
+[dim=16384]
+[in-place]
+=== test_correctness: 380 checks, 0 failures ===
+=== test_fusion
+--- fused rotate+quantise consistency ---
+=== test_fusion: 132 checks, 0 failures ===
+=== test_fp8
+  hw encoder built: no (software fallback)
+  max |round(x) - x| over the sample = 15.999 (max half step 16)
+=== test_fp8: 2 checks, 0 failures ===
+=== test_graph
+--- fhwt::inplace_pays_off on a [batch, heads, seq, dim] view ---
+  [skip] 65536x256 fp16 = 32 MiB is the 2.15x point on a 32 MiB L2; this device reports 24.0 MiB
+=== test_graph: 143 checks, 1 failures ===
+=== test_gemm
+--- tile height override ---
+--- guards ---
+=== test_gemm: 124 checks, 0 failures ===
+=== quant fp8 dim=64
+fused quant fp16 fp8e4m3 dim=64 rows=262144 tpr=0 rpb=0
+  fused   :    0.3767 ms     133.6 GB/s (effective, 3.00 B/elem)
+  unfused :    2.0105 ms  (rotate 0.3255 + quantise 1.6850)      41.7 GB/s (5.00 B/elem)
+  speedup :   5.34x   (bandwidth 26.1% of peak 513 GB/s)
+=== quant fp8 dim=256
+fused quant fp16 fp8e4m3 dim=256 rows=262144 tpr=0 rpb=0
+  fused   :    1.3938 ms     144.4 GB/s (effective, 3.00 B/elem)
+  unfused :    2.2970 ms  (rotate 0.6010 + quantise 1.6960)     146.1 GB/s (5.00 B/elem)
+  speedup :   1.65x   (bandwidth 28.2% of peak 513 GB/s)
+=== quant int4 dim=64
+fused quant fp16 int4 dim=64 rows=262144 tpr=0 rpb=0
+  fused   :    0.2122 ms     197.7 GB/s (effective, 2.50 B/elem)
+  unfused :    1.2985 ms  (rotate 0.3252 + quantise 0.9733)      58.1 GB/s (4.50 B/elem)
+  speedup :   6.12x   (bandwidth 38.6% of peak 513 GB/s)
+=== quant int4 dim=256
+fused quant fp16 int4 dim=256 rows=262144 tpr=0 rpb=0
+  fused   :    0.5988 ms     280.2 GB/s (effective, 2.50 B/elem)
+  unfused :    1.5757 ms  (rotate 0.6010 + quantise 0.9747)     191.7 GB/s (4.50 B/elem)
+  speedup :   2.63x   (bandwidth 54.6% of peak 513 GB/s)
+FINAL_RERUN_DONE

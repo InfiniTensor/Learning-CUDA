@@ -1,0 +1,28 @@
+shape set        : rows=512 dims=[64 128 256] fp16 kernel=reg quant=none
+workload         : 8 layers x 6 tensors x 20 passes = 960 transforms (3 distinct shape(s))
+layer buffers    : 19.1 MiB, 12.8 MiB touched per pass
+correctness      : per-step 48/48, sequence 48/48, forked 48/48 bit-identical to plain
+--- A: 48 cudaLaunchKernel per pass ---
+  per pass       :    1.1183 ms   per transform   23.298 us       12.0 GB/s
+--- B: 48 single-step graph launches per pass ---
+  per pass       :   12.4805 ms   per transform  260.011 us        1.1 GB/s    0.09x vs A
+--- C: 1 graph launch per pass (48 nodes) ---
+  per pass       :    1.1299 ms   per transform   23.539 us       11.8 GB/s    0.99x vs A
+--- D: 1 forked graph launch per pass (48 nodes, 40 forked, child graphs, per-layer groups, single root) ---
+  per pass       :   17.6465 ms   per transform  367.635 us        0.8 GB/s    0.06x vs A    0.06x vs C
+capture cost     : B   26.906 ms (48 graphs) | C    0.153 ms (1 passes/graph) | D    1.229 ms
+amortisation     : C pays for itself after ~0.1 pass(es)
+shape set        : rows=512 dims=[64 128 256] fp16 kernel=reg quant=none
+workload         : 8 layers x 6 tensors x 20 passes = 960 transforms (3 distinct shape(s))
+layer buffers    : 19.1 MiB, 12.8 MiB touched per pass
+correctness      : per-step 48/48, sequence 48/48, forked 48/48 bit-identical to plain
+--- A: 48 cudaLaunchKernel per pass ---
+  per pass       :    1.1220 ms   per transform   23.375 us       11.9 GB/s
+--- B: 48 single-step graph launches per pass ---
+  per pass       :   12.7817 ms   per transform  266.285 us        1.0 GB/s    0.09x vs A
+--- C: 1 graph launch per 2 passes (96 nodes, batched) ---
+  per pass       :    1.1352 ms   per transform   23.651 us       11.8 GB/s    0.99x vs A
+--- D: 1 forked graph launch per 2 passes (96 nodes, 80 forked, child graphs, per-layer groups, single root) ---
+  per pass       :   31.4595 ms   per transform  655.406 us        0.4 GB/s    0.04x vs A    0.04x vs C
+capture cost     : B   23.209 ms (48 graphs) | C    0.223 ms (2 passes/graph) | D    2.146 ms
+amortisation     : C pays for itself after ~0.2 pass(es)

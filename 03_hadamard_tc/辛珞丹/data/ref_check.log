@@ -1,0 +1,180 @@
+### 小/中 head_dim：reg / tc / smem，native 与 fp32 累加
+dim=   64 f16  reg   native  |ours-ref|=1.9531e-03 |ours-exact|=2.0514e-03 |ref-exact|=9.4414e-04  PASS
+dim=   64 f16  reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.4414e-04 |ref-exact|=9.4414e-04  PASS
+dim=   64 f16  tc    native  |ours-ref|=1.9531e-03 |ours-exact|=1.1036e-03 |ref-exact|=9.4414e-04  PASS
+dim=   64 f16  tc    fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.1036e-03 |ref-exact|=9.4414e-04  PASS
+dim=   64 f16  smem  native  |ours-ref|=1.9531e-03 |ours-exact|=2.0514e-03 |ref-exact|=9.4414e-04  PASS
+dim=   64 f16  smem  fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.4414e-04 |ref-exact|=9.4414e-04  PASS
+dim=   64 bf16 reg   native  |ours-ref|=1.5625e-02 |ours-exact|=1.5682e-02 |ref-exact|=7.7362e-03  PASS
+dim=   64 bf16 reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.7362e-03 |ref-exact|=7.7362e-03  PASS
+dim=   64 bf16 tc    native  |ours-ref|=1.5625e-02 |ours-exact|=9.2087e-03 |ref-exact|=7.7362e-03  PASS
+dim=   64 bf16 tc    fp32    |ours-ref|=1.5625e-02 |ours-exact|=9.2087e-03 |ref-exact|=7.7362e-03  PASS
+dim=   64 bf16 smem  native  |ours-ref|=1.5625e-02 |ours-exact|=1.5682e-02 |ref-exact|=7.7362e-03  PASS
+dim=   64 bf16 smem  fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.7362e-03 |ref-exact|=7.7362e-03  PASS
+dim=  128 f16  reg   native  |ours-ref|=1.9531e-03 |ours-exact|=2.3975e-03 |ref-exact|=9.6777e-04  PASS
+dim=  128 f16  reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.6777e-04 |ref-exact|=9.6777e-04  PASS
+dim=  128 f16  tc    native  |ours-ref|=1.9531e-03 |ours-exact|=1.8103e-03 |ref-exact|=9.6777e-04  PASS
+dim=  128 f16  tc    fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.8103e-03 |ref-exact|=9.6777e-04  PASS
+dim=  128 f16  smem  native  |ours-ref|=1.9531e-03 |ours-exact|=2.3975e-03 |ref-exact|=9.6777e-04  PASS
+dim=  128 f16  smem  fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.3912e-03 |ref-exact|=9.6777e-04  PASS
+dim=  128 bf16 reg   native  |ours-ref|=1.5625e-02 |ours-exact|=1.6698e-02 |ref-exact|=7.7827e-03  PASS
+dim=  128 bf16 reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.7827e-03 |ref-exact|=7.7827e-03  PASS
+dim=  128 bf16 tc    native  |ours-ref|=1.5625e-02 |ours-exact|=1.1727e-02 |ref-exact|=7.7827e-03  PASS
+dim=  128 bf16 tc    fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.1727e-02 |ref-exact|=7.7827e-03  PASS
+dim=  128 bf16 smem  native  |ours-ref|=1.5625e-02 |ours-exact|=1.6698e-02 |ref-exact|=7.7827e-03  PASS
+dim=  128 bf16 smem  fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.1517e-02 |ref-exact|=7.7827e-03  PASS
+dim=  256 f16  reg   native  |ours-ref|=1.9531e-03 |ours-exact|=2.2252e-03 |ref-exact|=9.6345e-04  PASS
+dim=  256 f16  reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.6345e-04 |ref-exact|=9.6345e-04  PASS
+dim=  256 f16  tc    native  |ours-ref|=1.9531e-03 |ours-exact|=1.0895e-03 |ref-exact|=9.6345e-04  PASS
+dim=  256 f16  tc    fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.0895e-03 |ref-exact|=9.6345e-04  PASS
+dim=  256 f16  smem  native  |ours-ref|=1.9531e-03 |ours-exact|=2.2252e-03 |ref-exact|=9.6345e-04  PASS
+dim=  256 f16  smem  fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.6345e-04 |ref-exact|=9.6345e-04  PASS
+dim=  256 bf16 reg   native  |ours-ref|=1.5625e-02 |ours-exact|=1.7633e-02 |ref-exact|=7.7000e-03  PASS
+dim=  256 bf16 reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.7000e-03 |ref-exact|=7.7000e-03  PASS
+dim=  256 bf16 tc    native  |ours-ref|=1.5625e-02 |ours-exact|=8.7833e-03 |ref-exact|=7.7000e-03  PASS
+dim=  256 bf16 tc    fp32    |ours-ref|=1.5625e-02 |ours-exact|=8.7833e-03 |ref-exact|=7.7000e-03  PASS
+dim=  256 bf16 smem  native  |ours-ref|=1.5625e-02 |ours-exact|=1.7633e-02 |ref-exact|=7.7000e-03  PASS
+dim=  256 bf16 smem  fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.7000e-03 |ref-exact|=7.7000e-03  PASS
+dim=  512 f16  reg   native  |ours-ref|=2.9297e-03 |ours-exact|=2.6616e-03 |ref-exact|=9.7307e-04  PASS
+dim=  512 f16  reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.7307e-04 |ref-exact|=9.7307e-04  PASS
+dim=  512 f16  tc    native  |ours-ref|=1.9531e-03 |ours-exact|=1.7658e-03 |ref-exact|=9.7307e-04  PASS
+dim=  512 f16  tc    fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.7658e-03 |ref-exact|=9.7307e-04  PASS
+dim=  512 f16  smem  native  |ours-ref|=2.9297e-03 |ours-exact|=2.6616e-03 |ref-exact|=9.7307e-04  PASS
+dim=  512 f16  smem  fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.8076e-03 |ref-exact|=9.7307e-04  PASS
+dim=  512 bf16 reg   native  |ours-ref|=2.3438e-02 |ours-exact|=2.0415e-02 |ref-exact|=7.8068e-03  PASS
+dim=  512 bf16 reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.8068e-03 |ref-exact|=7.8068e-03  PASS
+dim=  512 bf16 tc    native  |ours-ref|=1.5625e-02 |ours-exact|=1.4573e-02 |ref-exact|=7.8068e-03  PASS
+dim=  512 bf16 tc    fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.4573e-02 |ref-exact|=7.8068e-03  PASS
+dim=  512 bf16 smem  native  |ours-ref|=2.3438e-02 |ours-exact|=2.0415e-02 |ref-exact|=7.8068e-03  PASS
+dim=  512 bf16 smem  fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.5298e-02 |ref-exact|=7.8068e-03  PASS
+dim= 1024 f16  reg   native  |ours-ref|=2.1973e-03 |ours-exact|=2.5250e-03 |ref-exact|=9.6983e-04  PASS
+dim= 1024 f16  reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=9.6983e-04 |ref-exact|=9.6983e-04  PASS
+dim= 1024 f16  tc    native  |ours-ref|=1.9531e-03 |ours-exact|=1.2462e-03 |ref-exact|=9.6983e-04  PASS
+dim= 1024 f16  tc    fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.2462e-03 |ref-exact|=9.6983e-04  PASS
+dim= 1024 f16  smem  native  |ours-ref|=2.1973e-03 |ours-exact|=2.5250e-03 |ref-exact|=9.6983e-04  PASS
+dim= 1024 f16  smem  fp32    |ours-ref|=1.9531e-03 |ours-exact|=1.9295e-03 |ref-exact|=9.6983e-04  PASS
+dim= 1024 bf16 reg   native  |ours-ref|=1.6602e-02 |ours-exact|=2.2097e-02 |ref-exact|=7.8068e-03  PASS
+dim= 1024 bf16 reg   fp32    |ours-ref|=0.0000e+00 |ours-exact|=7.8068e-03 |ref-exact|=7.8068e-03  PASS
+dim= 1024 bf16 tc    native  |ours-ref|=1.5625e-02 |ours-exact|=1.0487e-02 |ref-exact|=7.8068e-03  PASS
+dim= 1024 bf16 tc    fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.0487e-02 |ref-exact|=7.8068e-03  PASS
+dim= 1024 bf16 smem  native  |ours-ref|=1.6602e-02 |ours-exact|=2.2097e-02 |ref-exact|=7.8068e-03  PASS
+dim= 1024 bf16 smem  fp32    |ours-ref|=1.5625e-02 |ours-exact|=1.6311e-02 |ref-exact|=7.8068e-03  PASS
+
+| dim | dtype | kernel | acc | max|ours-ref| | max|ours-exact| | max|ref-exact| | tol | verdict |
+|---|---|---|---|---|---|---|---|---|
+| 64 | f16 | reg | native | 1.9531e-03 | 2.0514e-03 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | f16 | reg | fp32 | 0.0000e+00 | 9.4414e-04 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | f16 | tc | native | 1.9531e-03 | 1.1036e-03 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | f16 | tc | fp32 | 1.9531e-03 | 1.1036e-03 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | f16 | smem | native | 1.9531e-03 | 2.0514e-03 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | f16 | smem | fp32 | 0.0000e+00 | 9.4414e-04 | 9.4414e-04 | 1e-02 | PASS |
+| 64 | bf16 | reg | native | 1.5625e-02 | 1.5682e-02 | 7.7362e-03 | 5e-02 | PASS |
+| 64 | bf16 | reg | fp32 | 0.0000e+00 | 7.7362e-03 | 7.7362e-03 | 5e-02 | PASS |
+| 64 | bf16 | tc | native | 1.5625e-02 | 9.2087e-03 | 7.7362e-03 | 5e-02 | PASS |
+| 64 | bf16 | tc | fp32 | 1.5625e-02 | 9.2087e-03 | 7.7362e-03 | 5e-02 | PASS |
+| 64 | bf16 | smem | native | 1.5625e-02 | 1.5682e-02 | 7.7362e-03 | 5e-02 | PASS |
+| 64 | bf16 | smem | fp32 | 0.0000e+00 | 7.7362e-03 | 7.7362e-03 | 5e-02 | PASS |
+| 128 | f16 | reg | native | 1.9531e-03 | 2.3975e-03 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | f16 | reg | fp32 | 0.0000e+00 | 9.6777e-04 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | f16 | tc | native | 1.9531e-03 | 1.8103e-03 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | f16 | tc | fp32 | 1.9531e-03 | 1.8103e-03 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | f16 | smem | native | 1.9531e-03 | 2.3975e-03 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | f16 | smem | fp32 | 1.9531e-03 | 1.3912e-03 | 9.6777e-04 | 1e-02 | PASS |
+| 128 | bf16 | reg | native | 1.5625e-02 | 1.6698e-02 | 7.7827e-03 | 5e-02 | PASS |
+| 128 | bf16 | reg | fp32 | 0.0000e+00 | 7.7827e-03 | 7.7827e-03 | 5e-02 | PASS |
+| 128 | bf16 | tc | native | 1.5625e-02 | 1.1727e-02 | 7.7827e-03 | 5e-02 | PASS |
+| 128 | bf16 | tc | fp32 | 1.5625e-02 | 1.1727e-02 | 7.7827e-03 | 5e-02 | PASS |
+| 128 | bf16 | smem | native | 1.5625e-02 | 1.6698e-02 | 7.7827e-03 | 5e-02 | PASS |
+| 128 | bf16 | smem | fp32 | 1.5625e-02 | 1.1517e-02 | 7.7827e-03 | 5e-02 | PASS |
+| 256 | f16 | reg | native | 1.9531e-03 | 2.2252e-03 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | f16 | reg | fp32 | 0.0000e+00 | 9.6345e-04 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | f16 | tc | native | 1.9531e-03 | 1.0895e-03 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | f16 | tc | fp32 | 1.9531e-03 | 1.0895e-03 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | f16 | smem | native | 1.9531e-03 | 2.2252e-03 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | f16 | smem | fp32 | 0.0000e+00 | 9.6345e-04 | 9.6345e-04 | 1e-02 | PASS |
+| 256 | bf16 | reg | native | 1.5625e-02 | 1.7633e-02 | 7.7000e-03 | 5e-02 | PASS |
+| 256 | bf16 | reg | fp32 | 0.0000e+00 | 7.7000e-03 | 7.7000e-03 | 5e-02 | PASS |
+| 256 | bf16 | tc | native | 1.5625e-02 | 8.7833e-03 | 7.7000e-03 | 5e-02 | PASS |
+| 256 | bf16 | tc | fp32 | 1.5625e-02 | 8.7833e-03 | 7.7000e-03 | 5e-02 | PASS |
+| 256 | bf16 | smem | native | 1.5625e-02 | 1.7633e-02 | 7.7000e-03 | 5e-02 | PASS |
+| 256 | bf16 | smem | fp32 | 0.0000e+00 | 7.7000e-03 | 7.7000e-03 | 5e-02 | PASS |
+| 512 | f16 | reg | native | 2.9297e-03 | 2.6616e-03 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | f16 | reg | fp32 | 0.0000e+00 | 9.7307e-04 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | f16 | tc | native | 1.9531e-03 | 1.7658e-03 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | f16 | tc | fp32 | 1.9531e-03 | 1.7658e-03 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | f16 | smem | native | 2.9297e-03 | 2.6616e-03 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | f16 | smem | fp32 | 1.9531e-03 | 1.8076e-03 | 9.7307e-04 | 1e-02 | PASS |
+| 512 | bf16 | reg | native | 2.3438e-02 | 2.0415e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 512 | bf16 | reg | fp32 | 0.0000e+00 | 7.8068e-03 | 7.8068e-03 | 5e-02 | PASS |
+| 512 | bf16 | tc | native | 1.5625e-02 | 1.4573e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 512 | bf16 | tc | fp32 | 1.5625e-02 | 1.4573e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 512 | bf16 | smem | native | 2.3438e-02 | 2.0415e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 512 | bf16 | smem | fp32 | 1.5625e-02 | 1.5298e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | f16 | reg | native | 2.1973e-03 | 2.5250e-03 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | f16 | reg | fp32 | 0.0000e+00 | 9.6983e-04 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | f16 | tc | native | 1.9531e-03 | 1.2462e-03 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | f16 | tc | fp32 | 1.9531e-03 | 1.2462e-03 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | f16 | smem | native | 2.1973e-03 | 2.5250e-03 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | f16 | smem | fp32 | 1.9531e-03 | 1.9295e-03 | 9.6983e-04 | 1e-02 | PASS |
+| 1024 | bf16 | reg | native | 1.6602e-02 | 2.2097e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | bf16 | reg | fp32 | 0.0000e+00 | 7.8068e-03 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | bf16 | tc | native | 1.5625e-02 | 1.0487e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | bf16 | tc | fp32 | 1.5625e-02 | 1.0487e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | bf16 | smem | native | 1.6602e-02 | 2.2097e-02 | 7.8068e-03 | 5e-02 | PASS |
+| 1024 | bf16 | smem | fp32 | 1.5625e-02 | 1.6311e-02 | 7.8068e-03 | 5e-02 | PASS |
+
+60 comparisons, 0 failures
+
+### 大 head_dim：两级 smem 内核
+dim= 2048 f16  smem  native  |ours-ref|=3.9062e-03 |ours-exact|=3.0519e-03 |ref-exact|=9.7670e-04  PASS
+dim= 2048 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=2.4430e-02 |ref-exact|=7.8060e-03  PASS
+dim= 4096 f16  smem  native  |ours-ref|=2.9297e-03 |ours-exact|=2.8150e-03 |ref-exact|=9.2527e-04  PASS
+dim= 4096 bf16 smem  native  |ours-ref|=2.3438e-02 |ours-exact|=2.2438e-02 |ref-exact|=7.2533e-03  PASS
+dim= 8192 f16  smem  native  |ours-ref|=3.9062e-03 |ours-exact|=3.4300e-03 |ref-exact|=9.7666e-04  PASS
+dim= 8192 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=2.6534e-02 |ref-exact|=7.8101e-03  PASS
+dim=16384 f16  smem  native  |ours-ref|=2.9297e-03 |ours-exact|=2.9932e-03 |ref-exact|=9.6540e-04  PASS
+dim=16384 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=3.0919e-02 |ref-exact|=7.7902e-03  PASS
+
+| dim | dtype | kernel | acc | max|ours-ref| | max|ours-exact| | max|ref-exact| | tol | verdict |
+|---|---|---|---|---|---|---|---|---|
+| 2048 | f16 | smem | native | 3.9062e-03 | 3.0519e-03 | 9.7670e-04 | 1e-02 | PASS |
+| 2048 | bf16 | smem | native | 3.1250e-02 | 2.4430e-02 | 7.8060e-03 | 5e-02 | PASS |
+| 4096 | f16 | smem | native | 2.9297e-03 | 2.8150e-03 | 9.2527e-04 | 1e-02 | PASS |
+| 4096 | bf16 | smem | native | 2.3438e-02 | 2.2438e-02 | 7.2533e-03 | 5e-02 | PASS |
+| 8192 | f16 | smem | native | 3.9062e-03 | 3.4300e-03 | 9.7666e-04 | 1e-02 | PASS |
+| 8192 | bf16 | smem | native | 3.1250e-02 | 2.6534e-02 | 7.8101e-03 | 5e-02 | PASS |
+| 16384 | f16 | smem | native | 2.9297e-03 | 2.9932e-03 | 9.6540e-04 | 1e-02 | PASS |
+| 16384 | bf16 | smem | native | 3.1250e-02 | 3.0919e-02 | 7.7902e-03 | 5e-02 | PASS |
+
+8 comparisons, 0 failures
+
+### 大 head_dim：native 与 fp32 累加对照
+dim= 2048 f16  smem  native  |ours-ref|=3.9062e-03 |ours-exact|=3.0519e-03 |ref-exact|=9.7670e-04  PASS
+dim= 2048 f16  smem  fp32    |ours-ref|=1.9531e-03 |ours-exact|=2.0392e-03 |ref-exact|=9.7670e-04  PASS
+dim= 2048 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=2.4430e-02 |ref-exact|=7.8060e-03  PASS
+dim= 2048 bf16 smem  fp32    |ours-ref|=1.5625e-02 |ours-exact|=2.0590e-02 |ref-exact|=7.8060e-03  PASS
+dim= 8192 f16  smem  native  |ours-ref|=3.9062e-03 |ours-exact|=3.4300e-03 |ref-exact|=9.7666e-04  PASS
+dim= 8192 f16  smem  fp32    |ours-ref|=2.9297e-03 |ours-exact|=2.5528e-03 |ref-exact|=9.7666e-04  PASS
+dim= 8192 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=2.6534e-02 |ref-exact|=7.8101e-03  PASS
+dim= 8192 bf16 smem  fp32    |ours-ref|=2.3438e-02 |ours-exact|=1.9545e-02 |ref-exact|=7.8101e-03  PASS
+dim=16384 f16  smem  native  |ours-ref|=2.9297e-03 |ours-exact|=2.9932e-03 |ref-exact|=9.6540e-04  PASS
+dim=16384 f16  smem  fp32    |ours-ref|=2.9297e-03 |ours-exact|=2.5046e-03 |ref-exact|=9.6540e-04  PASS
+dim=16384 bf16 smem  native  |ours-ref|=3.1250e-02 |ours-exact|=3.0919e-02 |ref-exact|=7.7902e-03  PASS
+dim=16384 bf16 smem  fp32    |ours-ref|=1.9531e-02 |ours-exact|=1.8100e-02 |ref-exact|=7.7902e-03  PASS
+
+| dim | dtype | kernel | acc | max|ours-ref| | max|ours-exact| | max|ref-exact| | tol | verdict |
+|---|---|---|---|---|---|---|---|---|
+| 2048 | f16 | smem | native | 3.9062e-03 | 3.0519e-03 | 9.7670e-04 | 1e-02 | PASS |
+| 2048 | f16 | smem | fp32 | 1.9531e-03 | 2.0392e-03 | 9.7670e-04 | 1e-02 | PASS |
+| 2048 | bf16 | smem | native | 3.1250e-02 | 2.4430e-02 | 7.8060e-03 | 5e-02 | PASS |
+| 2048 | bf16 | smem | fp32 | 1.5625e-02 | 2.0590e-02 | 7.8060e-03 | 5e-02 | PASS |
+| 8192 | f16 | smem | native | 3.9062e-03 | 3.4300e-03 | 9.7666e-04 | 1e-02 | PASS |
+| 8192 | f16 | smem | fp32 | 2.9297e-03 | 2.5528e-03 | 9.7666e-04 | 1e-02 | PASS |
+| 8192 | bf16 | smem | native | 3.1250e-02 | 2.6534e-02 | 7.8101e-03 | 5e-02 | PASS |
+| 8192 | bf16 | smem | fp32 | 2.3438e-02 | 1.9545e-02 | 7.8101e-03 | 5e-02 | PASS |
+| 16384 | f16 | smem | native | 2.9297e-03 | 2.9932e-03 | 9.6540e-04 | 1e-02 | PASS |
+| 16384 | f16 | smem | fp32 | 2.9297e-03 | 2.5046e-03 | 9.6540e-04 | 1e-02 | PASS |
+| 16384 | bf16 | smem | native | 3.1250e-02 | 3.0919e-02 | 7.7902e-03 | 5e-02 | PASS |
+| 16384 | bf16 | smem | fp32 | 1.9531e-02 | 1.8100e-02 | 7.7902e-03 | 5e-02 | PASS |
+
+12 comparisons, 0 failures

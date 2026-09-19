@@ -1,0 +1,96 @@
+Node-level profile of `--mode loop`: the four submission strategies
+==================================================================
+
+    nsys profile --force-overwrite true --cuda-event-trace=false \
+        --cuda-graph-trace=node -o p_nodes_all \
+        -- .\build\fhwt.exe --mode loop --rows 512 --dims 128 \
+           --layers 8 --iters 20 --reps 3
+
+and the same command again with `--serial-entry`, saved as `p_nodes_sr`.  Both
+`.nsys-rep` files are in this directory.  RTX 5060 Ti / sm_120 / CUDA 12.9 /
+Windows.
+
+WHY `--cuda-graph-trace=node`
+---------------------------
+nsys traces a CUDA Graph as ONE opaque record by default.  `loop_forkjoin.txt`
+was captured that way, which is why it only ever contains 184 kernel records --
+strategy A's.  With the default granularity C and D are invisible; every number
+below comes from the node-level capture.
+
+1. The kernels are identical in every strategy
+---------------------------------------------
+Both runs: 2016 kernel records, one kernel type, median 992 ns; multi-root min 896
+/ max 2080 ns, single-root min 832 / max 3488 ns (raw summaries at the bottom).
+So a fork/join graph's kernels cost the same as a linear chain's, and any C-vs-D
+difference is host-side.
+
+2. Host side: `cudaGraphLaunch`, split by how the call was produced
+-----------------------------------------------------------------
+The mode runs A, B, C, D in that order, `--reps` times, after 1 correctness probe
+and 2 warm-up rounds.  Classifying every `cudaGraphLaunch` by how many GPU kernels
+share its correlation id recovers the boundaries, and the last 120 8-node replays
+are exactly C (first 60, three reps of 20) then D (last 60).
+
+`Duration (ns)` of `cudaGraphLaunch`, microseconds:
+
+| group | launches | p50 | p90 | max | min |
+|---|---|---|---|---|---|
+| B, single-step graph (multi-root run) | 504 | 4.9 | 8.5 | 116.1 | 3.5 |
+| C, 8-node chain, rep 1 | 20 | 10.2 | 11.2 | 19.2 | 9.7 |
+| C, 8-node chain, rep 2 | 20 | 10.0 | 12.7 | 23.3 | 9.6 |
+| C, 8-node chain, rep 3 | 20 | 9.9 | 10.5 | 12.0 | 9.6 |
+| D, 8-node fork, rep 1 (8 roots) | 20 | 35.5 | 67.0 | 79.1 | 33.7 |
+| D, 8-node fork, rep 2 (8 roots) | 20 | 58.3 | 121.8 | 295.2 | 33.2 |
+| D, 8-node fork, rep 3 (8 roots) | 20 | 35.0 | 69.8 | 93.5 | 34.0 |
+
+Same commands with `--serial-entry` (layer 0 queued with `add()`, so the forked
+graph has one root instead of eight):
+
+| group | launches | p50 | p90 | max | min |
+|---|---|---|---|---|---|
+| B, single-step graph (single-root run) | 504 | 4.8 | 16.7 | 55.2 | 3.3 |
+| C, 8-node chain, rep 1 | 20 | 10.0 | 19.9 | 24.8 | 8.6 |
+| C, 8-node chain, rep 2 | 20 | 9.8 | 18.9 | 26.5 | 9.5 |
+| C, 8-node chain, rep 3 | 20 | 9.8 | 21.9 | 28.9 | 9.5 |
+| D, 8-node fork, rep 1 (1 root) | 20 | 11.7 | 21.2 | 37.8 | 9.9 |
+| D, 8-node fork, rep 2 (1 root) | 20 | 12.0 | 26.6 | 58.5 | 9.6 |
+| D, 8-node fork, rep 3 (1 root) | 20 | 11.6 | 19.4 | 19.6 | 10.1 |
+
+3. What it says
+---------------
+C is the internal control: it never calls `add_parallel()`, so `--serial-entry`
+cannot touch it, and it lands on p50 9.9-10.2 us in the multi-root run and
+9.8-10.0 us in the single-root run -- the same, as it must be.
+
+D with 8 roots: p50 35.5 / 58.3 / 35.0 us (worst 295 us).
+D with 1 root:  p50 11.7 / 12.0 / 11.6 us (worst 58.5 us).
+Same nodes, same kernels (section 1), same driver, same stream -- the only
+difference is whether the graph has 8 roots or 1, and the launch cost differs by
+3.0x.
+
+This is what made the forked strategy lose in `data/loop.csv`.  It is not the
+fork/join shape and not `cudaGraphAddChildGraphNode` (section 5.8 replaced every
+node with a real kernel node and the numbers did not move); it is the number of
+root nodes, which is a property of the caller's step list.
+
+Note also that D's degradation is not constant: 35.5 us p50 over the first 20
+replays, 58.3 us over the second.  The single-root column stays flat (11.7 -> 12.0).
+
+4. Raw nsys output
+------------------
+
+`nsys stats --report cuda_gpu_kern_sum p_nodes_all.nsys-rep` (multi-root):
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0          2001254       2016     992.7     992.0       896      2080         90.9  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+
+`nsys stats --report cuda_gpu_kern_sum p_nodes_sr.nsys-rep` (single root):
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0          2271698       2016    1126.8     992.0       832      3488        363.0  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�

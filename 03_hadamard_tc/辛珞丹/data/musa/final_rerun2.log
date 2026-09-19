@@ -1,0 +1,51 @@
+=== test_correctness
+--- FWHT correctness: GPU vs double-precision CPU reference ---
+Note: fp16 tolerance 1e-2, bf16 tolerance 5e-2 (project requirement),
+      measured on the orthonormal scaling (1/sqrt(dim)).
+[dim=32]
+[dim=64]
+[dim=128]
+[dim=256]
+[dim=512]
+[dim=1024]
+[dim=2048]
+[dim=4096]
+[dim=8192]
+[dim=16384]
+[in-place]
+=== test_correctness: 380 checks, 0 failures ===
+=== test_fusion
+--- fused rotate+quantise consistency ---
+=== test_fusion: 132 checks, 0 failures ===
+=== test_fp8
+--- E4M3 encoder equivalence ---
+  hw encoder built: no (software fallback)
+  max |round(x) - x| over the sample = 15.999 (max half step 16)
+=== test_fp8: 2 checks, 0 failures ===
+=== test_graph
+--- fhwt::Graph: replay vs direct launches ---
+--- fhwt::Graph: repeats ---
+--- fhwt::Graph: in-place capture ---
+--- fhwt::inplace_pays_off vs the measured sweep ---
+  L2 = 24.0 MiB
+  the sweep was measured on a 32 MiB L2 device, this one reports 24.0 MiB -- policy not comparable here, sweep skipped
+  policy agrees with 5/12 measured points
+--- fhwt::Graph: fused quantisation capture ---
+--- fhwt::GraphSequence ---
+--- fhwt::GraphSequence: fork/join ---
+  [skip] this platform does not report graph edges (MUSA 3.1: muGraphGetEdges returns not-supported); fork/join topology is checked through the node count and node kinds only
+--- fhwt::GraphSequence: fork/join with fused quantisation ---
+--- fhwt::GraphExecCache ---
+  [FAIL] a repeats=3 graph equals three chained direct launches
+--- fhwt::inplace_pays_off on a [batch, heads, seq, dim] view ---
+  [skip] 65536x256 fp16 = 32 MiB is the 2.15x point on a 32 MiB L2; this device reports 24.0 MiB
+=== test_graph: 143 checks, 1 failures ===
+=== test_gemm
+--- fused rotation + GEMM vs a double-precision CPU reference ---
+--- partial tiles: M or N below one tile, M a partial tile ---
+--- bf16 ---
+--- nsplit invariance ---
+--- tile height override ---
+--- guards ---
+=== test_gemm: 124 checks, 0 failures ===
+SEQ_DONE

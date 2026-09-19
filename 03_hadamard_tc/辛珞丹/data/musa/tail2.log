@@ -1,0 +1,12 @@
+=== tests ===
+=== test_correctness: 380 checks, 0 failures ===
+=== test_fusion: 132 checks, 0 failures ===
+=== test_fp8: 2 checks, 0 failures ===
+=== test_graph: 143 checks, 0 failures ===
+=== test_gemm: 124 checks, 0 failures ===
+=== bench sanity ===
+    rows    dim dtype kern  acc      tpr  rpb     grid  block        ms      GB/s    %peak
+   65536   1024 f16   reg   native    32    8     8192    256    0.5413     495.9    96.7%
+    rows    dim dtype kern  acc      tpr  rpb     grid  block        ms      GB/s    %peak
+  262144    256 bf16  reg   native    32    8    32768    256    0.5116     524.7   102.3%
+=== passes K=10,20 (no group-entry, cheaper) ===

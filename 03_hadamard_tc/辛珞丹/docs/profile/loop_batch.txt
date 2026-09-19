@@ -1,0 +1,169 @@
+One submission per pass, or one per K passes: where the submit path shows up
+==========================================================================
+
+    cd C:\fhwt
+    nsys profile --force-overwrite true --cuda-event-trace=false \
+      --cuda-graph-trace=node -o loop_batch_k1  -- .\build\fhwt.exe --mode loop --rows 512 \
+      --dims 128 --layers 8 --tensors 6 --group-entry --passes-per-graph 1  \
+      --iters 20 --reps 3
+    ... and the same command with --passes-per-graph 20.
+
+The reports are loop_batch_k1.nsys-rep / loop_batch_k20.nsys-rep in this directory;
+the exports are appended below.  RTX 5060 Ti / sm_120 / 36 SM / CUDA 12.9 / Windows.
+Report 7.14 asks whether recording K passes into one graph amortises the submit path
+that 7.13 measured growing with the node count.  Only the K=1 half of this capture is
+usable for the node accounting -- see the caveat at the bottom.
+
+1. K=1: the GPU goes idle *between* passes, and only for the fork/join shape
+---------------------------------------------------------------------------
+Per replay: span = last node end - first node start, and the hole between two
+consecutive replays inside a timed window.
+
+| shape | replays | span (us) | hole between replays p50 (us) |
+|---|---|---|---|
+| C, 48-node chain | 60 | 57.95 | 3.52 |
+| D, 8 x (1+5) fork/join | 60 | 24.96 | 9.92 |
+
+The chain's GPU work per pass (58 us) is longer than its submission takes, so the
+host stays ahead and the hole is only 3.5 us.  The forked graph's work per pass is
+25 us -- shorter than a 48-node submission costs -- so the GPU drains the pass and
+then waits: a 9.9 us hole.  **That asymmetry is exactly what batching can and cannot
+fix**, and the event timing in data/batch.csv reproduces it (D gains, C does not).
+(The profiler inflates host-side gaps, so read 9.9 us as 'the hole exists and is
+D-specific', not as its size; the unprofiled saving is 5.1 us per pass.)
+
+2. The per-node cost does not get cheaper with bigger graphs
+----------------------------------------------------------
+| graph | launches | p50 (us) | min (us) | max (us) | us per 48 nodes |
+|---|---|---|---|---|---|
+| K=1 (48 nodes) | 202 | 41.7 | 34.6 | 886.5 | 41.70 |
+| K=20 (960 nodes) | 12 | 1241.1 | 713.9 | 2456.2 | 62.06 |
+
+So there is no 'batch discount' in the launch path itself: 960 nodes cost about
+twenty times what 48 nodes cost (the per-node figure even reads a little higher).
+What batching removes is the *idle between passes*, not part of the submission.
+For scale, a 1-node graph -- essentially all fixed cost -- is 4.8 us at p50 in the
+same capture.
+
+3. What it costs to build
+--------------------------
+| graph | cudaGraphInstantiate p50 (us) | p90 (us) | max (us) |
+|---|---|---|---|
+| K=1 | 10.0 | 92.7 | 622.0 |
+| K=20 | 10.4 | 102.8 | 4375.7 |
+
+`--mode loop` also prints capture+instantiate together as `capture cost`: 0.30 ms for
+the 48-node D graph and 5.7 ms for the 960-node one (8-round medians, data/batch.csv)
+-- about 6 us per node.  Against the 5.1 us per pass batching saves, a 960-node graph
+needs ~1100 passes of the same buffers before it pays for itself.  This is a
+serving-loop optimisation (one graph, thousands of steps), not a one-shot one.
+
+Kernel records: K=1 -> 15744, K=20 -> 17568.
+
+CAVEAT -- why only K=1 is used above
+-------------------------------------
+Under `--cuda-graph-trace=node` the per-pass span of the K=20 graph reads 31.4 us
+(D) / 124.2 us (C) against 25.0 / 58.0 us at K=1, i.e. tracing a 960-node graph
+inflates it: the profiler inserts per-node work the graph executor then has to wait
+for.  The unprofiled event timing, on the very shape captured here (`--dims 128`,
+8 x 6, data/batch.csv), says 23.8 us (D) and 55.6 us (C) at K=20 against 28.9 /
+55.4 us at K=1 -- the same as K=1 for C, and for D equal to the K=1 GPU span of
+24.96 us, which is what a fully amortised submission should look like.  So the K dimension has to be measured with
+the stopwatch, and nsys is used here only for the mechanism at K=1.
+
+Raw `nsys stats` summaries
+--------------------------
+== loop_batch_k1 (--passes-per-graph 1) ==
+
+Generating SQLite file C:\fhwt_tmp\loop_batch_k1.sqlite from C:\fhwt_tmp\loop_batch_k1.nsys-rep
+Processing [C:\fhwt_tmp\loop_batch_k1.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0         18191498      15744    1155.5     992.0       832    389896       4889.4  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+
+Generating SQLite file C:\fhwt_tmp\loop_batch_k1.sqlite from C:\fhwt_tmp\loop_batch_k1.nsys-rep
+Processing [C:\fhwt_tmp\loop_batch_k1.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                 Name                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  -----------------------------------
+     30.2         56804926        144   394478.7     1418.0      1052  56192081    4682330.6  cudaMalloc                         
+     23.9         44864985       3168    14161.9     4709.0       621  18599853     330644.2  cudaLaunchKernel                   
+     21.1         39675975       3226    12298.8     4829.5      3346    886530      28283.4  cudaGraphLaunch_v10000             
+     10.1         18930208         12  1577517.3   554856.5     11141   5668433    1937570.2  cudaEventSynchronize               
+      6.4         11945933        336    35553.4    35026.5     10019    141759      16849.2  cudaMemcpy                         
+      3.6          6692594          7   956084.9   451576.0     44084   3454457    1156810.4  cudaStreamSynchronize              
+      1.7          3187300          1  3187300.0  3187300.0   3187300   3187300          0.0  cuLibraryUnload                    
+      1.1          2005768        144    13928.9     1633.0       972    375402      49390.9  cudaFree                           
+      1.0          1843805         50    36876.1     9953.5      4007    621959      97083.3  cudaGraphInstantiate_v12000        
+      0.3           522114         96     5438.7     4393.5      3356     56547       6167.5  cudaMemsetAsync                    
+      0.2           427742         50     8554.8     6407.0      4398     35617       6540.7  cudaGraphUpload_v10000             
+      0.2           412048         50     8241.0     4774.0      3015    103005      15213.9  cudaGraphExecDestroy_v10000        
+      0.1           191664         24     7986.0     4779.0      2464     18074       5208.5  cudaEventRecord                    
+      0.1           111482         98     1137.6      806.5       501     15730       1898.4  cudaGraphDestroy_v10000            
+      0.0            88828         48     1850.6      767.0       591     48822       6929.1  cudaGraphAddKernelNode_v10000      
+      0.0            77908         51     1527.6     1242.0       832     12293       1582.9  cudaStreamDestroy                  
+      0.0            72750         97      750.0      421.0       270      8416       1138.5  cudaStreamBeginCapture_v10000      
+      0.0            63543         51     1245.9      781.0       510     18795       2545.6  cudaStreamCreateWithFlags          
+      0.0            26414         97      272.3      231.0       200      2515        239.6  cudaStreamEndCapture_v10000        
+      0.0            18536         96      193.1      160.0       140      2935        284.6  cudaGraphGetNodes_v10000           
+      0.0            17872         48      372.3      290.0       271      3947        527.8  cudaGraphKernelNodeGetParams_v10000
+      0.0            10309          2     5154.5     5154.5       711      9598       6284.1  cudaEventCreate                    
+      0.0             9028         48      188.1      160.0       150      1573        204.3  cudaGraphNodeGetType_v10000        
+      0.0             5881          1     5881.0     5881.0      5881      5881          0.0  cuCtxSynchronize                   
+      0.0             4870          2     2435.0     2435.0       802      4068       2309.4  cudaEventDestroy                   
+      0.0             3987          1     3987.0     3987.0      3987      3987          0.0  cuModuleGetLoadingMode             
+      0.0             2736          1     2736.0     2736.0      2736      2736          0.0  cudaGraphCreate_v10000             
+      0.0              581          1      581.0      581.0       581       581          0.0  cuDeviceGetLuid
+
+== loop_batch_k20 (--passes-per-graph 20) ==
+
+Generating SQLite file C:\fhwt_tmp\loop_batch_k20.sqlite from C:\fhwt_tmp\loop_batch_k20.nsys-rep
+Processing [C:\fhwt_tmp\loop_batch_k20.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0         20591111      17568    1172.1     992.0       896    392040       6111.8  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+
+Generating SQLite file C:\fhwt_tmp\loop_batch_k20.sqlite from C:\fhwt_tmp\loop_batch_k20.nsys-rep
+Processing [C:\fhwt_tmp\loop_batch_k20.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                 Name                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  -----------------------------------
+     27.6         59121272        144   410564.4     1482.0      1062  58436433    4869326.7  cudaMalloc                         
+     21.4         45838262       4992     9182.3     3927.0       552  18803548     266328.3  cudaLaunchKernel                   
+     19.7         42107130       3036    13869.3     4799.0      3527   2456185      86542.5  cudaGraphLaunch_v10000             
+     12.3         26378036         12  2198169.7  1397814.5     10290   8144246    2290409.0  cudaEventSynchronize               
+      5.7         12165411        336    36206.6    36454.0     10018    189249      17695.9  cudaMemcpy                         
+      4.2          8996658         50   179933.2    10410.0      3576   4375684     750017.5  cudaGraphInstantiate_v12000        
+      3.1          6714284          7   959183.4   658298.0    235366   3212849    1022779.8  cudaStreamSynchronize              
+      1.3          2865641          1  2865641.0  2865641.0   2865641   2865641          0.0  cuLibraryUnload                    
+      1.0          2058373         50    41167.5     4433.5      3226   1121345     183659.5  cudaGraphExecDestroy_v10000        
+      0.9          1965040        144    13646.1     1348.0       861    322847      49578.7  cudaFree                           
+      0.6          1257407        960     1309.8      702.0       561     88878       5710.1  cudaGraphAddKernelNode_v10000      
+      0.6          1198557         50    23971.1     6818.0      4399    406500      70215.7  cudaGraphUpload_v10000             
+      0.5          1050207       1010     1039.8      672.0       271    177497       7514.2  cudaGraphDestroy_v10000            
+      0.3           641357       1009      635.6      360.0       250     43011       2104.5  cudaStreamBeginCapture_v10000      
+      0.2           522178         96     5439.4     4618.0      3246     36098       4601.3  cudaMemsetAsync                    
+      0.1           296113       1920      154.2      150.0       130      3176         72.4  cudaGraphGetNodes_v10000           
+      0.1           280979        960      292.7      281.0       260      3446        142.1  cudaGraphKernelNodeGetParams_v10000
+      0.1           240781       1009      238.6      220.0       200     10821        345.4  cudaStreamEndCapture_v10000        
+      0.1           208804         24     8700.2     5765.5      3326     34105       8209.7  cudaEventRecord                    
+      0.1           148385        960      154.6      150.0       140      1643         49.2  cudaGraphNodeGetType_v10000        
+      0.0            71659         51     1405.1     1162.0       862      8457       1075.4  cudaStreamDestroy                  
+      0.0            67126         51     1316.2      832.0       521     19287       2615.1  cudaStreamCreateWithFlags          
+      0.0            11863          2     5931.5     5931.5      1162     10701       6745.1  cudaEventCreate                    
+      0.0             4719          1     4719.0     4719.0      4719      4719          0.0  cuCtxSynchronize                   
+      0.0             3867          1     3867.0     3867.0      3867      3867          0.0  cudaGraphCreate_v10000             
+      0.0             3556          1     3556.0     3556.0      3556      3556          0.0  cuModuleGetLoadingMode             
+      0.0             2555          2     1277.5     1277.5       401      2154       1239.6  cudaEventDestroy                   
+      0.0              451          1      451.0      451.0       451       451          0.0  cuDeviceGetLuid
+

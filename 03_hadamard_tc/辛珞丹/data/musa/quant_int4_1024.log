@@ -1,0 +1,4 @@
+fused quant fp16 int4 dim=1024 rows=262144 tpr=0 rpb=0
+  fused   :    2.7802 ms     241.4 GB/s (effective, 2.50 B/elem)
+  unfused :    4.6485 ms  (rotate 1.9136 + quantise 2.7348)     259.9 GB/s (4.50 B/elem)
+  speedup :   1.67x   (bandwidth 47.1% of peak 513 GB/s)

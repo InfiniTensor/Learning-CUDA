@@ -1,0 +1,27 @@
+=== info ===
+Build         : dev Sep 17 2026
+Device        : MTT S4000 (sm_22)
+SMs           : 56
+Max thr/SM    : 6144
+Shared/SM     : 73728 bytes
+L2            : 24.0 MiB
+SM clock      : 1.60 GHz
+Mem clock/bus : 8.01 GHz / 256 bit
+D2D memcpy ceiling      :    687.2 GB/s (async) / 686.1 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    673.5 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    689.9 / 681.0 GB/s
+SIMT copy in L2         :    396.6 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    512.8 GB/s (driver arithmetic; on MUSA this is
+                            *below* what the copy path actually sustains)
+=== roof ===
+Device        : MTT S4000
+L2            : 24.0 MiB
+D2D memcpy ceiling      :    688.0 GB/s (async) / 687.1 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    676.1 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    685.8 / 684.9 GB/s
+SIMT copy in L2         :    394.1 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    512.8 GB/s (driver arithmetic; on MUSA this is
+                            *below* what the copy path actually sustains)
+=== passes ===

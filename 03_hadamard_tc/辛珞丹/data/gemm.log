@@ -1,0 +1,14 @@
+M=8192   N=64    K=256   | unfused   0.0803 ms    3342 GFLOP/s | fused   0.0721 ms    3723 GFLOP/s |  1.11x [1.01-1.12 over 5 runs] | saved   8.0 MiB (61.4%) | bitwise=yes
+M=8192   N=128   K=256   | unfused   0.0821 ms    6539 GFLOP/s | fused   0.0742 ms    7234 GFLOP/s |  1.11x [0.99-1.11 over 5 runs] | saved   8.0 MiB (56.9%) | bitwise=yes
+M=8192   N=256   K=256   | unfused   0.1619 ms    6631 GFLOP/s | fused   0.1670 ms    6430 GFLOP/s |  0.97x [0.84-1.21 over 5 runs] | saved   8.0 MiB (49.6%) | bitwise=yes
+M=8192   N=512   K=256   | unfused   0.2791 ms    7694 GFLOP/s | fused   0.3065 ms    7007 GFLOP/s |  0.91x [0.79-1.21 over 5 runs] | saved   8.0 MiB (39.5%) | bitwise=yes
+M=8192   N=1024  K=256   | unfused   0.5677 ms    7566 GFLOP/s | fused   0.6574 ms    6533 GFLOP/s |  0.86x [0.81-1.29 over 5 runs] | saved   8.0 MiB (28.1%) | bitwise=yes
+M=8192   N=4096  K=256   | unfused   2.5543 ms    6726 GFLOP/s | fused   2.6975 ms    6369 GFLOP/s |  0.95x [0.81-1.03 over 5 runs] | saved   8.0 MiB (10.3%) | bitwise=yes
+M=8192   N=128   K=128   | unfused   0.0433 ms    6195 GFLOP/s | fused   0.0371 ms    7236 GFLOP/s |  1.17x [1.16-1.17 over 5 runs] | saved   4.0 MiB (49.8%) | bitwise=yes
+M=8192   N=128   K=512   | unfused   0.1881 ms    5709 GFLOP/s | fused   0.1472 ms    7296 GFLOP/s |  1.28x [1.06-1.31 over 5 runs] | saved  16.0 MiB (61.2%) | bitwise=yes
+M=8192   N=128   K=1024  | unfused   0.4576 ms    4693 GFLOP/s | fused   0.3672 ms    5848 GFLOP/s |  1.25x [1.19-1.44 over 5 runs] | saved  32.0 MiB (63.7%) | bitwise=yes
+M=1024   N=128   K=256   | unfused   0.0437 ms    1536 GFLOP/s | fused   0.0145 ms    4634 GFLOP/s |  3.01x [1.26-3.93 over 5 runs] | saved   1.0 MiB (55.2%) | bitwise=yes
+M=32768  N=128   K=256   | unfused   0.3895 ms    5514 GFLOP/s | fused   0.2919 ms    7356 GFLOP/s |  1.33x [1.03-1.55 over 5 runs] | saved  32.0 MiB (57.1%) | bitwise=yes
+M=65536  N=128   K=256   | unfused   0.7918 ms    5424 GFLOP/s | fused   0.6249 ms    6873 GFLOP/s |  1.27x [1.15-1.57 over 5 runs] | saved  64.0 MiB (57.1%) | bitwise=yes
+M=16384  N=256   K=512   | unfused   0.7034 ms    6106 GFLOP/s | fused   0.6455 ms    6654 GFLOP/s |  1.09x [0.83-1.45 over 5 runs] | saved  32.0 MiB (56.9%) | bitwise=yes
+M=4096   N=4096  K=256   | unfused   1.2612 ms    6811 GFLOP/s | fused   1.2593 ms    6821 GFLOP/s |  1.00x [0.90-1.08 over 5 runs] | saved   4.0 MiB (10.0%) | bitwise=yes

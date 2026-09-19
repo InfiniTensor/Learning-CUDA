@@ -1,0 +1,8 @@
+=== mcc build/fhwt
+=== mcc build/test_correctness.exe
+=== mcc build/test_fusion.exe
+=== mcc build/test_fp8.exe
+=== mcc build/test_graph.exe
+=== mcc build/test_gemm.exe
+done: all
+BUILD_RC=0

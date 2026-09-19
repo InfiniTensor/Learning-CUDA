@@ -1,0 +1,6 @@
+layers=1   kernel nodes | nodes  1 forks  1  A    6.600 us  B    6.300 us  C    5.300 us | D     6.400 us (0.83x vs C)  D single-root    8.800 us (0.60x vs C)
+layers=2   kernel nodes | nodes  2 forks  2  A    6.050 us  B    6.200 us  C    3.250 us | D    15.050 us (0.22x vs C)  D single-root    3.300 us (0.98x vs C)
+layers=4   kernel nodes | nodes  4 forks  4  A   15.750 us  B   15.500 us  C    3.225 us | D    15.375 us (0.21x vs C)  D single-root    2.100 us (1.54x vs C)
+layers=8   kernel nodes | nodes  8 forks  8  A    6.900 us  B    7.200 us  C    1.788 us | D    13.088 us (0.14x vs C)  D single-root    1.550 us (1.15x vs C)
+layers=16  kernel nodes | nodes 16 forks 16  A    6.331 us  B    8.050 us  C    1.162 us | D     4.625 us (0.25x vs C)  D single-root    1.175 us (0.99x vs C)
+layers=32  kernel nodes | nodes 32 forks 32  A    6.319 us  B    6.884 us  C    1.153 us | D     4.331 us (0.27x vs C)  D single-root    1.050 us (1.10x vs C)

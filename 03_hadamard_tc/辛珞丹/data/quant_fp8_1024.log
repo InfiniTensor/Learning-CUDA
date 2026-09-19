@@ -1,0 +1,4 @@
+fused quant fp16 fp8e4m3 dim=1024 rows=262144 tpr=0 rpb=0
+  fused   :    2.0935 ms     384.7 GB/s (effective, 3.00 B/elem)
+  unfused :    5.0008 ms  (rotate 2.9012 + quantise 2.0996)     268.4 GB/s (5.00 B/elem)
+  speedup :   2.39x   (bandwidth 85.9% of peak 448 GB/s)

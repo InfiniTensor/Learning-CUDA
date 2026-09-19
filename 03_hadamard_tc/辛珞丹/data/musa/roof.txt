@@ -1,0 +1,9 @@
+Device        : MTT S4000
+L2            : 24.0 MiB
+D2D memcpy ceiling      :    687.1 GB/s (async) / 685.0 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    671.3 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    688.8 / 664.5 GB/s
+SIMT copy in L2         :   1320.5 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    512.8 GB/s (driver arithmetic; on MUSA this is
+                            *below* what the copy path actually sustains)

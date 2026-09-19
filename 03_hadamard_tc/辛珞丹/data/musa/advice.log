@@ -1,0 +1,66 @@
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 1024 --dim 64 --dtype f16
+shape             : rows=1024 dim=64 f16
+kernel            : fhwt_reg (tpr=8 rpb=32 grid=32 block=256)
+tensor footprint  :     0.12 MiB
+out-of-place ws   :     0.25 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : use fhwt::Graph (submission-bound at this size, measured 1.4-29x)
++ echo
+
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 4096 --dim 128 --dtype f16
+shape             : rows=4096 dim=128 f16
+kernel            : fhwt_reg (tpr=32 rpb=8 grid=512 block=256)
+tensor footprint  :     1.00 MiB
+out-of-place ws   :     2.00 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : use fhwt::Graph (submission-bound at this size, measured 1.4-29x)
++ echo
+
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 16384 --dim 256 --dtype f16
+shape             : rows=16384 dim=256 f16
+kernel            : fhwt_reg (tpr=32 rpb=8 grid=2048 block=256)
+tensor footprint  :     8.00 MiB
+out-of-place ws   :    16.00 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : single launch is fine (kernel >> launch overhead)
++ echo
+
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 65536 --dim 256 --dtype f16
+shape             : rows=65536 dim=256 f16
+kernel            : fhwt_reg (tpr=32 rpb=8 grid=8192 block=256)
+tensor footprint  :    32.00 MiB
+out-of-place ws   :    64.00 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : single launch is fine (kernel >> launch overhead)
++ echo
+
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 131072 --dim 256 --dtype f16
+shape             : rows=131072 dim=256 f16
+kernel            : fhwt_reg (tpr=32 rpb=8 grid=16384 block=256)
+tensor footprint  :    64.00 MiB
+out-of-place ws   :   128.00 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : single launch is fine (kernel >> launch overhead)
++ echo
+
++ for sh in 1024x64 4096x128 16384x256 65536x256 131072x256 262144x512
++ ./build/fhwt --mode advice --rows 262144 --dim 512 --dtype f16
+shape             : rows=262144 dim=512 f16
+kernel            : fhwt_reg (tpr=32 rpb=8 grid=32768 block=256)
+tensor footprint  :   256.00 MiB
+out-of-place ws   :   512.00 MiB (input + output)
+device L2         :    24.00 MiB
+in-place          : not expected to help (measured 1.00x)
+batching          : single launch is fine (kernel >> launch overhead)
++ echo
+

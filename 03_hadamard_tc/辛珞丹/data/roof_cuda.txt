@@ -1,0 +1,52 @@
+# CUDA side `--mode roof` raw output (RTX 5060 Ti, sm_120, CUDA 12.9)
+#
+# Three independent captures.  L2 ratio = L2-resident copy / SIMT copy, and it is only
+# ever formed *inside* one capture -- the three captures differ by 2-3% on their own,
+# and sections 7.2 / 7.15.11 of the report quote transforms measured in a different
+# session (memcpy ~380 GB/s), so numbers from different captures must not be divided
+# by each other.
+#
+# Ratios: 1995.2/361.3 = 5.52 | 1957.6/370.5 = 5.28 | 1942.8/371.5 = 5.23
+#
+# Captures 1-2 carry the old wording of the last two lines ('on MUSA this is *below*');
+# that caption was platform-specific text in a platform-neutral probe and was fixed in
+# src/main.cu, which is what capture 3 shows.
+
+--- capture 1 ---
+Device        : NVIDIA GeForce RTX 5060 Ti
+L2            : 32.0 MiB
+D2D memcpy ceiling      :    366.4 GB/s (async) / 368.7 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    361.3 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    406.4 / 397.2 GB/s
+SIMT copy in L2         :   1995.2 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    448.0 GB/s (driver arithmetic; on MUSA this is
+                            *below* what the copy path actually sustains)
+Build         : dev Sep 17 2026
+
+--- capture 2 ---
+Device        : NVIDIA GeForce RTX 5060 Ti (sm_120)
+SMs           : 36
+Max thr/SM    : 1536
+Shared/SM     : 102400 bytes
+L2            : 32.0 MiB
+SM clock      : 2.57 GHz
+Mem clock/bus : 14.00 GHz / 128 bit
+D2D memcpy ceiling      :    380.8 GB/s (async) / 368.7 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    370.5 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    398.4 / 424.0 GB/s
+SIMT copy in L2         :   1957.6 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    448.0 GB/s (driver arithmetic; on MUSA this is
+                            *below* what the copy path actually sustains)
+
+--- capture 3 (after rebuilding src/main.cu) ---
+Device        : NVIDIA GeForce RTX 5060 Ti
+L2            : 32.0 MiB
+D2D memcpy ceiling      :    370.7 GB/s (async) / 375.1 GB/s (sync), 256 MiB buffers
+SIMT copy roof          :    371.5 GB/s   (read+write, 128-bit, the roof for this op)
+SIMT read / write roof  :    396.0 / 410.9 GB/s
+SIMT copy in L2         :   1942.8 GB/s   (working set = L2/4; the ratio to the
+                            DRAM copy above is what "keep it in cache" is worth)
+Theoretical DRAM bandwidth:    448.0 GB/s (driver arithmetic; on some parts
+                            this is *below* what the copy path actually sustains)

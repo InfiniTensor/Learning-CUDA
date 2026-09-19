@@ -1,0 +1,173 @@
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 src/main.cu src/ops.cu -o build_linux/fhwt.exe 
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 tests/test_correctness.cu src/ops.cu -o build_linux/test_correctness.exe 
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 tests/test_fusion.cu src/ops.cu -o build_linux/test_fusion.exe 
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 tests/test_fp8.cu src/ops.cu -o build_linux/test_fp8.exe 
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 tests/test_graph.cu src/ops.cu -o build_linux/test_graph.exe 
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+nvcc -std=c++17 -O3 -Iinclude -I. -arch=native -Xcudafe --unicode_source_kind=UTF-8 -lineinfo -diag-suppress 192,177,20012 tests/test_gemm.cu src/ops.cu -o build_linux/test_gemm.exe 
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+src/ops.cu: In function ‘fhwt::DeviceInfo fhwt::device_info(int)’:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+In function ‘fhwt::DeviceInfo fhwt::device_info(int)’,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+src/ops.cu:621:46: warning: ‘%s’ directive output may be truncated writing up to 255 bytes into a region of size 128 [-Wformat-truncation=]
+  621 |   std::snprintf(info.name, sizeof(info.name), "%s", prop.name);
+      |                                              ^~~~  ~~~~~~~~~
+In function ‘int snprintf(char*, size_t, const char*, ...)’,
+    inlined from ‘fhwt::DeviceInfo fhwt::device_info(int)’ at src/ops.cu:621:14,
+    inlined from ‘fhwt::RoofResult fhwt::bandwidth_roof(size_t, int, int)’ at src/ops.cu:651:30:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:32: note: ‘__builtin_snprintf’ output between 1 and 256 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+build_linux/test_correctness.exe
+--- FWHT correctness: GPU vs double-precision CPU reference ---
+Note: fp16 tolerance 1e-2, bf16 tolerance 5e-2 (project requirement),
+      measured on the orthonormal scaling (1/sqrt(dim)).
+[dim=32]
+[dim=64]
+[dim=128]
+[dim=256]
+[dim=512]
+[dim=1024]
+[dim=2048]
+[dim=4096]
+[dim=8192]
+[dim=16384]
+[in-place]
+=== test_correctness: 560 checks, 0 failures ===
+build_linux/test_fusion.exe
+--- fused rotate+quantise consistency ---
+--- default launch geometry ---
+=== test_fusion: 244 checks, 0 failures ===
+build_linux/test_fp8.exe
+--- E4M3 encoder equivalence ---
+  hw encoder built: no (software fallback)
+  max |round(x) - x| over the sample = 15.999 (max half step 16)
+=== test_fp8: 2 checks, 0 failures ===
+build_linux/test_graph.exe
+--- fhwt::Graph: replay vs direct launches ---
+--- fhwt::Graph: repeats ---
+--- fhwt::Graph: in-place capture ---
+--- fhwt::inplace_pays_off vs the measured sweep ---
+  L2 = 32.0 MiB
+  policy agrees with 12/12 measured points
+--- fhwt::Graph: fused quantisation capture ---
+--- fhwt::GraphSequence ---
+--- fhwt::GraphSequence: fork/join ---
+--- fhwt::GraphSequence: fork/join with fused quantisation ---
+--- fhwt::GraphExecCache ---
+--- fhwt::inplace_pays_off on a [batch, heads, seq, dim] view ---
+=== test_graph: 158 checks, 0 failures ===
+build_linux/test_gemm.exe
+--- fused rotation + GEMM vs a double-precision CPU reference ---
+--- partial tiles: M or N below one tile, M a partial tile ---
+--- bf16 ---
+--- nsplit invariance ---
+--- tile height override ---
+--- guards ---
+=== test_gemm: 124 checks, 0 failures ===

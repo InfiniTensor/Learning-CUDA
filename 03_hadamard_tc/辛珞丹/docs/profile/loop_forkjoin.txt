@@ -1,0 +1,16 @@
+NOTE: this capture used the default `--cuda-graph-trace` granularity, which
+traces a CUDA Graph as ONE opaque record.  Only strategy A's kernels are in
+here (184 of them); C and D are invisible.  Superseded by
+loop_forkjoin_nodes.txt, which was captured with `--cuda-graph-trace=node`.
+
+Generating SQLite file loop_forkjoin.sqlite from loop_forkjoin.nsys-rep
+Processing [loop_forkjoin.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2025.1.3\host-windows-x64\reports\cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     37.1            85315         69    1236.4    1056.0      1024      1952        248.8  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)7, (int)5>(const T1 *, T1 *, long lo�
+     33.7            77473         69    1122.8     992.0       960      1632        194.9  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)6, (int)3>(const T1 *, T1 *, long lo�
+     29.2            67075         46    1458.2    1184.0      1088      2240        404.7  void fhwt::fhwt_reg_kernel<__half, fhwt::Native2<__half>, (int)8, (int)5>(const T1 *, T1 *, long lo�
+
