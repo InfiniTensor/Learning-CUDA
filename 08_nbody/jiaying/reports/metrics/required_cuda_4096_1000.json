@@ -1,0 +1,41 @@
+{
+  "particles": 4096,
+  "steps": 1000,
+  "dt": 0.0010000000475,
+  "G": 1,
+  "softening": 0.0299999993294,
+  "integrator": "leapfrog",
+  "backend": "cuda",
+  "kernel": "tiled",
+  "block_size": 128,
+  "cpu_threads": 1,
+  "device": "NVIDIA GeForce RTX 4070 Laptop GPU",
+  "compute_ms": 256.364128416,
+  "simulation_wall_ms": 279.655864,
+  "trajectory_flush_ms": 28.067818,
+  "total_ms": 529.443295,
+  "mean_step_ms": 0.256364128416,
+  "particle_steps_per_second": 15977274.2985,
+  "device_allocated_bytes": 196608,
+  "trajectory_records": 101,
+  "diagnostics": {
+    "initial_energy": -0.147592314494,
+    "final_energy": -0.147592308694,
+    "relative_energy_error": 3.9294139782e-08,
+    "momentum_drift_norm": 1.85243590411e-09,
+    "normalized_momentum_error": 3.72645450243e-09,
+    "angular_momentum_drift_norm": 4.33305917244e-08,
+    "initial_momentum": [
+      1.50215839767e-10,
+      1.01756825188e-10,
+      1.10983222612e-10
+    ],
+    "final_momentum": [
+      1.51451384767e-09,
+      -5.51889201006e-10,
+      1.18007470462e-09
+    ]
+  },
+  "cpu_comparison": null,
+  "process_wall_ms": 568.351125999996
+}

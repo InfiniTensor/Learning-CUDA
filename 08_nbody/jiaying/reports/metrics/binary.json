@@ -1,0 +1,7 @@
+{
+  "particles":2,"steps":4000,"dt":0.00499999988824,"G":1,"softening":0.00999999977648,"integrator":"leapfrog",
+  "backend":"cuda","kernel":"tiled","block_size":128,"cpu_threads":1,"device":"NVIDIA GeForce RTX 4070 Laptop GPU",
+  "compute_ms":63.7821117532,"simulation_wall_ms":82.751263,"trajectory_flush_ms":2.403068,"total_ms":266.793297,"mean_step_ms":0.0159455279383,"particle_steps_per_second":125427.016762,"device_allocated_bytes":96,"trajectory_records":401,
+  "diagnostics":{"initial_energy":-0.500024955154,"final_energy":-0.500022583325,"relative_energy_error":4.74342148704e-06,"momentum_drift_norm":0,"normalized_momentum_error":0,"angular_momentum_drift_norm":1.67693033282e-06,"initial_momentum":[0,0,0],"final_momentum":[0,0,0]},
+  "cpu_comparison":null
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N 体引力模拟 · 动画与实验</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#08121e;color:#dce8f5;font:16px/1.65 system-ui,sans-serif}
+  main{max-width:1200px;margin:auto;padding:48px 24px}h1{font-size:36px;margin:0 0 12px}p{color:#a1b7ca}
+  .tag{color:#79dded;font-size:13px;letter-spacing:2px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+  article{border:1px solid #21354a;border-radius:14px;overflow:hidden;background:#0d1b2b}article img{display:block;width:100%;height:auto}
+  article h2,article p{margin:14px 20px}h2{font-size:20px}a{color:#79dded}section{margin-top:32px}.wide{width:100%;border-radius:12px}
+</style>
+<main>
+<div class="tag">CUDA / 2026 SUMMER PROJECT / JIAYING</div>
+<h1>N 体引力模拟与可视化</h1>
+<p>WSL2 · RTX 4070 Laptop GPU · 4096 粒子 × 1000 步计算 0.256 秒 · 完整流程相对单线程 CPU 加速 65.5 倍</p>
+<p>动画自动播放。<a href="../README.md">使用说明</a> · <a href="../REPORT.md">实验报告</a> · <a href="benchmark.csv">实测数据</a></p>
+<section class="grid">
+<article><img src="binary.gif" alt="两个等质量天体的圆轨道动画"><h2>稳定的二体轨道</h2><p>Leapfrog 积分；展示轨道和运动尾迹。模拟时间 20。</p></article>
+<article><img src="cluster.gif" alt="4096 个粒子的星团演化动画"><h2>4096 粒子星团</h2><p>直接计算全部引力相互作用，101 个轨迹记录点。</p></article>
+<article><img src="cluster_3d.gif" alt="星团的三维动画"><h2>三维观察</h2><p>与二维演示使用同一份二进制轨迹。</p></article>
+<article><img src="ring.gif" alt="中心星体和扰动天体对粒子环的引力影响"><h2>轨道扰动</h2><p>中心星体、粒子环及较大扰动天体；红色标记当前近距离粒子。</p></article>
+<article><img src="collision.gif" alt="两个相向星团以及近距离粒子风险标记"><h2>近距离相遇</h2><p>阈值 0.05，按三维真实距离统计所有粒子配对。标记仅描述离散时刻的接近程度，不模拟接触或合并。</p></article>
+</section>
+<section><h2>性能实测</h2><img class="wide" src="performance.png" alt="CUDA 变体扩展性和完整流程 CPU GPU 性能比较"></section>
+<section><h2>数值积分对照</h2><img class="wide" src="orbit_accuracy.png" alt="Leapfrog 与显式 Euler 的轨道误差"></section>
+<p>65536 粒子 × 1000 步也已实际完成，计算约 13.986 秒。完整测试与工具环境限制均记录在实验报告中。</p>
+</main>
+</html>

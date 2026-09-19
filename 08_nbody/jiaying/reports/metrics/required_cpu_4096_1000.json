@@ -1,0 +1,41 @@
+{
+  "particles": 4096,
+  "steps": 1000,
+  "dt": 0.0010000000475,
+  "G": 1,
+  "softening": 0.0299999993294,
+  "integrator": "leapfrog",
+  "backend": "cpu",
+  "kernel": "tiled",
+  "block_size": 128,
+  "cpu_threads": 1,
+  "device": "CPU",
+  "compute_ms": 37118.14727,
+  "simulation_wall_ms": 37126.991129,
+  "trajectory_flush_ms": 30.931007,
+  "total_ms": 37223.945417,
+  "mean_step_ms": 37.11814727,
+  "particle_steps_per_second": 110350.335382,
+  "device_allocated_bytes": 0,
+  "trajectory_records": 101,
+  "diagnostics": {
+    "initial_energy": -0.147592314494,
+    "final_energy": -0.147592308938,
+    "relative_energy_error": 3.76444992207e-08,
+    "momentum_drift_norm": 2.4236583254e-09,
+    "normalized_momentum_error": 4.87555464618e-09,
+    "angular_momentum_drift_norm": 4.35587328594e-08,
+    "initial_momentum": [
+      1.50215839767e-10,
+      1.01756825188e-10,
+      1.10983222612e-10
+    ],
+    "final_momentum": [
+      1.93314431129e-09,
+      -6.26199536669e-10,
+      1.58250124116e-09
+    ]
+  },
+  "cpu_comparison": null,
+  "process_wall_ms": 37236.176212000006
+}

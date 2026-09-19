@@ -1,0 +1,22 @@
+Generating SQLite file output/nbody_trace.sqlite from output/nbody_trace.nsys-rep
+Processing [output/nbody_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+SKIPPED: output/nbody_trace.sqlite does not contain CUDA kernel data.
+
+Processing [output/nbody_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+SKIPPED: output/nbody_trace.sqlite does not contain GPU memory data.
+
+Processing [output/nbody_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+77.6,120925100,3,40308366.7,2755.0,1112,120921233,69812790.1,cudaMalloc
+18.0,28070760,11,2551887.3,2733136.0,26201,3105262,866062.3,cudaEventSynchronize
+2.3,3634124,201,18080.2,5320.0,2828,2357982,165953.3,cudaLaunchKernel
+0.8,1285659,1,1285659.0,1285659.0,1285659,1285659,0.0,cudaHostAlloc
+0.6,870679,14,62191.4,59794.0,32092,108854,19860.0,cudaMemcpy
+0.3,457924,1,457924.0,457924.0,457924,457924,0.0,cudaFreeHost
+0.2,246535,2,123267.5,123267.5,997,245538,172916.6,cudaEventCreate
+0.1,216866,22,9857.5,5782.5,2304,107813,21947.5,cudaEventRecord
+0.1,200091,3,66697.0,10580.0,1162,188349,105458.9,cudaFree
+0.0,5639,1,5639.0,5639.0,5639,5639,0.0,cudaGetDeviceProperties_v2_v12000
+0.0,1609,1,1609.0,1609.0,1609,1609,0.0,cuModuleGetLoadingMode
+0.0,1582,2,791.0,791.0,248,1334,767.9,cudaEventDestroy
+

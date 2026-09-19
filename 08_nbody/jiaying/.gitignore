@@ -1,0 +1,10 @@
+/build*/
+/.venv/
+/data/
+/output/
+__pycache__/
+*.nsys-rep
+*.ncu-rep
+*.qdstrm
+*.sqlite
+*.zip
