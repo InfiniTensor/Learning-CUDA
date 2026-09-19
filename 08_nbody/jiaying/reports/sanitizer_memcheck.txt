@@ -1,0 +1,13 @@
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+========= 
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+========= 
+{
+  "particles":257,"steps":3,"dt":0.0010000000475,"G":1,"softening":0.0299999993294,"integrator":"leapfrog",
+  "backend":"cuda","kernel":"tiled","block_size":128,"cpu_threads":1,"device":"NVIDIA GeForce RTX 4070 Laptop GPU",
+  "compute_ms":4.28601580928,"simulation_wall_ms":4.668139,"trajectory_flush_ms":1.681197,"total_ms":332.124261,"mean_step_ms":1.42867193643,"particle_steps_per_second":179887.343936,"device_allocated_bytes":12336,"trajectory_records":3,
+  "diagnostics":{"initial_energy":-0.156717282624,"final_energy":-0.156717280711,"relative_energy_error":1.22028705322e-08,"momentum_drift_norm":2.31023096538e-09,"normalized_momentum_error":4.80273264668e-09,"angular_momentum_drift_norm":5.51968956749e-09,"initial_momentum":[4.17192655422e-10,-6.99850854352e-11,-4.58413647753e-10],"final_momentum":[1.95867646147e-09,1.25837262312e-09,6.35414760738e-10]},
+  "cpu_comparison":null
+}
+========= ERROR SUMMARY: 2 errors

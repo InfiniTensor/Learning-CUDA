@@ -1,0 +1,26 @@
+{
+  "median_step_ms": {
+    "4096_naive_128": 0.292935676575,
+    "4096_tiled_128": 0.310312957764,
+    "4096_tiled_256": 0.320286712646,
+    "16384_naive_128": 1.19790115356,
+    "16384_tiled_128": 1.22875648499,
+    "16384_tiled_256": 1.21887939453,
+    "65536_naive_128": 15.3668481445,
+    "65536_tiled_128": 13.7040869141,
+    "65536_tiled_256": 14.2613134766
+  },
+  "compute_speedup": 144.78682138309412,
+  "simulation_wall_speedup": 132.75956598213867,
+  "process_wall_speedup": 65.51614751617518,
+  "all_recorded_cpu_gpu_max_position_error": 7.152557373046875e-07,
+  "advanced_shape": [
+    65536,
+    101,
+    3
+  ],
+  "advanced_finite": true,
+  "advanced_compute_ms": 13986.2212935,
+  "advanced_process_ms": 14976.447663000003,
+  "advanced_trajectory_bytes": 79429640
+}

@@ -1,0 +1,8 @@
+Wrote 2 particles: data/binary.txt
+Saved animation: reports/binary.gif
+Saved animation: reports/cluster.gif
+Saved animation: reports/cluster_3d.gif
+Wrote 512 particles: data/ring.txt
+Saved animation: reports/ring.gif
+Wrote 512 particles: data/collision.txt
+Saved animation: reports/collision.gif
