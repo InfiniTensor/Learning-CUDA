@@ -1,0 +1,15 @@
+# build artifacts
+bench
+fuse_bench
+fuse_group_bench
+*.o
+*.so
+build/
+dist/
+
+# Nsight Compute profiling reports
+*.ncu-rep
+
+# generated plots / results
+heatmap_*.png
+bench_results.json
