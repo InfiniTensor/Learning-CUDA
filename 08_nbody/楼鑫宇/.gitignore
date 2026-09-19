@@ -1,0 +1,6 @@
+/build*/
+/results/
+/data/cluster_*.txt
+__pycache__/
+*.pyc
+
