@@ -1,0 +1,19 @@
+# nsys cuda_api_sum -- NVFP4, 8192x8192, 6 pipeline iterations
+
+Name                           Calls       Total (ms) Time (%)       Avg (us)
+cudaMemcpy_v3020                   4          37.9534    57.7%         9488.3
+cudaEventSynchronize_v3020        24          12.9414    19.7%          539.2
+cudaLaunchKernel_v7000            30           8.6780    13.2%          289.3
+cudaMalloc_v3020                  12           1.7558     2.7%          146.3
+cudaFree_v3020                     4           1.6444     2.5%          411.1
+cuLibraryUnload                    2           1.4189     2.2%          709.5
+cudaEventRecord_v3020             48           0.5659     0.9%           11.8
+cudaMemcpyAsync_v3020             18           0.4948     0.8%           27.5
+cudaMemsetAsync_v3020             18           0.1912     0.3%           10.6
+cudaEventCreate_v3020             24           0.0362     0.1%            1.5
+cudaEventDestroy_v3020            24           0.0170     0.0%            0.7
+cudaStreamSynchronize_v3020        6           0.0161     0.0%            2.7
+cudaGetDeviceProperties_v2_v12000       1           0.0056     0.0%            5.6
+cuModuleGetLoadingMode             1           0.0035     0.0%            3.5
+cuCtxSynchronize                   1           0.0030     0.0%            3.0
+cuDeviceGetLuid                    1           0.0004     0.0%            0.4

@@ -1,0 +1,21 @@
+# =============================================================================
+#  .clang-format -- 全程序统一风格 (基于 Google 风格微调)
+# =============================================================================
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++17
+ColumnLimit: 100
+IndentWidth: 4
+AccessModifierOffset: -4
+TabWidth: 4
+UseTab: Never
+DerivePointerAlignment: false
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+SortIncludes: true
+IncludeBlocks: Preserve
+AlignAfterOpenBracket: DontAlign
+BinPackArguments: true
+BinPackParameters: true

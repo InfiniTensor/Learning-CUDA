@@ -1,0 +1,8 @@
+arch_probe.cu:5:11: error: unknown type name '__nv_bfloat16'; did you mean '__mt_bfloat16'?
+    const __nv_bfloat16 b = __float2bfloat16_rn(1.0f);
+          ^~~~~~~~~~~~~
+          __mt_bfloat16
+/usr/local/musa/include/musa_bf16.hpp:116:26: note: '__mt_bfloat16' declared here
+struct __MUSA_ALIGN__(2) __mt_bfloat16 {
+                         ^
+1 error generated when compiling for mp_22.

@@ -1,0 +1,69 @@
+# 2026-09-17 复跑存档：上传包 / 迁移后源码树 / 构建产物的 md5 与时间戳
+# 采集时间: 2026-09-17 06:33:23 UTC  机器: autodl-container-05264bbf0d-48c7f87e  GPU: MTT S4000  MUSA: musa_toolkits: { 	"version":	"3.1.0", 
+
+## 上传包
+a9c487d1d4bc867d72672220120ae7ec  /root/lpq_new.tar.gz
+
+## 迁移后源码树（不含 build/ 与 data/，共 47 个文件）
+0d0c04770d19d8a7f59aa315ce03184b  .clang-format
+3807561cf1dacb8048261f17ebf7e6fa  .gitignore
+c315fc00c648081f157370cca741379d  2026夏季训练营 CUDA 方向项目.pdf
+41e04276ff326e559d5057a5804c21dd  Makefile
+a5024fd97afe5f7c923b5baffa11d124  README.md
+7029b01e1767cc5509340029a41ccb72  docs/measurements.md
+9c5ecefbb55173b53b0ee03c3bebac8d  docs/profile/nsys_mxfp8_api_sum.txt
+1b5cf7efa63c0fda708d4b3a759771e5  docs/profile/nsys_mxfp8_kern_sum.txt
+baa2c513306cbfc7763cb32cba19df8d  docs/profile/nsys_nvfp4_api_sum.txt
+0ab1b6c842399f751f1017c50d9216c5  docs/profile/nsys_nvfp4_kern_sum.txt
+a81bb8649b32907fd2b86c89ba23e769  include/lpq/common.hpp
+62e93ccf7a2ca866b6afd291c972d14d  include/lpq/config.hpp
+077b5b2544c0a9a0c62756a1bdcb773f  include/lpq/formats.hpp
+ad63a3fa9aaf7f877ed413351d0a228e  include/lpq/lowp_tensor.hpp
+f6b70422b91c4d505dda2df73885bbe3  include/lpq/pipeline.hpp
+d1e50865f6fa5721c923df147cca437e  include/lpq/platform.hpp
+5bc59775a5045439a12bf5d01a743917  include/lpq/reference.hpp
+9c6ba71c532bb929d5fd3b790e7cf028  include/lpq/stats.cuh
+87a942ed4d255f98adb898de7012222c  include/lpq/vec_io.cuh
+3a0767c3244c3d961c7719a821829c19  scripts/analyze.py
+f1b807843ec0eb9a9e42a8f530fdb60f  scripts/benchmark.py
+932a78fd052155256db4f57ca9bdeef2  scripts/build.ps1
+79913437f810ded7428f0842d4c3f346  scripts/cpu_compare.py
+cb8019ce8c5810e9688d48c2259e628b  scripts/pack_submission.py
+6ce1f99cad6e2ab1b4ca8afbdd026faa  scripts/perf_probe.py
+35a4fabcda40759f8317668e89711abc  scripts/run_dll.py
+243398ce9c87afa7a3f47e984e398983  scripts/run_domestic.sh
+1a244b4960ddef0a5961bc22256c63b5  scripts/run_experiments.py
+650353bdfb768de8feb28ffc3300844e  src/config.cu
+9e0d15038b10f4926cbb5bc3a21b6fe9  src/dequantize.cu
+170cdff4b5aa90de1b00451af07fa8aa  src/lowp_tensor.cu
+9f2f66e4d649a3407f4725c3f56fe7f5  src/main.cu
+183681f7b553c47b1c1e8396a417b569  src/metrics.cu
+93524bbad663b5c84c747136d8732c4a  src/quantize.cu
+23f744170b26fee74f503f283f3fd007  src/reference.cu
+06e302484e8eae67d00b8b8d6367545d  tests/test_common.hpp
+22dc8161361ec8477c7ef3cd0ab42f5b  tests/test_formats.cu
+d4e13369fe4b0b3142f6f1612dc74b31  tests/test_pipeline.cu
+6f476fb57a66bafc88f7cca7a2c5048d  tests/test_portability.cu
+ba28ea1c68d475497ee9e983f1cdb688  tools/bw_ceiling.cu
+0e28b9128781bb901e1fb74ae991f904  tools/gen_data.py
+c62334de8ddebe84d3ef96d4e495a611  tools/verify_e2m1_rne.cu
+dbae34d6e880667a0a85029b2d142c4c  tools/verify_fp8_hw_decode.cu
+1498ea921ea61b93375442c3c1d75f06  tools/verify_fp8_hw_encode.cu
+7ecfb7f493cbea2cbaf3d7d5116997b0  tools/verify_numpy.py
+9c67e27c56edc24fef0a1e88c8c7a274  总结报告.md
+c5684344defeacf6d35db5d9ee2e7dc0  项目状态与交接记录.md
+
+## 构建产物（时间戳 = 编译完成时刻）
+total 132224
+drwxr-xr-x  2 root root      130 2026-09-17 14:18:16.582331242 +0800 .
+drwxr-xr-x 10 root root     4096 2026-09-17 13:47:56.591593281 +0800 ..
+-rwxr-xr-x  1 root root    50832 2026-09-17 14:18:16.638330450 +0800 bw_ceiling
+-rwxr-xr-x  1 root root 44962184 2026-09-17 13:57:59.471067270 +0800 lpq_quant
+-rwxr-xr-x  1 root root 45200688 2026-09-17 14:08:04.634981455 +0800 test_formats
+-rwxr-xr-x  1 root root 45036096 2026-09-17 14:18:07.650457499 +0800 test_pipeline
+-rwxr-xr-x  1 root root   127456 2026-09-17 14:18:10.394418711 +0800 test_portability
+610d8239e95447188b91890a548c4b36  build/bw_ceiling
+2ae812413532b78d43e5e8dd6b174ab6  build/lpq_quant
+432591360f77d31ad9f65e148f1029ea  build/test_formats
+381d84b24417fe61c272c6083c856322  build/test_pipeline
+c91105c7940baea469ae5226e854ddd0  build/test_portability

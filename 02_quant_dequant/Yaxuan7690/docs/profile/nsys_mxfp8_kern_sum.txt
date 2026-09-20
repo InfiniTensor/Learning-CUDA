@@ -1,0 +1,8 @@
+# nsys cuda_gpu_kern_sum -- MXFP8, 8192x8192 (67108864 elements), 6 launches (1 warmup + 5 repeat)
+# GPU kernel total: 1.3713 ms per pipeline iteration
+
+Kernel                              Calls     Avg (ms) Time (%)
+<unnamed>::k_quant_mxfp8_block_fused<float, lpq::FmtE4M3, lpq::FastSink<__half>, (bool)0>(const T1 *, long long, int, unsigned long long, unsigned char *, unsigned char *, double *, float *)      6       0.8469    61.8%
+    void lpq::<unnamed>::k_quant_mxfp8_block_fused<float, lpq::FmtE4M3, lpq::FastSink<__half>, (bool)0>(const T1 *, long long, int, unsigned long long, unsigned char *, unsigned char *, double *, float *)
+<unnamed>::k_dequant_mxfp8<__half, lpq::FmtE4M3>(const unsigned char *, const unsigned char *, long long, long long, int, long long, T1 *)      6       0.5244    38.2%
+    void lpq::<unnamed>::k_dequant_mxfp8<__half, lpq::FmtE4M3>(const unsigned char *, const unsigned char *, long long, long long, int, long long, T1 *)

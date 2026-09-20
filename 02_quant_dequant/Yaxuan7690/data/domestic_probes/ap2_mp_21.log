@@ -1,0 +1,7 @@
+arch_probe2.cu:6:30: error: use of undeclared identifier '__bfloat16_as_ushort'
+    const unsigned short u = __bfloat16_as_ushort(b);
+                             ^
+arch_probe2.cu:7:13: error: use of undeclared identifier '__ushort_as_bfloat16'
+    o[0] = (__ushort_as_bfloat16(u) == b) ? 42 : 7;
+            ^
+2 errors generated when compiling for mp_21.

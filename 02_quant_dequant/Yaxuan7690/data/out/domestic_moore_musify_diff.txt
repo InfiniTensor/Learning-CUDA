@@ -1,0 +1,1673 @@
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/common.hpp lpq_mus/include/lpq/common.hpp
+--- lpq/include/lpq/common.hpp	2026-09-17 10:07:37.570619800 +0800
++++ lpq_mus/include/lpq/common.hpp	2026-09-17 13:47:20.264107042 +0800
+@@ -140,7 +140,7 @@
+ //
+ // 用法不变: seed + 元素下标 -> 哈希, 与线程调度无关, 可复现.
+ // 下标高位也参与混合, 因此 numel >= 2^32 时不会与低位下标混叠.
+-// 注意: CPU 参考实现(src/reference.cu 的 table_quantize)从低 32 位构造 [0,1)
++// 注意: CPU 参考实现(src/reference.mu 的 table_quantize)从低 32 位构造 [0,1)
+ //       均匀分布, 与这里的 32 位输出配套.
+ // -----------------------------------------------------------------------------
+ LPQ_HD uint64_t random_at(uint64_t seed, uint64_t idx) {
+@@ -191,7 +191,7 @@
+ }  // namespace lpq
+ // =============================================================================
+ //  主机侧工具(异常,CUDA 运行时检查,计时)
+-//    注意: 这些声明不能放进 #if !defined(__CUDA_ARCH__) -- nvcc 的设备遍也会解析
++//    注意: 这些声明不能放进 #if !defined(__MUSA_ARCH__) -- nvcc 的设备遍也会解析
+ //    整份翻译单元, 若此时看不到 Error/LPQ_CHECK 会报 identifier undefined.
+ // =============================================================================
+ namespace lpq {
+@@ -243,10 +243,10 @@
+ // CUDA 运行时错误检查
+ #define LPQ_CUDA_CHECK(call)                                                                     \
+     do {                                                                                         \
+-        cudaError_t err__ = (call);                                                              \
+-        if (err__ != cudaSuccess) {                                                              \
++        musaError_t err__ = (call);                                                              \
++        if (err__ != musaSuccess) {                                                              \
+             throw ::lpq::Error(                                                                  \
+-                std::string("CUDA error: ") + cudaGetErrorString(err__) + " @ " #call, __FILE__, \
++                std::string("CUDA error: ") + musaGetErrorString(err__) + " @ " #call, __FILE__, \
+                 __LINE__);                                                                       \
+         }                                                                                        \
+     } while (0)
+@@ -254,9 +254,9 @@
+ // 上一次 kernel 启动错误检查
+ #define LPQ_CUDA_CHECK_KERNEL()                                                                  \
+     do {                                                                                         \
+-        cudaError_t err__ = cudaGetLastError();                                                  \
+-        if (err__ != cudaSuccess) {                                                              \
+-            throw ::lpq::Error(std::string("kernel launch error: ") + cudaGetErrorString(err__), \
++        musaError_t err__ = musaGetLastError();                                                  \
++        if (err__ != musaSuccess) {                                                              \
++            throw ::lpq::Error(std::string("kernel launch error: ") + musaGetErrorString(err__), \
+                 __FILE__, __LINE__);                                                             \
+         }                                                                                        \
+     } while (0)
+@@ -265,24 +265,24 @@
+ class DeviceTimer {
+ public:
+     DeviceTimer() {
+-        LPQ_CUDA_CHECK(cudaEventCreate(&begin_));
+-        LPQ_CUDA_CHECK(cudaEventCreate(&end_));
++        LPQ_CUDA_CHECK(musaEventCreate(&begin_));
++        LPQ_CUDA_CHECK(musaEventCreate(&end_));
+     }
+     ~DeviceTimer() {
+-        cudaEventDestroy(begin_);
+-        cudaEventDestroy(end_);
++        musaEventDestroy(begin_);
++        musaEventDestroy(end_);
+     }
+-    void start() { LPQ_CUDA_CHECK(cudaEventRecord(begin_)); }
++    void start() { LPQ_CUDA_CHECK(musaEventRecord(begin_)); }
+     double stop_ms() {
+-        LPQ_CUDA_CHECK(cudaEventRecord(end_));
+-        LPQ_CUDA_CHECK(cudaEventSynchronize(end_));
++        LPQ_CUDA_CHECK(musaEventRecord(end_));
++        LPQ_CUDA_CHECK(musaEventSynchronize(end_));
+         float ms = 0.0f;
+-        LPQ_CUDA_CHECK(cudaEventElapsedTime(&ms, begin_, end_));
++        LPQ_CUDA_CHECK(musaEventElapsedTime(&ms, begin_, end_));
+         return (double)ms;
+     }
+ 
+ private:
+-    cudaEvent_t begin_{}, end_{};
++    musaEvent_t begin_{}, end_{};
+ };
+ 
+ }  // namespace lpq
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/formats.hpp lpq_mus/include/lpq/formats.hpp
+--- lpq/include/lpq/formats.hpp	2026-09-17 10:29:42.381545300 +0800
++++ lpq_mus/include/lpq/formats.hpp	2026-09-17 13:47:20.244107325 +0800
+@@ -236,7 +236,7 @@
+ }
+ 
+ #ifndef LPQ_HW_FP8X2
+-#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 890)
++#if defined(__MUSA_ARCH__) && (__MUSA_ARCH__ >= 890)
+ #define LPQ_HW_FP8X2 1
+ #else
+ #define LPQ_HW_FP8X2 0
+@@ -293,8 +293,8 @@
+ //    * Inf/NaN 不需要单独分支: 指数域被抬到 0xFF 后 code 已经 > 7, 被同一条饱和截断;
+ //    * |x| == 0 同理落到负数一侧, 被 clamp 到 0.
+ //
+-//  与通用实现逐位等价, 已在全部 2^32 个 fp32 位模式上对拍(见 build/_e2m1.cu 与
+-//  tests/test_formats.cu 的中点用例)。
++//  与通用实现逐位等价, 已在全部 2^32 个 fp32 位模式上对拍(见 build/_e2m1.mu 与
++//  tests/test_formats.mu 的中点用例)。
+ // -----------------------------------------------------------------------------
+ LPQ_HD uint32_t e2m1_mag_rne(uint32_t a) {
+     const uint32_t b = a + 0x1FFFFFu + ((a >> 22) & 1u);
+@@ -344,7 +344,7 @@
+ #if LPQ_HW_FP8X2
+     // 硬件译码: cvt.rn.f16x2.{e4m3,e5m2}x2 + cvt.f32.f16 两条指令, 取代下面
+     // 十几条整数拆分 + exp2i 的软件路径. e4m3/e5m2 的全部有限值都能被 fp16 精确
+-    // 表示, 因此两条路逐位等价(已对全部 256 个编码核对, 见 build/_cvt2.cu).
++    // 表示, 因此两条路逐位等价(已对全部 256 个编码核对, 见 build/_cvt2.mu).
+     if constexpr ((F::ebits == 4 && F::mbits == 3) || (F::ebits == 5 && F::mbits == 2)) {
+         const uint32_t pair = (F::ebits == 4) ? hw_cvt_e4m3x2_to_f16x2(code & 0xFFu)
+                                               : hw_cvt_e5m2x2_to_f16x2(code & 0xFFu);
+@@ -397,7 +397,7 @@
+ //  而 e2m1 的有效数字只有 {0,0.5,1,1.5,2,3,4,6}. 这里直接按位拼
+ //  fp32:  幅值 m -> 指数域 126 + (m>>1), 尾数 0x400000 只在 m>=3 且 m 为奇时置位.
+ //  (m=1 是 e2m1 的次正规 0.5, 不能用 1+mf/2 的公式。全部 16 个编码
+-//   与通用实现逐位对过, 见 tests/test_formats.cu 的穷举对比。)
++//   与通用实现逐位对过, 见 tests/test_formats.mu 的穷举对比。)
+ // -----------------------------------------------------------------------------
+ template <>
+ LPQ_HD float fmt_to_f32<FmtE2M1>(uint32_t code) {
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/pipeline.hpp lpq_mus/include/lpq/pipeline.hpp
+--- lpq/include/lpq/pipeline.hpp	2026-09-17 10:08:11.288456000 +0800
++++ lpq_mus/include/lpq/pipeline.hpp	2026-09-17 13:47:20.248107268 +0800
+@@ -11,7 +11,7 @@
+ // =============================================================================
+ #pragma once
+ 
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ #include <cstdint>
+ 
+ #include "lpq/config.hpp"
+@@ -92,11 +92,11 @@
+ 
+ // 在设备上执行量化流水线.d_input 为 fp32 或 fp16 位模式,长度 numel.
+ QuantizedDevice quantize_on_device(const void* d_input, InputType in_type, int64_t numel,
+-    const QuantConfig& cfg, cudaStream_t stream);
++    const QuantConfig& cfg, musaStream_t stream);
+ 
+ // 反量化:把 q 还原成 output_type 指定的元素类型,写入 d_output(长度 numel).
+ double dequantize_on_device(
+-    const QuantizedDevice& q, const QuantConfig& cfg, void* d_output, cudaStream_t stream);
++    const QuantizedDevice& q, const QuantConfig& cfg, void* d_output, musaStream_t stream);
+ 
+ // -----------------------------------------------------------------------------
+ // 误差统计
+@@ -131,16 +131,16 @@
+ // 返回的 QuantizedDevice::stats_fused 指示统计是否真的被融合完成(当前所有量化路径
+ // 都支持, 但保留这个标志以便将来新增路径时能安全回退到独立 kernel).
+ QuantizedDevice quantize_on_device(const void* d_input, InputType in_type, int64_t numel,
+-    const QuantConfig& cfg, cudaStream_t stream, ErrorStats* out_stats,
++    const QuantConfig& cfg, musaStream_t stream, ErrorStats* out_stats,
+     AccumMode mode = AccumMode::Fast);
+ 
+ // d_ref: 原始输入(fp32/fp16),d_test: 反量化结果(fp16/bf16/fp32)
+ ErrorStats compute_error_stats(const void* d_ref, InputType ref_type, const void* d_test,
+-    OutputType test_type, int64_t numel, cudaStream_t stream, AccumMode mode = AccumMode::Fast);
++    OutputType test_type, int64_t numel, musaStream_t stream, AccumMode mode = AccumMode::Fast);
+ 
+ // -----------------------------------------------------------------------------
+ //  融合统计用的设备端归约目标: 4 x fp64 累加器 + 1 x fp32 最大值.
+-//  是一小块进程内缓存的显存(只有 36 字节, 但每次 cudaMalloc/cudaFree 在 kernel
++//  是一小块进程内缓存的显存(只有 36 字节, 但每次 musaMalloc/musaFree 在 kernel
+ //  本身只有 1ms 时能占到 4%). 调用前需要由调用方清零.
+ // -----------------------------------------------------------------------------
+ struct StatsReduction {
+@@ -155,9 +155,9 @@
+ 
+ // fp16/bf16/fp32 设备缓冲区 -> float 缓冲区(用于日志与比对;测试也会用到)
+ void convert_to_float_device(
+-    const void* src, InputType type, float* dst, int64_t numel, cudaStream_t stream);
++    const void* src, InputType type, float* dst, int64_t numel, musaStream_t stream);
+ void convert_to_float_device(
+-    const void* src, OutputType type, float* dst, int64_t numel, cudaStream_t stream);
++    const void* src, OutputType type, float* dst, int64_t numel, musaStream_t stream);
+ 
+ // 便捷封装:在默认流上创建/销毁
+ QuantizedDevice quantize_on_device(
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/platform.hpp lpq_mus/include/lpq/platform.hpp
+--- lpq/include/lpq/platform.hpp	2026-09-17 11:45:30.669895400 +0800
++++ lpq_mus/include/lpq/platform.hpp	2026-09-17 13:47:20.252107212 +0800
+@@ -2,7 +2,7 @@
+ //  platform.hpp -- 设备编译器探测与跨平台差异的集中抽象
+ //
+ //  本项目的原始开发环境是 Windows + nvcc。要把同一份源码交给国产平台编译器
+-//  (摩尔 mcc / 天数 clang++ -x cuda / 沐曦 mxcc) 编译, 需要感知平台的只有下面
++//  (摩尔 mcc / 天数 clang++ -x musa / 沐曦 mxcc) 编译, 需要感知平台的只有下面
+ //  五处, 全部集中在本文件:
+ //
+ //    1. 判断「当前是否被设备编译器编译」      -> LPQ_CUDA
+@@ -29,17 +29,17 @@
+ //    -DLPQ_NO_ATOMIC_MAX_INT=1  该平台没有 atomicMax(int*), 改用 CAS 循环
+ //    -DLPQ_NO_ATOMIC_ADD_F64=1  该平台没有 atomicAdd(double*), 改用 CAS 循环
+ //
+-//  tests/test_portability.cu 会在设备上把上述宏逐一打印出来, 上机时先跑它.
++//  tests/test_portability.mu 会在设备上把上述宏逐一打印出来, 上机时先跑它.
+ // =============================================================================
+ #pragma once
+ 
+ // -----------------------------------------------------------------------------
+ //  1. 设备编译器探测
+-//     nvcc / 天数 clang++(-x cuda) / 沐曦 mxcc 都定义 __CUDACC__(为兼容 CUDA
++//     nvcc / 天数 clang++(-x musa) / 沐曦 mxcc 都定义 __MUSACC__(为兼容 CUDA
+ //     而保留); 摩尔线程 mcc 定义 __MUSACC__. 两者都认, 再留一个显式覆盖入口.
+ // -----------------------------------------------------------------------------
+ #ifndef LPQ_CUDA
+-#if defined(__CUDACC__) || defined(__MUSACC__) || defined(__MUSA__) || defined(__MACA__)
++#if defined(__MUSACC__) || defined(__MUSACC__) || defined(__MUSA__) || defined(__MACA__)
+ #define LPQ_CUDA 1
+ #else
+ #define LPQ_CUDA 0
+@@ -48,11 +48,11 @@
+ 
+ // -----------------------------------------------------------------------------
+ //  2. 设备编译遍探测
+-//     一次 nvcc/mcc 编译会走两遍: 主机遍 + 设备遍. __CUDA_ARCH__ 只在设备遍
++//     一次 nvcc/mcc 编译会走两遍: 主机遍 + 设备遍. __MUSA_ARCH__ 只在设备遍
+ //     被定义(nvcc), 摩尔对应 __MUSA_ARCH__, 沐曦对应 __MACA_ARCH__.
+ // -----------------------------------------------------------------------------
+ #ifndef LPQ_DEVICE_PASS
+-#if defined(__CUDA_ARCH__) || defined(__MUSA_ARCH__) || defined(__MACA_ARCH__)
++#if defined(__MUSA_ARCH__) || defined(__MUSA_ARCH__) || defined(__MACA_ARCH__)
+ #define LPQ_DEVICE_PASS 1
+ #else
+ #define LPQ_DEVICE_PASS 0
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/stats.cuh lpq_mus/include/lpq/stats.cuh
+--- lpq/include/lpq/stats.cuh	2026-09-17 10:07:37.571269300 +0800
++++ lpq_mus/include/lpq/stats.cuh	2026-09-17 13:47:20.256107155 +0800
+@@ -8,9 +8,9 @@
+ //  主项全程走 fp32 的双分量 (hi, lo), 只在最后落进 fp64 的 atomicAdd.
+ //
+ //  把累加器抽到这个头文件, 是为了让两条路径共用**同一份**累加代码:
+-//    * metrics.cu 里的独立 k_error_stats kernel;
+-//    * quantize.cu 里量化 kernel 顺带完成的误差累加(省掉一次 268MB 的输入重读).
+-//  两者对同一组输入给出逐位相同的结果(见 tests/test_pipeline.cu 的 fused-stats).
++//    * metrics.mu 里的独立 k_error_stats kernel;
++//    * quantize.mu 里量化 kernel 顺带完成的误差累加(省掉一次 268MB 的输入重读).
++//  两者对同一组输入给出逐位相同的结果(见 tests/test_pipeline.mu 的 fused-stats).
+ // =============================================================================
+ #pragma once
+ 
+diff -ru '--exclude=build' '--exclude=data' lpq/include/lpq/vec_io.cuh lpq_mus/include/lpq/vec_io.cuh
+--- lpq/include/lpq/vec_io.cuh	2026-09-16 19:50:44.265768300 +0800
++++ lpq_mus/include/lpq/vec_io.cuh	2026-09-17 13:47:20.260107099 +0800
+@@ -9,24 +9,24 @@
+ // =============================================================================
+ #pragma once
+ 
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ 
+ #include "lpq/formats.hpp"
+ #include "lpq/platform.hpp"
+ 
+ // 低精度类型头文件. 除英伟达 nvcc 外的平台若没有同名兼容头, 用
+ // -DLPQ_FP16_HEADER=<musa_fp16.h> / -DLPQ_BF16_HEADER=<...> 指定平台头,
+-// 只要其中同样定义了 __half / __half2 / __nv_bfloat16 即可.
++// 只要其中同样定义了 __half / __half2 / __mt_bfloat16 即可.
+ #if defined(LPQ_FP16_HEADER)
+ #include LPQ_FP16_HEADER
+ #else
+-#include <cuda_fp16.h>
++#include <musa_fp16.h>
+ #endif
+ 
+ #if defined(LPQ_BF16_HEADER)
+ #include LPQ_BF16_HEADER
+ #else
+-#include <cuda_bf16.h>
++#include <musa_bf16.h>
+ #endif
+ 
+ namespace lpq {
+@@ -51,12 +51,12 @@
+ };
+ 
+ template <>
+-struct InTraits<__nv_bfloat16> {
++struct InTraits<__mt_bfloat16> {
+     static constexpr int kVec = 4;
+-    LPQ_DEV static void load4(const __nv_bfloat16* p, float v[4]) {
+-        const __nv_bfloat162* h2 = reinterpret_cast<const __nv_bfloat162*>(p);
+-        const __nv_bfloat162 a = h2[0];
+-        const __nv_bfloat162 b = h2[1];
++    LPQ_DEV static void load4(const __mt_bfloat16* p, float v[4]) {
++        const __mt_bfloat162* h2 = reinterpret_cast<const __mt_bfloat162*>(p);
++        const __mt_bfloat162 a = h2[0];
++        const __mt_bfloat162 b = h2[1];
+         v[0] = __low2float(a);
+         v[1] = __high2float(a);
+         v[2] = __low2float(b);
+@@ -65,7 +65,7 @@
+     // 不用 __bfloat162float: 它在 MUSA 上会把 bf16 次正规输入刷成 0, 并把 NaN
+     // 规范化成 0x7FC00000; 走位模式解码则与 CPU 参考逐位一致(fmt_to_f32<FmtBF16>
+     // 本身就是纯移位实现).
+-    LPQ_DEV static float to_float(__nv_bfloat16 x) {
++    LPQ_DEV static float to_float(__mt_bfloat16 x) {
+         return f32_from_bf16_bits((uint16_t)__bfloat16_as_ushort(x));
+     }
+ };
+@@ -143,17 +143,17 @@
+ };
+ 
+ template <>
+-struct OutTraits<__nv_bfloat16> {
++struct OutTraits<__mt_bfloat16> {
+     static constexpr int kVec = 4;
+-    LPQ_DEV static void store4(__nv_bfloat16* p, const float v[4]) {
++    LPQ_DEV static void store4(__mt_bfloat16* p, const float v[4]) {
+         const uint32_t lo = f32_to_bf16_bits(v[0]) | (f32_to_bf16_bits(v[1]) << 16);
+         const uint32_t hi = f32_to_bf16_bits(v[2]) | (f32_to_bf16_bits(v[3]) << 16);
+         *reinterpret_cast<uint2*>(p) = make_uint2(lo, hi);
+     }
+-    LPQ_DEV static float to_float(__nv_bfloat16 x) {
++    LPQ_DEV static float to_float(__mt_bfloat16 x) {
+         return f32_from_bf16_bits((uint16_t)__bfloat16_as_ushort(x));
+     }
+-    LPQ_DEV static __nv_bfloat16 from_float(float v) {
++    LPQ_DEV static __mt_bfloat16 from_float(float v) {
+         return __ushort_as_bfloat16((unsigned short)f32_to_bf16_bits(v));
+     }
+ };
+diff -ru '--exclude=build' '--exclude=data' lpq/src/config.cu lpq_mus/src/config.cu
+--- lpq/src/config.cu	2026-09-17 10:29:42.400546600 +0800
++++ lpq_mus/src/config.cu	2026-09-17 13:47:20.268106986 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  config.cu -- 量化参数文件的解析与格式化
++//  config.mu -- 量化参数文件的解析与格式化
+ // =============================================================================
+ #include "lpq/config.hpp"
+ 
+diff -ru '--exclude=build' '--exclude=data' lpq/src/dequantize.cu lpq_mus/src/dequantize.cu
+--- lpq/src/dequantize.cu	2026-09-17 10:29:42.406819600 +0800
++++ lpq_mus/src/dequantize.cu	2026-09-17 13:47:20.268106986 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  dequantize.cu -- 低精度解包与反量化(GPU)
++//  dequantize.mu -- 低精度解包与反量化(GPU)
+ //
+ //  反量化公式:
+ //    MXFP8 / MXFP4 : x = e4m3/e5m2/e2m1(code) * 2^(scale_code - 127)
+@@ -150,7 +150,7 @@
+ // -----------------------------------------------------------------------------
+ template <class OutT>
+ void launch_dequant(
+-    const QuantizedDevice& q, const QuantConfig& cfg, OutT* d_out, cudaStream_t stream) {
++    const QuantizedDevice& q, const QuantConfig& cfg, OutT* d_out, musaStream_t stream) {
+     const int64_t nvec = (q.numel + 3) / 4;
+     const unsigned int grid = grid_for_launch(nvec, kThreads);
+     const int shift = pow2_shift(q.block_size);
+@@ -174,7 +174,7 @@
+ }
+ 
+ template <class SrcT>
+-void launch_to_float(const SrcT* src, float* dst, int64_t numel, cudaStream_t stream) {
++void launch_to_float(const SrcT* src, float* dst, int64_t numel, musaStream_t stream) {
+     const int64_t want = (numel + kThreads - 1) / kThreads;
+     const unsigned int grid = grid_for_launch(std::min<int64_t>(want, 4096) * kThreads, kThreads);
+     k_to_float<SrcT><<<grid, kThreads, 0, stream>>>(src, dst, numel);
+@@ -184,7 +184,7 @@
+ }  // namespace
+ 
+ double dequantize_on_device(
+-    const QuantizedDevice& q, const QuantConfig& cfg, void* d_output, cudaStream_t stream) {
++    const QuantizedDevice& q, const QuantConfig& cfg, void* d_output, musaStream_t stream) {
+     DeviceTimer timer;
+     timer.start();
+     switch (cfg.output_type) {
+@@ -192,7 +192,7 @@
+             launch_dequant<__half>(q, cfg, static_cast<__half*>(d_output), stream);
+             break;
+         case OutputType::BF16:
+-            launch_dequant<__nv_bfloat16>(q, cfg, static_cast<__nv_bfloat16*>(d_output), stream);
++            launch_dequant<__mt_bfloat16>(q, cfg, static_cast<__mt_bfloat16*>(d_output), stream);
+             break;
+         default:
+             launch_dequant<float>(q, cfg, static_cast<float*>(d_output), stream);
+@@ -206,7 +206,7 @@
+ }
+ 
+ void convert_to_float_device(
+-    const void* src, InputType type, float* dst, int64_t numel, cudaStream_t stream) {
++    const void* src, InputType type, float* dst, int64_t numel, musaStream_t stream) {
+     if (type == InputType::FP32) {
+         launch_to_float<float>(static_cast<const float*>(src), dst, numel, stream);
+     } else {
+@@ -215,14 +215,14 @@
+ }
+ 
+ void convert_to_float_device(
+-    const void* src, OutputType type, float* dst, int64_t numel, cudaStream_t stream) {
++    const void* src, OutputType type, float* dst, int64_t numel, musaStream_t stream) {
+     switch (type) {
+         case OutputType::FP16:
+             launch_to_float<__half>(static_cast<const __half*>(src), dst, numel, stream);
+             break;
+         case OutputType::BF16:
+-            launch_to_float<__nv_bfloat16>(
+-                static_cast<const __nv_bfloat16*>(src), dst, numel, stream);
++            launch_to_float<__mt_bfloat16>(
++                static_cast<const __mt_bfloat16*>(src), dst, numel, stream);
+             break;
+         default:
+             launch_to_float<float>(static_cast<const float*>(src), dst, numel, stream);
+diff -ru '--exclude=build' '--exclude=data' lpq/src/lowp_tensor.cu lpq_mus/src/lowp_tensor.cu
+--- lpq/src/lowp_tensor.cu	2026-09-15 19:51:24.189700600 +0800
++++ lpq_mus/src/lowp_tensor.cu	2026-09-17 13:47:20.272106929 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  lowp_tensor.cu -- 张量文件 / 低精度权重文件 的读写实现
++//  lowp_tensor.mu -- 张量文件 / 低精度权重文件 的读写实现
+ //
+ //  优化 21(宿主侧 IO): 整块文件读写不再走 iostream.
+ //  实测(256MiB, 本机 D 盘, 已进页缓存): std::ifstream 162ms(1.66GB/s) /
+diff -ru '--exclude=build' '--exclude=data' lpq/src/main.cu lpq_mus/src/main.cu
+--- lpq/src/main.cu	2026-09-17 10:29:42.420226000 +0800
++++ lpq_mus/src/main.cu	2026-09-17 13:47:20.280106816 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  main.cu -- 低精度格式软件模拟与反量化 主程序
++//  main.mu -- 低精度格式软件模拟与反量化 主程序
+ //
+ //  用法:
+ //    lpq_quant --input <tensor_file> --params <params_file> [options]
+@@ -159,8 +159,8 @@
+ 
+ const char* gpu_name() {
+     static std::string name = [] {
+-        cudaDeviceProp prop{};
+-        if (cudaGetDeviceProperties(&prop, 0) != cudaSuccess)
++        musaDeviceProp prop{};
++        if (musaGetDeviceProperties(&prop, 0) != musaSuccess)
+             return std::string("unknown");
+         return std::string(prop.name);
+     }();
+@@ -181,9 +181,9 @@
+ 
+         // 一次性驱动初始化: 首次碰 CUDA 时运行时才会建上下文(本机实测 ~74ms).
+         // 它不属于「预处理」(读文件 + H2D), 但也不该被藏起来: 这里从进程启动
+-        // 开始计时, 到 cudaFree(nullptr) 把运行时唤醒为止, 在日志里单列 cuda_context_init_ms.
+-        LPQ_CUDA_CHECK(cudaSetDevice(args.device));
+-        LPQ_CUDA_CHECK(cudaFree(nullptr));
++        // 开始计时, 到 musaFree(nullptr) 把运行时唤醒为止, 在日志里单列 cuda_context_init_ms.
++        LPQ_CUDA_CHECK(musaSetDevice(args.device));
++        LPQ_CUDA_CHECK(musaFree(nullptr));
+         const double cuda_context_ms = startup.stop_ms();
+ 
+         // ---------------- 预处理:读文件 + H2D 拷贝 ----------------
+@@ -196,7 +196,7 @@
+         const size_t in_elem = host.elem_size();
+         DeviceBuffer d_input(host.data.size());
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(d_input.get(), host.data.data(), host.data.size(), cudaMemcpyHostToDevice));
++            musaMemcpy(d_input.get(), host.data.data(), host.data.size(), musaMemcpyHostToDevice));
+         DeviceBuffer d_output((size_t)numel * ((cfg.output_type == OutputType::FP32) ? 4u : 2u));
+         const double preprocess_ms = wall.stop_ms();
+ 
+@@ -266,12 +266,12 @@
+         lf.packed.resize((size_t)lf.header.packed_bytes);
+         lf.scales.resize((size_t)lf.header.scale_bytes);
+         if (!lf.packed.empty()) {
+-            LPQ_CUDA_CHECK(cudaMemcpy(
+-                lf.packed.data(), q.packed.get(), lf.packed.size(), cudaMemcpyDeviceToHost));
++            LPQ_CUDA_CHECK(musaMemcpy(
++                lf.packed.data(), q.packed.get(), lf.packed.size(), musaMemcpyDeviceToHost));
+         }
+         if (!lf.scales.empty()) {
+-            LPQ_CUDA_CHECK(cudaMemcpy(
+-                lf.scales.data(), q.scales.get(), lf.scales.size(), cudaMemcpyDeviceToHost));
++            LPQ_CUDA_CHECK(musaMemcpy(
++                lf.scales.data(), q.scales.get(), lf.scales.size(), musaMemcpyDeviceToHost));
+         }
+ 
+         const std::string out_dir = !args.out_dir.empty() ? args.out_dir : parent_dir(args.input);
+@@ -286,8 +286,8 @@
+         // ---------------- 写反量化结果 ----------------
+         std::vector<uint8_t> deq_host(d_output.size());
+         if (!deq_host.empty()) {
+-            LPQ_CUDA_CHECK(cudaMemcpy(
+-                deq_host.data(), d_output.get(), deq_host.size(), cudaMemcpyDeviceToHost));
++            LPQ_CUDA_CHECK(musaMemcpy(
++                deq_host.data(), d_output.get(), deq_host.size(), musaMemcpyDeviceToHost));
+         }
+         write_raw_file(deq_path, deq_host.data(), deq_host.size());
+ 
+@@ -431,7 +431,7 @@
+            << "\n";
+         if (cpu_ran) {
+             os << "\n[accuracy_check_cpu_reference]\n";
+-            os << "cpu_reference = independent table-based CPU reference (src/reference.cu)\n";
++            os << "cpu_reference = independent table-based CPU reference (src/reference.mu)\n";
+             os << "packed_bits_identical = " << (cpu_ok ? "yes" : "no") << "\n";
+             os << "scales_identical = " << (cpu_scale_match > 0.5 ? "yes" : "no") << "\n";
+             os << "dequant_bit_mismatch_count = " << cpu_dequant_mismatch << "\n";
+diff -ru '--exclude=build' '--exclude=data' lpq/src/metrics.cu lpq_mus/src/metrics.cu
+--- lpq/src/metrics.cu	2026-09-15 19:14:52.485792200 +0800
++++ lpq_mus/src/metrics.cu	2026-09-17 13:47:20.284106759 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  metrics.cu -- 反量化结果的误差统计(GPU 归约)
++//  metrics.mu -- 反量化结果的误差统计(GPU 归约)
+ //
+ //  统计量:最大绝对误差 / 平均绝对误差(MAE) / 均方误差(MSE) / RMSE / 相对 MSE /
+ //          带符号平均误差(bias)
+@@ -102,7 +102,7 @@
+ 
+ template <class RefT, class TestT>
+ void launch_stats(const void* ref, const void* test, int64_t numel, double* d_acc, float* d_max,
+-    AccumMode mode, cudaStream_t stream) {
++    AccumMode mode, musaStream_t stream) {
+     const int64_t nvec = numel >> 2;
+     const int64_t want = (nvec + kThreads - 1) / kThreads;
+     const int64_t blocks = std::max<int64_t>(1, std::min<int64_t>(want, 2048));
+@@ -120,13 +120,13 @@
+ 
+ template <class RefT>
+ void dispatch_test_type(const void* ref, const void* test, OutputType tt, int64_t numel,
+-    double* d_acc, float* d_max, AccumMode mode, cudaStream_t stream) {
++    double* d_acc, float* d_max, AccumMode mode, musaStream_t stream) {
+     switch (tt) {
+         case OutputType::FP16:
+             launch_stats<RefT, __half>(ref, test, numel, d_acc, d_max, mode, stream);
+             break;
+         case OutputType::BF16:
+-            launch_stats<RefT, __nv_bfloat16>(ref, test, numel, d_acc, d_max, mode, stream);
++            launch_stats<RefT, __mt_bfloat16>(ref, test, numel, d_acc, d_max, mode, stream);
+             break;
+         default:
+             launch_stats<RefT, float>(ref, test, numel, d_acc, d_max, mode, stream);
+@@ -134,7 +134,7 @@
+     }
+ }
+ 
+-// 统计量只有 4 个 double + 1 个 float, 但原来每次调用都要 cudaMalloc/cudaFree.
++// 统计量只有 4 个 double + 1 个 float, 但原来每次调用都要 musaMalloc/musaFree.
+ // 在 8192x8192 这种规模下 kernel 本身只有 1 ms, 而两次分配加两次
+ // 释放就要 ~40 us(约 4%). 改成进程内缓存一小块显存。
+ struct StatsScratch {
+@@ -142,17 +142,17 @@
+     float* mx = nullptr;
+     ~StatsScratch() {
+         if (acc)
+-            cudaFree(acc);
++            musaFree(acc);
+         if (mx)
+-            cudaFree(mx);
++            musaFree(mx);
+     }
+ };
+ 
+ StatsScratch& stats_scratch() {
+     static StatsScratch s;
+     if (s.acc == nullptr) {
+-        LPQ_CUDA_CHECK(cudaMalloc(&s.acc, 4 * sizeof(double)));
+-        LPQ_CUDA_CHECK(cudaMalloc(&s.mx, sizeof(float)));
++        LPQ_CUDA_CHECK(musaMalloc(&s.acc, 4 * sizeof(double)));
++        LPQ_CUDA_CHECK(musaMalloc(&s.mx, sizeof(float)));
+     }
+     return s;
+ }
+@@ -182,7 +182,7 @@
+ }
+ 
+ ErrorStats compute_error_stats(const void* d_ref, InputType ref_type, const void* d_test,
+-    OutputType test_type, int64_t numel, cudaStream_t stream, AccumMode mode) {
++    OutputType test_type, int64_t numel, musaStream_t stream, AccumMode mode) {
+     ErrorStats st;
+     st.numel = numel;
+     if (numel <= 0)
+@@ -191,8 +191,8 @@
+     StatsScratch& sc = stats_scratch();
+     double* d_acc = sc.acc;
+     float* d_max = sc.mx;
+-    LPQ_CUDA_CHECK(cudaMemsetAsync(d_acc, 0, 4 * sizeof(double), stream));
+-    LPQ_CUDA_CHECK(cudaMemsetAsync(d_max, 0, sizeof(float), stream));
++    LPQ_CUDA_CHECK(musaMemsetAsync(d_acc, 0, 4 * sizeof(double), stream));
++    LPQ_CUDA_CHECK(musaMemsetAsync(d_max, 0, sizeof(float), stream));
+ 
+     if (ref_type == InputType::FP32) {
+         dispatch_test_type<float>(d_ref, d_test, test_type, numel, d_acc, d_max, mode, stream);
+@@ -202,9 +202,9 @@
+ 
+     double h_acc[4] = {0.0, 0.0, 0.0, 0.0};
+     float h_max = 0.0f;
+-    LPQ_CUDA_CHECK(cudaMemcpyAsync(h_acc, d_acc, sizeof(h_acc), cudaMemcpyDeviceToHost, stream));
+-    LPQ_CUDA_CHECK(cudaMemcpyAsync(&h_max, d_max, sizeof(h_max), cudaMemcpyDeviceToHost, stream));
+-    LPQ_CUDA_CHECK(cudaStreamSynchronize(stream));
++    LPQ_CUDA_CHECK(musaMemcpyAsync(h_acc, d_acc, sizeof(h_acc), musaMemcpyDeviceToHost, stream));
++    LPQ_CUDA_CHECK(musaMemcpyAsync(&h_max, d_max, sizeof(h_max), musaMemcpyDeviceToHost, stream));
++    LPQ_CUDA_CHECK(musaStreamSynchronize(stream));
+ 
+     return finalize_error_stats(h_acc, h_max, numel);
+ }
+diff -ru '--exclude=build' '--exclude=data' lpq/src/quantize.cu lpq_mus/src/quantize.cu
+--- lpq/src/quantize.cu	2026-09-17 11:45:35.241972700 +0800
++++ lpq_mus/src/quantize.cu	2026-09-17 13:47:20.304106477 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  quantize.cu -- 低精度量化流水线(GPU)
++//  quantize.mu -- 低精度量化流水线(GPU)
+ //
+ //  阶段 1 (amax)  : 计算每个缩放块 / 整个张量的最大绝对值
+ //  阶段 2 (scale) : 生成缩放因子
+@@ -27,13 +27,13 @@
+ // =============================================================================
+ //  DeviceBuffer
+ //
+-//  cudaMalloc/cudaFree 每次都要向驱动申请 / 归还一段地址空间并建页表, 单次开销就有
++//  musaMalloc/musaFree 每次都要向驱动申请 / 归还一段地址空间并建页表, 单次开销就有
+ //  几百微秒; 而本项目一次量化调用里的 GPU 工作总共只有 1~2ms. 实测「每轮分配 4 个
+ //  固定大小的缓冲区再释放」在稳态下要 2.8ms -- 比整个 GPU 部分还贵. 因此这里加一层
+ //  进程内的按大小缓存: 释放掉的块留在池子里, 下一次同尺寸请求直接复用, 稳态下不再
+ //  触碰驱动. (同样的做法在 PyTorch / Paddle 里就是它们的 caching allocator.)
+ //
+-//  池子限制块数与总字节数, 避免非常规尺寸把显存一直占着; 超出上限的块照常 cudaFree
++//  池子限制块数与总字节数, 避免非常规尺寸把显存一直占着; 超出上限的块照常 musaFree
+ //  还给驱动. 语义上没有变化: 复用前缓冲区的内容同样是未定义的, 所有调用方本来就必须
+ //  自己初始化(见 run_quantize 里的 memset 与量化 kernel 的写入).
+ // =============================================================================
+@@ -75,7 +75,7 @@
+         return ptr;
+     }
+     void* ptr = nullptr;
+-    LPQ_CUDA_CHECK(cudaMalloc(&ptr, bytes));
++    LPQ_CUDA_CHECK(musaMalloc(&ptr, bytes));
+     cap = bytes;
+     return ptr;
+ }
+@@ -91,7 +91,7 @@
+         p.bytes += bytes;
+         return;
+     }
+-    cudaFree(ptr);
++    musaFree(ptr);
+ }
+ 
+ }  // namespace
+@@ -809,7 +809,7 @@
+ 
+ template <class InT>
+ void launch_amax(const InT* x, int64_t numel, const QuantConfig& cfg, int64_t block_size,
+-    int64_t num_blocks, float* d_block_amax, float* d_tensor_amax, cudaStream_t stream) {
++    int64_t num_blocks, float* d_block_amax, float* d_tensor_amax, musaStream_t stream) {
+     if (cfg.scale_mode == ScaleMode::Tensor || num_blocks == 1) {
+         const int threads = kThreads;
+         const int smem = threads * (int)sizeof(float);
+@@ -860,7 +860,7 @@
+                     f(NullSink<__half>{});
+                     break;
+                 case OutputType::BF16:
+-                    f(NullSink<__nv_bfloat16>{});
++                    f(NullSink<__mt_bfloat16>{});
+                     break;
+                 default:
+                     f(NullSink<float>{});
+@@ -873,7 +873,7 @@
+                     f(FastSink<__half>{});
+                     break;
+                 case OutputType::BF16:
+-                    f(FastSink<__nv_bfloat16>{});
++                    f(FastSink<__mt_bfloat16>{});
+                     break;
+                 default:
+                     f(FastSink<float>{});
+@@ -886,7 +886,7 @@
+                     f(StrictSink<__half>{});
+                     break;
+                 case OutputType::BF16:
+-                    f(StrictSink<__nv_bfloat16>{});
++                    f(StrictSink<__mt_bfloat16>{});
+                     break;
+                 default:
+                     f(StrictSink<float>{});
+@@ -911,7 +911,7 @@
+ 
+ template <class InT, class EFmt>
+ void launch_quant_mxfp8(const InT* x, int64_t numel, const QuantConfig& cfg, int64_t block_size,
+-    int64_t num_blocks, const uint8_t* d_scales, uint8_t* d_out, cudaStream_t stream,
++    int64_t num_blocks, const uint8_t* d_scales, uint8_t* d_out, musaStream_t stream,
+     double* d_stats_acc, float* d_stats_max, SinkKind sk) {
+     const int shift = pow2_shift(block_size);
+     const int64_t nvec = (numel + 3) / 4;
+@@ -932,7 +932,7 @@
+ template <class InT>
+ void launch_quant_nvfp4(const InT* x, int64_t numel, const QuantConfig& cfg, int64_t block_size,
+     int64_t num_blocks, const uint8_t* d_scales, const float* d_gscale, uint8_t* d_out,
+-    cudaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
++    musaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
+     const int shift = pow2_shift(block_size);
+     const int64_t nvec = (numel + 3) / 4;
+     const unsigned int grid = grid_for_quant(nvec, sk, kStatsMaxBlocksNv);
+@@ -952,7 +952,7 @@
+ 
+ template <class InT, class EFmt>
+ void launch_quant_mxfp8_fused(const InT* x, int64_t numel, const QuantConfig& cfg, int shift,
+-    uint8_t* d_scales, uint8_t* d_out, cudaStream_t stream, double* d_stats_acc, float* d_stats_max,
++    uint8_t* d_scales, uint8_t* d_out, musaStream_t stream, double* d_stats_acc, float* d_stats_max,
+     SinkKind sk) {
+     const int64_t nvec = (numel + 3) / 4;
+     const bool stoch = cfg.rounding == Rounding::Stochastic;
+@@ -971,7 +971,7 @@
+ 
+ template <class InT>
+ QuantizedDevice run_quantize(const InT* x, int64_t numel, const QuantConfig& cfg,
+-    cudaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk);
++    musaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk);
+ 
+ // NVFP4 两级缩放里的 max_q / max_s, 由 scale_rule 决定(取值理由见 formats.hpp):
+ //   static_6         : max_q = 6,   max_s = 448  <- 标准 NVFP4
+@@ -1024,7 +1024,7 @@
+ template <class InT>
+ void launch_quant_nvfp4_46(const InT* x, int64_t numel, const QuantConfig& cfg, int64_t block_size,
+     const float* d_block_amax, const float* d_gscale, uint8_t* d_scales, uint8_t* d_out,
+-    cudaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
++    musaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
+     const int shift = pow2_shift(block_size);
+     const int64_t num_blocks = numel >> shift;
+     const unsigned int grid = grid_for_quant(num_blocks, sk, kStatsMaxBlocksNv);
+@@ -1066,7 +1066,7 @@
+ 
+ template <class InT>
+ void run_scales(const InT* x, const float* d_block_amax, const float* d_tensor_amax, int64_t numel,
+-    int64_t num_blocks, const QuantConfig& cfg, QuantizedDevice& q, cudaStream_t stream) {
++    int64_t num_blocks, const QuantConfig& cfg, QuantizedDevice& q, musaStream_t stream) {
+     if (cfg.is_mx()) {
+         // MX 家族:每块一个 E8M0. emax_elem 是元素格式的最大无偏指数
+         // (e4m3 -> 8, e5m2 -> 15, e2m1 -> 2)
+@@ -1113,14 +1113,14 @@
+     return cfg.mxfp8_e5m2 ? ElemKind::E5M2 : ElemKind::E4M3;
+ }
+ QuantizedDevice quantize_on_device(const void* d_input, InputType in_type, int64_t numel,
+-    const QuantConfig& cfg, cudaStream_t stream, ErrorStats* out_stats, AccumMode mode) {
++    const QuantConfig& cfg, musaStream_t stream, ErrorStats* out_stats, AccumMode mode) {
+     LPQ_CHECK(numel > 0, "quantization input length must be positive");
+     double* d_acc = nullptr;
+     float* d_max = nullptr;
+     if (out_stats != nullptr) {
+         const StatsReduction red = stats_reduction_scratch();
+-        LPQ_CUDA_CHECK(cudaMemsetAsync(red.acc, 0, 4 * sizeof(double), stream));
+-        LPQ_CUDA_CHECK(cudaMemsetAsync(red.max, 0, sizeof(float), stream));
++        LPQ_CUDA_CHECK(musaMemsetAsync(red.acc, 0, 4 * sizeof(double), stream));
++        LPQ_CUDA_CHECK(musaMemsetAsync(red.max, 0, sizeof(float), stream));
+         d_acc = red.acc;
+         d_max = red.max;
+     }
+@@ -1139,16 +1139,16 @@
+     double h_acc[4] = {0.0, 0.0, 0.0, 0.0};
+     float h_max = 0.0f;
+     if (want_gscale)
+-        LPQ_CUDA_CHECK(cudaMemcpyAsync(
+-            h_gs, q.global_scale.get(), sizeof(h_gs), cudaMemcpyDeviceToHost, stream));
++        LPQ_CUDA_CHECK(musaMemcpyAsync(
++            h_gs, q.global_scale.get(), sizeof(h_gs), musaMemcpyDeviceToHost, stream));
+     if (want_stats) {
+         LPQ_CUDA_CHECK(
+-            cudaMemcpyAsync(h_acc, d_acc, sizeof(h_acc), cudaMemcpyDeviceToHost, stream));
++            musaMemcpyAsync(h_acc, d_acc, sizeof(h_acc), musaMemcpyDeviceToHost, stream));
+         LPQ_CUDA_CHECK(
+-            cudaMemcpyAsync(&h_max, d_max, sizeof(h_max), cudaMemcpyDeviceToHost, stream));
++            musaMemcpyAsync(&h_max, d_max, sizeof(h_max), musaMemcpyDeviceToHost, stream));
+     }
+     if (want_gscale || want_stats)
+-        LPQ_CUDA_CHECK(cudaStreamSynchronize(stream));
++        LPQ_CUDA_CHECK(musaStreamSynchronize(stream));
+     if (want_gscale) {
+         q.global_scale_value = h_gs[0];
+         q.global_scale_inv = h_gs[1];
+@@ -1159,7 +1159,7 @@
+ }
+ 
+ QuantizedDevice quantize_on_device(const void* d_input, InputType in_type, int64_t numel,
+-    const QuantConfig& cfg, cudaStream_t stream) {
++    const QuantConfig& cfg, musaStream_t stream) {
+     return quantize_on_device(d_input, in_type, numel, cfg, stream, nullptr, AccumMode::Fast);
+ }
+ 
+@@ -1172,7 +1172,7 @@
+ 
+ template <class InT>
+ QuantizedDevice run_quantize(const InT* x, int64_t numel, const QuantConfig& cfg,
+-    cudaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
++    musaStream_t stream, double* d_stats_acc, float* d_stats_max, SinkKind sk) {
+     QuantizedDevice q;
+     q.numel = numel;
+     q.block_size = (cfg.scale_mode == ScaleMode::Tensor) ? numel : (int64_t)cfg.block_size;
+@@ -1203,8 +1203,8 @@
+         cfg.is_mx() && (cfg.scale_mode == ScaleMode::Block) && fused_shift >= 2 && fused_shift <= 7;
+     if (can_fuse) {
+         const float one[2] = {1.0f, 1.0f};
+-        LPQ_CUDA_CHECK(cudaMemcpyAsync(
+-            q.global_scale.get(), one, sizeof(one), cudaMemcpyHostToDevice, stream));
++        LPQ_CUDA_CHECK(musaMemcpyAsync(
++            q.global_scale.get(), one, sizeof(one), musaMemcpyHostToDevice, stream));
+         timer.start();
+         if (cfg.format == QuantFormat::MxFP4) {
+             launch_quant_mxfp8_fused<InT, FmtE2M1>(x, numel, cfg, (int)fused_shift,
+@@ -1233,8 +1233,8 @@
+     DeviceBuffer block_amax((size_t)q.num_blocks * sizeof(float));
+     DeviceBuffer tensor_amax(sizeof(float));
+     if (amax_single_tile)
+-        LPQ_CUDA_CHECK(cudaMemsetAsync(block_amax.get(), 0, block_amax.size(), stream));
+-    LPQ_CUDA_CHECK(cudaMemsetAsync(tensor_amax.get(), 0, tensor_amax.size(), stream));
++        LPQ_CUDA_CHECK(musaMemsetAsync(block_amax.get(), 0, block_amax.size(), stream));
++    LPQ_CUDA_CHECK(musaMemsetAsync(tensor_amax.get(), 0, tensor_amax.size(), stream));
+ 
+     // ---- 阶段 1:amax ----
+     timer.start();
+@@ -1253,8 +1253,8 @@
+     run_scales(x, block_amax.as<float>(), eff_tensor_amax, numel, q.num_blocks, cfg, q, stream);
+     if (cfg.is_mx()) {
+         const float one[2] = {1.0f, 1.0f};
+-        LPQ_CUDA_CHECK(cudaMemcpyAsync(
+-            q.global_scale.get(), one, sizeof(one), cudaMemcpyHostToDevice, stream));
++        LPQ_CUDA_CHECK(musaMemcpyAsync(
++            q.global_scale.get(), one, sizeof(one), musaMemcpyHostToDevice, stream));
+     }
+     q.timings.scale_ms = timer.stop_ms();
+ 
+diff -ru '--exclude=build' '--exclude=data' lpq/src/reference.cu lpq_mus/src/reference.cu
+--- lpq/src/reference.cu	2026-09-17 10:29:42.455774000 +0800
++++ lpq_mus/src/reference.cu	2026-09-17 13:47:20.308106419 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  reference.cu -- 独立的 CPU 参考实现(查表转换 + 串行流水线)
++//  reference.mu -- 独立的 CPU 参考实现(查表转换 + 串行流水线)
+ //
+ //  该路径刻意避开 formats.hpp 中所有的位运算技巧:
+ //    * 转换   :枚举格式的全部可表示幅值 -> 二分查找 -> 比较/随机选择
+diff -ru '--exclude=build' '--exclude=data' lpq/tests/test_formats.cu lpq_mus/tests/test_formats.cu
+--- lpq/tests/test_formats.cu	2026-09-17 10:29:42.468779000 +0800
++++ lpq_mus/tests/test_formats.cu	2026-09-17 13:47:20.320106250 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  test_formats.cu -- 低精度格式编解码与舍入的单元测试
++//  test_formats.mu -- 低精度格式编解码与舍入的单元测试
+ //
+ //  覆盖内容:
+ //    1. 独立格式表 (用 pow()/ldexp() 重新实现解码) 与 formats.hpp 的位运算解码
+@@ -20,7 +20,7 @@
+ #include <limits>
+ #include <vector>
+ 
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ 
+ #include "lpq/common.hpp"
+ #include "lpq/formats.hpp"
+@@ -340,7 +340,7 @@
+     }
+     CHECK_MSG(ilog2_floor(0.0f) == INT32_MIN, "ilog2(0)");
+ 
+-    // 与 reference.cu 的精确实现交叉验证
++    // 与 reference.mu 的精确实现交叉验证
+     uint64_t rng = 0x9E3779B97F4A7C15ull;
+     for (int t = 0; t < 20000; ++t) {
+         rng ^= rng << 13;
+@@ -394,15 +394,15 @@
+ void test_gpu_cpu_agreement(const float* hx, int64_t n, const char* tag) {
+     float* dx = nullptr;
+     uint32_t* dc = nullptr;
+-    LPQ_CUDA_CHECK(cudaMalloc(&dx, (size_t)n * sizeof(float)));
+-    LPQ_CUDA_CHECK(cudaMalloc(&dc, (size_t)n * sizeof(uint32_t)));
+-    LPQ_CUDA_CHECK(cudaMemcpy(dx, hx, (size_t)n * sizeof(float), cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMalloc(&dx, (size_t)n * sizeof(float)));
++    LPQ_CUDA_CHECK(musaMalloc(&dc, (size_t)n * sizeof(uint32_t)));
++    LPQ_CUDA_CHECK(musaMemcpy(dx, hx, (size_t)n * sizeof(float), musaMemcpyHostToDevice));
+     const int threads = 256;
+     const unsigned blocks = (unsigned)((n + threads - 1) / threads);
+     k_encode<F><<<blocks, threads>>>(dx, dc, n);
+     LPQ_CUDA_CHECK_KERNEL();
+     std::vector<uint32_t> gc((size_t)n);
+-    LPQ_CUDA_CHECK(cudaMemcpy(gc.data(), dc, (size_t)n * sizeof(uint32_t), cudaMemcpyDeviceToHost));
++    LPQ_CUDA_CHECK(musaMemcpy(gc.data(), dc, (size_t)n * sizeof(uint32_t), musaMemcpyDeviceToHost));
+     for (int64_t i = 0; i < n; ++i) {
+         const uint32_t expect = f32_to_fmt<F>(hx[i]);
+         if (gc[(size_t)i] != expect) {
+@@ -415,7 +415,7 @@
+     k_decode<F><<<blocks, threads>>>(dc, dx, n);
+     LPQ_CUDA_CHECK_KERNEL();
+     std::vector<float> gv((size_t)n);
+-    LPQ_CUDA_CHECK(cudaMemcpy(gv.data(), dx, (size_t)n * sizeof(float), cudaMemcpyDeviceToHost));
++    LPQ_CUDA_CHECK(musaMemcpy(gv.data(), dx, (size_t)n * sizeof(float), musaMemcpyDeviceToHost));
+     for (int64_t i = 0; i < n; ++i) {
+         const float expect = fmt_to_f32<F>(gc[(size_t)i]);
+         if (std::isnan(expect)) {
+@@ -425,8 +425,8 @@
+             CHECK_MSG(false, std::string(tag) + " decode i=" + testfw::s_of(i));
+         }
+     }
+-    cudaFree(dx);
+-    cudaFree(dc);
++    musaFree(dx);
++    musaFree(dc);
+ }
+ 
+ void test_gpu_matches_cpu() {
+@@ -617,15 +617,15 @@
+     const int64_t n = (int64_t)bits.size();
+     uint32_t* d_bits = nullptr;
+     unsigned char* d_bad = nullptr;
+-    LPQ_CUDA_CHECK(cudaMalloc(&d_bits, (size_t)n * 4));
+-    LPQ_CUDA_CHECK(cudaMalloc(&d_bad, (size_t)n * 2));
+-    LPQ_CUDA_CHECK(cudaMemcpy(d_bits, bits.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMalloc(&d_bits, (size_t)n * 4));
++    LPQ_CUDA_CHECK(musaMalloc(&d_bad, (size_t)n * 2));
++    LPQ_CUDA_CHECK(musaMemcpy(d_bits, bits.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+     k_encode_check<<<(unsigned int)((n + 255) / 256), 256>>>(d_bits, n, d_bad);
+-    LPQ_CUDA_CHECK(cudaDeviceSynchronize());
++    LPQ_CUDA_CHECK(musaDeviceSynchronize());
+     std::vector<unsigned char> bad((size_t)n * 2, 0);
+-    LPQ_CUDA_CHECK(cudaMemcpy(bad.data(), d_bad, (size_t)n * 2, cudaMemcpyDeviceToHost));
+-    cudaFree(d_bits);
+-    cudaFree(d_bad);
++    LPQ_CUDA_CHECK(musaMemcpy(bad.data(), d_bad, (size_t)n * 2, musaMemcpyDeviceToHost));
++    musaFree(d_bits);
++    musaFree(d_bad);
+ 
+     int64_t bad16 = 0, badbf = 0;
+     std::string first;
+diff -ru '--exclude=build' '--exclude=data' lpq/tests/test_pipeline.cu lpq_mus/tests/test_pipeline.cu
+--- lpq/tests/test_pipeline.cu	2026-09-17 10:29:42.489329000 +0800
++++ lpq_mus/tests/test_pipeline.cu	2026-09-17 13:47:20.336106024 +0800
+@@ -1,8 +1,8 @@
+ // =============================================================================
+-//  test_pipeline.cu -- 量化/打包/反量化流水线的端到端测试
++//  test_pipeline.mu -- 量化/打包/反量化流水线的端到端测试
+ //
+ //  测试策略:同一份输入分别跑 GPU 流水线与完全独立的 CPU 参考实现
+-//  (src/reference.cu, 查表法 + 串行实现), 对以下三样东西逐位比较:
++//  (src/reference.mu, 查表法 + 串行实现), 对以下三样东西逐位比较:
+ //      1) packed 数据 (4bit 严格每字节 2 个元素)
+ //      2) scale 数据
+ //      3) 反量化输出 (按 output_type 舍入后再比位模式)
+@@ -25,7 +25,7 @@
+ #include <string>
+ #include <vector>
+ 
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ 
+ #include "lpq/common.hpp"
+ #include "lpq/config.hpp"
+@@ -157,7 +157,7 @@
+     const bool out32 = (cfg.output_type == OutputType::FP32);
+     DeviceBuffer d_in(input_bytes);
+     DeviceBuffer d_out((size_t)numel * (out32 ? 4u : 2u));
+-    LPQ_CUDA_CHECK(cudaMemcpy(d_in.get(), h_input, input_bytes, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(d_in.get(), h_input, input_bytes, musaMemcpyHostToDevice));
+ 
+     QuantizedDevice q = quantize_on_device(d_in.get(), in_type, numel, cfg);
+     r.quant_ms = q.timings.amax_ms + q.timings.scale_ms + q.timings.quant_ms;
+@@ -169,17 +169,17 @@
+     r.packed.resize(q.packed.size());
+     if (!r.packed.empty()) {
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(r.packed.data(), q.packed.get(), r.packed.size(), cudaMemcpyDeviceToHost));
++            musaMemcpy(r.packed.data(), q.packed.get(), r.packed.size(), musaMemcpyDeviceToHost));
+     }
+     r.scales.resize(q.scales.size());
+     if (!r.scales.empty()) {
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(r.scales.data(), q.scales.get(), r.scales.size(), cudaMemcpyDeviceToHost));
++            musaMemcpy(r.scales.data(), q.scales.get(), r.scales.size(), musaMemcpyDeviceToHost));
+     }
+     r.deq_raw.resize(d_out.size());
+     if (!r.deq_raw.empty()) {
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(r.deq_raw.data(), d_out.get(), r.deq_raw.size(), cudaMemcpyDeviceToHost));
++            musaMemcpy(r.deq_raw.data(), d_out.get(), r.deq_raw.size(), musaMemcpyDeviceToHost));
+     }
+     return r;
+ }
+@@ -301,7 +301,7 @@
+             }
+         }
+         // (b) 与直接按 packed 独立解包的期望值比较:
+-        //     check is independent of reference.cu: it verifies that packing, unpacking
++        //     check is independent of reference.mu: it verifies that packing, unpacking
+         if (mismatch == 0) {
+             float expect;
+             if (cfg.is_mx()) {
+@@ -582,7 +582,7 @@
+     const int trials = 32;
+ 
+     DeviceBuffer d_in((size_t)n * 4), d_out((size_t)n * 4);
+-    LPQ_CUDA_CHECK(cudaMemcpy(d_in.get(), x.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(d_in.get(), x.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+ 
+     for (const Case& c : cases) {
+         QuantConfig cfg;
+@@ -642,8 +642,8 @@
+         b[(size_t)i] = a[(size_t)i] + ((i % 3) ? 0.0f : 0.5f);
+     }
+     DeviceBuffer da((size_t)n * 4), db((size_t)n * 4);
+-    LPQ_CUDA_CHECK(cudaMemcpy(da.get(), a.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
+-    LPQ_CUDA_CHECK(cudaMemcpy(db.get(), b.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(da.get(), a.data(), (size_t)n * 4, musaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(db.get(), b.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+     const ErrorStats st = compute_error_stats(
+         da.get(), InputType::FP32, db.get(), OutputType::FP32, n, nullptr, AccumMode::Precise);
+     const ErrorStats sf = compute_error_stats(
+@@ -697,8 +697,8 @@
+         b[(size_t)i] = (float)(x + (unit() - 0.5) * 0.02 * mag);
+     }
+     DeviceBuffer da((size_t)n * 4), db((size_t)n * 4);
+-    LPQ_CUDA_CHECK(cudaMemcpy(da.get(), a.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
+-    LPQ_CUDA_CHECK(cudaMemcpy(db.get(), b.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(da.get(), a.data(), (size_t)n * 4, musaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(db.get(), b.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+ 
+     const ErrorStats sp = compute_error_stats(
+         da.get(), InputType::FP32, db.get(), OutputType::FP32, n, nullptr, AccumMode::Precise);
+@@ -758,7 +758,7 @@
+     std::vector<float> hx = make_input(Dist::Normal, n);
+     const size_t in_bytes = (size_t)n * 4;
+     DeviceBuffer d_in(in_bytes);
+-    LPQ_CUDA_CHECK(cudaMemcpy(d_in.get(), hx.data(), in_bytes, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(d_in.get(), hx.data(), in_bytes, musaMemcpyHostToDevice));
+ 
+     struct Case {
+         const char* tag;
+@@ -827,7 +827,7 @@
+             d_in.get(), InputType::FP32, d_out.get(), c.ot, n, nullptr, AccumMode::Fast);
+ 
+         std::vector<uint8_t> deq_a((size_t)out_bytes);
+-        LPQ_CUDA_CHECK(cudaMemcpy(deq_a.data(), d_out.get(), deq_a.size(), cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(deq_a.data(), d_out.get(), deq_a.size(), musaMemcpyDeviceToHost));
+ 
+         // 路径 B: 融合统计
+         ErrorStats sb;
+@@ -836,19 +836,19 @@
+         CHECK_MSG(qb.stats_fused, std::string(c.tag) + ": stats_fused should be true");
+         dequantize_on_device(qb, cfg, d_out.get());
+         std::vector<uint8_t> deq_b((size_t)out_bytes);
+-        LPQ_CUDA_CHECK(cudaMemcpy(deq_b.data(), d_out.get(), deq_b.size(), cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(deq_b.data(), d_out.get(), deq_b.size(), musaMemcpyDeviceToHost));
+         CHECK_MSG(
+             deq_a == deq_b, std::string(c.tag) + ": dequantized output must be bit-identical");
+ 
+         // 量化产物必须逐位一致
+         std::vector<uint8_t> pa((size_t)qa.packed.size()), pb((size_t)qb.packed.size());
+         std::vector<uint8_t> sc_a((size_t)qa.scales.size()), sc_b((size_t)qb.scales.size());
+-        LPQ_CUDA_CHECK(cudaMemcpy(pa.data(), qa.packed.get(), pa.size(), cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaMemcpy(pb.data(), qb.packed.get(), pb.size(), cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(pa.data(), qa.packed.get(), pa.size(), musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(pb.data(), qb.packed.get(), pb.size(), musaMemcpyDeviceToHost));
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(sc_a.data(), qa.scales.get(), sc_a.size(), cudaMemcpyDeviceToHost));
++            musaMemcpy(sc_a.data(), qa.scales.get(), sc_a.size(), musaMemcpyDeviceToHost));
+         LPQ_CUDA_CHECK(
+-            cudaMemcpy(sc_b.data(), qb.scales.get(), sc_b.size(), cudaMemcpyDeviceToHost));
++            musaMemcpy(sc_b.data(), qb.scales.get(), sc_b.size(), musaMemcpyDeviceToHost));
+         CHECK_MSG(pa == pb, std::string(c.tag) + ": packed must be bit-identical");
+         CHECK_MSG(sc_a == sc_b, std::string(c.tag) + ": scales must be bit-identical");
+ 
+@@ -925,7 +925,7 @@
+     // ---- (b)(c) 产物差异与误差对比 ----
+     const std::vector<float> x = make_input(Dist::Normal, n);
+     DeviceBuffer d_in((size_t)n * 4);
+-    LPQ_CUDA_CHECK(cudaMemcpy(d_in.get(), x.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++    LPQ_CUDA_CHECK(musaMemcpy(d_in.get(), x.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+     DeviceBuffer d_out((size_t)n * 4);
+ 
+     struct Res {
+@@ -949,10 +949,10 @@
+             d_in.get(), InputType::FP32, d_out.get(), OutputType::FP32, n, nullptr);
+         res.scales.assign((size_t)q.scales.size(), 0);
+         res.packed.assign((size_t)q.packed.size(), 0);
+-        LPQ_CUDA_CHECK(cudaMemcpy(
+-            res.scales.data(), q.scales.get(), res.scales.size(), cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaMemcpy(
+-            res.packed.data(), q.packed.get(), res.packed.size(), cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(
++            res.scales.data(), q.scales.get(), res.scales.size(), musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(
++            res.packed.data(), q.packed.get(), res.packed.size(), musaMemcpyDeviceToHost));
+         return res;
+     };
+     auto count_diff = [](const std::vector<uint8_t>& a, const std::vector<uint8_t>& b) {
+@@ -1003,7 +1003,7 @@
+ 
+ int main() {
+     int dev = 0;
+-    if (cudaGetDevice(&dev) != cudaSuccess) {
++    if (musaGetDevice(&dev) != musaSuccess) {
+         std::printf("no CUDA device available\n");
+         return 2;
+     }
+diff -ru '--exclude=build' '--exclude=data' lpq/tests/test_portability.cu lpq_mus/tests/test_portability.cu
+--- lpq/tests/test_portability.cu	2026-09-16 17:00:08.890001800 +0800
++++ lpq_mus/tests/test_portability.cu	2026-09-17 13:47:20.344105910 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  test_portability.cu -- 国产平台移植探针
++//  test_portability.mu -- 国产平台移植探针
+ //
+ //  在本项目里, 需要感知平台的**源码级**差异只有六处, 全部集中在
+ //  include/lpq/platform.hpp. 本程序把这六项能力拆成互相独立的小测试逐个报告,
+@@ -13,7 +13,7 @@
+ //      ./test_portability
+ //
+ //  如果连编译都过不去, 按下面的顺序排查:
+-//      0. 报 cuda_runtime.h 找不到, 或者 cudaMalloc / cudaMemcpy 之类未定义
++//      0. 报 musa_runtime.h 找不到, 或者 musaMalloc / musaMemcpy 之类未定义
+ //         -> 该平台的运行时**不叫 cudaXxx**. 这是构建级差异(第七处), 改
+ //            platform.hpp 没有用. 以摩尔线程 MUSA 为例(运行时叫 musaXxx),
+ //            官方有三条路, Makefile 会自动挑这台机器上可用的那条:
+@@ -22,11 +22,11 @@
+ //                 MUSA SDK 3.1.0 与 5.2.0 的手册都写了这条.
+ //              b) mcc -x musa -fplugin=<libMusaMapping.so>     (SDK >= 5.2.0)
+ //                 编译期 Clang 插件, 按映射表重写头文件名与标识符.
+-//              c) musify-text --inplace -- src/*.cu tests/*.cu  (离线迁移)
++//              c) musify-text --inplace -- src/*.mu tests/*.mu  (离线迁移)
+ //                 改完源码后用 make PLATFORM=moore MUSA_MODE=plain build.
+ //            链接报"未定义引用"时: wrapper 模式先补 -lmusart 试试, 再检查
+ //            -l 的先后顺序(mcc 默认按 --as-needed 链接, 顺序敏感).
+-//      1. 报 cuda_fp16.h / cuda_bf16.h 找不到
++//      1. 报 musa_fp16.h / musa_bf16.h 找不到
+ //         -> 用 -DLPQ_FP16_HEADER=<musa_fp16.h> / -DLPQ_BF16_HEADER=<...> 指定
+ //            平台自带的低精度类型头; 只想先看宏探测结果可以加
+ //            -DLPQ_PROBE_SKIP_FP16 跳过低精度类型部分.
+@@ -39,7 +39,7 @@
+ //            mp_31 ...), 直接跑 scripts/run_domestic.sh moore, 它会自动试出
+ //            这台机器可用的代号, 不用手工猜.
+ // =============================================================================
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ 
+ #include <cstdint>
+ #include <cstdio>
+@@ -61,15 +61,15 @@
+ // =============================================================================
+ __global__ void k_report_macros(int* out) {
+     // out[0] warpSize, out[1] LPQ_CUDA, out[2] LPQ_DEVICE_PASS,
+-    // out[3] 架构宏位掩码 (1=__CUDA_ARCH__ 2=__MUSA_ARCH__ 4=__MACA_ARCH__),
++    // out[3] 架构宏位掩码 (1=__MUSA_ARCH__ 2=__MUSA_ARCH__ 4=__MACA_ARCH__),
+     // out[4..6] 三个架构宏的取值
+     out[0] = (int)warpSize;
+     out[1] = LPQ_CUDA;
+     out[2] = LPQ_DEVICE_PASS;
+     int m = 0;
+-#if defined(__CUDA_ARCH__)
++#if defined(__MUSA_ARCH__)
+     m |= 1;
+-    out[4] = __CUDA_ARCH__;
++    out[4] = __MUSA_ARCH__;
+ #endif
+ #if defined(__MUSA_ARCH__)
+     m |= 2;
+@@ -130,7 +130,7 @@
+ 
+ #ifndef LPQ_PROBE_SKIP_FP16
+ // =============================================================================
+-//  [3a] __half / __nv_bfloat16 / __half2 的取值
++//  [3a] __half / __mt_bfloat16 / __half2 的取值
+ //  bits[0] 半精度编码与位运算参考不一致的元素数
+ //  bits[1] 半精度解码与位运算参考不一致的元素数
+ //  bits[2] 半精度编码-解码往返不稳定的元素数
+@@ -157,10 +157,10 @@
+     }
+     {
+         const uint32_t want = lpq::f32_to_fmt<lpq::FmtBF16>(x);
+-        const __nv_bfloat16 b = lpq::OutTraits<__nv_bfloat16>::from_float(x);
++        const __mt_bfloat16 b = lpq::OutTraits<__mt_bfloat16>::from_float(x);
+         if ((uint32_t)__bfloat16_as_ushort(b) != want)
+             atomicAdd(&bits[3], 1u);
+-        if (lpq::OutTraits<__nv_bfloat16>::to_float(b) != lpq::f32_from_bf16_bits((uint16_t)want))
++        if (lpq::OutTraits<__mt_bfloat16>::to_float(b) != lpq::f32_from_bf16_bits((uint16_t)want))
+             atomicAdd(&bits[4], 1u);
+     }
+     {
+@@ -195,13 +195,13 @@
+     lpq::OutTraits<__half>::store4(out + (size_t)i * 4, v);
+ }
+ 
+-__global__ void k_vec_bf16(const float* in, __nv_bfloat16* out, int m) {
++__global__ void k_vec_bf16(const float* in, __mt_bfloat16* out, int m) {
+     const int i = blockIdx.x * blockDim.x + threadIdx.x;
+     if (i >= m)
+         return;
+     float v[4];
+     lpq::InTraits<float>::load4(in + (size_t)i * 4, v);
+-    lpq::OutTraits<__nv_bfloat16>::store4(out + (size_t)i * 4, v);
++    lpq::OutTraits<__mt_bfloat16>::store4(out + (size_t)i * 4, v);
+ }
+ #endif  // LPQ_PROBE_SKIP_FP16
+ 
+@@ -216,7 +216,7 @@
+ static std::string arch_bitmask_str(int m) {
+     std::string s;
+     if (m & 1)
+-        s += "__CUDA_ARCH__ ";
++        s += "__MUSA_ARCH__ ";
+     if (m & 2)
+         s += "__MUSA_ARCH__ ";
+     if (m & 4)
+@@ -233,8 +233,8 @@
+     banner("macros seen by the host compilation pass");
+     std::printf("  LPQ_CUDA        = %d   (1 = recognised as a device compiler)\n", (int)LPQ_CUDA);
+     std::printf("  LPQ_DEVICE_PASS = %d   (expected 0 on the host pass)\n", (int)LPQ_DEVICE_PASS);
+-#if defined(__CUDACC__)
+-    std::printf("  __CUDACC__      defined\n");
++#if defined(__MUSACC__)
++    std::printf("  __MUSACC__      defined\n");
+ #endif
+ #if defined(__MUSACC__)
+     std::printf("  __MUSACC__      defined\n");
+@@ -256,14 +256,14 @@
+ 
+     // ---------------------------- 设备属性 ----------------------------
+     int dev = 0;
+-    if (cudaGetDevice(&dev) != cudaSuccess) {
+-        std::printf("\n!! cudaGetDevice failed: %s\n", cudaGetErrorString(cudaGetLastError()));
++    if (musaGetDevice(&dev) != musaSuccess) {
++        std::printf("\n!! musaGetDevice failed: %s\n", musaGetErrorString(musaGetLastError()));
+         std::printf("RESULT: FAILED\n");
+         return 1;
+     }
+-    cudaDeviceProp prop{};
+-    if (cudaGetDeviceProperties(&prop, dev) != cudaSuccess) {
+-        std::printf("\n!! cudaGetDeviceProperties failed\n");
++    musaDeviceProp prop{};
++    if (musaGetDeviceProperties(&prop, dev) != musaSuccess) {
++        std::printf("\n!! musaGetDeviceProperties failed\n");
+         std::printf("RESULT: FAILED\n");
+         return 1;
+     }
+@@ -281,11 +281,11 @@
+     for (int i = 0; i < 7; ++i)
+         h_mac[i] = -1;
+     int* d_mac = nullptr;
+-    LPQ_CUDA_CHECK(cudaMalloc(&d_mac, sizeof(h_mac)));
++    LPQ_CUDA_CHECK(musaMalloc(&d_mac, sizeof(h_mac)));
+     k_report_macros<<<1, 1>>>(d_mac);
+     LPQ_CUDA_CHECK_KERNEL();
+-    LPQ_CUDA_CHECK(cudaMemcpy(h_mac, d_mac, sizeof(h_mac), cudaMemcpyDeviceToHost));
+-    LPQ_CUDA_CHECK(cudaFree(d_mac));
++    LPQ_CUDA_CHECK(musaMemcpy(h_mac, d_mac, sizeof(h_mac), musaMemcpyDeviceToHost));
++    LPQ_CUDA_CHECK(musaFree(d_mac));
+ 
+     banner("macros seen by the device compilation pass");
+     std::printf("  warpSize        = %d\n", h_mac[0]);
+@@ -306,15 +306,15 @@
+         const int kThreads = 256;
+         unsigned int h_out[kThreads];
+         unsigned int* d_out = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_out, sizeof(h_out)));
++        LPQ_CUDA_CHECK(musaMalloc(&d_out, sizeof(h_out)));
+         const int widths[6] = {1, 2, 4, 8, 16, 32};
+         for (int wi = 0; wi < 6; ++wi) {
+             const int w = widths[wi];
+             std::memset(h_out, 0, sizeof(h_out));
+-            LPQ_CUDA_CHECK(cudaMemcpy(d_out, h_out, sizeof(h_out), cudaMemcpyHostToDevice));
++            LPQ_CUDA_CHECK(musaMemcpy(d_out, h_out, sizeof(h_out), musaMemcpyHostToDevice));
+             k_test_shfl<<<1, kThreads>>>(w, d_out);
+             LPQ_CUDA_CHECK_KERNEL();
+-            LPQ_CUDA_CHECK(cudaMemcpy(h_out, d_out, sizeof(h_out), cudaMemcpyDeviceToHost));
++            LPQ_CUDA_CHECK(musaMemcpy(h_out, d_out, sizeof(h_out), musaMemcpyDeviceToHost));
+             unsigned int expect = 0;
+             for (int i = 0; i < w; ++i)
+                 expect ^= (unsigned int)i;
+@@ -327,7 +327,7 @@
+                                     "; if __shfl_xor_sync does not compile, see LPQ_SHFL_XOR in "
+                                     "include/lpq/platform.hpp (single point of change)");
+         }
+-        LPQ_CUDA_CHECK(cudaFree(d_out));
++        LPQ_CUDA_CHECK(musaFree(d_out));
+     }
+     testfw::end_section();
+ 
+@@ -337,12 +337,12 @@
+         const long long n = 8 * 256;
+         float h_back = -1.0f;
+         float* d_out = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_out, sizeof(float)));
+-        LPQ_CUDA_CHECK(cudaMemset(d_out, 0, sizeof(float)));
++        LPQ_CUDA_CHECK(musaMalloc(&d_out, sizeof(float)));
++        LPQ_CUDA_CHECK(musaMemset(d_out, 0, sizeof(float)));
+         k_test_atomic_max<<<8, 256>>>(d_out);
+         LPQ_CUDA_CHECK_KERNEL();
+-        LPQ_CUDA_CHECK(cudaMemcpy(&h_back, d_out, sizeof(float), cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaFree(d_out));
++        LPQ_CUDA_CHECK(musaMemcpy(&h_back, d_out, sizeof(float), musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaFree(d_out));
+         CHECK_MSG(h_back == (float)(n - 1),
+             "got " + testfw::f_of(h_back) + ", expected " + testfw::f_of((double)(n - 1)) +
+                 "; if this does not compile add -DLPQ_NO_ATOMIC_MAX_INT=1");
+@@ -355,12 +355,12 @@
+         const long long n = 8 * 256;
+         double h_back[2] = {-1.0, -1.0};
+         double* d_out = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_out, sizeof(h_back)));
+-        LPQ_CUDA_CHECK(cudaMemset(d_out, 0, sizeof(h_back)));
++        LPQ_CUDA_CHECK(musaMalloc(&d_out, sizeof(h_back)));
++        LPQ_CUDA_CHECK(musaMemset(d_out, 0, sizeof(h_back)));
+         k_test_atomic_add_f64<<<8, 256>>>(d_out);
+         LPQ_CUDA_CHECK_KERNEL();
+-        LPQ_CUDA_CHECK(cudaMemcpy(h_back, d_out, sizeof(h_back), cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaFree(d_out));
++        LPQ_CUDA_CHECK(musaMemcpy(h_back, d_out, sizeof(h_back), musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaFree(d_out));
+         CHECK_MSG(
+             h_back[0] == (double)n, "summing 1.0 gave " + testfw::f_of(h_back[0]) + ", expected " +
+                                         testfw::f_of((double)n) +
+@@ -386,19 +386,19 @@
+         float* d_in = nullptr;
+         uint32_t* d_bits = nullptr;
+         float* d_out = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_in, (size_t)n * 4));
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_bits, (size_t)n * 4));
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_out, (size_t)n * 4));
+-        LPQ_CUDA_CHECK(cudaMemcpy(d_in, in.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
++        LPQ_CUDA_CHECK(musaMalloc(&d_in, (size_t)n * 4));
++        LPQ_CUDA_CHECK(musaMalloc(&d_bits, (size_t)n * 4));
++        LPQ_CUDA_CHECK(musaMalloc(&d_out, (size_t)n * 4));
++        LPQ_CUDA_CHECK(musaMemcpy(d_in, in.data(), (size_t)n * 4, musaMemcpyHostToDevice));
+         k_test_bits<<<(n + 255) / 256, 256>>>(d_in, d_bits, n);
+         LPQ_CUDA_CHECK_KERNEL();
+         k_test_unbits<<<(n + 255) / 256, 256>>>(d_bits, d_out, n);
+         LPQ_CUDA_CHECK_KERNEL();
+         std::vector<float> back(n);
+-        LPQ_CUDA_CHECK(cudaMemcpy(back.data(), d_out, (size_t)n * 4, cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaFree(d_in));
+-        LPQ_CUDA_CHECK(cudaFree(d_bits));
+-        LPQ_CUDA_CHECK(cudaFree(d_out));
++        LPQ_CUDA_CHECK(musaMemcpy(back.data(), d_out, (size_t)n * 4, musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaFree(d_in));
++        LPQ_CUDA_CHECK(musaFree(d_bits));
++        LPQ_CUDA_CHECK(musaFree(d_out));
+         long long bad = 0;
+         for (int i = 0; i < n; ++i) {
+             uint32_t a, b;
+@@ -425,15 +425,15 @@
+         uint32_t* d_bits = nullptr;
+         uint32_t h_bits[7];
+         std::memset(h_bits, 0, sizeof(h_bits));
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_in, (size_t)n * 4));
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_bits, sizeof(h_bits)));
+-        LPQ_CUDA_CHECK(cudaMemcpy(d_in, in.data(), (size_t)n * 4, cudaMemcpyHostToDevice));
+-        LPQ_CUDA_CHECK(cudaMemcpy(d_bits, h_bits, sizeof(h_bits), cudaMemcpyHostToDevice));
++        LPQ_CUDA_CHECK(musaMalloc(&d_in, (size_t)n * 4));
++        LPQ_CUDA_CHECK(musaMalloc(&d_bits, sizeof(h_bits)));
++        LPQ_CUDA_CHECK(musaMemcpy(d_in, in.data(), (size_t)n * 4, musaMemcpyHostToDevice));
++        LPQ_CUDA_CHECK(musaMemcpy(d_bits, h_bits, sizeof(h_bits), musaMemcpyHostToDevice));
+         k_test_lowp_scalar<<<(n + 255) / 256, 256>>>(d_in, d_bits, n);
+         LPQ_CUDA_CHECK_KERNEL();
+-        LPQ_CUDA_CHECK(cudaMemcpy(h_bits, d_bits, sizeof(h_bits), cudaMemcpyDeviceToHost));
+-        LPQ_CUDA_CHECK(cudaFree(d_in));
+-        LPQ_CUDA_CHECK(cudaFree(d_bits));
++        LPQ_CUDA_CHECK(musaMemcpy(h_bits, d_bits, sizeof(h_bits), musaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaFree(d_in));
++        LPQ_CUDA_CHECK(musaFree(d_bits));
+         const char* names[7] = {"fp16 encode matches bit-exact reference",
+             "fp16 decode matches bit-exact reference", "fp16 encode-decode is stable",
+             "bf16 encode matches bit-exact reference", "bf16 decode matches bit-exact reference",
+@@ -456,15 +456,15 @@
+ 
+         float* d_in = nullptr;
+         float* d_out = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_in, in.size() * 4));
+-        LPQ_CUDA_CHECK(cudaMalloc(&d_out, in.size() * 4));
+-        LPQ_CUDA_CHECK(cudaMemcpy(d_in, in.data(), in.size() * 4, cudaMemcpyHostToDevice));
++        LPQ_CUDA_CHECK(musaMalloc(&d_in, in.size() * 4));
++        LPQ_CUDA_CHECK(musaMalloc(&d_out, in.size() * 4));
++        LPQ_CUDA_CHECK(musaMemcpy(d_in, in.data(), in.size() * 4, musaMemcpyHostToDevice));
+ 
+         // fp32: load4 + store4 往返
+         k_vec_fp32<<<(m + 63) / 64, 64>>>(d_in, d_out, m);
+         LPQ_CUDA_CHECK_KERNEL();
+         std::vector<float> back(in.size(), 0.0f);
+-        LPQ_CUDA_CHECK(cudaMemcpy(back.data(), d_out, in.size() * 4, cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(back.data(), d_out, in.size() * 4, musaMemcpyDeviceToHost));
+         long long bad32 = 0;
+         for (size_t i = 0; i < in.size(); ++i)
+             if (back[i] != in[i])
+@@ -475,11 +475,11 @@
+         // fp16: load4 + 16bit packed store4, 与位运算参考逐位比较
+         std::vector<uint16_t> h16(in.size(), 0xFFFFu);
+         uint16_t* d16 = nullptr;
+-        LPQ_CUDA_CHECK(cudaMalloc(&d16, in.size() * 2));
+-        LPQ_CUDA_CHECK(cudaMemcpy(d16, h16.data(), in.size() * 2, cudaMemcpyHostToDevice));
++        LPQ_CUDA_CHECK(musaMalloc(&d16, in.size() * 2));
++        LPQ_CUDA_CHECK(musaMemcpy(d16, h16.data(), in.size() * 2, musaMemcpyHostToDevice));
+         k_vec_fp16<<<(m + 63) / 64, 64>>>(d_in, reinterpret_cast<__half*>(d16), m);
+         LPQ_CUDA_CHECK_KERNEL();
+-        LPQ_CUDA_CHECK(cudaMemcpy(h16.data(), d16, in.size() * 2, cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(h16.data(), d16, in.size() * 2, musaMemcpyDeviceToHost));
+         long long bad16 = 0;
+         for (size_t i = 0; i < in.size(); ++i)
+             if ((uint32_t)h16[i] != lpq::f32_to_fmt<lpq::FmtF16>(in[i]))
+@@ -489,10 +489,10 @@
+ 
+         // bf16: 同一路径
+         std::memset(h16.data(), 0xFF, in.size() * 2);
+-        LPQ_CUDA_CHECK(cudaMemcpy(d16, h16.data(), in.size() * 2, cudaMemcpyHostToDevice));
+-        k_vec_bf16<<<(m + 63) / 64, 64>>>(d_in, reinterpret_cast<__nv_bfloat16*>(d16), m);
++        LPQ_CUDA_CHECK(musaMemcpy(d16, h16.data(), in.size() * 2, musaMemcpyHostToDevice));
++        k_vec_bf16<<<(m + 63) / 64, 64>>>(d_in, reinterpret_cast<__mt_bfloat16*>(d16), m);
+         LPQ_CUDA_CHECK_KERNEL();
+-        LPQ_CUDA_CHECK(cudaMemcpy(h16.data(), d16, in.size() * 2, cudaMemcpyDeviceToHost));
++        LPQ_CUDA_CHECK(musaMemcpy(h16.data(), d16, in.size() * 2, musaMemcpyDeviceToHost));
+         long long badbf = 0;
+         for (size_t i = 0; i < in.size(); ++i)
+             if ((uint32_t)h16[i] != lpq::f32_to_fmt<lpq::FmtBF16>(in[i]))
+@@ -500,9 +500,9 @@
+         CHECK_MSG(badbf == 0, "bf16 packed store: " + testfw::s_of(badbf) +
+                                   " elements differ from the bit-exact reference");
+ 
+-        LPQ_CUDA_CHECK(cudaFree(d16));
+-        LPQ_CUDA_CHECK(cudaFree(d_in));
+-        LPQ_CUDA_CHECK(cudaFree(d_out));
++        LPQ_CUDA_CHECK(musaFree(d16));
++        LPQ_CUDA_CHECK(musaFree(d_in));
++        LPQ_CUDA_CHECK(musaFree(d_out));
+     }
+     testfw::end_section();
+ #else
+diff -ru '--exclude=build' '--exclude=data' lpq/tools/bw_ceiling.cu lpq_mus/tools/bw_ceiling.cu
+--- lpq/tools/bw_ceiling.cu	2026-09-16 20:22:32.300542000 +0800
++++ lpq_mus/tools/bw_ceiling.cu	2026-09-17 13:47:20.348105855 +0800
+@@ -1,5 +1,5 @@
+ // =============================================================================
+-//  bw_ceiling.cu -- 逐阶段显存带宽上限标定
++//  bw_ceiling.mu -- 逐阶段显存带宽上限标定
+ //
+ //  目的: 回答「这个 kernel 还有多少余地」。每个阶段 kernel 的访存都能抽象成
+ //  「每处理固定个元素读 R 字节、写 W 字节」的纯流式模式, 于是造一个只做同样字节
+@@ -10,22 +10,22 @@
+ //  纯写 ~426GB/s, 各阶段的混合模式都落在 366~431GB/s -- 读写在 DRAM 上的换向
+ //  开销是硬性的, 与 kernel 写得好不好无关。结论见 总结报告 §6.3。
+ //
+-//  百分比的分母不再写死 448: 换成从 cudaMemGetInfo 同源的设备属性算出来的纸面峰值
++//  百分比的分母不再写死 448: 换成从 musaMemGetInfo 同源的设备属性算出来的纸面峰值
+ //  (2 x memoryClockRate x busWidth / 8)。在 RTX 5060 Ti 上它算出来就是 448, 输出
+ //  与以前逐字相同; 但换到国产卡上写死 448 会让百分比彻底失去意义(MTT S4000 实测
+ //  纯读 672GB/s, 写死 448 会印出 150%)。
+ //
+ //  用法: bw_ceiling [numel=67108864]
+ // =============================================================================
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ #include <cstdio>
+ #include <cstdlib>
+ 
+ #define CK(x)                                                                                    \
+     do {                                                                                         \
+-        cudaError_t e_ = (x);                                                                    \
+-        if (e_ != cudaSuccess) {                                                                 \
+-            std::printf("CUDA error %s at %s:%d\n", cudaGetErrorString(e_), __FILE__, __LINE__); \
++        musaError_t e_ = (x);                                                                    \
++        if (e_ != musaSuccess) {                                                                 \
++            std::printf("CUDA error %s at %s:%d\n", musaGetErrorString(e_), __FILE__, __LINE__); \
+             return 1;                                                                            \
+         }                                                                                        \
+     } while (0)
+@@ -100,10 +100,10 @@
+     const int iters = 30;
+ 
+     char *dsrc = nullptr, *ddst = nullptr;
+-    CK(cudaMalloc(&dsrc, (size_t)numel * 4));
+-    CK(cudaMalloc(&ddst, (size_t)numel * 2));
+-    CK(cudaMemset(dsrc, 0x5A, (size_t)numel * 4));
+-    CK(cudaMemset(ddst, 0x00, (size_t)numel * 2));
++    CK(musaMalloc(&dsrc, (size_t)numel * 4));
++    CK(musaMalloc(&ddst, (size_t)numel * 2));
++    CK(musaMemset(dsrc, 0x5A, (size_t)numel * 4));
++    CK(musaMemset(ddst, 0x00, (size_t)numel * 2));
+ 
+     const Case cases[] = {
+         {"pure-read         ", 16, 0, 4, 4.0, 0.0, launch_mix<16, 0>},
+@@ -118,8 +118,8 @@
+     // 纸面峰值: 由运行时报告的显存时钟与位宽算出, 换机器自动跟着变
+     double paper_peak = 448.0;
+     {
+-        cudaDeviceProp prop = {};
+-        if (cudaGetDeviceProperties(&prop, 0) == cudaSuccess && prop.memoryClockRate > 0 &&
++        musaDeviceProp prop = {};
++        if (musaGetDeviceProperties(&prop, 0) == musaSuccess && prop.memoryClockRate > 0 &&
+             prop.memoryBusWidth > 0)
+             paper_peak = 2.0 * (double)prop.memoryClockRate * 1e3 *
+                          ((double)prop.memoryBusWidth / 8.0) / 1e9;
+@@ -129,19 +129,19 @@
+     for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); ++c) {
+         const Case& cc = cases[c];
+         const long long n = numel / cc.elems;
+-        cudaEvent_t e0, e1;
+-        CK(cudaEventCreate(&e0));
+-        CK(cudaEventCreate(&e1));
++        musaEvent_t e0, e1;
++        CK(musaEventCreate(&e0));
++        CK(musaEventCreate(&e1));
+         for (int i = 0; i < 5; ++i)
+             cc.launch(dsrc, ddst, n, threads);
+         float best = 1e30f;
+         for (int i = 0; i < iters; ++i) {
+-            CK(cudaEventRecord(e0));
++            CK(musaEventRecord(e0));
+             cc.launch(dsrc, ddst, n, threads);
+-            CK(cudaEventRecord(e1));
+-            CK(cudaEventSynchronize(e1));
++            CK(musaEventRecord(e1));
++            CK(musaEventSynchronize(e1));
+             float ms = 0.f;
+-            CK(cudaEventElapsedTime(&ms, e0, e1));
++            CK(musaEventElapsedTime(&ms, e0, e1));
+             if (ms < best)
+                 best = ms;
+         }
+@@ -152,11 +152,11 @@
+             best_mixed = gbps;
+         std::printf("%s %7.3f ms  read %7.1f MB  write %7.1f MB => %6.1f GB/s (%.1f%% of %.0f)\n",
+             cc.name, best, rb / 1e6, wb / 1e6, gbps, 100.0 * gbps / paper_peak, paper_peak);
+-        cudaEventDestroy(e0);
+-        cudaEventDestroy(e1);
++        musaEventDestroy(e0);
++        musaEventDestroy(e1);
+     }
+     std::printf("\nbest mixed read/write rate on this device: %.1f GB/s\n", best_mixed);
+-    cudaFree(dsrc);
+-    cudaFree(ddst);
++    musaFree(dsrc);
++    musaFree(ddst);
+     return 0;
+ }
+\ No newline at end of file
+diff -ru '--exclude=build' '--exclude=data' lpq/tools/verify_e2m1_rne.cu lpq_mus/tools/verify_e2m1_rne.cu
+--- lpq/tools/verify_e2m1_rne.cu	2026-09-15 19:51:27.588008200 +0800
++++ lpq_mus/tools/verify_e2m1_rne.cu	2026-09-17 13:47:20.348105855 +0800
+@@ -1,4 +1,4 @@
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ #include <cstdint>
+ #include <cstdio>
+ #include "lpq/formats.hpp"
+@@ -29,26 +29,26 @@
+ int main() {
+     unsigned long long* bad;
+     unsigned int* rec;
+-    cudaMalloc(&bad, 8);
+-    cudaMalloc(&rec, 72 * 4);
+-    cudaMemset(bad, 0, 8);
+-    cudaMemset(rec, 0, 72 * 4);
+-    cudaEvent_t a, b;
+-    cudaEventCreate(&a);
+-    cudaEventCreate(&b);
+-    cudaEventRecord(a);
++    musaMalloc(&bad, 8);
++    musaMalloc(&rec, 72 * 4);
++    musaMemset(bad, 0, 8);
++    musaMemset(rec, 0, 72 * 4);
++    musaEvent_t a, b;
++    musaEventCreate(&a);
++    musaEventCreate(&b);
++    musaEventRecord(a);
+     k_cmp<<<8192, 256>>>(1ull << 32, bad, rec);
+-    cudaEventRecord(b);
+-    cudaDeviceSynchronize();
++    musaEventRecord(b);
++    musaDeviceSynchronize();
+     unsigned long long h;
+-    cudaMemcpy(&h, bad, 8, cudaMemcpyDeviceToHost);
++    musaMemcpy(&h, bad, 8, musaMemcpyDeviceToHost);
+     float ms;
+-    cudaEventElapsedTime(&ms, a, b);
++    musaEventElapsedTime(&ms, a, b);
+     printf("e2m1 encode: mismatches = %llu over 2^32 patterns (%.0f ms)  err=%s\n", h, ms,
+-        cudaGetErrorString(cudaGetLastError()));
++        musaGetErrorString(musaGetLastError()));
+     if (h) {
+         unsigned int r[72];
+-        cudaMemcpy(r, rec, 72 * 4, cudaMemcpyDeviceToHost);
++        musaMemcpy(r, rec, 72 * 4, musaMemcpyDeviceToHost);
+         for (int i = 0; i < 24; ++i)
+             printf(
+                 "   bits=0x%08X slow=0x%02X fast=0x%02X\n", r[3 * i], r[3 * i + 1], r[3 * i + 2]);
+diff -ru '--exclude=build' '--exclude=data' lpq/tools/verify_fp8_hw_decode.cu lpq_mus/tools/verify_fp8_hw_decode.cu
+--- lpq/tools/verify_fp8_hw_decode.cu	2026-09-15 19:51:30.335368400 +0800
++++ lpq_mus/tools/verify_fp8_hw_decode.cu	2026-09-17 13:47:20.348105855 +0800
+@@ -1,6 +1,6 @@
+ 
+-#include <cuda_fp16.h>
+-#include <cuda_runtime.h>
++#include <musa_fp16.h>
++#include <musa_runtime.h>
+ #include <cstdint>
+ #include <cstdio>
+ #include "lpq/formats.hpp"
+@@ -41,21 +41,21 @@
+ 
+ int main() {
+     unsigned int *bad, *rec;
+-    cudaMalloc(&bad, 4);
+-    cudaMalloc(&rec, 32);
+-    cudaMemset(bad, 0, 4);
+-    cudaMemset(rec, 0, 32);
++    musaMalloc(&bad, 4);
++    musaMalloc(&rec, 32);
++    musaMemset(bad, 0, 4);
++    musaMemset(rec, 0, 32);
+     for (int which = 0; which < 2; ++which) {
+-        cudaMemset(bad, 0, 4);
+-        cudaMemset(rec, 0, 32);
++        musaMemset(bad, 0, 4);
++        musaMemset(rec, 0, 32);
+         k_test<<<1, 65536>>>(bad, rec, which);
+-        cudaDeviceSynchronize();
++        musaDeviceSynchronize();
+         unsigned int a;
+-        cudaMemcpy(&a, bad, 4, cudaMemcpyDeviceToHost);
++        musaMemcpy(&a, bad, 4, musaMemcpyDeviceToHost);
+         printf("%s -> f16x2 (bitwise) mismatches = %u / 65536\n", which ? "e5m2x2" : "e4m3x2", a);
+         if (a) {
+             unsigned int r[8];
+-            cudaMemcpy(r, rec, 32, cudaMemcpyDeviceToHost);
++            musaMemcpy(r, rec, 32, musaMemcpyDeviceToHost);
+             for (int i = 0; i < 8; ++i)
+                 printf("   pair=0x%04X\n", r[i]);
+         }
+diff -ru '--exclude=build' '--exclude=data' lpq/tools/verify_fp8_hw_encode.cu lpq_mus/tools/verify_fp8_hw_encode.cu
+--- lpq/tools/verify_fp8_hw_encode.cu	2026-09-15 19:51:30.340859700 +0800
++++ lpq_mus/tools/verify_fp8_hw_encode.cu	2026-09-17 13:47:20.352105797 +0800
+@@ -1,5 +1,5 @@
+ 
+-#include <cuda_runtime.h>
++#include <musa_runtime.h>
+ #include <cstdint>
+ #include <cstdio>
+ #include "lpq/formats.hpp"
+@@ -56,27 +56,27 @@
+ int main() {
+     unsigned long long* bad;
+     unsigned int* rec;
+-    cudaMalloc(&bad, 8);
+-    cudaMalloc(&rec, 72 * 4);
++    musaMalloc(&bad, 8);
++    musaMalloc(&rec, 72 * 4);
+     unsigned long long n = 1ull << 32;
+-    cudaEvent_t a, b;
+-    cudaEventCreate(&a);
+-    cudaEventCreate(&b);
++    musaEvent_t a, b;
++    musaEventCreate(&a);
++    musaEventCreate(&b);
+     for (int which = 0; which < 2; ++which) {
+-        cudaMemset(bad, 0, 8);
+-        cudaMemset(rec, 0, 72 * 4);
+-        cudaEventRecord(a);
++        musaMemset(bad, 0, 8);
++        musaMemset(rec, 0, 72 * 4);
++        musaEventRecord(a);
+         k_cmp8<<<4096, 256>>>(n, which, bad, rec);
+-        cudaEventRecord(b);
+-        cudaDeviceSynchronize();
++        musaEventRecord(b);
++        musaDeviceSynchronize();
+         unsigned long long h;
+-        cudaMemcpy(&h, bad, 8, cudaMemcpyDeviceToHost);
++        musaMemcpy(&h, bad, 8, musaMemcpyDeviceToHost);
+         float ms;
+-        cudaEventElapsedTime(&ms, a, b);
++        musaEventElapsedTime(&ms, a, b);
+         printf("%s : mismatches = %llu   (%.0f ms)\n", which == 0 ? "e4m3" : "e5m2", h, ms);
+         if (h) {
+             unsigned int r[72];
+-            cudaMemcpy(r, rec, 72 * 4, cudaMemcpyDeviceToHost);
++            musaMemcpy(r, rec, 72 * 4, musaMemcpyDeviceToHost);
+             for (int i = 0; i < 24; ++i)
+                 printf("   bits=0x%08X sw=0x%02X hw=0x%02X  float=%.9g\n", r[3 * i], r[3 * i + 1],
+                     r[3 * i + 2], (double)h_bits_to_f32(r[3 * i]));

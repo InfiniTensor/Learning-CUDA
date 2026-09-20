@@ -1,0 +1,120 @@
+# NVIDIA 侧证据归档 -- RTX 5060 Ti (sm_120) / CUDA 12.9 / Windows 11
+# 生成时间: 2026-09-18 11:26:04
+# 用途: `总结报告.md` 6.3(带宽标定) / 7(硬件快路径穷举对拍) / 5(测试断言数) 引用的原始输出
+# 复现: 用当前源码重新构建后依次执行下面各条命令; 前三条只保留末尾摘要, 后四条为全文
+
+==============================================================================
+## test_portability (平台能力探针)
+$ build/test_portability.exe
+------------------------------------------------------------------------------
+[       OK ] probe/vec-io
+==================== test_portability ====================
+total assertions: 22, failures: 0
+RESULT: PASSED
+---- 退出码 0 ----
+
+==============================================================================
+## test_formats (格式与舍入)
+$ build/test_formats.exe
+------------------------------------------------------------------------------
+[       OK ] formats/fast-encode
+==================== test_formats ====================
+total assertions: 292651, failures: 0
+RESULT: PASSED
+---- 退出码 0 ----
+
+==============================================================================
+## test_pipeline (端到端管线)
+$ build/test_pipeline.exe
+------------------------------------------------------------------------------
+[       OK ] pipeline/scale-rule-4-6
+==================== test_pipeline ====================
+total assertions: 21532, failures: 0
+RESULT: PASSED
+---- 退出码 0 ----
+
+==============================================================================
+## tools/bw_ceiling (逐阶段带宽上限标定)
+$ build/bw_ceiling.exe
+------------------------------------------------------------------------------
+pure-read            0.634 ms  read   268.4 MB  write     0.0 MB =>  423.1 GB/s (94.4% of 448)
+amax   64B/16elem    0.661 ms  read   268.4 MB  write    16.8 MB =>  431.4 GB/s (96.3% of 448)
+mxfp8 quant 16->4    0.806 ms  read   268.4 MB  write    67.1 MB =>  416.5 GB/s (93.0% of 448)
+mxfp8 deq    4->8    0.539 ms  read    67.1 MB  write   134.2 MB =>  373.3 GB/s (83.3% of 448)
+nvfp4 quant 16->2    0.711 ms  read   268.4 MB  write    33.6 MB =>  424.7 GB/s (94.8% of 448)
+nvfp4 deq    2->8    0.456 ms  read    33.6 MB  write   134.2 MB =>  367.7 GB/s (82.1% of 448)
+pure-write   0->8    0.303 ms  read     0.0 MB  write   134.2 MB =>  442.8 GB/s (98.8% of 448)
+best mixed read/write rate on this device: 431.4 GB/s
+---- 退出码 0 ----
+
+==============================================================================
+## tools/verify_e2m1_rne (2^32 个 fp32 位模式穷举对拍)
+$ build/verify_e2m1_rne.exe
+------------------------------------------------------------------------------
+e2m1 encode: mismatches = 0 over 2^32 patterns (44 ms)  err=no error
+---- 退出码 0 ----
+
+==============================================================================
+## tools/verify_fp8_hw_encode (2^32 个 fp32 位模式穷举对拍)
+$ build/verify_fp8_hw_encode.exe
+------------------------------------------------------------------------------
+e4m3 : mismatches = 8388607   (8 ms)
+   bits=0xFF801FA0 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA1 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA2 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA3 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA4 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA5 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA6 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA7 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA8 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FA9 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAA sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAB sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAC sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAD sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAE sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FAF sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB0 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB1 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB2 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB3 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB4 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB5 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB6 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF801FB7 sw=0xFF hw=0x7F  float=-nan
+e5m2 : mismatches = 8388609   (10 ms)
+   bits=0x7F800000 sw=0x7C hw=0x7B  float=inf
+   bits=0xFF8015A0 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A1 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A2 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A3 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A4 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A5 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A6 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A7 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A8 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015A9 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AA sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AB sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AC sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AD sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AE sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015AF sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B0 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B1 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B2 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B3 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B4 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B5 sw=0xFF hw=0x7F  float=-nan
+   bits=0xFF8015B6 sw=0xFF hw=0x7F  float=-nan
+---- 退出码 0 ----
+
+==============================================================================
+## tools/verify_fp8_hw_decode (全部 65536 组 FP8 编码对穷举对拍)
+$ build/verify_fp8_hw_decode.exe
+------------------------------------------------------------------------------
+e4m3x2 -> f16x2 (bitwise) mismatches = 0 / 65536
+e5m2x2 -> f16x2 (bitwise) mismatches = 0 / 65536
+---- 退出码 0 ----
+
