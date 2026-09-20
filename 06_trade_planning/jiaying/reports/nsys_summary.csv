@@ -1,0 +1,29 @@
+Generating SQLite file output/trade_flow_trace.sqlite from output/trade_flow_trace.nsys-rep
+Processing [output/trade_flow_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+SKIPPED: output/trade_flow_trace.sqlite does not contain CUDA kernel data.
+
+Processing [output/trade_flow_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+SKIPPED: output/trade_flow_trace.sqlite does not contain GPU memory data.
+
+Processing [output/trade_flow_trace.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+71.4,125653309,14,8975236.4,8533.5,2452,124093877,33133746.9,cudaMalloc
+14.4,25305300,253,100020.9,86866.0,600,791632,121525.0,cudaStreamSynchronize
+7.8,13791232,275,50149.9,5977.0,3477,6364634,428799.0,cudaMemcpyAsync
+2.3,4117164,176,23393.0,4076.0,384,2905265,219435.8,cudaLaunchKernel
+0.7,1294186,1,1294186.0,1294186.0,1294186,1294186,0.0,cudaHostAlloc
+0.6,1127089,148,7615.5,4273.5,2723,355957,28942.4,cudaMemsetAsync
+0.6,1054186,1,1054186.0,1054186.0,1054186,1054186,0.0,cudaGraphInstantiate_v12000
+0.6,980765,14,70054.6,10094.5,1406,219034,83956.7,cudaFree
+0.5,933195,113,8258.4,7091.0,5256,44721,4445.0,cudaGraphLaunch_v10000
+0.3,592816,1,592816.0,592816.0,592816,592816,0.0,cudaStreamCreateWithFlags
+0.3,495471,1,495471.0,495471.0,495471,495471,0.0,cudaStreamBeginCapture_v10000
+0.3,484751,1,484751.0,484751.0,484751,484751,0.0,cudaFreeHost
+0.0,32724,1,32724.0,32724.0,32724,32724,0.0,cudaGraphExecDestroy_v10000
+0.0,31812,1,31812.0,31812.0,31812,31812,0.0,cudaGraphUpload_v10000
+0.0,4944,1,4944.0,4944.0,4944,4944,0.0,cuModuleGetLoadingMode
+0.0,4546,1,4546.0,4546.0,4546,4546,0.0,cudaStreamDestroy
+0.0,4120,1,4120.0,4120.0,4120,4120,0.0,cudaGraphDestroy_v10000
+0.0,2979,1,2979.0,2979.0,2979,2979,0.0,cudaGetDeviceProperties_v2_v12000
+0.0,1927,1,1927.0,1927.0,1927,1927,0.0,cudaStreamEndCapture_v10000
+

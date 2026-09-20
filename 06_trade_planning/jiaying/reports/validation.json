@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "textbook",
+      "nodes": 6,
+      "edges": 10,
+      "queries": 33,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "empty",
+      "nodes": 4,
+      "edges": 0,
+      "queries": 2,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "parallel_cycles_deadends",
+      "nodes": 8,
+      "edges": 11,
+      "queries": 6,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "int64_flow",
+      "nodes": 3,
+      "edges": 214750,
+      "queries": 4,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "int32_edge_boundary",
+      "nodes": 3,
+      "edges": 4,
+      "queries": 2,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "random_100_graphs",
+      "nodes": 1768,
+      "edges": 7371,
+      "queries": 400,
+      "modes": 4,
+      "passed": true
+    },
+    {
+      "name": "long_chain",
+      "nodes": 1024,
+      "edges": 1023,
+      "queries": 2,
+      "modes": 3,
+      "passed": true
+    }
+  ],
+  "query_mode_checks": 1794,
+  "invalid_inputs_rejected": [
+    "short",
+    "trailing",
+    "negative_n",
+    "bad_row",
+    "bad_col",
+    "negative_capacity",
+    "oversize",
+    "bad_query_0",
+    "bad_query_1",
+    "bad_query_2",
+    "bad_query_3",
+    "bad_query_4",
+    "bad_query_5",
+    "bad_query_6"
+  ],
+  "oracle": "independent Python Edmonds-Karp"
+}

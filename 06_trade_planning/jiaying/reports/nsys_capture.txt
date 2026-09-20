@@ -1,0 +1,6 @@
+cuda: N=100020 M=1000000 queries=10 total_ms=30.9354 TPQ_ms=3.09354 checked=no
+Importer error status: The importer binary and its dependencies were not found.
+Unable to retrieve the importer version: skipping importation of the QDSTRM file.
+Generating '/tmp/nsys-report-e65e.qdstrm'
+Generated:
+    /mnt/d/Jiaying/Documents/ChatGPT/InfiniTensor/Learning-CUDA/06_trade_planning/jiaying/output/trade_flow_trace.qdstrm

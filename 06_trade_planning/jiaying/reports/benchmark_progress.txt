@@ -1,0 +1,252 @@
+cuda: N=100020 M=1000000 queries=10 total_ms=77.3886 TPQ_ms=7.73886 checked=yes
+layered: full-scale certificate and CPU equality passed
+cuda: N=100020 M=1000000 queries=10 total_ms=89.7155 TPQ_ms=8.97155 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=45.7471 TPQ_ms=4.57471 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=78.5755 TPQ_ms=7.85755 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=57.1884 TPQ_ms=5.71884 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=386.684 TPQ_ms=38.6684 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=382.415 TPQ_ms=38.2415 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=45.9242 TPQ_ms=4.59242 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=92.5134 TPQ_ms=9.25134 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=63.2925 TPQ_ms=6.32925 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=391.526 TPQ_ms=39.1526 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=381.104 TPQ_ms=38.1104 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=87.7054 TPQ_ms=8.77054 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=91.2023 TPQ_ms=9.12023 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=57.447 TPQ_ms=5.7447 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=389.617 TPQ_ms=38.9617 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=386.616 TPQ_ms=38.6616 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=83.1297 TPQ_ms=8.31297 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=55.1055 TPQ_ms=5.51055 checked=no
+{
+  "family": "layered",
+  "medians": {
+    "cuda_warp_graph": {
+      "input_read_ms": 31.248641,
+      "preprocess_ms": 191.710662,
+      "ttfq_ms": 200.389571,
+      "first_query_ms": 9.049414,
+      "total_query_ms": 87.705443,
+      "tpq_ms": 8.770544,
+      "process_until_log_ms": 327.3388
+    },
+    "cuda_thread_graph": {
+      "input_read_ms": 33.77767,
+      "preprocess_ms": 192.17487,
+      "ttfq_ms": 197.885292,
+      "first_query_ms": 5.710422,
+      "total_query_ms": 45.924224,
+      "tpq_ms": 4.592422,
+      "process_until_log_ms": 303.427375
+    },
+    "cuda_warp_direct": {
+      "input_read_ms": 32.48917,
+      "preprocess_ms": 174.829517,
+      "ttfq_ms": 187.547337,
+      "first_query_ms": 11.752528,
+      "total_query_ms": 91.202286,
+      "tpq_ms": 9.120229,
+      "process_until_log_ms": 321.947319
+    },
+    "cuda_thread_direct": {
+      "input_read_ms": 31.168542,
+      "preprocess_ms": 169.693502,
+      "ttfq_ms": 177.344962,
+      "first_query_ms": 7.8349,
+      "total_query_ms": 57.446995,
+      "tpq_ms": 5.744699,
+      "process_until_log_ms": 272.417829
+    },
+    "cpu_dinic": {
+      "input_read_ms": 35.312467,
+      "preprocess_ms": 20.191779,
+      "ttfq_ms": 55.048156,
+      "first_query_ms": 35.15282,
+      "total_query_ms": 389.616624,
+      "tpq_ms": 38.961662,
+      "process_until_log_ms": 474.435392
+    },
+    "cpu_preflow": {
+      "input_read_ms": 32.930496,
+      "preprocess_ms": 19.781429,
+      "ttfq_ms": 41.876629,
+      "first_query_ms": 22.174429,
+      "total_query_ms": 382.414706,
+      "tpq_ms": 38.241471,
+      "process_until_log_ms": 464.137912
+    }
+  },
+  "warp_speedup_vs_dinic": 4.442331178921244,
+  "warp_speedup_vs_best_cpu": 4.360216343699444,
+  "default_speedup_vs_dinic": 8.483902177639408,
+  "default_speedup_vs_best_cpu": 8.3270804096766,
+  "default_process_speedup_vs_best_cpu": 1.529650750859246
+}
+cuda: N=100020 M=1000000 queries=10 total_ms=28.5923 TPQ_ms=2.85923 checked=yes
+balanced: full-scale certificate and CPU equality passed
+cuda: N=100020 M=1000000 queries=10 total_ms=21.2137 TPQ_ms=2.12137 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=17.709 TPQ_ms=1.7709 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=23.3508 TPQ_ms=2.33508 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=20.6224 TPQ_ms=2.06224 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=73.6781 TPQ_ms=7.36781 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=87.0067 TPQ_ms=8.70067 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=17.5691 TPQ_ms=1.75691 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=27.8159 TPQ_ms=2.78159 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=20.974 TPQ_ms=2.0974 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=75.159 TPQ_ms=7.5159 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=89.474 TPQ_ms=8.9474 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=20.3256 TPQ_ms=2.03256 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=22.6883 TPQ_ms=2.26883 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=21.7147 TPQ_ms=2.17147 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=72.7128 TPQ_ms=7.27128 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=87.4361 TPQ_ms=8.74361 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=24.5029 TPQ_ms=2.45029 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=18.1719 TPQ_ms=1.81719 checked=no
+{
+  "family": "balanced",
+  "medians": {
+    "cuda_warp_graph": {
+      "input_read_ms": 31.700872,
+      "preprocess_ms": 172.043612,
+      "ttfq_ms": 174.762892,
+      "first_query_ms": 2.71928,
+      "total_query_ms": 21.213711,
+      "tpq_ms": 2.121371,
+      "process_until_log_ms": 250.139841
+    },
+    "cuda_thread_graph": {
+      "input_read_ms": 38.605633,
+      "preprocess_ms": 183.598082,
+      "ttfq_ms": 185.919573,
+      "first_query_ms": 2.332664,
+      "total_query_ms": 17.708985,
+      "tpq_ms": 1.770899,
+      "process_until_log_ms": 268.16189
+    },
+    "cuda_warp_direct": {
+      "input_read_ms": 32.929434,
+      "preprocess_ms": 182.773917,
+      "ttfq_ms": 187.517715,
+      "first_query_ms": 4.768744,
+      "total_query_ms": 23.350778,
+      "tpq_ms": 2.335078,
+      "process_until_log_ms": 261.637237
+    },
+    "cuda_thread_direct": {
+      "input_read_ms": 33.05929,
+      "preprocess_ms": 184.635882,
+      "ttfq_ms": 189.740119,
+      "first_query_ms": 5.104237,
+      "total_query_ms": 20.973991,
+      "tpq_ms": 2.097399,
+      "process_until_log_ms": 256.893555
+    },
+    "cpu_dinic": {
+      "input_read_ms": 38.690364,
+      "preprocess_ms": 19.389693,
+      "ttfq_ms": 27.064304,
+      "first_query_ms": 7.663386,
+      "total_query_ms": 73.678134,
+      "tpq_ms": 7.367813,
+      "process_until_log_ms": 158.489958
+    },
+    "cpu_preflow": {
+      "input_read_ms": 31.372208,
+      "preprocess_ms": 20.063496,
+      "ttfq_ms": 29.041731,
+      "first_query_ms": 8.978235,
+      "total_query_ms": 87.436113,
+      "tpq_ms": 8.743611,
+      "process_until_log_ms": 166.328702
+    }
+  },
+  "warp_speedup_vs_dinic": 3.4731374439861087,
+  "warp_speedup_vs_best_cpu": 3.4731374439861087,
+  "default_speedup_vs_dinic": 4.160494460862664,
+  "default_speedup_vs_best_cpu": 4.160494460862664,
+  "default_process_speedup_vs_best_cpu": 0.5910234224557411
+}
+cuda: N=100020 M=1000000 queries=10 total_ms=34.9059 TPQ_ms=3.49059 checked=yes
+random: full-scale certificate and CPU equality passed
+cuda: N=100020 M=1000000 queries=10 total_ms=47.3549 TPQ_ms=4.73549 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=24.4104 TPQ_ms=2.44104 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=56.9784 TPQ_ms=5.69784 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=31.2433 TPQ_ms=3.12433 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=932.471 TPQ_ms=93.2471 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=531.098 TPQ_ms=53.1098 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=24.3998 TPQ_ms=2.43998 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=54.5453 TPQ_ms=5.45453 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=29.9267 TPQ_ms=2.99267 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=956.65 TPQ_ms=95.665 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=536.465 TPQ_ms=53.6465 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=47.4499 TPQ_ms=4.74499 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=49.5487 TPQ_ms=4.95487 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=36.7251 TPQ_ms=3.67251 checked=no
+cpu: N=100020 M=1000000 queries=10 total_ms=989.106 TPQ_ms=98.9106 checked=no
+cpu-pr: N=100020 M=1000000 queries=10 total_ms=541.905 TPQ_ms=54.1905 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=47.3609 TPQ_ms=4.73609 checked=no
+cuda: N=100020 M=1000000 queries=10 total_ms=27.7307 TPQ_ms=2.77307 checked=no
+{
+  "family": "random",
+  "medians": {
+    "cuda_warp_graph": {
+      "input_read_ms": 31.376842,
+      "preprocess_ms": 190.895085,
+      "ttfq_ms": 195.400668,
+      "first_query_ms": 4.28216,
+      "total_query_ms": 47.360881,
+      "tpq_ms": 4.736088,
+      "process_until_log_ms": 291.590717
+    },
+    "cuda_thread_graph": {
+      "input_read_ms": 32.088634,
+      "preprocess_ms": 190.710242,
+      "ttfq_ms": 192.861929,
+      "first_query_ms": 2.151687,
+      "total_query_ms": 24.410372,
+      "tpq_ms": 2.441037,
+      "process_until_log_ms": 270.410339
+    },
+    "cuda_warp_direct": {
+      "input_read_ms": 33.688176,
+      "preprocess_ms": 194.443395,
+      "ttfq_ms": 200.412595,
+      "first_query_ms": 6.182305,
+      "total_query_ms": 54.545279,
+      "tpq_ms": 5.454528,
+      "process_until_log_ms": 305.604186
+    },
+    "cuda_thread_direct": {
+      "input_read_ms": 34.474232,
+      "preprocess_ms": 191.669932,
+      "ttfq_ms": 196.156532,
+      "first_query_ms": 4.575566,
+      "total_query_ms": 31.243282,
+      "tpq_ms": 3.124328,
+      "process_until_log_ms": 275.644677
+    },
+    "cpu_dinic": {
+      "input_read_ms": 35.406645,
+      "preprocess_ms": 23.401831,
+      "ttfq_ms": 87.145787,
+      "first_query_ms": 63.642493,
+      "total_query_ms": 956.649566,
+      "tpq_ms": 95.664957,
+      "process_until_log_ms": 1039.942714
+    },
+    "cpu_preflow": {
+      "input_read_ms": 33.338881,
+      "preprocess_ms": 25.682447,
+      "ttfq_ms": 36.738217,
+      "first_query_ms": 11.250748,
+      "total_query_ms": 536.465294,
+      "tpq_ms": 53.646529,
+      "process_until_log_ms": 625.313778
+    }
+  },
+  "warp_speedup_vs_dinic": 20.199150560564952,
+  "warp_speedup_vs_best_cpu": 11.327181477050647,
+  "default_speedup_vs_dinic": 39.190290340515915,
+  "default_speedup_vs_best_cpu": 21.976940539865595,
+  "default_process_speedup_vs_best_cpu": 2.312462534947674
+}
