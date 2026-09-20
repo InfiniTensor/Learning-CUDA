@@ -1,0 +1,16 @@
+{
+  "format": "mxfp8",
+  "input_dtype": "fp32",
+  "output_type": "bf16",
+  "scale_mode": "tensor",
+  "rounding": "stochastic",
+  "seed": 1234,
+  "target_gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "quantize_kernel_ms": {"median": 10.60713625, "p95": 10.6352644},
+  "dequantize_kernel_ms": {"median": 0.02628799994, "p95": 0.02764800005},
+  "quantize_effective_gbps": 0.8897006485,
+  "dequantize_effective_gbps": 119.6639534,
+  "max_abs": 7.863700867, "mae": 0.4797465638, "mse": 0.5631003304,
+  "original_bytes": 4194300, "quantized_payload_bytes": 1048576,
+  "compression_ratio": 3.999996185
+}

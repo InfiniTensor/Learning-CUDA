@@ -1,0 +1,429 @@
+{
+  "protocol_version": 1,
+  "environment": {
+    "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "compute_capability": "8.6",
+    "cuda_runtime_version": 12080,
+    "cuda_driver_version": 13000
+  },
+  "protocol": {
+    "warmup": 10,
+    "repeats": 100,
+    "percentiles": "median and nearest-rank p95",
+    "kernel_clock": "CUDA events on the default stream",
+    "end_to_end_clock": "host steady_clock",
+    "device_pipeline": "quantize + dequantize; data remains on device",
+    "end_to_end": "H2D + quantize + dequantize + D2H; excludes allocation, file IO, and validation",
+    "blocking": "row-major flattened continuous blocks: MXFP8=32, NVFP4=16"
+  },
+  "results": [
+    {
+      "dataset": "uniform_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.36409569, "p95_ms": 15.40694427, "effective_gbps": 0.3433751069},
+        "dequantize": {"median_ms": 0.05222399905, "p95_ms": 0.05814399943, "effective_gbps": 101.0196097},
+        "device_pipeline": {"median_ms": 15.49193621, "p95_ms": 15.52684784},
+        "end_to_end": {"median_ms": 17.163, "p95_ms": 17.5022}
+      },
+      "error": {"max_abs": 256, "mae": 71.08936658, "mse": 9416.274452},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 1081344, "compression_ratio": 3.878787879}
+    },
+    {
+      "dataset": "uniform_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.99398327, "p95_ms": 22.02521515, "effective_gbps": 0.4085948366},
+        "dequantize": {"median_ms": 0.0460800007, "p95_ms": 0.05222399905, "effective_gbps": 103.8223075},
+        "device_pipeline": {"median_ms": 22.04051208, "p95_ms": 22.07011223},
+        "end_to_end": {"median_ms": 23.77285, "p95_ms": 24.2135}
+      },
+      "error": {"max_abs": 999.9931641, "mae": 265.3150964, "mse": 123673.0773},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 589828, "compression_ratio": 7.111062886}
+    },
+    {
+      "dataset": "normal_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.20844841, "p95_ms": 15.22790432, "effective_gbps": 0.3468892985},
+        "dequantize": {"median_ms": 0.05396800116, "p95_ms": 0.06451199949, "effective_gbps": 97.75511205},
+        "device_pipeline": {"median_ms": 15.26169586, "p95_ms": 15.29343987},
+        "end_to_end": {"median_ms": 16.9221, "p95_ms": 17.2337}
+      },
+      "error": {"max_abs": 3.994911194, "mae": 0.3599037839, "mse": 0.2817695029},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 1081344, "compression_ratio": 3.878787879}
+    },
+    {
+      "dataset": "normal_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.99534416, "p95_ms": 22.01907158, "effective_gbps": 0.4085695561},
+        "dequantize": {"median_ms": 0.04614400119, "p95_ms": 0.05615999922, "effective_gbps": 103.6783087},
+        "device_pipeline": {"median_ms": 22.04262352, "p95_ms": 22.08255959},
+        "end_to_end": {"median_ms": 24.05075, "p95_ms": 24.6153}
+      },
+      "error": {"max_abs": 12.85183716, "mae": 1.429886816, "mse": 3.62741305},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 589828, "compression_ratio": 7.111062886}
+    },
+    {
+      "dataset": "outliers_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.22329617, "p95_ms": 15.25657558, "effective_gbps": 0.3465509665},
+        "dequantize": {"median_ms": 0.05307199992, "p95_ms": 0.06656000018, "effective_gbps": 99.40548703},
+        "device_pipeline": {"median_ms": 15.28001595, "p95_ms": 15.30368042},
+        "end_to_end": {"median_ms": 16.9562, "p95_ms": 17.377}
+      },
+      "error": {"max_abs": 144, "mae": 0.5035985556, "mse": 21.02586777},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 1081344, "compression_ratio": 3.878787879}
+    },
+    {
+      "dataset": "outliers_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.6637764, "p95_ms": 21.68832016, "effective_gbps": 0.4148227823},
+        "dequantize": {"median_ms": 0.04505600035, "p95_ms": 0.04905600101, "effective_gbps": 106.1819061},
+        "device_pipeline": {"median_ms": 21.72721577, "p95_ms": 21.75987244},
+        "end_to_end": {"median_ms": 23.5984, "p95_ms": 24.2099}
+      },
+      "error": {"max_abs": 82.8412323, "mae": 1.644688938, "mse": 9.556811055},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 589828, "compression_ratio": 7.111062886}
+    },
+    {
+      "dataset": "zero_heavy_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.0106883, "p95_ms": 15.03433609, "effective_gbps": 0.351459433},
+        "dequantize": {"median_ms": 0.05406400003, "p95_ms": 0.05836800113, "effective_gbps": 97.58153295},
+        "device_pipeline": {"median_ms": 15.1342721, "p95_ms": 15.15827179},
+        "end_to_end": {"median_ms": 16.73835, "p95_ms": 17.0117}
+      },
+      "error": {"max_abs": 3.909759521, "mae": 0.03593081199, "mse": 0.02810817923},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 1081344, "compression_ratio": 3.878787879}
+    },
+    {
+      "dataset": "zero_heavy_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.95865631, "p95_ms": 21.9737606, "effective_gbps": 0.4092521816},
+        "dequantize": {"median_ms": 0.04505600035, "p95_ms": 0.0582720004, "effective_gbps": 106.1819061},
+        "device_pipeline": {"median_ms": 22.01238346, "p95_ms": 22.03945541},
+        "end_to_end": {"median_ms": 23.819, "p95_ms": 24.142}
+      },
+      "error": {"max_abs": 9.84746933, "mae": 0.07587024325, "mse": 0.1289321575},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 589828, "compression_ratio": 7.111062886}
+    },
+    {
+      "dataset": "multiscale_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.30979204, "p95_ms": 15.34463978, "effective_gbps": 0.3445930543},
+        "dequantize": {"median_ms": 0.05321599916, "p95_ms": 0.06224000081, "effective_gbps": 99.13650187},
+        "device_pipeline": {"median_ms": 15.34719992, "p95_ms": 15.37193584},
+        "end_to_end": {"median_ms": 17.03005, "p95_ms": 17.3885}
+      },
+      "error": {"max_abs": 1018.779297, "mae": 10.84234719, "mse": 1443.925151},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 1081344, "compression_ratio": 3.878787879}
+    },
+    {
+      "dataset": "multiscale_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194304,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 22.12451172, "p95_ms": 22.14694405, "effective_gbps": 0.406184241},
+        "dequantize": {"median_ms": 0.04710400105, "p95_ms": 0.05427199975, "effective_gbps": 101.5653001},
+        "device_pipeline": {"median_ms": 22.15680027, "p95_ms": 22.18291283},
+        "end_to_end": {"median_ms": 23.7827, "p95_ms": 24.0518}
+      },
+      "error": {"max_abs": 2756.363281, "mae": 43.14616864, "mse": 18737.45103},
+      "storage": {"original_bytes": 4194304, "quantized_payload_bytes": 589828, "compression_ratio": 7.111062886}
+    },
+    {
+      "dataset": "normal_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.30777645, "p95_ms": 15.3353281, "effective_gbps": 0.2076393009},
+        "dequantize": {"median_ms": 0.05734400079, "p95_ms": 0.07065600157, "effective_gbps": 91.99999874},
+        "device_pipeline": {"median_ms": 15.36051178, "p95_ms": 15.38659191},
+        "end_to_end": {"median_ms": 16.68455, "p95_ms": 17.1908}
+      },
+      "error": {"max_abs": 4, "mae": 0.3599066872, "mse": 0.2818002126},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 1081344, "compression_ratio": 1.939393939}
+    },
+    {
+      "dataset": "normal_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 22.11123276, "p95_ms": 22.13580894, "effective_gbps": 0.216737079},
+        "dequantize": {"median_ms": 0.04595199972, "p95_ms": 0.05119999871, "effective_gbps": 104.1115083},
+        "device_pipeline": {"median_ms": 22.15628815, "p95_ms": 22.18393517},
+        "end_to_end": {"median_ms": 23.4896, "p95_ms": 23.829}
+      },
+      "error": {"max_abs": 12.81547546, "mae": 1.429890969, "mse": 3.627163983},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 589828, "compression_ratio": 3.555531443}
+    },
+    {
+      "dataset": "uniform_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.55251217, "p95_ms": 15.57196808, "effective_gbps": 0.2043718703},
+        "dequantize": {"median_ms": 0.05524799973, "p95_ms": 0.06348799914, "effective_gbps": 95.49029876},
+        "device_pipeline": {"median_ms": 15.60928011, "p95_ms": 15.62623978},
+        "end_to_end": {"median_ms": 16.9804, "p95_ms": 17.2458}
+      },
+      "error": {"max_abs": 256, "mae": 71.08952546, "mse": 9417.606096},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 1081344, "compression_ratio": 1.939393939}
+    },
+    {
+      "dataset": "uniform_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.98880005, "p95_ms": 22.01702309, "effective_gbps": 0.2179438618},
+        "dequantize": {"median_ms": 0.04600000009, "p95_ms": 0.05222399905, "effective_gbps": 104.0028694},
+        "device_pipeline": {"median_ms": 22.03647995, "p95_ms": 22.06412888},
+        "end_to_end": {"median_ms": 23.4101, "p95_ms": 23.69}
+      },
+      "error": {"max_abs": 1000, "mae": 265.2653919, "mse": 123635.4684},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 589828, "compression_ratio": 3.555531443}
+    },
+    {
+      "dataset": "outliers_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.31273603, "p95_ms": 15.33843231, "effective_gbps": 0.2075720494},
+        "dequantize": {"median_ms": 0.05311999843, "p95_ms": 0.06332799792, "effective_gbps": 99.31566559},
+        "device_pipeline": {"median_ms": 15.35227203, "p95_ms": 15.3802557},
+        "end_to_end": {"median_ms": 16.6728, "p95_ms": 16.9159}
+      },
+      "error": {"max_abs": 144, "mae": 0.5036014852, "mse": 21.02589868},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 1081344, "compression_ratio": 1.939393939}
+    },
+    {
+      "dataset": "outliers_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.77536011, "p95_ms": 21.80697632, "effective_gbps": 0.2200801262},
+        "dequantize": {"median_ms": 0.04687999934, "p95_ms": 0.05215999857, "effective_gbps": 102.0505987},
+        "device_pipeline": {"median_ms": 21.82539177, "p95_ms": 21.8521595},
+        "end_to_end": {"median_ms": 23.18375, "p95_ms": 23.4564}
+      },
+      "error": {"max_abs": 82.8125, "mae": 1.644610383, "mse": 9.556403621},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 589828, "compression_ratio": 3.555531443}
+    },
+    {
+      "dataset": "zero_heavy_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.09777594, "p95_ms": 15.11628819, "effective_gbps": 0.2105274322},
+        "dequantize": {"median_ms": 0.05318399891, "p95_ms": 0.06422399729, "effective_gbps": 99.19615125},
+        "device_pipeline": {"median_ms": 15.13779163, "p95_ms": 15.1674881},
+        "end_to_end": {"median_ms": 16.5889, "p95_ms": 16.9669}
+      },
+      "error": {"max_abs": 3.9375, "mae": 0.03593114778, "mse": 0.02811114957},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 1081344, "compression_ratio": 1.939393939}
+    },
+    {
+      "dataset": "zero_heavy_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 21.97145557, "p95_ms": 22.00473595, "effective_gbps": 0.2181159088},
+        "dequantize": {"median_ms": 0.04505600035, "p95_ms": 0.06239999831, "effective_gbps": 106.1819061},
+        "device_pipeline": {"median_ms": 22.01491261, "p95_ms": 22.04159927},
+        "end_to_end": {"median_ms": 23.6112, "p95_ms": 24.1072}
+      },
+      "error": {"max_abs": 9.849700928, "mae": 0.07588134008, "mse": 0.1290130419},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 589828, "compression_ratio": 3.555531443}
+    },
+    {
+      "dataset": "multiscale_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.30665588, "p95_ms": 15.33030415, "effective_gbps": 0.2076545017},
+        "dequantize": {"median_ms": 0.0580479987, "p95_ms": 0.06246399879, "effective_gbps": 90.88423578},
+        "device_pipeline": {"median_ms": 15.35524797, "p95_ms": 15.38028812},
+        "end_to_end": {"median_ms": 16.69765, "p95_ms": 16.9667}
+      },
+      "error": {"max_abs": 1024, "mae": 10.84248866, "mse": 1444.208387},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 1081344, "compression_ratio": 1.939393939}
+    },
+    {
+      "dataset": "multiscale_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097152,
+      "elements": 1048576,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 22.11726379, "p95_ms": 22.1552639, "effective_gbps": 0.2166779781},
+        "dequantize": {"median_ms": 0.04505600035, "p95_ms": 0.05596800148, "effective_gbps": 106.1819061},
+        "device_pipeline": {"median_ms": 22.15731239, "p95_ms": 22.18393517},
+        "end_to_end": {"median_ms": 23.5983, "p95_ms": 23.9094}
+      },
+      "error": {"max_abs": 2752, "mae": 43.14750684, "mse": 18742.9585},
+      "storage": {"original_bytes": 2097152, "quantized_payload_bytes": 589828, "compression_ratio": 3.555531443}
+    },
+    {
+      "dataset": "tail_normal_fp32",
+      "format": "MXFP8",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194300,
+      "elements": 1048575,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.30761623, "p95_ms": 15.33644772, "effective_gbps": 0.3446417077},
+        "dequantize": {"median_ms": 0.05468800105, "p95_ms": 0.06860800087, "effective_gbps": 96.46801672},
+        "device_pipeline": {"median_ms": 15.34054375, "p95_ms": 15.37110424},
+        "end_to_end": {"median_ms": 17.05455, "p95_ms": 17.2662}
+      },
+      "error": {"max_abs": 3.994911194, "mae": 0.3599033812, "mse": 0.2817691882},
+      "storage": {"original_bytes": 4194300, "quantized_payload_bytes": 1081343, "compression_ratio": 3.878787767}
+    },
+    {
+      "dataset": "tail_normal_fp32",
+      "format": "NVFP4",
+      "input_dtype": "fp32",
+      "input_payload_bytes": 4194300,
+      "elements": 1048575,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 22.11635208, "p95_ms": 22.14268875, "effective_gbps": 0.4063337375},
+        "dequantize": {"median_ms": 0.04808000103, "p95_ms": 0.05734400079, "effective_gbps": 99.50349205},
+        "device_pipeline": {"median_ms": 22.16089535, "p95_ms": 22.1890564},
+        "end_to_end": {"median_ms": 23.84405, "p95_ms": 24.0703}
+      },
+      "error": {"max_abs": 12.85183716, "mae": 1.42988724, "mse": 3.627415583},
+      "storage": {"original_bytes": 4194300, "quantized_payload_bytes": 589828, "compression_ratio": 7.111056104}
+    },
+    {
+      "dataset": "tail_normal_fp16",
+      "format": "MXFP8",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097150,
+      "elements": 1048575,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 15.31187153, "p95_ms": 15.32723236, "effective_gbps": 0.2075835729},
+        "dequantize": {"median_ms": 0.05529600009, "p95_ms": 0.06041600183, "effective_gbps": 95.40731682},
+        "device_pipeline": {"median_ms": 15.3466239, "p95_ms": 15.37843227},
+        "end_to_end": {"median_ms": 16.636, "p95_ms": 16.8646}
+      },
+      "error": {"max_abs": 4, "mae": 0.3599062854, "mse": 0.2817998993},
+      "storage": {"original_bytes": 2097150, "quantized_payload_bytes": 1081343, "compression_ratio": 1.939393883}
+    },
+    {
+      "dataset": "tail_normal_fp16",
+      "format": "NVFP4",
+      "input_dtype": "fp16",
+      "input_payload_bytes": 2097150,
+      "elements": 1048575,
+      "timing": {
+        "warmup": 10,
+        "repeats": 100,
+        "quantize": {"median_ms": 22.12009621, "p95_ms": 22.15628815, "effective_gbps": 0.2166500523},
+        "dequantize": {"median_ms": 0.04710400105, "p95_ms": 0.05119999871, "effective_gbps": 101.5652151},
+        "device_pipeline": {"median_ms": 22.16340828, "p95_ms": 22.19599915},
+        "end_to_end": {"median_ms": 23.54335, "p95_ms": 23.9722}
+      },
+      "error": {"max_abs": 12.81547546, "mae": 1.429891397, "mse": 3.627166524},
+      "storage": {"original_bytes": 2097150, "quantized_payload_bytes": 589828, "compression_ratio": 3.555528052}
+    }
+  ]
+}

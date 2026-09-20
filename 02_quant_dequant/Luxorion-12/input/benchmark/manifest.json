@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "tensor_header_bytes": 20,
+  "endianness": "little",
+  "row_major": true,
+  "block_layout": "continuous_flattened",
+  "seed": 1234,
+  "notes": "Synthetic reproducible coverage set; not a substitute for real model weights or activations",
+  "datasets": [
+    {"file": "uniform_fp32_1024x1024_seed1234.tensor.bin", "distribution": "uniform", "dtype": "fp32", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "min": -6000.0, "max": 6000.0},
+    {"file": "normal_fp32_1024x1024_seed1234.tensor.bin", "distribution": "normal", "dtype": "fp32", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "mean": 0.0, "stddev": 20.0},
+    {"file": "outliers_fp32_1024x1024_seed1234.tensor.bin", "distribution": "normal_with_outliers", "dtype": "fp32", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "mean": 0.0, "stddev": 20.0, "outlier_interval": 1000, "outlier_magnitude": 6000.0},
+    {"file": "zero_heavy_fp32_1024x1024_seed1234.tensor.bin", "distribution": "zero_heavy_normal", "dtype": "fp32", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "nonzero_probability": 0.1, "nonzero_stddev": 20.0},
+    {"file": "multiscale_fp32_1024x1024_seed1234.tensor.bin", "distribution": "block_scaled_normal", "dtype": "fp32", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "block_size": 32, "power_cycle_min": -8, "power_cycle_max": 8},
+    {"file": "normal_fp16_1024x1024_seed1234.tensor.bin", "distribution": "normal", "dtype": "fp16", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "mean": 0.0, "stddev": 20.0},
+    {"file": "uniform_fp16_1024x1024_seed1234.tensor.bin", "distribution": "uniform", "dtype": "fp16", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "min": -6000.0, "max": 6000.0},
+    {"file": "outliers_fp16_1024x1024_seed1234.tensor.bin", "distribution": "normal_with_outliers", "dtype": "fp16", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "mean": 0.0, "stddev": 20.0, "outlier_interval": 1000, "outlier_magnitude": 6000.0},
+    {"file": "zero_heavy_fp16_1024x1024_seed1234.tensor.bin", "distribution": "zero_heavy_normal", "dtype": "fp16", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "nonzero_probability": 0.1, "nonzero_stddev": 20.0},
+    {"file": "multiscale_fp16_1024x1024_seed1234.tensor.bin", "distribution": "block_scaled_normal", "dtype": "fp16", "num_rows": 1024, "num_cols": 1024, "element_count": 1048576, "block_size": 32, "power_cycle_min": -8, "power_cycle_max": 8},
+    {"file": "tail_normal_fp32_1023x1025_seed1234.tensor.bin", "distribution": "normal", "dtype": "fp32", "num_rows": 1023, "num_cols": 1025, "element_count": 1048575, "tail_mod_16": 15, "tail_mod_32": 31},
+    {"file": "tail_normal_fp16_1023x1025_seed1234.tensor.bin", "distribution": "normal", "dtype": "fp16", "num_rows": 1023, "num_cols": 1025, "element_count": 1048575, "tail_mod_16": 15, "tail_mod_32": 31}
+  ]
+}
