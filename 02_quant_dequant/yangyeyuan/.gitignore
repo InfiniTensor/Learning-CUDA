@@ -1,0 +1,13 @@
+build/
+build-hw/
+build-had/
+results/fixtures/
+results/hw_path/fixtures/**/*.bin
+results/profile_fixture/
+results/profile_*/
+results/**/*.lpq
+results/**/dequantized.bin
+results/**/*.ncu-rep
+results/**/*.nsys-rep
+results/**/*.sqlite
+results/nsys_fixture_4096/

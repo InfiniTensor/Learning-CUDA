@@ -1,0 +1,23 @@
+{
+  "mode": "gemm",
+  "format": "nvfp4",
+  "shape": [1024, 1024],
+  "actual_gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "dependency": "cuBLASLt（第三方库）+ 低精度 Tensor Core",
+  "hw_supported": true,
+  "hw_impl": "cuBLASLt FP4 E2M1 + VEC16_UE4M3 block scale",
+  "warmup": 20,
+  "iterations": 200,
+  "hw_gemm_ms": 0.01642687991,
+  "sw_dequant_ms": 0.09276255965,
+  "sw_gemm_ms": 0.05768208206,
+  "sw_pipeline_ms": 0.1504446417,
+  "hw_tflops": 130.7298562,
+  "sw_tflops": 37.22964864,
+  "gemm_speedup": 3.5114448,
+  "pipeline_speedup": 9.1584429,
+  "self_check_hw_rel_error": 0.0002098321171,
+  "self_check_sw_rel_error": 0.0002660564742,
+  "bench_hw_vs_sw_max_abs": 0.25,
+  "bench_hw_vs_sw_max_rel": 0.0006535947712
+}

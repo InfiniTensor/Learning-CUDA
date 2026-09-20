@@ -1,0 +1,21 @@
+Generating SQLite file results/nsys/mxfp8_4096.sqlite from results/nsys/mxfp8_4096.nsys-rep
+Processing [results/nsys/mxfp8_4096.sqlite] with [/home/yyy/.local/cuda-13.2/nsight-systems-2025.6.3/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     75.2         61129081         23  2657786.1  2581506.0   2574275   3413198     237710.6  void lpq::<unnamed>::mx_block_scale_kernel<float>(const T1 *, unsigned char *, unsigned long, int)  
+     14.8         12003969         23   521911.7   521639.0    519879    526887       1371.4  void lpq::<unnamed>::mx_quantize_kernel<float>(const T1 *, unsigned char *, const unsigned char *, …
+     10.0          8157998         23   354695.6   308356.0    297284   1384402     224508.0  void lpq::<unnamed>::dequantize_kernel<float>(const unsigned char *, const unsigned char *, const f…
+      0.0            10144         23      441.0      448.0       416       544         33.4  lpq::<unnamed>::finish_global_scale_kernel(float *, const float *, lpq::Format)                     
+
+Processing [results/nsys/mxfp8_4096.sqlite] with [/home/yyy/.local/cuda-13.2/nsight-systems-2025.6.3/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     55.0          6831196      4  1707799.0   711769.5       960   5406697    2551956.7  [CUDA memcpy Device-to-Host]
+     45.0          5580011      1  5580011.0  5580011.0   5580011   5580011          0.0  [CUDA memcpy Host-to-Device]
+
