@@ -1,0 +1,223 @@
+--- a/include/gpu.cuh
++++ b/include/gpu.cuh
+@@ -39,7 +39,7 @@
+   }
+   if (lane == 0)
+     scales[g] =
+-        p.fmt == MXFP8 ? mx_scale(a) : encode8(divide_rn(divide_rn(a, global_scale(*amax)), 6.0f));
++        p.fmt == MXFP8 ? mx_scale(a) : encode8((a / global_scale(*amax)) / 6.0f);
+ }
+ __device__ inline size_t group_index(size_t row, size_t col, Layout p) {
+   return p.tensor ? 0 : row * ((p.cols + p.block - 1) / p.block) + col / p.block;
+@@ -51,8 +51,8 @@
+   float s = scale_value(scales[group_index(row, col, p)], p.fmt);
+   float value = load(x, i, p.dtype);
+   if (p.fmt == NVFP4)
+-    value = divide_rn(value, global_scale(*amax));
+-  float y = s == 0 ? 0 : divide_rn(value, s);
++    value /= global_scale(*amax);
++  float y = s == 0 ? 0 : value / s;
+   float u = uniform(i, p.seed);
+   return p.fmt == MXFP8 ? encode8(y, p.stochastic, u) : encode4(y, p.stochastic, u);
+ }
+@@ -102,15 +102,15 @@
+   unsigned code_scale = 0;
+   if (lane % B == 0)
+     code_scale = p.tensor ? scales[0]
+-                          : (FMT == MXFP8 ? mx_scale(a) : encode8(divide_rn(divide_rn(a, global), 6.0f)));
++                          : (FMT == MXFP8 ? mx_scale(a) : encode8((a / global) / 6.0f));
+   code_scale = __shfl_sync(FULL_WARP_MASK, code_scale, 0, B);
+   if (!p.tensor && col < limit && lane % B == 0)
+     scales[row * ((p.cols + B - 1) / B) + col / B] = uint8_t(code_scale);
+   float scale = scale_value(uint8_t(code_scale), FMT);
+   if (FMT == NVFP4)
+-    value = divide_rn(value, global);
++    value /= global;
+   float z = FMT == MXFP8 ? mx_scaled(value, uint8_t(code_scale))
+-                         : (scale == 0 ? 0 : divide_rn(value, scale));
++                         : (scale == 0 ? 0 : value / scale);
+   float u = p.stochastic ? uniform(row * p.cols + col, p.seed) : 0.0f;
+   unsigned code = FMT == MXFP8 ? encode8(z, p.stochastic, u)
+                                : encode4_scaled(value, scale, p.stochastic, u);
+@@ -159,25 +159,6 @@
+     return;
+   }
+   constexpr int V = 8, THREADS = 256;
+-#elif defined(__MUSACC__)
+-  // S4000: scalar small tiles avoid setup overhead. Four-value tiles favor
+-  // medium inputs; eight-value tiles amortize packing on streamed tensors.
+-  if (p.count() <= 65536) {
+-    quant_blocks_kernel<FMT, true><<<(p.count() + 255) / 256, 256>>>(
+-        x, data, scales, amax, p);
+-    return;
+-  }
+-  if (p.count() <= 1048576) {
+-    size_t grid = (p.count() + 2047) / 2048;
+-    if (p.dtype == FP32)
+-      quant_vector_kernel<FMT, FP32, 4><<<grid, 512>>>(x, data, scales, amax, p);
+-    else if (p.dtype == FP16)
+-      quant_vector_kernel<FMT, FP16, 4><<<grid, 512>>>(x, data, scales, amax, p);
+-    else
+-      quant_vector_kernel<FMT, BF16, 4><<<grid, 512>>>(x, data, scales, amax, p);
+-    return;
+-  }
+-  constexpr int V = 8, THREADS = 128;
+ #elif defined(__ILUVATAR__)
+   // MR-V100: two FP32 values per lane favor MXFP8, while NVFP4's
+   // 16-bit inputs benefit from eight. The scan is in results/iluvatar/.
+@@ -215,24 +196,7 @@
+ 
+ inline void launch_max(const void *x, size_t n, int dtype, float *amax) {
+   cudaMemsetAsync(amax, 0, sizeof(float));
+-#if defined(__MUSACC__)
+-  // The scan includes clear + reduction. Small grids reduce atomic overhead;
+-  // streamed FP32 inputs need more CTAs to cover the device's 64 MPs.
+-  bool small = n <= 1048576;
+-  if (dtype == FP32) {
+-    if (small)
+-      maximum_vector<FP32, 4><<<std::min(size_t(128), (n + 1023) / 1024), 256>>>(x, n, amax);
+-    else
+-      maximum_vector<FP32, 8><<<std::min(size_t(1024), (n + 4095) / 4096), 512>>>(x, n, amax);
+-  } else {
+-    int threads = small ? 128 : 256;
+-    size_t grid = std::min(size_t(small ? 128 : 256), (n + threads * 8 - 1) / (threads * 8));
+-    if (dtype == FP16)
+-      maximum_vector<FP16, 8><<<grid, threads>>>(x, n, amax);
+-    else
+-      maximum_vector<BF16, 8><<<grid, threads>>>(x, n, amax);
+-  }
+-#elif defined(__ILUVATAR__)
++#if defined(__ILUVATAR__)
+   // Scalar FP32 accesses outperform vector loads on MR-V100. Half-size
+   // inputs use four values per lane; cap the grid to amortize the final atomics.
+   if (dtype == FP32)
+@@ -296,28 +260,6 @@
+     return;
+   }
+   int half_threads = p.count() <= 1048576 ? 512 : 128;
+-#elif defined(__MUSACC__)
+-  if (p.count() <= 65536) {
+-    dequant_blocks_kernel<FMT, true><<<(p.bytes() + 255) / 256, 256>>>(
+-        data, scales, global, out, out_type, p);
+-    return;
+-  }
+-  constexpr int half_threads = 128;
+-  if (p.count() <= 1048576) {
+-    size_t grid = (p.count() + 2047) / 2048;
+-    if (out_type == FP32)
+-      dequant_vector_kernel<FMT, FP32, 4><<<grid, 512>>>(data, scales, global, out, p);
+-    else if (out_type == FP16)
+-      dequant_vector_kernel<FMT, FP16, 4><<<grid, 512>>>(data, scales, global, out, p);
+-    else
+-      dequant_vector_kernel<FMT, BF16, 4><<<grid, 512>>>(data, scales, global, out, p);
+-    return;
+-  }
+-  if (out_type == FP32 && FMT == NVFP4) {
+-    dequant_vector_kernel<FMT, FP32, 8><<<(p.count() + 1023) / 1024, 128>>>(
+-        data, scales, global, out, p);
+-    return;
+-  }
+ #elif defined(__ILUVATAR__)
+   // Small outputs favor fewer, wider CTAs; large outputs retain the streamed
+   // vector path. Keep the cutoff aligned with the tested quantization boundary.
+--- a/include/numeric.cuh
++++ b/include/numeric.cuh
+@@ -196,41 +196,6 @@
+   }
+   return uint8_t(c | (negative(x) ? 8 : 0));
+ }
+-// Certify an approximate quotient before accepting it. With normal inputs,
+-// FMA gives a rounded residual a-q*b. Each rounding-interval boundary is b
+-// times a power of two, hence exact here. A residual strictly between those
+-// representable boundaries proves q is the correctly rounded quotient. Ties,
+-// extreme exponents and an uncertified candidate use the precise SDK divider.
+-__host__ __device__ inline float divide_rn(float a, float b) {
+-#if defined(__MUSA_ARCH__)
+-  union Bits { float f; uint32_t u; } x{a}, y{b}, q{}, upper{}, lower{};
+-  unsigned sign = (x.u ^ y.u) & 0x80000000U;
+-  x.u &= 0x7fffffffU;
+-  y.u &= 0x7fffffffU;
+-  unsigned ex = x.u >> 23, ey = y.u >> 23;
+-  // This range also keeps reciprocal, residual boundaries and correction
+-  // products away from FP32 underflow/overflow on S4000.
+-  if (ex >= 67 && ex <= 187 && ey >= 67 && ey <= 187) {
+-    float r = __fdividef(1.0f, y.f);
+-    q.f = x.f * r;
+-    q.f = __fmaf_rn(__fmaf_rn(-q.f, y.f, x.f), r, q.f);
+-    unsigned eq = q.u >> 23;
+-    if (eq >= 67 && eq <= 187 && ey + eq >= 153) {
+-      upper.u = (eq - 24) << 23;
+-      lower.u = (eq - 24 - ((q.u & 0x7fffffU) == 0)) << 23;
+-      float residual = __fmaf_rn(-q.f, y.f, x.f);
+-      if (residual < y.f * upper.f && residual > -y.f * lower.f) {
+-        q.u |= sign;
+-        return q.f;
+-      }
+-    }
+-  }
+-  return __fdiv_rn(a, b);
+-#else
+-  return a / b;
+-#endif
+-}
+-
+ // E4M3 scales times the E2M1 decision midpoints are exactly representable
+ // in FP32. Comparing in the scaled domain removes one division for RNE.
+ // Stochastic rounding still uses the rounded quotient and its original RNG.
+@@ -239,7 +204,7 @@
+   if (scale == 0)
+     return 0;
+   if (stochastic)
+-    return encode4(divide_rn(x, scale), true, u);
++    return encode4(x / scale, true, u);
+   float a = fabsf(x);
+   unsigned c = (a > scale * 0.25f) + (a >= scale * 0.75f) + (a > scale * 1.25f) +
+                (a >= scale * 1.75f) + (a > scale * 2.5f) + (a >= scale * 3.5f) +
+@@ -345,6 +310,6 @@
+ }
+ __host__ __device__ inline float global_scale(float amax) {
+   // Preserve a nonzero scale for subnormal FP32 inputs as well.
+-  return amax == 0 ? 1.0f : fmaxf(divide_rn(amax, 2688.0f), 0x1p-126f);
++  return amax == 0 ? 1.0f : fmaxf(amax / 2688.0f, 0x1p-126f);
+ }
+ } // namespace lp
+--- a/include/platform.cuh
++++ b/include/platform.cuh
+@@ -3,8 +3,8 @@
+ // Keep one numeric/kernel implementation. Only runtime names differ for MUSA;
+ // device intrinsics and matrix fragments are handled explicitly by each backend.
+ #if defined(__MUSACC__)
++#include <musa_runtime.h>
+ #include <musa_fp16.h>
+-#include <musa_runtime.h>
+ #define cudaDeviceProp musaDeviceProp
+ #define cudaDeviceSynchronize musaDeviceSynchronize
+ #define cudaError_t musaError_t
+@@ -28,6 +28,6 @@
+ #define cudaMemsetAsync musaMemsetAsync
+ #define cudaSuccess musaSuccess
+ #else
++#include <cuda_runtime.h>
+ #include <cuda_fp16.h>
+-#include <cuda_runtime.h>
+ #endif
+--- a/include/vector.cuh
++++ b/include/vector.cuh
+@@ -65,7 +65,7 @@
+   float global = FMT == NVFP4 ? global_scale(*amax) : 1;
+   unsigned s = 0;
+   if (threadIdx.x % WIDTH == 0)
+-    s = p.tensor ? scales[0] : (FMT == MXFP8 ? mx_scale(a) : encode8(divide_rn(divide_rn(a, global), 6.0f)));
++    s = p.tensor ? scales[0] : (FMT == MXFP8 ? mx_scale(a) : encode8((a / global) / 6));
+   s = __shfl_sync(FULL_WARP_MASK, s, 0, WIDTH);
+   if (valid && !p.tensor && threadIdx.x % WIDTH == 0)
+     scales[i / B] = uint8_t(s);
+@@ -91,7 +91,7 @@
+       if constexpr (FMT == MXFP8)
+         codes[k] = encode8(mx_scaled(values[k], uint8_t(s)), p.stochastic, u);
+       else
+-        codes[k] = encode4_scaled(divide_rn(values[k], global), scale, p.stochastic, u);
++        codes[k] = encode4_scaled(values[k] / global, scale, p.stochastic, u);
+     }
+   }
+   if (valid) {

@@ -1,0 +1,602 @@
+2026-09-20 08:03:17 [INFO] [76786] [76786] [export_manager.cpp:123] Start to load data!
+2026-09-20 08:03:17 [INFO] [76786] [76786] [data_processor.cpp:31] HASH_INIT Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76786] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/ge_logic_stream_info.db.
+2026-09-20 08:03:17 [INFO] [76786] [76786] [hash_init_processor.cpp:59] Init Hash data, dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76786] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/ge_hash.db and GeHashInfo success.
+2026-09-20 08:03:17 [INFO] [76786] [76786] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76786] [db_runner.h:90] Query data success: SELECT hash_key, hash_value FROM GeHashInfo
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] ACC_PMU Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.cpp:31] AICORE_FREQ Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76788] [data_processor.cpp:31] API Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.cpp:31] BIU_PERF Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.cpp:31] BLOCK_DETAIL Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.cpp:31] CCU_MISSION Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:31] CHIP_TRAINS Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.cpp:31] COMMUNICATION Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/ccu_add_info.db.
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/ccu_add_info.db.
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:31] COMPUTE_TASK_INFO Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/acc_pmu.db.
+2026-09-20 08:03:17 [INFO] [76786] [76793] [data_processor.cpp:31] CPU_USAGE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.h:80] Save ACC_PMU data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76793] [host_usage_processor.cpp:27] Start process CPU_USAGE.
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.h:82] ACC_PMU no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] DDR Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76788] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/api_event.db and ApiData success.
+2026-09-20 08:03:17 [INFO] [76786] [76788] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hccl_single_device.db.
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hccl_single_device.db.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:68] There are 0 records before COMMUNICATION_TASK_INFO data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [WARN] [76786] [76793] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/host_cpu_usage.db.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:73] There are 0 records after COMMUNICATION_TASK_INFO data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76793] [data_processor.cpp:31] DEVICE_MSTX Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:68] There are 0 records before COMMUNICATION_TASK_INFO data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:73] There are 0 records after COMMUNICATION_TASK_INFO data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:80] Save COMMUNICATION_TASK_INFO data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.h:82] COMMUNICATION_TASK_INFO no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:80] Save COMMUNICATION_OP data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/chip_trans.db.
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.h:82] COMMUNICATION_OP no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/chip_trans.db.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.cpp:31] DISK_USAGE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/biu_perf.db.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:68] There are 0 records before PA_LINK_INFO data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [host_usage_processor.cpp:27] Start process DISK_USAGE.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.h:80] Save NPU_MEM data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:73] There are 0 records after PA_LINK_INFO data filtering.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.h:82] NPU_MEM no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:68] There are 0 records before ENUM_PCIE_INFO data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.cpp:31] HBM Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:73] There are 0 records after ENUM_PCIE_INFO data filtering.
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/ccu.db.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save PA_LINK_INFO data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/ge_info.db and TaskInfo success.
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:68] There are 0 records before CCU_MISSION data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.h:82] PA_LINK_INFO no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save ENUM_PCIE_INFO data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:73] There are 0 records after CCU_MISSION data filtering.
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.h:82] ENUM_PCIE_INFO no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:80] Save CCU_MISSION data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:31] HCCS Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.h:82] CCU_MISSION no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.cpp:31] KFC_COMM Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.cpp:54] Check V6BlockPmu not exists
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.h:80] Save BLOCK_DETAIL data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76788] [db_runner.h:90] Query data success: SELECT struct_type, id, level, thread_id, item_id, start, end, connection_id FROM ApiData
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.h:82] BLOCK_DETAIL no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/host_disk_usage.db.
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.cpp:31] KFC_TASK Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.cpp:31] LLC Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hbm.db.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.h:80] Save HBM data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.h:82] HBM no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.h:80] Save HBM data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/ddr.db.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.h:82] HBM no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.h:80] Save DDR data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/freq.db and FreqParse success.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.cpp:31] LOW_POWER Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.h:82] DDR no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76792] [aicore_freq_processor.cpp:100] AicoreFreqProcessor GetData, dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/freq.db
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hccl_single_device.db.
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] MC2_COMM_INFO Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76792] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hccs.db.
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/mc2_comm_info.db.
+2026-09-20 08:03:17 [INFO] [76786] [76796] [db_runner.h:90] Query data success: SELECT hashid, model_id, op_name, stream_id, task_id, block_num, mix_block_num, task_type, op_type, op_flag, batch_id, IFNULL(input_formats, 'NULL'), IFNULL(input_data_types, 'NULL'), IFNULL(input_shapes, 'NULL'), IFNULL(output_formats, 'NULL'), IFNULL(output_data_types, 'NULL'), IFNULL(output_shapes, 'NULL'), device_id, context_id, (case when op_state is 'N/A' then 'N/A' when op_state is '1' then 'dynamic' when op_state is '0' then 'static' end) FROM TaskInfo
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save HCCS data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/hccl_single_device.db.
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] MEMCPY_INFO Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.h:82] HCCS no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:80] Save KFC_COMM data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save HCCS data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.h:82] KFC_COMM no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.h:82] HCCS no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:80] Save KFC_COMM data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:31] MEM_USAGE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.h:82] KFC_COMM no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [host_usage_processor.cpp:27] Start process MEM_USAGE.
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.cpp:31] MSTX Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76791] [low_power_processor.cpp:32] This platformVersion: 5 does not support the processing of low power data.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.cpp:31] NETDEV_STATS Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.h:80] Save COMPUTE_TASK_INFO data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:31] NETWORK_USAGE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76792] [db_runner.h:90] Query data success: SELECT syscnt, freq FROM FreqParse
+2026-09-20 08:03:17 [INFO] [76786] [76796] [host_usage_processor.cpp:27] Start process NETWORK_USAGE.
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/llc.db.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:80] Save LLC data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.h:82] LLC no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76792] [aicore_freq_processor.cpp:119] AicoreFreqProcessor FormatData.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.h:80] Save LLC data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.h:82] LLC no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76793] [data_processor.cpp:54] Check StepTrace not exists
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.cpp:31] NIC Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/kfc_info.db.
+2026-09-20 08:03:17 [INFO] [76786] [76793] [data_processor.h:80] Save TASK data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/kfc_info.db.
+2026-09-20 08:03:17 [WARN] [76786] [76793] [data_processor.h:82] TASK no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.h:80] Save KFC_TASK data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/host_mem_usage.db.
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.h:82] KFC_TASK no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76793] [data_processor.cpp:31] NIC_TIMELINE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:31] NPU_MEM Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.cpp:31] NPU_MODULE_MEM Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:54] Check MemcpyInfo not exists
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] NPU_OP_MEM Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/task_memory.db.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/netdev_stats.db.
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] OSRT_API Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.h:80] Save NETDEV_STATS data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76787] [host_usage_processor.cpp:27] Start process OSRT_API.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.h:82] NETDEV_STATS no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.cpp:31] PCIE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76791] [pcie_processor.cpp:51] PCIeProcessor Process, dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76796] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/host_network_usage.db.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:80] Save AICORE_FREQ data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:31] QOS Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.cpp:31] ROCE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/nic.db.
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/nic.db.
+2026-09-20 08:03:17 [INFO] [76786] [76789] [data_processor.cpp:31] ROCE_TIMELINE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/msproftx.db.
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/msproftx.db.
+2026-09-20 08:03:17 [WARN] [76786] [76790] [msproftx_host_processor.cpp:83] msprofTx in /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF is not exists, return
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.cpp:31] SIO Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/host/sqlite/host_runtime_api.db.
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.cpp:31] SOC Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/roce.db.
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/roce.db.
+2026-09-20 08:03:17 [WARN] [76786] [76796] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/qos.db.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.cpp:31] STEP_TRACE Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.h:80] Save QOS data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76796] [data_processor.h:82] QOS no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:31] TASK Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/npu_module_mem.db.
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/npu_mem.db.
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.h:80] Save NPU_MODULE_MEM data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save NPU_MEM data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.h:82] NPU_MODULE_MEM no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76794] [data_processor.h:82] NPU_MEM no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/sio.db.
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.cpp:31] UB Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:31] UNIFIED_PMU Run. Dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76790] [data_processor.h:80] Save SIO data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76790] [data_processor.h:82] SIO no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/soc_profiler.db.
+2026-09-20 08:03:17 [INFO] [76786] [76787] [data_processor.h:80] Save SOC data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76787] [data_processor.h:82] SOC no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76788] [data_processor.h:68] There are 91 records before API data filtering, filterTime is 1789891394055391000.
+2026-09-20 08:03:17 [WARN] [76786] [76793] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/nicreceivesend_table.db.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/pcie.db.
+2026-09-20 08:03:17 [WARN] [76786] [76793] [sys_io_processor.cpp:238] No NIC_TIMELINE data to save into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76788] [data_processor.h:73] There are 91 records after API data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76791] [data_processor.h:80] Save PCIE data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76788] [data_processor.h:80] Save API data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/ascend_task.db and AscendTask success.
+2026-09-20 08:03:17 [WARN] [76786] [76791] [data_processor.h:82] PCIE no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76789] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/rocereceivesend_table.db.
+2026-09-20 08:03:17 [WARN] [76786] [76789] [sys_io_processor.cpp:238] No ROCE_TIMELINE data to save into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/trace.db.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:68] There are 0 records before STEP_TRACE data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:73] There are 0 records after STEP_TRACE data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:85] TaskBasedProcess, dir is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF
+2026-09-20 08:03:17 [INFO] [76786] [76796] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/trace.db.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:68] There are 0 records before STEP_TRACE data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:73] There are 0 records after STEP_TRACE data filtering.
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/ub.db.
+2026-09-20 08:03:17 [INFO] [76786] [76795] [data_processor.h:80] Save NPU_MEM data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76795] [data_processor.h:82] NPU_MEM no data to inject to dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.cpp:42] Can't find the db, the path is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/trace.db.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:68] There are 0 records before STEP_TRACE data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:73] There are 0 records after STEP_TRACE data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:80] Save STEP_TRACE data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.h:82] STEP_TRACE no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:80] Save STEP_TRACE data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76796] [db_runner.h:90] Query data success: SELECT a.start_time, a.duration, a.model_id, a.index_id, a.stream_id, a.task_id, a.context_id,a.batch_id, a.connection_id, a.host_task_type, a.device_task_type FROM AscendTask a WHERE a.device_task_type != 'UNKNOWN'
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.h:82] STEP_TRACE no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76792] [data_processor.h:80] Save STEP_TRACE data into dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76792] [data_processor.h:82] STEP_TRACE no data to inject to dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.cpp:58] Check /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db and MetricSummary success.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:130] GetAndCheckTableColumns.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.cpp:152] Start get MetricSummary headers
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.cpp:165] Get MetricSummary columns success
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:176] This column[task_id] does not need to be processed.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:176] This column[stream_id] does not need to be processed.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:176] This column[subtask_id] does not need to be processed.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:176] This column[batch_id] does not need to be processed.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_total_time.
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.h:68] There are 29 records before TASK data filtering, filterTime is 1789891394057924000.
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.h:73] There are 29 records after TASK data filtering.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76796] [data_processor.h:80] Save TASK data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_total_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_total_cycles.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_total_cycles FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mac_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mac_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mac_ratio_extra.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mac_ratio_extra FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_scalar_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_scalar_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_scalar_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_scalar_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mte1_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mte1_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mte1_ratio_extra.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mte1_ratio_extra FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mte2_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mte2_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_mte2_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_mte2_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_fixpipe_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_fixpipe_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_fixpipe_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_fixpipe_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aic_icache_miss_rate.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aic_icache_miss_rate FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_total_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_total_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_total_cycles.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_total_cycles FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_vec_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_vec_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_vec_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_vec_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mac_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mac_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mac_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mac_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_scalar_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_scalar_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_scalar_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_scalar_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte1_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte1_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte1_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte1_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte2_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte2_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte2_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte2_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte3_time.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte3_time FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_mte3_ratio.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_mte3_ratio FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:190] GetTaskBasedData, dbPath is /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/device_0/sqlite/metric_summary.db, column name is aiv_icache_miss_rate.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:79] Start query data
+2026-09-20 08:03:17 [INFO] [76786] [76794] [db_runner.h:90] Query data success: SELECT stream_id, task_id, subtask_id,  batch_id, aiv_icache_miss_rate FROM MetricSummary
+2026-09-20 08:03:17 [INFO] [76786] [76794] [unified_pmu_processor.cpp:239] FormatTaskBasedData.
+2026-09-20 08:03:17 [INFO] [76786] [76794] [data_processor.h:80] Save TASK_PMU_INFO data into dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_assembler.cpp:1235] Start exporting db!
+2026-09-20 08:03:17 [INFO] [76786] [76797] [export_manager.cpp:174] The report parameter is not used.
+2026-09-20 08:03:17 [INFO] [76786] [76797] [timeline_manager.cpp:174] Start exporting timeline!
+2026-09-20 08:03:17 [INFO] [76786] [76797] [file.cpp:399] The file not exists: /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace/PROF_000001_20260920080313667_00076613APBDIJNF/mindstudio_profiler_output/msprof_20260920080317.json.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save QOS data.
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_assembler.cpp:1249] Begin to save NETWORK_USAGE data.
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:1058] QOS data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_assembler.cpp:1249] Begin to save SAMPLE_PMU_SUMMARY data.
+2026-09-20 08:03:17 [WARN] [76786] [76803] [db_assembler.cpp:1020] Host network usage data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.cpp:1249] Begin to save MEM_USAGE data.
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_assembler.cpp:1249] Begin to save TASK_PMU_INFO data.
+2026-09-20 08:03:17 [WARN] [76786] [76817] [db_assembler.cpp:982] Host mem usage data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save NIC data.
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_assembler.cpp:1249] Begin to save COMPUTE_TASK_INFO data.
+2026-09-20 08:03:17 [WARN] [76786] [76800] [db_assembler.cpp:925] UnifiedSampleSummaryPmu data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_assembler.cpp:1249] Begin to save ROCE data.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [json_assembler.cpp:28] Begin to Assemble Task Scheduler data
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_assembler.cpp:1249] Begin to save TASK data.
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:833] SysIO NIC data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_assembler.cpp:1249] Begin to save SAMPLE_PMU_TIMELINE data.
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_assembler.cpp:1249] Begin to save NPU_INFO data.
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_assembler.cpp:1249] Begin to save SESSION_TIME_INFO data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.cpp:1249] Begin to save NPU_OP_MEM data.
+2026-09-20 08:03:17 [WARN] [76786] [76803] [db_assembler.cpp:833] SysIO ROCE data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save NPU_MODULE_MEM data.
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_assembler.cpp:1249] Begin to save MSTX data.
+2026-09-20 08:03:17 [INFO] [76786] [76804] [json_assembler.cpp:28] Begin to Assemble Api data
+2026-09-20 08:03:17 [WARN] [76786] [76803] [db_assembler.cpp:496] MsprofTx data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76802] [json_assembler.cpp:28] Begin to Assemble Acc PMU data
+2026-09-20 08:03:17 [WARN] [76786] [76809] [db_assembler.cpp:901] UnifiedSampleTimelinePmu data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76808] [json_assembler.cpp:28] Begin to Assemble HBM data
+2026-09-20 08:03:17 [WARN] [76786] [76802] [acc_pmu_assembler.cpp:87] Can't get accPmuData from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save SOC data.
+2026-09-20 08:03:17 [WARN] [76786] [76808] [hbm_assembler.cpp:59] Can't get hbmData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76802] [json_assembler.cpp:40] No Acc PMU data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_assembler.cpp:1249] Begin to save META_DATA data.
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_assembler.h:44] DBAssembler Save COMPUTE_TASK_INFO Data.
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_assembler.h:44] DBAssembler Save META_DATA Data.
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_assembler.cpp:1249] Begin to save LLC data.
+2026-09-20 08:03:17 [INFO] [76786] [76810] [json_assembler.cpp:28] Begin to Assemble Stars Chip Trans data
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_runner.cpp:53] Start create META_DATA
+2026-09-20 08:03:17 [INFO] [76786] [76814] [json_assembler.cpp:28] Begin to Assemble Communication data
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:697] Soc data not exist.
+2026-09-20 08:03:17 [WARN] [76786] [76808] [json_assembler.cpp:40] No HBM data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76814] [hccl_assembler.cpp:175] Can't get hccl(kfc) task data and hccl(kfc) op data from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76816] [json_assembler.cpp:28] Begin to Assemble HCCS data
+2026-09-20 08:03:17 [WARN] [76786] [76817] [db_assembler.cpp:602] NpuOpMem data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76818] [json_assembler.cpp:28] Begin to Assemble OS Runtime API data
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_runner.cpp:53] Start create COMPUTE_TASK_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.cpp:1249] Begin to save NETDEV_STATS data.
+2026-09-20 08:03:17 [INFO] [76786] [76819] [json_assembler.cpp:28] Begin to Assemble Network Usage data
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:629] NpuModuleMem data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76819] [host_usage_assembler.cpp:138] Begin to assemble Network Usage data.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save DISK_USAGE data.
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save HCCS data.
+2026-09-20 08:03:17 [INFO] [76786] [76812] [json_assembler.cpp:28] Begin to Assemble DDR data
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_assembler.h:44] DBAssembler Save NPU_INFO Data.
+2026-09-20 08:03:17 [WARN] [76786] [76812] [ddr_assembler.cpp:58] Can't get ddrData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76816] [hccs_assembler.cpp:58] Can't get hccsData from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76818] [host_usage_assembler.cpp:138] Begin to assemble OS Runtime API data.
+2026-09-20 08:03:17 [WARN] [76786] [76812] [json_assembler.cpp:40] No DDR data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76816] [json_assembler.cpp:40] No HCCS data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_assembler.h:44] DBAssembler Save SESSION_TIME_INFO Data.
+2026-09-20 08:03:17 [INFO] [76786] [76816] [json_assembler.cpp:28] Begin to Assemble MsprofTx data
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_assembler.h:44] DBAssembler Save TASK Data.
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_runner.cpp:53] Start create SESSION_TIME_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76806] [json_assembler.cpp:36] Assemble Task Scheduler data success, begin to export
+2026-09-20 08:03:17 [WARN] [76786] [76809] [db_assembler.cpp:459] LLC data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.cpp:53] Start create NPU_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_assembler.cpp:1249] Begin to save HOST_INFO data.
+2026-09-20 08:03:17 [INFO] [76786] [76802] [json_assembler.cpp:28] Begin to Assemble Disk Usage data
+2026-09-20 08:03:17 [INFO] [76786] [76812] [json_assembler.cpp:28] Begin to Assemble CPU Usage data
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:1000] Host disk usage data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76812] [host_usage_assembler.cpp:138] Begin to assemble CPU Usage data.
+2026-09-20 08:03:17 [WARN] [76786] [76816] [msprof_tx_assembler.cpp:121] Can't get msprof_host_tx data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:388] HCCS data not exist.
+2026-09-20 08:03:17 [WARN] [76786] [76816] [json_assembler.cpp:40] No MsprofTx data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76810] [chip_trans_assembler.cpp:93] Can't get paLinkInfoData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76817] [db_assembler.cpp:415] NetDevStats data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76802] [host_usage_assembler.cpp:138] Begin to assemble Disk Usage data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.cpp:1249] Begin to save ENUM data.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save HBM data.
+2026-09-20 08:03:17 [WARN] [76786] [76814] [json_assembler.cpp:40] No Communication data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:366] HBM data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save PCIE data.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save NPU_MEM data.
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:653] PCIe data not exist.
+2026-09-20 08:03:17 [WARN] [76786] [76801] [db_assembler.cpp:566] NpuMem data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save DDR data.
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.cpp:1249] Begin to save AICORE_FREQ data.
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:318] DDR data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76816] [json_assembler.cpp:28] Begin to Assemble NPU MEM data
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save ACC_PMU data.
+2026-09-20 08:03:17 [WARN] [76786] [76816] [npu_mem_assembler.cpp:69] Can't get npuMemData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:277] Acc pmu data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [json_assembler.cpp:28] Begin to Assemble Overlap Analysis data
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save OSRT_API data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.cpp:352] EnumProcessor Process.
+2026-09-20 08:03:17 [WARN] [76786] [76806] [overlap_analysis_assembler.cpp:393] No comm task data found
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_MSTX_EVENT_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76814] [json_assembler.cpp:28] Begin to Assemble PCIe data
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_assembler.h:44] DBAssembler Save AICORE_FREQ Data.
+2026-09-20 08:03:17 [INFO] [76786] [76814] [pcie_assembler.cpp:73] Begin to assemble PCIe data.
+2026-09-20 08:03:17 [WARN] [76786] [76810] [json_assembler.cpp:40] No Stars Chip Trans data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76816] [json_assembler.cpp:40] No NPU MEM data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76819] [host_usage_assembler.cpp:65] Can't get host network data from dataInventory.
+2026-09-20 08:03:17 [INFO] [76786] [76816] [json_assembler.cpp:28] Begin to Assemble Stars Soc Info data
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.cpp:53] Start create TASK
+2026-09-20 08:03:17 [INFO] [76786] [76804] [json_assembler.cpp:36] Assemble Api data success, begin to export
+2026-09-20 08:03:17 [WARN] [76786] [76806] [overlap_analysis_assembler.cpp:397] No kfc op data found
+2026-09-20 08:03:17 [WARN] [76786] [76818] [host_usage_assembler.cpp:36] Can't get host runtime api data from dataInventory.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_MSTX_EVENT_TYPE
+2026-09-20 08:03:17 [WARN] [76786] [76818] [json_assembler.cpp:40] No OS Runtime API data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76814] [pcie_assembler.cpp:76] Can't get PCIe Data from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_runner.cpp:53] Start create AICORE_FREQ
+2026-09-20 08:03:17 [WARN] [76786] [76814] [json_assembler.cpp:40] No PCIe data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76810] [json_assembler.cpp:28] Begin to Assemble SIO data
+2026-09-20 08:03:17 [WARN] [76786] [76819] [json_assembler.cpp:40] No Network Usage data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76806] [overlap_analysis_assembler.cpp:401] No kfc comm info found
+2026-09-20 08:03:17 [WARN] [76786] [76810] [sio_assembler.cpp:89] Can't get sioData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76812] [host_usage_assembler.cpp:119] Can't get host cpu data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76810] [json_assembler.cpp:40] No SIO data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76812] [json_assembler.cpp:40] No CPU Usage data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76806] [overlap_analysis_assembler.cpp:340] Find 0 comp tasks not in all tasks.
+2026-09-20 08:03:17 [INFO] [76786] [76810] [json_assembler.cpp:28] Begin to Assemble NIC data
+2026-09-20 08:03:17 [INFO] [76786] [76814] [json_assembler.cpp:28] Begin to Assemble AI Core Freq data
+2026-09-20 08:03:17 [WARN] [76786] [76810] [sys_io_assembler.cpp:81] Can't get SysIOReceiveSendData from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_assembler.h:44] DBAssembler Save HOST_INFO Data.
+2026-09-20 08:03:17 [INFO] [76786] [76808] [json_assembler.cpp:28] Begin to Assemble Memory Usage data
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_runner.cpp:66] create META_DATA success
+2026-09-20 08:03:17 [INFO] [76786] [76818] [json_assembler.cpp:28] Begin to Assemble Step Trace data
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:1038] OS runtime api data not exist.
+2026-09-20 08:03:17 [WARN] [76786] [76818] [step_trace_assembler.cpp:256] Can't get step trace data from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save MEMCPY_INFO data.
+2026-09-20 08:03:17 [WARN] [76786] [76818] [json_assembler.cpp:40] No Step Trace data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:163] MemcpyInfo data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] sort and union all comp task in overlap analysis for device 0 start
+2026-09-20 08:03:17 [INFO] [76786] [76818] [json_assembler.cpp:28] Begin to Assemble MsprofTx data
+2026-09-20 08:03:17 [INFO] [76786] [76819] [json_assembler.cpp:28] Begin to Assemble LLC data
+2026-09-20 08:03:17 [WARN] [76786] [76818] [device_tx_assembler.cpp:78] Can't get device_tx data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76819] [llc_assembler.cpp:74] Can't get LLcData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76818] [json_assembler.cpp:40] No MsprofTx data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76802] [host_usage_assembler.cpp:83] Can't get host disk data from dataInventory.
+2026-09-20 08:03:17 [INFO] [76786] [76804] [json_assembler.cpp:28] Begin to Assemble RoCE data
+2026-09-20 08:03:17 [WARN] [76786] [76802] [json_assembler.cpp:40] No Disk Usage data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76816] [stars_soc_assembler.cpp:56] Can't get socBandwidthData from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save COMMUNICATION data.
+2026-09-20 08:03:17 [WARN] [76786] [76816] [json_assembler.cpp:40] No Stars Soc Info data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:199] Communication op data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] sort and union all comp task in overlap analysis for device 0 end, cost time = 0 ms
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_runner.cpp:53] Start create HOST_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_runner.h:61] Start insert data to META_DATA
+2026-09-20 08:03:17 [WARN] [76786] [76819] [json_assembler.cpp:40] No LLC data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76818] [json_assembler.cpp:28] Begin to Assemble Low Power data
+2026-09-20 08:03:17 [INFO] [76786] [76812] [json_assembler.cpp:28] Begin to Assemble QoS data
+2026-09-20 08:03:17 [INFO] [76786] [76818] [low_power_assembler.cpp:51] Begin to assemble Low Power data.
+2026-09-20 08:03:17 [INFO] [76786] [76802] [json_assembler.cpp:28] Begin to Assemble Biu Perf data
+2026-09-20 08:03:17 [WARN] [76786] [76818] [low_power_assembler.cpp:54] Can't get low power Data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76810] [json_assembler.cpp:40] No NIC data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76802] [biu_perf_assembler.cpp:74] Can't get biuPerf data from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_assembler.h:44] DBAssembler Save TASK_PMU_INFO Data.
+2026-09-20 08:03:17 [WARN] [76786] [76802] [json_assembler.cpp:40] No Biu Perf data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76819] [json_assembler.cpp:28] Begin to Assemble Block Detail data
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_runner.cpp:53] Start create TASK_PMU_INFO
+2026-09-20 08:03:17 [WARN] [76786] [76819] [block_detail_assembler.cpp:49] Can't get blockDetailData from dataInventory.
+2026-09-20 08:03:17 [INFO] [76786] [76814] [aicore_freq_assembler.cpp:46] Begin to assemble AI Core Freq data.
+2026-09-20 08:03:17 [WARN] [76786] [76819] [json_assembler.cpp:40] No Block Detail data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76818] [json_assembler.cpp:40] No Low Power data, don't export deliverable!
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:244] Communication task data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76810] [json_assembler.cpp:28] Begin to Assemble CCU_MISSION data
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save CPU_USAGE data.
+2026-09-20 08:03:17 [WARN] [76786] [76810] [ccu_assembler.cpp:92] Can't get ccu mission data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76813] [db_assembler.cpp:945] Cpu usage data not exist.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] Generate comp events start
+2026-09-20 08:03:17 [INFO] [76786] [76808] [host_usage_assembler.cpp:138] Begin to assemble Memory Usage data.
+2026-09-20 08:03:17 [WARN] [76786] [76804] [sys_io_assembler.cpp:90] Can't get SysIOReceiveSendData from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76812] [qos_assembler.cpp:111] Can't get qosData from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] Generate comp events end, cost time = 0 ms
+2026-09-20 08:03:17 [WARN] [76786] [76810] [json_assembler.cpp:40] No CCU_MISSION data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] Generate comm events start
+2026-09-20 08:03:17 [INFO] [76786] [76816] [json_assembler.cpp:28] Begin to Assemble Ub data
+2026-09-20 08:03:17 [WARN] [76786] [76806] [overlap_analysis_assembler.cpp:90] No comm sections found for generate comm events.
+2026-09-20 08:03:17 [WARN] [76786] [76812] [json_assembler.cpp:40] No QoS data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] Generate comm events end, cost time = 0 ms
+2026-09-20 08:03:17 [WARN] [76786] [76804] [json_assembler.cpp:40] No RoCE data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] Generate comm not overlap comp events start
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.cpp:1249] Begin to save API data.
+2026-09-20 08:03:17 [WARN] [76786] [76806] [overlap_analysis_assembler.cpp:112] No comm sections found for generate comm not overlap comp events.
+2026-09-20 08:03:17 [WARN] [76786] [76816] [ub_assembler.cpp:51] Can't get ub data from dataInventory
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] Generate comm not overlap comp events end, cost time = 0 ms
+2026-09-20 08:03:17 [WARN] [76786] [76816] [json_assembler.cpp:40] No Ub data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] Generate free events start
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] Generate free events end, cost time = 0 ms
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:32] Dump overlap analysis events start
+2026-09-20 08:03:17 [INFO] [76786] [76806] [time_logger.h:39] Dump overlap analysis events end, cost time = 0 ms
+2026-09-20 08:03:17 [INFO] [76786] [76814] [aicore_freq_assembler.cpp:64] Assemble AI Core Freq data success.
+2026-09-20 08:03:17 [INFO] [76786] [76806] [json_assembler.cpp:36] Assemble Overlap Analysis data success, begin to export
+2026-09-20 08:03:17 [INFO] [76786] [76814] [json_assembler.cpp:36] Assemble AI Core Freq data success, begin to export
+2026-09-20 08:03:17 [WARN] [76786] [76808] [host_usage_assembler.cpp:101] Can't get host memory data from dataInventory
+2026-09-20 08:03:17 [WARN] [76786] [76808] [json_assembler.cpp:40] No Memory Usage data, don't export deliverable!
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_assembler.h:44] DBAssembler Save CANN_API Data.
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_runner.cpp:53] Start create CANN_API
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.cpp:66] create NPU_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.h:61] Start insert data to NPU_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_runner.cpp:66] create TASK_PMU_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_runner.h:61] Start insert data to TASK_PMU_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76807] [db_runner.h:72] insert data to TASK_PMU_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_runner.cpp:66] create COMPUTE_TASK_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_runner.h:61] Start insert data to COMPUTE_TASK_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76811] [db_runner.h:72] insert data to COMPUTE_TASK_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76803] [db_runner.h:72] insert data to META_DATA success
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.h:72] insert data to NPU_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_assembler.h:44] DBAssembler Save RANK_DEVICE_MAP Data.
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.cpp:53] Start create RANK_DEVICE_MAP
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.cpp:66] create RANK_DEVICE_MAP success
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.h:61] Start insert data to RANK_DEVICE_MAP
+2026-09-20 08:03:17 [INFO] [76786] [76800] [db_runner.h:72] insert data to RANK_DEVICE_MAP success
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_runner.cpp:66] create SESSION_TIME_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_runner.h:61] Start insert data to SESSION_TIME_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76805] [db_runner.h:72] insert data to SESSION_TIME_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.cpp:66] create TASK success
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.h:61] Start insert data to TASK
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_runner.cpp:66] create CANN_API success
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_runner.h:61] Start insert data to CANN_API
+2026-09-20 08:03:17 [INFO] [76786] [76813] [db_runner.h:72] insert data to CANN_API success
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.h:72] insert data to TASK success
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_assembler.cpp:126] Processor CreateTableIndex, table is TASK , indexName is TaskIndex.
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.cpp:77] Start create TASK index.
+2026-09-20 08:03:17 [INFO] [76786] [76815] [db_runner.cpp:90] create TASK index success
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_runner.cpp:66] create AICORE_FREQ success
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_runner.h:61] Start insert data to AICORE_FREQ
+2026-09-20 08:03:17 [INFO] [76786] [76801] [db_runner.h:72] insert data to AICORE_FREQ success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_MSTX_EVENT_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_MSTX_EVENT_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_MSTX_EVENT_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_HCCL_RDMA_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_HCCL_RDMA_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_HCCL_RDMA_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_HCCL_RDMA_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_HCCL_RDMA_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_HCCL_TRANSPORT_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_HCCL_TRANSPORT_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_HCCL_TRANSPORT_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_HCCL_TRANSPORT_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_HCCL_TRANSPORT_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_HCCL_LINK_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_HCCL_LINK_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_HCCL_LINK_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_HCCL_LINK_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_HCCL_LINK_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_MEMCPY_OPERATION Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_MEMCPY_OPERATION
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_MEMCPY_OPERATION success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_MEMCPY_OPERATION
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_MEMCPY_OPERATION success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_HCCL_DATA_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_HCCL_DATA_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_HCCL_DATA_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_HCCL_DATA_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_HCCL_DATA_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_MODULE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_MODULE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_MODULE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_MODULE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_MODULE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_assembler.h:44] DBAssembler Save ENUM_API_TYPE Data.
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:53] Start create ENUM_API_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.cpp:66] create ENUM_API_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:61] Start insert data to ENUM_API_TYPE
+2026-09-20 08:03:17 [INFO] [76786] [76817] [db_runner.h:72] insert data to ENUM_API_TYPE success
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_runner.cpp:66] create HOST_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_runner.h:61] Start insert data to HOST_INFO
+2026-09-20 08:03:17 [INFO] [76786] [76809] [db_runner.h:72] insert data to HOST_INFO success
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_assembler.h:44] DBAssembler Save STRING_IDS Data.
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_runner.cpp:53] Start create STRING_IDS
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_runner.cpp:66] create STRING_IDS success
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_runner.h:61] Start insert data to STRING_IDS
+2026-09-20 08:03:17 [INFO] [76786] [76799] [db_runner.h:72] insert data to STRING_IDS success

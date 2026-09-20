@@ -1,0 +1,2 @@
+[mssanitizer] logging to file: ./mindstudio_sanitizer_log/mssanitizer_20260920070558_22479.log
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax

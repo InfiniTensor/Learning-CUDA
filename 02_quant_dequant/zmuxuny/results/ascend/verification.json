@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "npu_cases": 182,
+  "negative_cases": 3,
+  "nvidia_cases": 182,
+  "interleaved_cases": 12,
+  "trials_per_binary": 3,
+  "standard_cases": 24,
+  "memcheck_cases": 4,
+  "profile_cases": 4,
+  "binaries": {
+    "quantize": "ce7bca130628ec4c9721a2f5fed8f94d3ac1c03e8b77029f4fb3f0a12b5ee947",
+    "libcamp.so": "9dde3c377f624acdd013c4f98501f53ad008975ca164476e8fc3ba24871dc924"
+  }
+}

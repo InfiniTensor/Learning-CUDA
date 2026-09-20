@@ -1,0 +1,58 @@
+
+Fatbin elf code:
+================
+arch = sm_89
+code version = [1,7]
+host = linux
+compile_size = 64bit
+identifier = src/main.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+
+Fatbin ptx code:
+================
+arch = sm_89
+code version = [8,7]
+host = linux
+compile_size = 64bit
+compressed
+identifier = src/main.cu
+ptxasOptions =  --fmad false --generate-line-info
+
+Fatbin elf code:
+================
+arch = sm_89
+code version = [1,7]
+host = linux
+compile_size = 64bit
+identifier = src/main.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _ZN2lp21dequant_blocks_kernelILi1ELb0EEEvPKhS2_fPviNS_6LayoutE:
+  REG:16 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:432 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp21dequant_blocks_kernelILi0ELb0EEEvPKhS2_fPviNS_6LayoutE:
+  REG:14 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:432 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp21dequant_blocks_kernelILi1ELb1EEEvPKhS2_fPviNS_6LayoutE:
+  REG:16 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:432 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp21dequant_blocks_kernelILi0ELb1EEEvPKhS2_fPviNS_6LayoutE:
+  REG:12 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:432 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp19quant_blocks_kernelILi1ELb0EEEvPKvPhS3_PKfNS_6LayoutE:
+  REG:23 STACK:0 SHARED:0 LOCAL:0 CONSTANT[2]:8 CONSTANT[0]:424 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp19quant_blocks_kernelILi0ELb0EEEvPKvPhS3_PKfNS_6LayoutE:
+  REG:16 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:424 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp19quant_blocks_kernelILi1ELb1EEEvPKvPhS3_PKfNS_6LayoutE:
+  REG:23 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:424 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp19quant_blocks_kernelILi0ELb1EEEvPKvPhS3_PKfNS_6LayoutE:
+  REG:16 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:424 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp14dequant_kernelEPKhS1_fPviNS_6LayoutE:
+  REG:26 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:432 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp12quant_kernelEPKvPhPKhPKfNS_6LayoutE:
+  REG:34 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:424 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp13scales_kernelEPKvPhPKfNS_6LayoutE:
+  REG:26 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:416 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN2lp7maximumEPKvmiPf:
+  REG:13 STACK:0 SHARED:32 LOCAL:0 CONSTANT[0]:384 TEXTURE:0 SURFACE:0 SAMPLER:0

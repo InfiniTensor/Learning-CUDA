@@ -1,0 +1,82 @@
+[mssanitizer] logging to file: ./mindstudio_sanitizer_log/mssanitizer_20260920080239_74963.log
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] Sanitizer finished on kernel ascend_amax. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+quant=1079.68 ms dequant=864.032 ms CPU/GPU exact match

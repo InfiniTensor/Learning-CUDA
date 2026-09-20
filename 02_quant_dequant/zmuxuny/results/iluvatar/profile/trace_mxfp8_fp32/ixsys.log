@@ -1,0 +1,39 @@
+
+**** collection configuration ****
+        trace_cuda = true
+        trace_osrt = false
+        trace_nvtx = false
+        trace_cudnn = false
+        trace_cuinfer = false
+        trace_video = false
+        trace_power = false
+        trace_temperature = false
+        trace_raw_syscalls = false
+        trace_proc_kthread = false
+        trace_metric_sampling = false
+        trace_callstack = false
+        trace_mem = false
+        nic_metrics = false
+        event_sync = false
+        filter_processes = false
+        print_kernel_args = false
+        application command = /root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize
+        application arguments = --input /tmp/iluvatar-profile-ym80c_4r/input --output /tmp/iluvatar-profile-ym80c_4r/out --packed /tmp/iluvatar-profile-ym80c_4r/packed --log /root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp32/metrics.json --repeats 3 --config /root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml
+quant=0.02135 ms dequant=0.01205 ms CPU/GPU exact match
+
+    Waiting for converting temporary file to /root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp32/trace.ixsys   [?25l.  
+    Waiting for filter small slices from file /root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp32/trace.ixsys
+    Waiting for inserting CUDA data from /tmp/18710/injectionDB.18736.sqlite ...
+
+Report file /root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp32/trace.ixsys saved.[?25h
+
+==18736== Profiling application: /root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize --input /tmp/iluvatar-profile-ym80c_4r/input --output /tmp/iluvatar-profile-ym80c_4r/out --packed /tmp/iluvatar-profile-ym80c_4r/packed --log /root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp32/metrics.json --repeats 3 --config /root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml 
+==18736== Profiling result:
+Summary data:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   54.24%  1.1276ms         7  161.08us  156.64us  166.20us  [CUDA memcpy HtoD]
+                   27.60%  573.80us        10  57.380us  2.2300us  77.615us  [CUDA memcpy DtoH]
+                   11.82%  245.92us        12  20.493us  19.776us  21.450us  void lp::quant_vector_kernel<0, 0, 2>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)
+                    6.23%  129.62us        12  10.802us  10.353us  11.361us  void lp::dequant_vector_kernel<0, 1, 8>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)
+                    0.09%  1.9030us         1  1.9030us  1.9030us  1.9030us  [CUDA memset]
+

@@ -1,0 +1,7 @@
+format = "mxfp8"
+block_size = 32
+scale_mode = "block"
+output_type = "fp16"
+rounding = "nearest"
+seed = 42
+target_gpu = "RTX 3060 Laptop GPU"

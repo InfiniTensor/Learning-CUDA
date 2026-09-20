@@ -1,0 +1,24 @@
+$ nsys stats --force-export=true --report cuda_gpu_kern_sum,cuda_api_sum --format csv /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/native/timeline_nvfp4.nsys-rep
+Generating SQLite file /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/native/timeline_nvfp4.sqlite from /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/native/timeline_nvfp4.nsys-rep
+Processing [/root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/native/timeline_nvfp4.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_kern_sum.py]...
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+43.6,173984,46,3782.3,3776.0,3712,4032,51.7,"void lp::quant_vector_kernel<(int)1, (int)1, (int)4>(const void *, unsigned char *, unsigned char *, const float *, lp::Layout)"
+34.5,137825,46,2996.2,3008.0,2912,3105,51.1,"void lp::dequant_vector_kernel<(int)1, (int)0, (int)4>(const unsigned char *, const unsigned char *, float, void *, lp::Layout)"
+21.9,87520,46,1902.6,1888.0,1856,2368,75.6,"void lp::maximum_vector<(int)1, (int)8>(const void *, unsigned long, float *)"
+
+Processing [/root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/native/timeline_nvfp4.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_api_sum.py]...
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+84.6,114682515,5,22936503.0,61870.0,2179,114546637,51211631.5,cudaMalloc
+12.6,17080507,46,371315.4,350408.0,121518,679322,241710.8,cudaMemcpyAsync
+1.0,1291526,138,9358.9,3495.0,2608,702337,59470.5,cudaLaunchKernel
+0.8,1045844,1,1045844.0,1045844.0,1045844,1045844,0.0,cudaGetDeviceProperties_v2_v12000
+0.6,860372,5,172074.4,127483.0,21200,455161,181184.9,cudaMemcpy
+0.3,360752,5,72150.4,85298.0,2916,153566,66473.6,cudaFree
+0.1,143856,46,3127.3,3427.0,1856,6682,1191.7,cudaMemsetAsync
+0.0,33189,6,5531.5,4246.0,2821,13187,3913.8,cudaEventRecord
+0.0,19344,3,6448.0,5074.0,1699,12571,5564.7,cudaEventSynchronize
+0.0,14826,3,4942.0,5333.0,2877,6616,1899.9,cudaDeviceSynchronize
+0.0,8095,6,1349.2,651.0,343,3755,1368.7,cudaEventCreate
+0.0,7069,1,7069.0,7069.0,7069,7069,0.0,cudaMemset
+0.0,2775,6,462.5,337.5,264,801,250.7,cudaEventDestroy
+0.0,938,1,938.0,938.0,938,938,0.0,cuModuleGetLoadingMode

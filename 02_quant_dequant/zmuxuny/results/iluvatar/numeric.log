@@ -1,0 +1,4 @@
+mkdir -p build/iluvatar
+/usr/local/corex/bin/clang++ -x ivcore --cuda-gpu-arch=ivcore11 -std=c++17 -O3 -ffp-contract=off tests/validate_numeric.cu -o build/iluvatar/validate_numeric -L/usr/local/corex/lib64 -lcudart
+LD_LIBRARY_PATH=/usr/local/corex/lib64:${LD_LIBRARY_PATH:-} build/iluvatar/validate_numeric
+{"status":"PASS","exact_hash_checks":49152}

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "final_variants": "quant: vector 2/4/8, CTA128/256/512; hadamard: 1/2/4 logical groups or physical waves",
+  "scans": {
+    "tune_dequant_initial.csv": {
+      "rows": 378,
+      "status": "COMPLETE"
+    },
+    "tune_max_initial.csv": {
+      "rows": 300,
+      "status": "COMPLETE"
+    },
+    "tune_vector.csv": {
+      "rows": 360,
+      "status": "COMPLETE"
+    },
+    "tune_vector_initial.csv": {
+      "rows": 360,
+      "status": "COMPLETE"
+    }
+  }
+}

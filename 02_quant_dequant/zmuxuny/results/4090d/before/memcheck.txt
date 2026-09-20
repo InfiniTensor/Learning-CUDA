@@ -1,0 +1,4 @@
+$ /usr/local/cuda/compute-sanitizer/compute-sanitizer --tool memcheck --error-exitcode 99 /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/build/quantize --input /tmp/lp-profile-2u3x8_3y/q.bin --config /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/configs/nvfp4.toml --packed /tmp/lp-profile-2u3x8_3y/q.pack --output /tmp/lp-profile-2u3x8_3y/q.out --log /tmp/lp-profile-2u3x8_3y/q.json --repeats 1
+========= COMPUTE-SANITIZER
+quant=0.115712 ms dequant=0.038912 ms CPU/GPU exact match
+========= ERROR SUMMARY: 0 errors

@@ -1,0 +1,26 @@
+start_ns	end_ns	device	stream	grid_x	grid_y	grid_z	block_x	block_y	block_z	registers	static_shared	dynamic_shared	kernel
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp19quant_vector_kernelILi0ELi0ELi4EEEvPKvPhS3_PKfNS_6LayoutE
+0	0	0	0	512	1	1	512	1	1	0	20	0	_ZN2lp21dequant_vector_kernelILi0ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE
+# dropped_records=0

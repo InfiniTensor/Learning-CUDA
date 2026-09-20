@@ -1,0 +1,8 @@
+(Tracer): 16:23:51 [INFO ] Tracer startup
+(Tracer): 16:23:51 [INFO ] Rpc connection established!
+(Tracer): 16:23:54 [INFO ] Output file: 	/root/cuda-camp-c500/02_quant_dequant/zmuxuny/results/c500/profile/nvfp4_fp16/tracer_out-20829.json
+mctxAutoStart called! 
+mcToolsExtPid_UsedPort:20829-39661
+quant=0.0973824 ms dequant=0.0288 ms CPU/GPU exact match
+(Tracer): 16:23:55 [INFO ] User process ends execution.
+(Tracer): 16:23:55 [INFO ] Tracer ends execution.

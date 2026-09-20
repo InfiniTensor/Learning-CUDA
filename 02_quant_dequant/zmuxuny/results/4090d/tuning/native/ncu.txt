@@ -1,0 +1,5 @@
+$ ncu --set basic --launch-count 3 /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/build/quantize_native --input /tmp/cuda-profile-3hyj0h0j/input.bin --output /tmp/cuda-profile-3hyj0h0j/output.bin --packed /tmp/cuda-profile-3hyj0h0j/packed.bin --log /tmp/cuda-profile-3hyj0h0j/metrics.json --repeats 10 --config /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/configs/nvfp4.toml
+==PROF== Connected to process 50708 (/root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/build/quantize_native)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+quant=0.589107 ms dequant=0.242586 ms CPU/GPU exact match
+==PROF== Disconnected from process 50708

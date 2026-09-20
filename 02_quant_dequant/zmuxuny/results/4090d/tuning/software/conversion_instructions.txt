@@ -1,0 +1,24 @@
+Function : _ZN2lp21dequant_vector_kernelILi1ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*0950*/                   F2FP.BF16.F32.PACK_AB R4, R4, R5 ;                           /* 0x000000050404723e */
+Function : _ZN2lp21dequant_vector_kernelILi1ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*0960*/                   F2FP.BF16.F32.PACK_AB R11, R10, R11 ;                        /* 0x0000000b0a0b723e */
+Function : _ZN2lp21dequant_vector_kernelILi1ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*0980*/                   F2FP.BF16.F32.PACK_AB R5, R6, R7 ;                           /* 0x000000070605723e */
+Function : _ZN2lp21dequant_vector_kernelILi1ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*0990*/                   F2FP.BF16.F32.PACK_AB R10, R8, R9 ;                          /* 0x00000009080a723e */
+Function : _ZN2lp21dequant_vector_kernelILi0ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*08b0*/                   F2FP.BF16.F32.PACK_AB R6, R5, R6 ;                           /* 0x000000060506723e */
+Function : _ZN2lp21dequant_vector_kernelILi0ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*08d0*/                   F2FP.BF16.F32.PACK_AB R7, R7, R8 ;                           /* 0x000000080707723e */
+Function : _ZN2lp21dequant_vector_kernelILi0ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*08e0*/                   F2FP.BF16.F32.PACK_AB R11, R11, R14 ;                        /* 0x0000000e0b0b723e */
+Function : _ZN2lp21dequant_vector_kernelILi0ELi2ELi8EEEvPKhS2_fPvNS_6LayoutE
+        /*08f0*/                   F2FP.BF16.F32.PACK_AB R10, R9, R10 ;                         /* 0x0000000a090a723e */
+Function : _ZN2lp21dequant_blocks_kernelILi1ELb0EEEvPKhS2_fPviNS_6LayoutE
+        /*0480*/               @P0 F2FP.BF16.F32.PACK_AB R11, RZ, R11 ;                         /* 0x0000000bff0b023e */
+Function : _ZN2lp21dequant_blocks_kernelILi1ELb0EEEvPKhS2_fPviNS_6LayoutE
+        /*0650*/                   F2FP.BF16.F32.PACK_AB R3, RZ, R3 ;                           /* 0x00000003ff03723e */
+Function : _ZN2lp21dequant_blocks_kernelILi0ELb0EEEvPKhS2_fPviNS_6LayoutE
+        /*0380*/                   F2FP.BF16.F32.PACK_AB R7, RZ, R7 ;                           /* 0x00000007ff07723e */
+Function : _ZN2lp14dequant_kernelEPKhS1_fPviNS_6LayoutE
+        /*0cd0*/                   F2FP.BF16.F32.PACK_AB R0, RZ, R7 ;                           /* 0x00000007ff00723e */

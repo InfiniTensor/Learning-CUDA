@@ -1,0 +1,6 @@
+{
+  "passed": 151,
+  "negative_file_cases": 3,
+  "oracle": "NumPy explicit FP8/FP4 codebook search",
+  "status": "PASS"
+}

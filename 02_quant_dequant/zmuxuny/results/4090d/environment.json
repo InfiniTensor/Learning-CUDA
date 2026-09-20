@@ -1,0 +1,35 @@
+{
+  "date_utc": "2026-09-19T13:19:12Z",
+  "gpu": "NVIDIA GeForce RTX 4090 D, 24564 MiB, 570.124.06",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Jan_15_19:20:09_PST_2025\nCuda compilation tools, release 12.8, V12.8.61\nBuild cuda_12.8.r12.8/compiler.35404655_0",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "python": "3.12.3",
+  "system": "Linux-5.4.0-196-generic-x86_64-with-glibc2.39",
+  "cpu": "Architecture:                       x86_64\nCPU op-mode(s):                     32-bit, 64-bit\nAddress sizes:                      39 bits physical, 48 bits virtual\nByte Order:                         Little Endian\nCPU(s):                             128\nOn-line CPU(s) list:                0-127\nVendor ID:                          GenuineIntel\nModel name:                         Intel(R) Xeon(R) Platinum 8358P CPU @ 2.60GHz\nCPU family:                         6\nModel:                              142\nThread(s) per core:                 2\nCore(s) per socket:                 32\nSocket(s):                          2\nStepping:                           10\nFrequency boost:                    enabled\nCPU(s) scaling MHz:                 76%\nCPU max MHz:                        2601.0000\nCPU min MHz:                        800.0000\nBogoMIPS:                           3984.00\nFlags:                              fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp\nVirtualization:                     VT-x\nL1d cache:                          3 MiB (64 instances)\nL1i cache:                          2 MiB (64 instances)\nL2 cache:                           80 MiB (64 instances)\nL3 cache:                           96 MiB (2 instances)\nNUMA node(s):                       2\nNUMA node0 CPU(s):                  0-31,64-95\nNUMA node1 CPU(s):                  32-63,96-127\nVulnerability Gather data sampling: Mitigation; Microcode\nVulnerability Itlb multihit:        Not affected\nVulnerability L1tf:                 Not affected\nVulnerability Mds:                  Not affected\nVulnerability Meltdown:             Not affected\nVulnerability Mmio stale data:      Mitigation; Clear CPU buffers; SMT vulnerable\nVulnerability Retbleed:             Not affected\nVulnerability Spec store bypass:    Mitigation; Speculative Store Bypass disabled via prctl and seccomp\nVulnerability Spectre v1:           Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:           Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                Not affected\nVulnerability Tsx async abort:      Not affected",
+  "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2024 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35237751) (public-release)",
+  "nsys": "NVIDIA Nsight Systems version 2024.6.2.225-246235244400v0",
+  "sanitizer": "NVIDIA (R) Compute Sanitizer\nCopyright (c) 2020-2025 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35351055) (public-release)",
+  "arch": 89,
+  "flags": "-O3 --fmad=false -lineinfo",
+  "baseline_commit": "deba5cb",
+  "clock_locked": false,
+  "baseline_gpu_load": "0% before measurement",
+  "note": "before and after on the same rented GPU; extended trials alternate binary order",
+  "baseline_binary_sha256": "441aaa5bcdf57874099dce77cd7ee960c49b577bf5c1470fcd0e7cc3cf89a362",
+  "device_properties": {
+    "name": "NVIDIA GeForce RTX 4090 D",
+    "sm": 89,
+    "l2_bytes": 75497472,
+    "multiprocessors": 114,
+    "global_memory_bytes": 25262096384,
+    "memory_bus_bits": 384
+  },
+  "baseline_submission_commit": "73b66de071c340c859034224a52c775160e425e8",
+  "optimized_binary_sha256": "d601d2b8b59ae5ebdebf11aaff3ad7db1b4c9f5d89f0f0d0c6cc998c259d3089",
+  "optimized_source_sha256": {
+    "src/main.cu": "7187bbc0e41762151169fbee236e872d84b096775c7204b9335a055f89409c03",
+    "include/gpu.cuh": "b5dd74eea60def71f37018c5f52fd75cd33af9971870ad588d58d7cdf3ddaea2",
+    "include/host.hpp": "98a09a6684b228d38abfc2e81302988c5f48cbf307fcd8e79c3fe0b49465e9a2",
+    "include/numeric.cuh": "49914208ce1e843dd35dbab007489930bd8b4b430638248d4836ab3f86487977"
+  }
+}

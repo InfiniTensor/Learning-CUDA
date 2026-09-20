@@ -1,0 +1,12 @@
+{
+  "quantize": {
+    "measured_baseline_sha256": "a73ed176f449aa746d37a9409b6730bd34b7b927b64f094f1cda46476b53c568",
+    "rebuilt_sha256": "76a9fdb09508b6349df07f01e80126f2da53874007a54bafc2474a7b15548b1a",
+    "identical": false
+  },
+  "libcamp.so": {
+    "measured_baseline_sha256": "2f8bbb439266f94d31969df95305640c19adcb84754d3ff2ea99fd61828751e6",
+    "rebuilt_sha256": "2f8bbb439266f94d31969df95305640c19adcb84754d3ff2ea99fd61828751e6",
+    "identical": true
+  }
+}

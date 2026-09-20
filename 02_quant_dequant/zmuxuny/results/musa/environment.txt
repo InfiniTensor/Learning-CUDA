@@ -1,0 +1,128 @@
+Sun Sep 20 05:49:09 UTC 2026
+Linux 7840e9252c42 5.15.0-105-generic #115~20.04.1-Ubuntu SMP Mon Apr 15 17:33:04 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git c64ca08d3823ae70a676e133b0d51e674e71f3d6)
+mcc version 4.3.6
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/musa/bin
+Sun Sep 20 13:49:09 2026
+---------------------------------------------------------------------
+    mthreads-gmi:2.3.2           Driver Version:3.3.5-server
+---------------------------------------------------------------------
+ID   Name                 |PCIe                |%GPU  Mem             
+     Device Type   Perf   |Pcie Lane Width     |Temp  MPC Capable     
+                                               |      ECC Mode        
++-------------------------------------------------------------------+
+0    MTT S4000            |00000000:0e:00.0    |55%   201MiB(49152MiB)
+     Physical      N/A    |16x(16x)            |60C   YES             
+                                               |      N/A             
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+Processes:
+ID   PID           Process name                           GPU Memory
+                                                               Usage
++-------------------------------------------------------------------+
+0    11531         build/musa/tune_vector                     201MiB
+---------------------------------------------------------------------
+compiler: mcc
+--------------------------------------------------------------------------------
+device#                          0
+Name:                            MTT S4000
+Driver Version:                  4.3
+Runtime Version:                 4.3
+compute capability:              2.2
+pciBusID:                        0xe
+pciDeviceID:                     0x0
+pciDomainID:                     0x0
+multiProcessorCount:             64
+maxThreadsPerMultiProcessor:     6144
+isMultiGpuBoard:                 1
+clockRate:                       1791 Mhz
+memoryClockRate:                 8006 Mhz
+memoryBusWidth:                  384
+totalGlobalMem:                  47.91 GB
+sharedMemPerMultiprocessor:      72.00 KB
+totalConstMem:                   8192
+sharedMemPerBlock:               72.00 KB
+canMapHostMemory:                1
+regsPerBlock:                    131072
+warpSize:                        128
+l2CacheSize:                     25165824
+computeMode:                     0
+maxThreadsPerBlock:              1024
+maxThreadsDim.x:                 1024
+maxThreadsDim.y:                 1024
+maxThreadsDim.z:                 1024
+maxGridSize.x:                   2147483647
+maxGridSize.y:                   2147483647
+maxGridSize.z:                   2147483647
+concurrentKernels:               1
+cooperativeLaunch:               0
+cooperativeMultiDeviceLaunch:    0
+isIntegrated:                    0
+maxTexture1D:                    32768
+maxTexture2D.width:              32768
+maxTexture2D.height:             32768
+maxTexture3D.width:              16384
+maxTexture3D.height:             16384
+maxTexture3D.depth:              2048
+peers:                           
+non-peers:                       device#0 
+memInfo.total:                   47.91 GB
+memInfo.free:                    45.63 GB (95%)
+3.11.0rc1 1.24.0
+Architecture:                       x86_64
+CPU op-mode(s):                     32-bit, 64-bit
+Address sizes:                      39 bits physical, 48 bits virtual
+Byte Order:                         Little Endian
+CPU(s):                             128
+On-line CPU(s) list:                0-127
+Vendor ID:                          GenuineIntel
+Model name:                         Intel(R) Xeon(R) Platinum 8358P CPU @ 2.60GHz
+CPU family:                         6
+Model:                              142
+Thread(s) per core:                 2
+Core(s) per socket:                 32
+Socket(s):                          2
+Stepping:                           10
+CPU max MHz:                        3400.0000
+CPU min MHz:                        800.0000
+BogoMIPS:                           3984.00
+Flags:                              fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp
+Virtualization:                     VT-x
+L1d cache:                          3 MiB (64 instances)
+L1i cache:                          2 MiB (64 instances)
+L2 cache:                           128 MiB (64 instances)
+L3 cache:                           120 MiB (2 instances)
+NUMA node(s):                       2
+NUMA node0 CPU(s):                  0-31,64-95
+NUMA node1 CPU(s):                  32-63,96-127
+Vulnerability Gather data sampling: Not affected
+Vulnerability Itlb multihit:        Not affected
+Vulnerability L1tf:                 Not affected
+Vulnerability Mds:                  Not affected
+Vulnerability Meltdown:             Not affected
+Vulnerability Mmio stale data:      Not affected
+Vulnerability Retbleed:             Not affected
+Vulnerability Spec rstack overflow: Not affected
+Vulnerability Spec store bypass:    Mitigation; Speculative Store Bypass disabled via prctl and seccomp
+Vulnerability Spectre v1:           Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:           Mitigation; Enhanced IBRS, IBPB conditional, RSB filling, PBRSB-eIBRS SW sequence
+Vulnerability Srbds:                Not affected
+Vulnerability Tsx async abort:      Not affected
+1200000
+100000
+68719476736

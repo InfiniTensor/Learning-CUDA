@@ -1,0 +1,106 @@
+[mssanitizer] logging to file: ./mindstudio_sanitizer_log/mssanitizer_20260920071017_25232.log
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_amax
+[mssanitizer] WARN: Kernel ascend_amax missed debug_line information. Please recompile kernel with `-g' or `-gline-tables-only' option to enable callstack display.
+[mssanitizer] Warning:Register VECTOR_MASK_0 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (3)
+
+[mssanitizer] Warning:Register VECTOR_MASK_1 was not reset to default in block aiv(0) on kernel ascend_amax. Expected default value is (18446744073709551615), but current value is (0)
+
+[mssanitizer] Sanitizer finished on kernel ascend_amax. See all detected errors above.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_max_finish
+[mssanitizer] Sanitizer finished on kernel ascend_max_finish. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_quant
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] Start memcheck sanitizer on kernel ascend_dequant
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+quant=306.133 ms dequant=53.8044 ms CPU/GPU exact match

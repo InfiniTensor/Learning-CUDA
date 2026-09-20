@@ -1,0 +1,16 @@
+$ nsys profile --sample=none --cpuctxsw=none --trace=cuda,nvtx --force-overwrite=true -o /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/results/4090d/after/timeline_mxfp8 /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/build/quantize --input /tmp/cuda-profile-9a2rzha4/input.bin --output /tmp/cuda-profile-9a2rzha4/output.bin --packed /tmp/cuda-profile-9a2rzha4/packed.bin --log /tmp/cuda-profile-9a2rzha4/metrics.json --repeats 20 --config /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/configs/mxfp8.toml
+quant=0.0075664 ms dequant=0.0051312 ms CPU/GPU exact match
+Collecting data...
+Generating '/tmp/nsys-report-b79d.qdstrm'
+
+[1/1] [0%                          ] timeline_mxfp8.nsys-rep
+[1/1] [0%                          ] timeline_mxfp8.nsys-rep
+[1/1] [===========50%              ] timeline_mxfp8.nsys-rep
+[1/1] [===========51%              ] timeline_mxfp8.nsys-rep
+[1/1] [===========52%              ] timeline_mxfp8.nsys-rep
+[1/1] [===============66%          ] timeline_mxfp8.nsys-rep
+[1/1] [===================81%      ] timeline_mxfp8.nsys-rep
+[1/1] [========================100%] timeline_mxfp8.nsys-rep
+[1/1] [========================100%] timeline_mxfp8.nsys-rep
+Generated:
+    /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/results/4090d/after/timeline_mxfp8.nsys-rep

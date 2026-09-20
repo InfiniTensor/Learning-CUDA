@@ -1,0 +1,10 @@
+$ /tmp/infinitensor-sanitizer/usr/local/cuda-12.9/compute-sanitizer/compute-sanitizer --tool racecheck --error-exitcode 99 /root/workspace/InfiniTensor/Learning-CUDA-project/02_quant_dequant/zmuxuny/build/quantize --input /tmp/lp-profile-_zhz1d3l/q.bin --config /root/workspace/InfiniTensor/Learning-CUDA-project/02_quant_dequant/zmuxuny/configs/nvfp4.toml --packed /tmp/lp-profile-_zhz1d3l/q.pack --output /tmp/lp-profile-_zhz1d3l/q.out --log /tmp/lp-profile-_zhz1d3l/q.json --repeats 1
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+=========
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+=========
+quant=0.053216 ms dequant=0.00512 ms CPU/GPU exact match
+========= Error: process didn't terminate successfully
+========= Target application returned an error
+========= RACECHECK SUMMARY: 2 hazards displayed (2 errors, 0 warnings)

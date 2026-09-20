@@ -1,0 +1,81 @@
+Sat Sep 19 16:19:05 UTC 2026
+Linux 1121d13f1b12 5.15.0-58-generic #64~20.04.1-Ubuntu SMP Fri Jan 6 16:42:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+Version:3.3.0.15
+mx-smi  version: 2.2.9
+
+=================== MetaX System Management Interface Log ===================
+Timestamp                                         : Sat Sep 19 16:19:05 2026
+
+Attached GPUs                                     : 1
++---------------------------------------------------------------------------------+
+| MX-SMI 2.2.9                       Kernel Mode Driver Version: 3.8.30           |
+| MACA Version: 3.3.0.15             BIOS Version: 1.33.5.0                       |
+|------------------+-----------------+---------------------+----------------------|
+| Board       Name | GPU   Persist-M | Bus-id              | GPU-Util      sGPU-M |
+| Pwr:Usage/Cap    | Temp       Perf | Memory-Usage        | GPU-State            |
+|==================+=================+=====================+======================|
+| 0     MetaX C500 | 0           Off | 0000:0f:00.0        | 1%          Disabled |
+| 68W / 350W       | 38C          P9 | 846/65536 MiB       | Available            |
++------------------+-----------------+---------------------+----------------------+
+
++---------------------------------------------------------------------------------+
+| Process:                                                                        |
+|  GPU                    PID         Process Name                 GPU Memory     |
+|                                                                  Usage(MiB)     |
+|=================================================================================|
+|  0                    16809         hadamard                     22             |
++---------------------------------------------------------------------------------+
+
+End of Log
+mxcc version 1.0.0 (de3b0e5687)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/maca-3.3.0/mxgpu_llvm/bin
+Python 3.10.10
+NumPy 1.26.4
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Address sizes:                   39 bits physical, 48 bits virtual
+Byte Order:                      Little Endian
+CPU(s):                          128
+On-line CPU(s) list:             0-127
+Vendor ID:                       GenuineIntel
+Model name:                      Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz
+CPU family:                      6
+Model:                           142
+Thread(s) per core:              2
+Core(s) per socket:              32
+Socket(s):                       2
+Stepping:                        10
+CPU(s) scaling MHz:              67%
+CPU max MHz:                     4000.0000
+CPU min MHz:                     800.0000
+BogoMIPS:                        3984.00
+Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp
+Virtualization:                  VT-x
+L1d cache:                       3 MiB (64 instances)
+L1i cache:                       2 MiB (64 instances)
+L2 cache:                        128 MiB (64 instances)
+L3 cache:                        320 MiB (2 instances)
+NUMA node(s):                    2
+NUMA node0 CPU(s):               0-31,64-95
+NUMA node1 CPU(s):               32-63,96-127
+Vulnerability Itlb multihit:     Not affected
+Vulnerability L1tf:              Not affected
+Vulnerability Mds:               Not affected
+Vulnerability Meltdown:          Not affected
+Vulnerability Mmio stale data:   Not affected
+Vulnerability Retbleed:          Not affected
+Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp
+Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:        Mitigation; Enhanced IBRS, IBPB conditional, RSB filling, PBRSB-eIBRS SW sequence
+Vulnerability Srbds:             Not affected
+Vulnerability Tsx async abort:   Not affected
+1200000
+100000
+               total        used        free      shared  buff/cache   available
+Mem:           120Gi        12Gi       108Gi          0B          0B       108Gi
+Swap:             0B          0B          0B
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  161M   30G   1% /
+/dev/loop22     196G   28K  186G   1% /data

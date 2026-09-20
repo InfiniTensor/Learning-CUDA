@@ -1,0 +1,32 @@
+[INFO] Start profiling....
+quant=0.16886 ms dequant=0.06486 ms CPU/GPU exact match
+[INFO] Start export data in PROF_000001_20260920080324821_00077121HFABJGLQ.
+Sun 20 Sep 2026 08:03:27 [WARNING] [MSVP] [77158] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: Start analyzing data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/host" ...
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: It may take few minutes, please be patient ...
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: Analysis data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/host" finished.
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: Start analyzing data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0" ...
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: It may take few minutes, please be patient ...
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_common.py: Analysis data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0" finished.
+Sun 20 Sep 2026 08:03:27 [INFO] [MSVP] [77160] msprof_export.py: All collected data will be exported, path is: /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0.
+Sun 20 Sep 2026 08:03:28 [WARNING] [MSVP] [77327] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: The data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/host" has been analyzed. Parsing phase will be skipped.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: The data in "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0" has been analyzed. Parsing phase will be skipped.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: All collected data will be exported, path is: /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: There is no summary data to export for "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/host"
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: All collected data will be exported, path is: /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_export.py: There is no summary data to export for "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/device_0"
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_common.py: Start exporting summary output_file.
+Sun 20 Sep 2026 08:03:28 [INFO] [MSVP] [77329] msprof_common.py: End exporting summary output_file.The file is stored in the /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ/mindstudio_profiler_output path.
+[INFO] Export all data in PROF_000001_20260920080324821_00077121HFABJGLQ done.
+[INFO] Start query data in PROF_000001_20260920080324821_00077121HFABJGLQ.
+Sun 20 Sep 2026 08:03:29 [WARNING] [MSVP] [77369] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Job Info	Device ID	Dir Name	Collection Time           	Model ID	Iteration Number	Top Time Iteration	Rank ID	
+
+NA      	         	host    	2026-09-20 08:03:25.299288	N/A     	N/A             	N/A               	-1     	
+
+NA      	0        	device_0	2026-09-20 08:03:25.301905	N/A     	N/A             	N/A               	-1     	
+
+[INFO] Query all data in PROF_000001_20260920080324821_00077121HFABJGLQ done.
+[INFO] Profiling finished.
+[INFO] Process profiling data complete. Data is saved in /root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace/PROF_000001_20260920080324821_00077121HFABJGLQ

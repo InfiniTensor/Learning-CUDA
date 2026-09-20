@@ -1,0 +1,100 @@
+{
+	"musa_toolkits":	{
+		"version":	"4.3.6",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"abf8fc6aca16744e3499639e51485d53617ab3c4",
+		"commit date":	"2026-03-06 20:35:41 +0800"
+	},
+	"mcc":	{
+		"version":	"4.3.6",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"c64ca08d3823ae70a676e133b0d51e674e71f3d6",
+		"commit date":	"2026-03-22 09:17:07 +0800"
+	},
+	"mtjpeg":	{
+		"version":	"1.0.2",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"799e676c97f6b7c5e08aaad51c2c1857d8f3e233",
+		"commit date":	"2025-11-27 17:45:21 +0800"
+	},
+	"mublasLt":	{
+		"version":	"1.10.6",
+		"build archs":	"22,31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"72eda37ca71fc36e3d27d3365bc08bbf1df5d63d",
+		"commit date":	"2026-02-03 17:31:58 +0800"
+	},
+	"mublas":	{
+		"version":	"1.10.6",
+		"build archs":	"22,31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"0bd0e764020d114d7867604530aed2d68bba4a75",
+		"commit date":	"2026-02-03 17:32:29 +0800"
+	},
+	"mufft":	{
+		"version":	"1.10.6",
+		"build archs":	"22;31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"c4b9cefa04d8b2e16cf2d5eac1abe8e373b7cfb4",
+		"commit date":	"2026-02-27 16:50:26 +0800"
+	},
+	"muPP":	{
+		"version":	"1.11.6",
+		"build archs":	"22;31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"001df5b3ca336a787ab47c33b6c67af612e8a248",
+		"commit date":	"2026-02-03 17:19:40 +0800"
+	},
+	"MUPTI":	{
+		"version":	"1.0.6",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"70ad6ebba86d41ec73f6a50d917cb78872aabf11",
+		"commit date":	"2026-02-06 10:27:23 +0800"
+	},
+	"murand":	{
+		"version":	"1.1.6",
+		"build archs":	"22;31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"725ca6ae4a52078587ea2d7e83a323a08f1fa25c",
+		"commit date":	"2026-02-27 16:54:20 +0800"
+	},
+	"musa_runtime":	{
+		"version":	"4.3.6",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"02a423db97fe4075dee18e2f6a78ce2c8da04086",
+		"commit date":	"2026-03-12 17:27:58 +0800"
+	},
+	"musify":	{
+		"version":	"1.1.6",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"a3c96503ede8b1a320a1f3042eddcf4f1362b344",
+		"commit date":	"2026-02-05 09:50:54 +0800"
+	},
+	"musolver":	{
+		"version":	"1.4.6",
+		"build archs":	"22,31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"e4da94c6ce0d6b6ec71cfc5119f403ad20695ca2",
+		"commit date":	"2026-03-05 11:39:10 +0800"
+	},
+	"musparse":	{
+		"version":	"1.5.6",
+		"build archs":	"22,31",
+		"git branch":	"release_musa_4.3.0",
+		"git tag":	"No tag",
+		"commit id":	"70c1b473844ce726b4351e463463a7f37b9a125c",
+		"commit date":	"2026-03-07 13:47:40 +0800"
+	}
+}

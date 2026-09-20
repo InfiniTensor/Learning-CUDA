@@ -1,0 +1,8 @@
+$ /tmp/infinitensor-sanitizer/usr/local/cuda-12.9/compute-sanitizer/compute-sanitizer --tool synccheck --error-exitcode 99 /root/workspace/InfiniTensor/Learning-CUDA-project/02_quant_dequant/zmuxuny/build/quantize --input /tmp/lp-profile-_zhz1d3l/q.bin --config /root/workspace/InfiniTensor/Learning-CUDA-project/02_quant_dequant/zmuxuny/configs/nvfp4.toml --packed /tmp/lp-profile-_zhz1d3l/q.pack --output /tmp/lp-profile-_zhz1d3l/q.out --log /tmp/lp-profile-_zhz1d3l/q.json --repeats 1
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+=========
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+=========
+quant=0.12368 ms dequant=0.087936 ms CPU/GPU exact match
+========= ERROR SUMMARY: 2 errors

@@ -1,0 +1,3 @@
+quant=0.184221 ms dequant=0.0548495 ms CPU/GPU exact match
+Some activities may have incomplete timestamps because not all HW events are returned from mt-perf before time limit!
+Some activities may have incomplete timestamps because not all HW events are returned from mt-perf before time limit!

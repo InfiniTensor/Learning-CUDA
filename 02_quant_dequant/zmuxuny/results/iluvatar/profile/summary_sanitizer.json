@@ -1,0 +1,379 @@
+{
+  "gpu": "Iluvatar MR-V100",
+  "binary_sha256": "00a9f30b7f675c81a72cc906e162063b43420c97b08c19383fe0a86248123ff4",
+  "timing_note": "Instrumented runs; use uninstrumented device-event benchmarks for speedups.",
+  "runs": [
+    {
+      "case": "sanitizer_mxfp8_fp32",
+      "tool": "memcheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "memcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp32/memcheck.log"
+    },
+    {
+      "case": "sanitizer_mxfp8_fp32",
+      "tool": "racecheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "racecheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp32/racecheck.log"
+    },
+    {
+      "case": "sanitizer_mxfp8_fp32",
+      "tool": "initcheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "initcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp32/initcheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp32",
+      "tool": "memcheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "memcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp32/memcheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp32",
+      "tool": "racecheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "racecheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp32/racecheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp32",
+      "tool": "initcheck",
+      "shape": [
+        3,
+        35
+      ],
+      "dtype": 0,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "initcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp32/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp32/initcheck.log"
+    },
+    {
+      "case": "sanitizer_mxfp8_fp16",
+      "tool": "memcheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "memcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp16/memcheck.log"
+    },
+    {
+      "case": "sanitizer_mxfp8_fp16",
+      "tool": "racecheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "racecheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp16/racecheck.log"
+    },
+    {
+      "case": "sanitizer_mxfp8_fp16",
+      "tool": "initcheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "initcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_mxfp8_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/mxfp8.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_mxfp8_fp16/initcheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp16",
+      "tool": "memcheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "memcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp16/memcheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp16",
+      "tool": "racecheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "racecheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp16/racecheck.log"
+    },
+    {
+      "case": "sanitizer_nvfp4_fp16",
+      "tool": "initcheck",
+      "shape": [
+        65,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsan",
+        "--tool",
+        "initcheck",
+        "/root/camp/02_quant_dequant/zmuxuny/build/iluvatar/quantize",
+        "--input",
+        "/tmp/iluvatar-profile-3bs75fju/input",
+        "--output",
+        "/tmp/iluvatar-profile-3bs75fju/out",
+        "--packed",
+        "/tmp/iluvatar-profile-3bs75fju/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/iluvatar/profile/sanitizer_nvfp4_fp16/metrics.json",
+        "--repeats",
+        "1",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/configs/nvfp4.toml"
+      ],
+      "returncode": 0,
+      "zero_error_summary": true,
+      "passed": true,
+      "log": "sanitizer_nvfp4_fp16/initcheck.log"
+    }
+  ]
+}

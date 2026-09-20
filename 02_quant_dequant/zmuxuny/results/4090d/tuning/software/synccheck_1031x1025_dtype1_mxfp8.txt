@@ -1,0 +1,4 @@
+$ /usr/local/cuda/compute-sanitizer/compute-sanitizer --tool synccheck --error-exitcode 99 /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/build/quantize --input /tmp/cuda-profile-9y276pz2/input.bin --output /tmp/cuda-profile-9y276pz2/output.bin --packed /tmp/cuda-profile-9y276pz2/packed.bin --log /tmp/cuda-profile-9y276pz2/metrics.json --repeats 1 --config /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/configs/mxfp8.toml
+========= COMPUTE-SANITIZER
+quant=0.178176 ms dequant=0.177152 ms CPU/GPU exact match
+========= ERROR SUMMARY: 0 errors

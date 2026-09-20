@@ -1,0 +1,245 @@
+{
+  "tool": "MACA mcTracer",
+  "gpu": "MetaX C500",
+  "rows": 1024,
+  "cols": 1024,
+  "binary_sha256": "d1d8b5f712d51b6fbe9b770fae0dfc3ea0ab50a89531be46b85e0d926a3895e8",
+  "timing_note": "Instrumented trace durations; use benchmark JSON for performance comparisons.",
+  "kernels": [
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::quant_vector_kernel<0, 1, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 46,
+      "mean_us": 24.58713043478261,
+      "median_us": 27.776,
+      "min_us": 15.616,
+      "max_us": 33.28,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 12,
+        "complete_ts": 1789835029914130908,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp19quant_vector_kernelILi0ELi1ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835029913983596,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835029913993153
+      },
+      "trace": "mxfp8_fp16/tracer_out-20801.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::dequant_vector_kernel<0, 1, 8>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 46,
+      "mean_us": 18.348521739130437,
+      "median_us": 20.48,
+      "min_us": 13.056,
+      "max_us": 23.552,
+      "launch": {
+        "block": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 45,
+        "complete_ts": 1789835029915095165,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 30,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 5,
+        "name": "_ZN2lp21dequant_vector_kernelILi0ELi1ELi8EEEvPKhS2_fPvNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835029914992877,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835029914994621
+      },
+      "trace": "mxfp8_fp16/tracer_out-20801.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::maximum_vector<1, 8>(void const*, unsigned long, float*)",
+      "count": 46,
+      "mean_us": 19.372521739130434,
+      "median_us": 18.432000000000002,
+      "min_us": 12.8,
+      "max_us": 26.112,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 13,
+        "complete_ts": 1789835034336972607,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 128
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp14maximum_vectorILi1ELi8EEEvPKvmPf",
+        "queue_id": 0,
+        "queue_ts": 1789835034336641336,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835034336651466
+      },
+      "trace": "nvfp4_fp16/tracer_out-20829.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::quant_vector_kernel<1, 1, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 46,
+      "mean_us": 28.82782608695652,
+      "median_us": 29.184,
+      "min_us": 18.688,
+      "max_us": 38.912,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 14,
+        "complete_ts": 1789835034336976008,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 27,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 5,
+        "name": "_ZN2lp19quant_vector_kernelILi1ELi1ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835034336660325,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835034336662098
+      },
+      "trace": "nvfp4_fp16/tracer_out-20829.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::dequant_vector_kernel<1, 0, 4>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 46,
+      "mean_us": 18.27617391304348,
+      "median_us": 18.176000000000002,
+      "min_us": 12.544,
+      "max_us": 24.064,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 91,
+        "complete_ts": 1789835034339232506,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 18,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp21dequant_vector_kernelILi1ELi0ELi4EEEvPKhS2_fPvNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835034339130505,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835034339132054
+      },
+      "trace": "nvfp4_fp16/tracer_out-20829.json"
+    }
+  ]
+}

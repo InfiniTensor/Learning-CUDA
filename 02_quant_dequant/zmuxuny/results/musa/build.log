@@ -1,0 +1,6 @@
+mkdir -p build/musa
+mkdir -p build/musa
+/usr/local/musa/bin/mcc -x musa --offload-arch=mp_22 -std=c++17 -O3 -ffp-contract=off --prec-div=true -fno-musa-approx-transcendentals -fdenormal-fp-math=ieee src/main.cu -o build/musa/quantize -L/usr/local/musa/lib -lmusart
+/usr/local/musa/bin/mcc -x musa --offload-arch=mp_22 -std=c++17 -O3 -ffp-contract=off --prec-div=true -fno-musa-approx-transcendentals -fdenormal-fp-math=ieee tests/validate_numeric.cu -o build/musa/validate_numeric -L/usr/local/musa/lib -lmusart
+MUSA_VISIBLE_DEVICES=0 LD_LIBRARY_PATH=/usr/local/musa/lib:${LD_LIBRARY_PATH:-} build/musa/validate_numeric
+{"status":"PASS","exact_hash_checks":49152,"exact_product_checks":65536,"exact_division_checks":1048576}

@@ -1,0 +1,5 @@
+$ /usr/local/bin/ncu --section-folder /tmp/lp-profile-2u3x8_3y --apply-rules no --metrics gpu__time_duration.sum,dram__throughput.avg.pct_of_peak_sustained_elapsed,sm__throughput.avg.pct_of_peak_sustained_elapsed --launch-count 3 --target-processes all /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/build/quantize --input /tmp/lp-profile-2u3x8_3y/q.bin --config /root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/configs/nvfp4.toml --packed /tmp/lp-profile-2u3x8_3y/q.pack --output /tmp/lp-profile-2u3x8_3y/q.out --log /tmp/lp-profile-2u3x8_3y/q.json --repeats 1
+==PROF== Connected to process 3149 (/root/zmuxuny-cuda-20260919/02_quant_dequant/zmuxuny/build/quantize)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+quant=0.62256 ms dequant=0.169984 ms CPU/GPU exact match
+==PROF== Disconnected from process 3149

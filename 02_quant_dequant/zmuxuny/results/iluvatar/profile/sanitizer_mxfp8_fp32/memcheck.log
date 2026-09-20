@@ -1,0 +1,4 @@
+quant=14.2438 ms dequant=14.3418 ms CPU/GPU exact match
+========= LEAK SUMMARY: 0 bytes leaked in 0 allocations
+[mem_check]: ILLEGAL OPERATION (invalid 0 (r:0 w:0)) (out of bound 0 (r:0 w:0)) (misaligned 0) (used after free 0) SUMMARY: 0 errors
+========= ERROR SUMMARY: 0 errors

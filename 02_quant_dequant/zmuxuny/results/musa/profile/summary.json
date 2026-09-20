@@ -1,0 +1,117 @@
+{
+  "binary_sha256": "bb09bf004ba4326d9355ce5b1e4a71723ef896d05bf527cd5dc88232e4aef50f",
+  "collector_build": [
+    "g++",
+    "-std=c++17",
+    "-O2",
+    "-shared",
+    "-fPIC",
+    "/root/camp/02_quant_dequant/zmuxuny/tests/musa_profile.cpp",
+    "-I/usr/local/musa/include",
+    "-L/usr/local/musa/lib",
+    "-lmupti",
+    "-lmusart",
+    "-pthread",
+    "-o",
+    "/root/camp/02_quant_dequant/zmuxuny/build/musa/libmusa_profile.so"
+  ],
+  "tool": "MUPTI activity API",
+  "runs": [
+    {
+      "case": "mxfp8_fp32",
+      "command": [
+        "/root/camp/02_quant_dequant/zmuxuny/build/musa/quantize",
+        "--input",
+        "/tmp/musa-profile-7_0ps570/input",
+        "--output",
+        "/tmp/musa-profile-7_0ps570/output",
+        "--packed",
+        "/tmp/musa-profile-7_0ps570/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/musa/profile/mxfp8_fp32.json",
+        "--repeats",
+        "3",
+        "--config",
+        "/tmp/musa-profile-7_0ps570/config"
+      ],
+      "exit_code": 0,
+      "status": "UNAVAILABLE_TIMESTAMPS",
+      "records": 24,
+      "valid_timestamps": 0,
+      "dropped_records": 0,
+      "kernels": []
+    },
+    {
+      "case": "nvfp4_fp32",
+      "command": [
+        "/root/camp/02_quant_dequant/zmuxuny/build/musa/quantize",
+        "--input",
+        "/tmp/musa-profile-7_0ps570/input",
+        "--output",
+        "/tmp/musa-profile-7_0ps570/output",
+        "--packed",
+        "/tmp/musa-profile-7_0ps570/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/musa/profile/nvfp4_fp32.json",
+        "--repeats",
+        "3",
+        "--config",
+        "/tmp/musa-profile-7_0ps570/config"
+      ],
+      "exit_code": 0,
+      "status": "UNAVAILABLE_TIMESTAMPS",
+      "records": 36,
+      "valid_timestamps": 0,
+      "dropped_records": 0,
+      "kernels": []
+    },
+    {
+      "case": "mxfp8_fp16",
+      "command": [
+        "/root/camp/02_quant_dequant/zmuxuny/build/musa/quantize",
+        "--input",
+        "/tmp/musa-profile-7_0ps570/input",
+        "--output",
+        "/tmp/musa-profile-7_0ps570/output",
+        "--packed",
+        "/tmp/musa-profile-7_0ps570/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/musa/profile/mxfp8_fp16.json",
+        "--repeats",
+        "3",
+        "--config",
+        "/tmp/musa-profile-7_0ps570/config"
+      ],
+      "exit_code": 0,
+      "status": "UNAVAILABLE_TIMESTAMPS",
+      "records": 24,
+      "valid_timestamps": 0,
+      "dropped_records": 0,
+      "kernels": []
+    },
+    {
+      "case": "nvfp4_fp16",
+      "command": [
+        "/root/camp/02_quant_dequant/zmuxuny/build/musa/quantize",
+        "--input",
+        "/tmp/musa-profile-7_0ps570/input",
+        "--output",
+        "/tmp/musa-profile-7_0ps570/output",
+        "--packed",
+        "/tmp/musa-profile-7_0ps570/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/musa/profile/nvfp4_fp16.json",
+        "--repeats",
+        "3",
+        "--config",
+        "/tmp/musa-profile-7_0ps570/config"
+      ],
+      "exit_code": 0,
+      "status": "UNAVAILABLE_TIMESTAMPS",
+      "records": 36,
+      "valid_timestamps": 0,
+      "dropped_records": 0,
+      "kernels": []
+    }
+  ]
+}

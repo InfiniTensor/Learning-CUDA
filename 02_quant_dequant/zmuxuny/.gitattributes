@@ -1,0 +1,5 @@
+results/c500/** linguist-generated=true
+results/iluvatar/** linguist-generated=true
+results/musa/** linguist-generated=true
+results/ascend/** linguist-generated=true -whitespace
+results/performance_summary.json linguist-generated=true

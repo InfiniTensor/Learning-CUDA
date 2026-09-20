@@ -1,0 +1,126 @@
+{
+  "memcheck_19x35_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "memcheck_19x35_dtype0_mxfp8.txt"
+  },
+  "racecheck_19x35_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "racecheck_19x35_dtype0_mxfp8.txt"
+  },
+  "synccheck_19x35_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "synccheck_19x35_dtype0_mxfp8.txt"
+  },
+  "memcheck_19x35_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "memcheck_19x35_dtype0_nvfp4.txt"
+  },
+  "racecheck_19x35_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "racecheck_19x35_dtype0_nvfp4.txt"
+  },
+  "synccheck_19x35_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "synccheck_19x35_dtype0_nvfp4.txt"
+  },
+  "memcheck_1031x1025_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "memcheck_1031x1025_dtype1_mxfp8.txt"
+  },
+  "racecheck_1031x1025_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "racecheck_1031x1025_dtype1_mxfp8.txt"
+  },
+  "synccheck_1031x1025_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "synccheck_1031x1025_dtype1_mxfp8.txt"
+  },
+  "memcheck_1031x1025_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "memcheck_1031x1025_dtype1_nvfp4.txt"
+  },
+  "racecheck_1031x1025_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "racecheck_1031x1025_dtype1_nvfp4.txt"
+  },
+  "synccheck_1031x1025_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "synccheck_1031x1025_dtype1_nvfp4.txt"
+  },
+  "memcheck_35x1024_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "memcheck_35x1024_dtype0_mxfp8.txt"
+  },
+  "racecheck_35x1024_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "racecheck_35x1024_dtype0_mxfp8.txt"
+  },
+  "synccheck_35x1024_dtype0_mxfp8": {
+    "returncode": 0,
+    "log": "synccheck_35x1024_dtype0_mxfp8.txt"
+  },
+  "memcheck_35x1024_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "memcheck_35x1024_dtype0_nvfp4.txt"
+  },
+  "racecheck_35x1024_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "racecheck_35x1024_dtype0_nvfp4.txt"
+  },
+  "synccheck_35x1024_dtype0_nvfp4": {
+    "returncode": 0,
+    "log": "synccheck_35x1024_dtype0_nvfp4.txt"
+  },
+  "memcheck_35x1024_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "memcheck_35x1024_dtype1_mxfp8.txt"
+  },
+  "racecheck_35x1024_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "racecheck_35x1024_dtype1_mxfp8.txt"
+  },
+  "synccheck_35x1024_dtype1_mxfp8": {
+    "returncode": 0,
+    "log": "synccheck_35x1024_dtype1_mxfp8.txt"
+  },
+  "memcheck_35x1024_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "memcheck_35x1024_dtype1_nvfp4.txt"
+  },
+  "racecheck_35x1024_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "racecheck_35x1024_dtype1_nvfp4.txt"
+  },
+  "synccheck_35x1024_dtype1_nvfp4": {
+    "returncode": 0,
+    "log": "synccheck_35x1024_dtype1_nvfp4.txt"
+  },
+  "ncu": {
+    "returncode": 1,
+    "log": "ncu.txt"
+  },
+  "nsys_mxfp8": {
+    "returncode": 0,
+    "log": "nsys_mxfp8.txt"
+  },
+  "nsys_stats_mxfp8": {
+    "returncode": 0,
+    "log": "nsys_stats_mxfp8.csv"
+  },
+  "nsys_nvfp4": {
+    "returncode": 0,
+    "log": "nsys_nvfp4.txt"
+  },
+  "nsys_stats_nvfp4": {
+    "returncode": 0,
+    "log": "nsys_stats_nvfp4.csv"
+  },
+  "resources": {
+    "returncode": 0,
+    "log": "resources.txt"
+  },
+  "environment": {
+    "returncode": 0,
+    "log": "nvidia-smi.txt"
+  }
+}

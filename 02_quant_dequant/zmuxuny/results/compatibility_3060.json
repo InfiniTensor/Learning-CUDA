@@ -1,0 +1,13 @@
+{
+  "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "cuda_toolkit": "11.5",
+  "host_compiler": "GCC 10.5",
+  "arch": 75,
+  "date_utc": "2026-09-19T13:31:44.533475+00:00",
+  "correctness": {
+    "passed": 158,
+    "negative_file_cases": 3,
+    "oracle": "NumPy explicit FP8/FP4 codebook search",
+    "status": "PASS"
+  }
+}

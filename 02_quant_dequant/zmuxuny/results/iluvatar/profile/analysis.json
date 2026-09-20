@@ -1,0 +1,256 @@
+{
+  "kernels": [
+    {
+      "case": "trace_mxfp8_fp32",
+      "kernel": "void lp::dequant_vector_kernel<0, 1, 8>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 12,
+      "mean_us": 10.802333333333333,
+      "grid": "(1024, 1, 1)",
+      "block": "(128, 1, 1)",
+      "registers": 18,
+      "shared_bytes": 0,
+      "trace": "profile/trace_mxfp8_fp32/trace.ixsys"
+    },
+    {
+      "case": "trace_mxfp8_fp32",
+      "kernel": "void lp::quant_vector_kernel<0, 0, 2>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 12,
+      "mean_us": 20.49341666666667,
+      "grid": "(2048, 1, 1)",
+      "block": "(256, 1, 1)",
+      "registers": 11,
+      "shared_bytes": 0,
+      "trace": "profile/trace_mxfp8_fp32/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp32",
+      "kernel": "lp::maximum(void const*, unsigned long, int, float*)",
+      "count": 12,
+      "mean_us": 12.136166666666666,
+      "grid": "(256, 1, 1)",
+      "block": "(256, 1, 1)",
+      "registers": 11,
+      "shared_bytes": 32,
+      "trace": "profile/trace_nvfp4_fp32/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp32",
+      "kernel": "void lp::dequant_vector_kernel<1, 0, 4>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 12,
+      "mean_us": 11.353916666666667,
+      "grid": "(1024, 1, 1)",
+      "block": "(256, 1, 1)",
+      "registers": 14,
+      "shared_bytes": 0,
+      "trace": "profile/trace_nvfp4_fp32/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp32",
+      "kernel": "void lp::quant_vector_kernel<1, 0, 4>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 12,
+      "mean_us": 22.52616666666667,
+      "grid": "(2048, 1, 1)",
+      "block": "(128, 1, 1)",
+      "registers": 24,
+      "shared_bytes": 0,
+      "trace": "profile/trace_nvfp4_fp32/trace.ixsys"
+    },
+    {
+      "case": "trace_mxfp8_fp16",
+      "kernel": "void lp::dequant_vector_kernel<0, 1, 8>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 12,
+      "mean_us": 10.930916666666667,
+      "grid": "(1024, 1, 1)",
+      "block": "(128, 1, 1)",
+      "registers": 18,
+      "shared_bytes": 0,
+      "trace": "profile/trace_mxfp8_fp16/trace.ixsys"
+    },
+    {
+      "case": "trace_mxfp8_fp16",
+      "kernel": "void lp::quant_vector_kernel<0, 1, 4>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 12,
+      "mean_us": 16.97733333333333,
+      "grid": "(2048, 1, 1)",
+      "block": "(128, 1, 1)",
+      "registers": 15,
+      "shared_bytes": 0,
+      "trace": "profile/trace_mxfp8_fp16/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp16",
+      "kernel": "void lp::dequant_vector_kernel<1, 0, 4>(unsigned char const*, unsigned char const*, float, void*, lp::Layout)",
+      "count": 12,
+      "mean_us": 11.443416666666666,
+      "grid": "(1024, 1, 1)",
+      "block": "(256, 1, 1)",
+      "registers": 14,
+      "shared_bytes": 0,
+      "trace": "profile/trace_nvfp4_fp16/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp16",
+      "kernel": "void lp::maximum_vector<1, 4>(void const*, unsigned long, float*)",
+      "count": 12,
+      "mean_us": 8.413,
+      "grid": "(128, 1, 1)",
+      "block": "(512, 1, 1)",
+      "registers": 15,
+      "shared_bytes": 128,
+      "trace": "profile/trace_nvfp4_fp16/trace.ixsys"
+    },
+    {
+      "case": "trace_nvfp4_fp16",
+      "kernel": "void lp::quant_vector_kernel<1, 1, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 12,
+      "mean_us": 19.06683333333333,
+      "grid": "(1024, 1, 1)",
+      "block": "(128, 1, 1)",
+      "registers": 28,
+      "shared_bytes": 0,
+      "trace": "profile/trace_nvfp4_fp16/trace.ixsys"
+    }
+  ],
+  "counters": [
+    {
+      "case": "counters_mxfp8_fp32",
+      "stage": "quant_vector_kernel",
+      "kernel_filter": "quant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "380.11 GB/s",
+        "Global Memory Store Throughput": "178.87 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "74.44 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_mxfp8_fp32/quant_vector_kernel.log"
+    },
+    {
+      "case": "counters_mxfp8_fp32",
+      "stage": "dequant_vector_kernel",
+      "kernel_filter": "dequant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "173.61 GB/s",
+        "Global Memory Store Throughput": "653.60 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "51.53 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_mxfp8_fp32/dequant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp32",
+      "stage": "quant_vector_kernel",
+      "kernel_filter": "quant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "667.75 GB/s",
+        "Global Memory Store Throughput": "82.18 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "74.60 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp32/quant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp32",
+      "stage": "dequant_vector_kernel",
+      "kernel_filter": "dequant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "60.17 GB/s",
+        "Global Memory Store Throughput": "1283.58 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "68.88 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp32/dequant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp32",
+      "stage": "maximum",
+      "kernel_filter": "maximum",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "292.60 GB/s",
+        "Global Memory Store Throughput": "0 B/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "39.21 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp32/maximum.log"
+    },
+    {
+      "case": "counters_mxfp8_fp16",
+      "stage": "quant_vector_kernel",
+      "kernel_filter": "quant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "225.48 GB/s",
+        "Global Memory Store Throughput": "106.11 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "73.01 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_mxfp8_fp16/quant_vector_kernel.log"
+    },
+    {
+      "case": "counters_mxfp8_fp16",
+      "stage": "dequant_vector_kernel",
+      "kernel_filter": "dequant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "178.37 GB/s",
+        "Global Memory Store Throughput": "671.52 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "63.47 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_mxfp8_fp16/dequant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp16",
+      "stage": "quant_vector_kernel",
+      "kernel_filter": "quant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "390.65 GB/s",
+        "Global Memory Store Throughput": "48.08 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "70.68 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp16/quant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp16",
+      "stage": "dequant_vector_kernel",
+      "kernel_filter": "dequant_vector_kernel",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "59.64 GB/s",
+        "Global Memory Store Throughput": "1272.39 GB/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "70.26 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp16/dequant_vector_kernel.log"
+    },
+    {
+      "case": "counters_nvfp4_fp16",
+      "stage": "maximum",
+      "kernel_filter": "maximum",
+      "metrics": {
+        "TCU Efficiency": "0.0000 %",
+        "Global Memory Load Throughput": "404.33 GB/s",
+        "Global Memory Store Throughput": "0 B/s",
+        "+Multi-Lane Matrix Instructions": "0 Instructions",
+        "Achieved Occupancy": "44.34 %",
+        "Theoretical Occupancy": "100.00 %"
+      },
+      "log": "counters_nvfp4_fp16/maximum.log"
+    }
+  ]
+}

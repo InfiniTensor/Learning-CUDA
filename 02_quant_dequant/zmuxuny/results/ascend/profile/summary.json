@@ -1,0 +1,121 @@
+{
+  "binaries": {
+    "libcamp.so": "9dde3c377f624acdd013c4f98501f53ad008975ca164476e8fc3ba24871dc924",
+    "quantize": "ce7bca130628ec4c9721a2f5fed8f94d3ac1c03e8b77029f4fb3f0a12b5ee947",
+    "validate_numeric": "b52132ac7d279884e80bf85256e82e37d28c7e41e2d52444f14ba188933ce2b0"
+  },
+  "records": [
+    {
+      "case": "mxfp8_fp32",
+      "tool": "msprof",
+      "command": [
+        "msprof",
+        "--output=/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/trace",
+        "--aic-metrics=PipeUtilization",
+        "--task-time=l2",
+        "/root/camp/02_quant_dequant/zmuxuny/build/ascend/quantize",
+        "--input",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/input",
+        "--output",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/out",
+        "--packed",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/metrics.json",
+        "--repeats",
+        "2",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp32/config"
+      ],
+      "returncode": 0,
+      "log": "mxfp8_fp32/msprof.log",
+      "status": "PASS_PROFILE",
+      "kernel_records": 20,
+      "valid_durations": 20
+    },
+    {
+      "case": "mxfp8_fp16",
+      "tool": "msprof",
+      "command": [
+        "msprof",
+        "--output=/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/trace",
+        "--aic-metrics=PipeUtilization",
+        "--task-time=l2",
+        "/root/camp/02_quant_dequant/zmuxuny/build/ascend/quantize",
+        "--input",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/input",
+        "--output",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/out",
+        "--packed",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/metrics.json",
+        "--repeats",
+        "2",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/mxfp8_fp16/config"
+      ],
+      "returncode": 0,
+      "log": "mxfp8_fp16/msprof.log",
+      "status": "PASS_PROFILE",
+      "kernel_records": 20,
+      "valid_durations": 20
+    },
+    {
+      "case": "nvfp4_fp32",
+      "tool": "msprof",
+      "command": [
+        "msprof",
+        "--output=/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/trace",
+        "--aic-metrics=PipeUtilization",
+        "--task-time=l2",
+        "/root/camp/02_quant_dequant/zmuxuny/build/ascend/quantize",
+        "--input",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/input",
+        "--output",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/out",
+        "--packed",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/metrics.json",
+        "--repeats",
+        "2",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp32/config"
+      ],
+      "returncode": 0,
+      "log": "nvfp4_fp32/msprof.log",
+      "status": "PASS_PROFILE",
+      "kernel_records": 40,
+      "valid_durations": 40
+    },
+    {
+      "case": "nvfp4_fp16",
+      "tool": "msprof",
+      "command": [
+        "msprof",
+        "--output=/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/trace",
+        "--aic-metrics=PipeUtilization",
+        "--task-time=l2",
+        "/root/camp/02_quant_dequant/zmuxuny/build/ascend/quantize",
+        "--input",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/input",
+        "--output",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/out",
+        "--packed",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/packed",
+        "--log",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/metrics.json",
+        "--repeats",
+        "2",
+        "--config",
+        "/root/camp/02_quant_dequant/zmuxuny/results/ascend/profile/nvfp4_fp16/config"
+      ],
+      "returncode": 0,
+      "log": "nvfp4_fp16/msprof.log",
+      "status": "PASS_PROFILE",
+      "kernel_records": 40,
+      "valid_durations": 40
+    }
+  ]
+}

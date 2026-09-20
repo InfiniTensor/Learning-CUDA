@@ -1,0 +1,14 @@
+$ nsys profile --sample=none --cpuctxsw=none --trace=cuda,nvtx --force-overwrite=true -o /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/software/timeline_nvfp4 /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/build/quantize --input /tmp/cuda-profile-9y276pz2/input.bin --output /tmp/cuda-profile-9y276pz2/output.bin --packed /tmp/cuda-profile-9y276pz2/packed.bin --log /tmp/cuda-profile-9y276pz2/metrics.json --repeats 20 --config /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/configs/nvfp4.toml
+quant=0.0096144 ms dequant=0.0039024 ms CPU/GPU exact match
+Collecting data...
+Generating '/tmp/nsys-report-0ff4.qdstrm'
+
+[1/1] [0%                          ] timeline_nvfp4.nsys-rep
+[1/1] [0%                          ] timeline_nvfp4.nsys-rep
+[1/1] [12%                         ] timeline_nvfp4.nsys-rep
+[1/1] [===22%                      ] timeline_nvfp4.nsys-rep
+[1/1] [===================79%      ] timeline_nvfp4.nsys-rep
+[1/1] [========================100%] timeline_nvfp4.nsys-rep
+[1/1] [========================100%] timeline_nvfp4.nsys-rep
+Generated:
+    /root/zmuxuny-cuda-tuning/02_quant_dequant/zmuxuny/results/4090d/tuning/software/timeline_nvfp4.nsys-rep
