@@ -1,0 +1,65 @@
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 50 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = nvfp4
+scale_rule = static_6
+block_size = 16
+scale_mode = block
+output_type = fp16
+rounding = nearest
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = NVIDIA GeForce RTX 5060 Ti
+
+[input]
+file = data/tensors/normal_4096.tensor
+num_rows = 4096
+num_cols = 4096
+dtype = fp32
+numel = 16777216
+input_bytes = 67108864
+
+[lowp]
+file = data/out/bench_normal_4096__nvfp4-e2m1_block_fp16_nearest_lowp.bin
+element_format = e2m1
+scale_format = e4m3
+packed_bytes = 8388608
+scale_bytes = 1048576
+global_scale = 494.975861
+total_lowp_bytes = 9437188
+compression_ratio = 7.111108  (original bytes / lowp bytes)
+bits_per_element = 4.500002
+
+[error]
+max_abs_error = 0.691490
+mae = 0.071464
+mse = 0.009047
+rmse = 0.095114
+relative_mse = 0.009043
+mean_signed_error = -0.000005
+signal_rms = 1.000177
+
+[performance]
+cuda_context_init_ms = 71.589500
+preprocess_ms = 22.806600
+amax_kernel_ms = 0.171104
+scale_kernel_ms = 0.017760
+quantize_kernel_ms = 0.211072
+quantize_total_ms = 0.399936
+dequantize_kernel_ms = 0.107328
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 0.592300
+quantize_kernel_ms_mean = 0.219601
+dequantize_kernel_ms_mean = 0.230139
+quantize_input_passes = 2
+effective_bandwidth_quantize_GBps = 191.395755  (input counted once)
+dram_bandwidth_quantize_GBps = 359.194765
+effective_bandwidth_dequantize_GBps = 400.562956

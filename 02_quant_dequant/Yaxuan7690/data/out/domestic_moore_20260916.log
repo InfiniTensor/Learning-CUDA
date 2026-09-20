@@ -1,0 +1,577 @@
+======================================================================
+ platform      : moore
+ compiler      : mcc
+ date          : 2026-09-16 12:33:42 UTC
+ host          : Linux 5.15.0-105-generic x86_64
+ LPQ_EXTRA     : <none>
+======================================================================
+
+---- [0/5] environment ----
+MUSA_HOME     : /usr/local/musa
+musa bin      : CUB_version Thrust_version analyze-build bugpoint c-index-test clang clang++ clang-14 clang-check clang-cl clang-cpp clang-extdef-mapping clang-format clang-linker-wrapper clang-nvlink-wrapper clang-offload-bundler clang-offload-wrapper clang-refactor clang-rename clang-repl clang-scan-deps diagtool driver_version_query dsymutil extractkernel git-clang-format hmaptool intercept-build ld.lld ld64.lld llc lld lld-link lli llvm-addr2line llvm-ar llvm-as llvm-bcanalyzer llvm-bitcode-strip llvm-c-test llvm-cat llvm-cfi-verify llvm-config llvm-cov llvm-cvtres llvm-cxxdump llvm-cxxfilt llvm-cxxmap llvm-debuginfod-find llvm-diff llvm-dis llvm-dlltool llvm-dwarfdump llvm-dwp llvm-exegesis llvm-extract llvm-gsymutil llvm-ifs llvm-install-name-tool llvm-jitlink llvm-lib llvm-libtool-darwin llvm-link llvm-lipo llvm-lto llvm-lto2 llvm-mc llvm-mca llvm-ml llvm-modextract llvm-mt llvm-nm llvm-objcopy llvm-objdump llvm-opt-report llvm-otool llvm-pdbutil llvm-profdata llvm-profgen llvm-ranlib llvm-rc llvm-readelf llvm-readobj llvm-reduce llvm-rtdyld llvm-sim llvm-size llvm-split llvm-stress llvm-strings llvm-strip llvm-symbolizer llvm-tapi-diff llvm-tblgen llvm-tli-checker llvm-undname llvm-windres llvm-xray mcc mcc_version mccl_version mlir-cpu-runner mlir-linalg-ods-yaml-gen mlir-lsp-server mlir-opt mlir-pdll mlir-reduce mlir-tblgen mlir-translate muMemcpyTest muPP_version mublas_version mudnn_version mufft_version murand_version musaInfo musa_compatible_overview musa_runtime_version musa_toolkits_version musa_version_query musify_version musolver_version musparse_version opt sancov sanstats scan-build scan-build-py scan-view selftests.sh split-file verify-uselistorder wasm-ld 
+clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git baf70da0ba9f1a95a844726d8b2c28a1365b886a)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/musa/bin
+musa_toolkits:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"38fe8761d291e32cad642435d9f84c97e4a37bba",
+	"commit date":	"2024-09-05 19:33:56 +0800"
+}
+CUB:
+{
+	"version":	"1.12.1",
+	"git branch":	"musa-1.12.1",
+	"commit id":	"5ffbaa4336090806eacfb46394cc8b66cea2b0e5",
+	"commit date":	"2024-09-13 16:27:37 +0800"
+}
+Thrust:
+{
+	"version":	"1.12.1",
+	"git branch":	"musa-1.12.1",
+	"commit id":	"5a5e67602f52056122186cd5c07d3fc540274ea6",
+	"commit date":	"2024-09-14 09:00:20 +0800"
+}
+mcc:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"baf70da0ba9f1a95a844726d8b2c28a1365b886a",
+	"commit date":	"2024-10-08 16:20:58 +0800"
+}
+mccl:
+{
+	"version":	"2.11.4",
+	"build archs":	"22",
+	"git branch":	"kuae1.3.0_musa3.1.0_mccl1.7.0",
+	"git tag":	"No tag",
+	"commit id":	"3354f892e15c13ef74b6d7d1bee317c11f9d0af6",
+	"commit date":	"2024-06-18 11:21:07 +0800"
+}
+muPP:
+{
+	"version":	"1.7.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muPP1.7.0",
+	"git tag":	"20241024_develop",
+	"commit id":	"f0e7e1c596943e2fe98e14ff096e3c2f2c877247",
+	"commit date":	"2024-08-23 10:42:21 +0800"
+}
+mublas:
+{
+	"version":	"1.6.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_mublas1.6.0",
+	"git tag":	"No tag",
+	"commit id":	"7bd80754907ffe182da297f54737c74f6e4d4e09",
+	"commit date":	"2024-09-30 11:42:09 +0800"
+}
+mudnn:
+{
+	"version":	"2.7.0",
+	"git branch":	"kuae1.3.0_musa3.1.0_mudnn2.7.0",
+	"git tag":	"No tag",
+	"commit id":	"2fa2f81bf0d77fa977ee398f37a3fdfc6d18cfb1",
+	"commit date":	"2024-09-14 16:31:08 +0800"
+}
+mufft:
+{
+	"version":	"1.6.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muFFT1.6.0",
+	"git tag":	"No tag",
+	"commit id":	"a4790e6ac030a68fb033928c54b2d5044d33cf9e",
+	"commit date":	"2024-08-23 10:33:45 +0800"
+}
+murand:
+{
+	"version":	"1.0.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muRand1.0.0",
+	"git tag":	"20241024_develop",
+	"commit id":	"bc218b10bf4ab6454fe03816297478391ee6d503",
+	"commit date":	"2024-05-17 15:37:47 +0800"
+}
+musify:
+{
+	"version":	"1.0.0",
+	"git branch":	"kuae1.3.0_musa3.1.0_musify1.0.0",
+	"commit id":	"d0720f523c8744a882484be081133054ebd9012f",
+	"commit date":	"2024-08-23 11:19:27 +0800"
+}
+musolver:
+{
+	"version":	"1.0.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_musolver1.0.0",
+	"git tag":	"No tag",
+	"commit id":	"65e4a393fa32b27068a993d8bf080645dd16f534",
+	"commit date":	"2024-08-29 10:20:23 +0800"
+}
+musparse:
+{
+	"version":	"1.1.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_musparse1.1.0",
+	"git tag":	"20240909_develop",
+	"commit id":	"73a84b13534251f7d0ea4d832c9f11839914c59a",
+	"commit date":	"2024-08-23 10:32:58 +0800"
+}
+musa_runtime:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"7b1fcc028ea2604d0571afb18b3662c25edd1512",
+	"commit date":	"2024-10-24 06:47:08 +0000"
+}
+driver_dependency:
+{
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"c64ecd8ad4fa3fd696a5eba63f01e9c8b42c7924",
+	"commit date":	"2024-10-24 06:42:43 +0000"
+}
+CUDA 兼容层   : 既没有 libcuda2musa.so 也没有 MUSA Mapping 插件
+                -> 先用官方工具迁移源码, 再按 plain 模式编译:
+                   musify-text --inplace -- src/*.cu tests/*.cu
+                   (musify 需要 python3 与 pip install ahocorapy)
+                   make PLATFORM=moore MUSA_MODE=plain build
+musify-text   : /usr/local/musa/tools/musify-text
+compiler path : /usr/local/musa/bin/mcc
+
+Wed Sep 16 20:33:42 2026
+---------------------------------------------------------------
+    mthreads-gmi:1.14.0          Driver Version:2.7.0
+---------------------------------------------------------------
+ID   Name           |PCIe                |%GPU  Mem            
+     Device Type    |Pcie Lane Width     |Temp  MPC Capable    
+                                         |      ECC Mode       
++-------------------------------------------------------------+
+0    MTT S4000      |00000000:12:00.0    |0%    4MiB(49152MiB)
+     Physical       |16x(16x)            |43C   YES            
+                                         |      N/A            
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+Processes:
+ID   PID       Process name                         GPU Memory
+                                                         Usage
++-------------------------------------------------------------+
+   No running processes found
+---------------------------------------------------------------
+
+---- [0.5/5] MUSA arch probe ----
+探测参数      : -mtgpu -L/usr/local/musa/lib -lmusart
+  候选 'default': 编译失败 -> data/out/_archprobe/probe_default.log
+  候选 'mp_21': 编译失败 -> data/out/_archprobe/probe_mp_21.log
+MUSA_ARCH     : 'mp_22' 可用 (编得过, 并在设备上跑出 42)
+
+---- [0.9/5] dry run (make -n) ----
+[moore] MUSA_MODE=plain, MUSA_ARCH='mp_22'
+mkdir -p build
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  src/main.cu src/config.cu src/lowp_tensor.cu src/quantize.cu src/dequantize.cu src/metrics.cu src/reference.cu -o build/lpq_quant -L/usr/local/musa/lib -lmusart
+mkdir -p build
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  tests/test_formats.cu src/config.cu src/lowp_tensor.cu src/quantize.cu src/dequantize.cu src/metrics.cu src/reference.cu -o build/test_formats -L/usr/local/musa/lib -lmusart
+mkdir -p build
+
+---- [1/5] build ----
+[moore] MUSA_MODE=plain, MUSA_ARCH='mp_22'
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  src/main.cu src/config.cu src/lowp_tensor.cu src/quantize.cu src/dequantize.cu src/metrics.cu src/reference.cu -o build/lpq_quant -L/usr/local/musa/lib -lmusart
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  tests/test_formats.cu src/config.cu src/lowp_tensor.cu src/quantize.cu src/dequantize.cu src/metrics.cu src/reference.cu -o build/test_formats -L/usr/local/musa/lib -lmusart
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  tests/test_pipeline.cu src/config.cu src/lowp_tensor.cu src/quantize.cu src/dequantize.cu src/metrics.cu src/reference.cu -o build/test_pipeline -L/usr/local/musa/lib -lmusart
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  tests/test_portability.cu -o build/test_portability -L/usr/local/musa/lib -lmusart
+build exit code: 0
+
+---- [2/5] portability probe ----
+==================== portability probe ====================
+
+---- macros seen by the host compilation pass ----
+  LPQ_CUDA        = 1   (1 = recognised as a device compiler)
+  LPQ_DEVICE_PASS = 0   (expected 0 on the host pass)
+  __MUSACC__      defined
+  __MUSACC__      defined
+  __MUSA__        defined
+  host compiler   clang 14.0.0
+
+---- device ----
+  name                = MTT S4000
+  compute capability  = 2.2
+  SM count            = 56
+  global memory       = 47.91 GiB
+  memory bandwidth    = 512.8 GB/s (theoretical peak)
+
+---- macros seen by the device compilation pass ----
+  warpSize        = 32
+  LPQ_CUDA        = 1   (expected 1 on the device pass)
+  LPQ_DEVICE_PASS = 1   (expected 1 on the device pass)
+  arch macros     = __MUSA_ARCH__ __MUSA_ARCH__ 
+  arch values     = CUDA:220 MUSA:220 MACA:2021161079
+[ RUN      ] probe/macro-detection
+[       OK ] probe/macro-detection
+[ RUN      ] probe/shfl-xor
+[       OK ] probe/shfl-xor
+[ RUN      ] probe/atomic-max-f32
+[       OK ] probe/atomic-max-f32
+[ RUN      ] probe/atomic-add-f64
+[       OK ] probe/atomic-add-f64
+[ RUN      ] probe/bits-roundtrip
+[       OK ] probe/bits-roundtrip
+[ RUN      ] probe/lowp-types
+[       OK ] probe/lowp-types
+[ RUN      ] probe/vec-io
+[       OK ] probe/vec-io
+
+==================== test_portability ====================
+total assertions: 22, failures: 0
+RESULT: PASSED
+probe exit code: 0
+
+---- [3/5] correctness suites ----
+>>> test_formats
+[ RUN      ] format/e2m1
+[       OK ] format/e2m1
+[ RUN      ] format/e4m3
+[       OK ] format/e4m3
+[ RUN      ] format/e5m2
+[       OK ] format/e5m2
+[ RUN      ] format/fp16
+[       OK ] format/fp16
+[ RUN      ] format/bf16
+[       OK ] format/bf16
+[ RUN      ] specials/e2m1
+[       OK ] specials/e2m1
+[ RUN      ] specials/e4m3
+[       OK ] specials/e4m3
+[ RUN      ] specials/e5m2
+[       OK ] specials/e5m2
+[ RUN      ] specials/fp16
+[       OK ] specials/fp16
+[ RUN      ] specials/bf16
+[       OK ] specials/bf16
+[ RUN      ] rne/tie-to-even
+[       OK ] rne/tie-to-even
+[ RUN      ] mxfp8/e8m0-shared-exp
+[       OK ] mxfp8/e8m0-shared-exp
+[ RUN      ] nvfp4/scaling
+[       OK ] nvfp4/scaling
+[ RUN      ] fuzz/gpu-vs-cpu
+[       OK ] fuzz/gpu-vs-cpu
+[ RUN      ] formats/fast-encode
+  fast-encode: checked 10097216 fp32 encodings, fp16 mismatches 0, bf16 0
+[       OK ] formats/fast-encode
+
+==================== test_formats ====================
+total assertions: 292397, failures: 0
+RESULT: PASSED
+test_formats exit code: 0
+>>> test_pipeline
+[ RUN      ] pipeline/full-matrix
+[       OK ] pipeline/full-matrix
+[ RUN      ] pipeline/tensor-and-large-block
+[       OK ] pipeline/tensor-and-large-block
+[ RUN      ] pipeline/packing-layout
+[       OK ] pipeline/packing-layout
+[ RUN      ] pipeline/stochastic-rounding
+    [SR] mxfp8-e4m3   packed 差异字节 = 229424 / 1048576
+    [SR] mxfp8-e5m2   packed 差异字节 = 229456 / 1048576
+    [SR] nvfp4        packed 差异字节 = 218901 / 524288
+[       OK ] pipeline/stochastic-rounding
+[ RUN      ] pipeline/stochastic-unbiasedness
+    [SR-bias] mxfp8-e4m3   |bias_rne|=2.499959e-02  max|bias_sr|=5.150e-04  mean(bias_sr)=-1.659e-05  (RNE/SR = 49x, 32 次试验)
+    [SR-bias] mxfp8-e5m2   |bias_rne|=9.999850e-02  max|bias_sr|=1.225e-03  mean(bias_sr)=4.206e-05  (RNE/SR = 82x, 32 次试验)
+    [SR-bias] nvfp4        |bias_rne|=2.666626e-01  max|bias_sr|=3.215e-03  mean(bias_sr)=-5.964e-04  (RNE/SR = 83x, 32 次试验)
+[       OK ] pipeline/stochastic-unbiasedness
+[ RUN      ] pipeline/error-stats
+[       OK ] pipeline/error-stats
+[ RUN      ] pipeline/error-stats-accum
+  accum diff (fast vs precise): mae 5.213e-16  mse 5.737e-16  rel_mse 4.432e-16
+  accum diff (precise vs cpu-double): mae 8.467e-13  mse 4.246e-13
+[       OK ] pipeline/error-stats-accum
+[ RUN      ] pipeline/fused-stats
+  mxfp8-e4m3/block32 (fused)       mae 0.0000e+00  mse 1.1213e-15  rel_mse 1.3674e-15  max 0.0000e+00  fused=1
+  mxfp8-e4m3/block16 (fused)       mae 0.0000e+00  mse 8.4882e-16  rel_mse 1.0587e-15  max 0.0000e+00  fused=1
+  mxfp8-e5m2/block32  (fused)      mae 0.0000e+00  mse 1.4895e-16  rel_mse 1.4862e-16  max 0.0000e+00  fused=1
+  mxfp8-e4m3/block8   (fused)      mae 0.0000e+00  mse 1.0947e-15  rel_mse 1.4564e-15  max 0.0000e+00  fused=1
+  mxfp8-e4m3/tensor   (generic)    mae 0.0000e+00  mse 9.2461e-16  rel_mse 9.2259e-16  max 0.0000e+00  fused=1
+  mxfp8-e4m3/block48  (generic)    mae 0.0000e+00  mse 8.1672e-16  rel_mse 1.0866e-15  max 0.0000e+00  fused=1
+  nvfp4/block16       (fused)      mae 0.0000e+00  mse 3.8729e-16  rel_mse 3.8645e-16  max 0.0000e+00  fused=1
+  nvfp4/block16 bf16  (fused)      mae 0.0000e+00  mse 3.8723e-16  rel_mse 3.8638e-16  max 0.0000e+00  fused=1
+  nvfp4/tensor        (generic)    mae 1.3250e-16  mse 8.6463e-16  rel_mse 1.2941e-15  max 0.0000e+00  fused=1
+   vs  metrics kernel : 1.456e-15 ( 1e-13)
+[       OK ] pipeline/fused-stats
+
+==================== test_pipeline ====================
+total assertions: 15291, failures: 0
+RESULT: PASSED
+test_pipeline exit code: 0
+
+---- [4/5] end-to-end experiment ----
+>>> bw_ceiling
+[moore] MUSA_MODE=plain, MUSA_ARCH='mp_22'
+mcc -std=c++17 -O3 -Iinclude -Itests  -mtgpu --offload-arch=mp_22 -I/usr/local/musa/include  tools/bw_ceiling.cu -o build/bw_ceiling -L/usr/local/musa/lib -lmusart
+pure-read            0.401 ms  read   268.4 MB  write     0.0 MB =>  669.2 GB/s (130.5% of 513)
+amax   64B/16elem    0.428 ms  read   268.4 MB  write    16.8 MB =>  667.0 GB/s (130.1% of 513)
+mxfp8 quant 16->4    0.502 ms  read   268.4 MB  write    67.1 MB =>  668.9 GB/s (130.5% of 513)
+mxfp8 deq    4->8    0.328 ms  read    67.1 MB  write   134.2 MB =>  614.0 GB/s (119.7% of 513)
+nvfp4 quant 16->2    0.450 ms  read   268.4 MB  write    33.6 MB =>  670.3 GB/s (130.7% of 513)
+nvfp4 deq    2->8    0.330 ms  read    33.6 MB  write   134.2 MB =>  509.1 GB/s (99.3% of 513)
+pure-write   0->8    0.333 ms  read     0.0 MB  write   134.2 MB =>  403.4 GB/s (78.7% of 513)
+
+best mixed read/write rate on this device: 670.3 GB/s
+wrote data/tensors/normal_512.tensor  shape=512x512 dtype=fp32 amax=4.73196
+>>> mxfp8-e4m3_block_fp16_nearest
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 20 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = mxfp8
+elem_format = e4m3
+block_size = 32
+scale_mode = block
+output_type = fp16
+rounding = nearest
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = MTT S4000
+
+[input]
+file = data/tensors/normal_512.tensor
+num_rows = 512
+num_cols = 512
+dtype = fp32
+numel = 262144
+input_bytes = 1048576
+
+[lowp]
+file = data/out/normal_512_lowp.bin
+element_format = e4m3
+scale_format = e8m0
+packed_bytes = 262144
+scale_bytes = 8192
+global_scale = 1.000000
+total_lowp_bytes = 270340
+compression_ratio = 3.878730  (original bytes / lowp bytes)
+bits_per_element = 8.250122
+
+[error]
+max_abs_error = 0.485893
+mae = 0.018685
+mse = 0.000863
+rmse = 0.029375
+relative_mse = 0.000861
+mean_signed_error = -0.000052
+signal_rms = 1.001145
+
+[performance]
+cuda_context_init_ms = 263.176610
+preprocess_ms = 1.631832
+amax_kernel_ms = 0.000000
+scale_kernel_ms = 0.000000
+quantize_kernel_ms = 0.181558
+quantize_total_ms = 0.181558
+dequantize_kernel_ms = 0.049733
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 0.487258
+quantize_kernel_ms_mean = 0.184657
+dequantize_kernel_ms_mean = 0.050723
+quantize_input_passes = 1
+effective_bandwidth_quantize_GBps = 7.264433  (input counted once)
+dram_bandwidth_quantize_GBps = 7.264433
+effective_bandwidth_dequantize_GBps = 15.977881
+
+[accuracy_check_cpu_reference]
+cpu_reference = independent table-based CPU reference (src/reference.mu)
+packed_bits_identical = yes
+scales_identical = yes
+dequant_bit_mismatch_count = 0
+dequant_max_abs_diff_gpu_vs_cpu = 0.000000
+cpu_reference_single_thread = yes
+cpu_quantize_ms = 16.484661
+cpu_dequantize_ms = 1.991829
+speedup_quantize_gpu_vs_cpu = 90.795565
+speedup_dequantize_gpu_vs_cpu = 40.050448
+
+lowp file : data/out/normal_512_lowp.bin
+dequant   : data/out/normal_512_dequant.bin
+log       : data/out/normal_512_log.txt
+>>> mxfp8-e5m2_block_fp16_nearest
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 20 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = mxfp8
+elem_format = e5m2
+block_size = 32
+scale_mode = block
+output_type = fp16
+rounding = nearest
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = MTT S4000
+
+[input]
+file = data/tensors/normal_512.tensor
+num_rows = 512
+num_cols = 512
+dtype = fp32
+numel = 262144
+input_bytes = 1048576
+
+[lowp]
+file = data/out/normal_512_lowp.bin
+element_format = e5m2
+scale_format = e8m0
+packed_bytes = 262144
+scale_bytes = 8192
+global_scale = 1.000000
+total_lowp_bytes = 270340
+compression_ratio = 3.878730  (original bytes / lowp bytes)
+bits_per_element = 8.250122
+
+[error]
+max_abs_error = 0.494117
+mae = 0.036335
+mse = 0.002921
+rmse = 0.054048
+relative_mse = 0.002915
+mean_signed_error = -0.000039
+signal_rms = 1.001145
+
+[performance]
+cuda_context_init_ms = 233.918094
+preprocess_ms = 1.458303
+amax_kernel_ms = 0.000000
+scale_kernel_ms = 0.000000
+quantize_kernel_ms = 0.183448
+quantize_total_ms = 0.183448
+dequantize_kernel_ms = 0.048494
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 0.488730
+quantize_kernel_ms_mean = 0.187751
+dequantize_kernel_ms_mean = 0.050143
+quantize_input_passes = 1
+effective_bandwidth_quantize_GBps = 7.189590  (input counted once)
+dram_bandwidth_quantize_GBps = 7.189590
+effective_bandwidth_dequantize_GBps = 16.386110
+
+[accuracy_check_cpu_reference]
+cpu_reference = independent table-based CPU reference (src/reference.mu)
+packed_bits_identical = yes
+scales_identical = yes
+dequant_bit_mismatch_count = 0
+dequant_max_abs_diff_gpu_vs_cpu = 0.000000
+cpu_reference_single_thread = yes
+cpu_quantize_ms = 14.406112
+cpu_dequantize_ms = 1.946676
+speedup_quantize_gpu_vs_cpu = 78.529675
+speedup_dequantize_gpu_vs_cpu = 40.142616
+
+lowp file : data/out/normal_512_lowp.bin
+dequant   : data/out/normal_512_dequant.bin
+log       : data/out/normal_512_log.txt
+>>> nvfp4_block_fp16_nearest
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 20 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = nvfp4
+block_size = 16
+scale_mode = block
+output_type = fp16
+rounding = nearest
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = MTT S4000
+
+[input]
+file = data/tensors/normal_512.tensor
+num_rows = 512
+num_cols = 512
+dtype = fp32
+numel = 262144
+input_bytes = 1048576
+
+[lowp]
+file = data/out/normal_512_lowp.bin
+element_format = e2m1
+scale_format = e4m3
+packed_bytes = 131072
+scale_bytes = 16384
+global_scale = 568.052368
+total_lowp_bytes = 147460
+compression_ratio = 7.110918  (original bytes / lowp bytes)
+bits_per_element = 4.500122
+
+[error]
+max_abs_error = 0.563576
+mae = 0.071529
+mse = 0.009081
+rmse = 0.095294
+relative_mse = 0.009060
+mean_signed_error = -0.000100
+signal_rms = 1.001145
+
+[performance]
+cuda_context_init_ms = 238.779773
+preprocess_ms = 1.466097
+amax_kernel_ms = 0.063922
+scale_kernel_ms = 0.092591
+quantize_kernel_ms = 0.861590
+quantize_total_ms = 1.018103
+dequantize_kernel_ms = 0.049362
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 1.325821
+quantize_kernel_ms_mean = 0.875602
+dequantize_kernel_ms_mean = 0.050926
+quantize_input_passes = 2
+effective_bandwidth_quantize_GBps = 1.174769  (input counted once)
+dram_bandwidth_quantize_GBps = 2.204700
+effective_bandwidth_dequantize_GBps = 13.608606
+
+[accuracy_check_cpu_reference]
+cpu_reference = independent table-based CPU reference (src/reference.mu)
+packed_bits_identical = yes
+scales_identical = yes
+dequant_bit_mismatch_count = 0
+dequant_max_abs_diff_gpu_vs_cpu = 0.000000
+cpu_reference_single_thread = yes
+cpu_quantize_ms = 13.736389
+cpu_dequantize_ms = 2.267370
+speedup_quantize_gpu_vs_cpu = 13.492140
+speedup_dequantize_gpu_vs_cpu = 45.933512
+
+lowp file : data/out/normal_512_lowp.bin
+dequant   : data/out/normal_512_dequant.bin
+log       : data/out/normal_512_log.txt
+
+---- [5/5] done ----
+log written to data/out/domestic_moore.log
+
+Next: copy data/out/domestic_moore.log back and note in the report which platform worked,
+      plus any -DLPQ_* switch that had to be passed via LPQ_EXTRA.

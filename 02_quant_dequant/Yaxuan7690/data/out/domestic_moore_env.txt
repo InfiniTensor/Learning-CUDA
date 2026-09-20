@@ -1,0 +1,167 @@
+# 采集时间: 2026-09-17 06:26:56 UTC  (第 2 -3: 2026-09-17, 源码含 MXFP4 与 4/6)
+
+## mthreads-gmi
+Thu Sep 17 14:26:56 2026
+---------------------------------------------------------------
+    mthreads-gmi:1.14.0          Driver Version:2.7.0
+---------------------------------------------------------------
+ID   Name           |PCIe                |%GPU  Mem            
+     Device Type    |Pcie Lane Width     |Temp  MPC Capable    
+                                         |      ECC Mode       
++-------------------------------------------------------------+
+0    MTT S4000      |00000000:2f:00.0    |0%    4MiB(49152MiB)
+     Physical       |16x(16x)            |44C   YES            
+                                         |      N/A            
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+Processes:
+ID   PID       Process name                         GPU Memory
+                                                         Usage
++-------------------------------------------------------------+
+   No running processes found
+---------------------------------------------------------------
+
+## MUSA SDK
+musa_toolkits:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"38fe8761d291e32cad642435d9f84c97e4a37bba",
+	"commit date":	"2024-09-05 19:33:56 +0800"
+}
+CUB:
+{
+	"version":	"1.12.1",
+	"git branch":	"musa-1.12.1",
+	"commit id":	"5ffbaa4336090806eacfb46394cc8b66cea2b0e5",
+	"commit date":	"2024-09-13 16:27:37 +0800"
+}
+Thrust:
+{
+	"version":	"1.12.1",
+	"git branch":	"musa-1.12.1",
+	"commit id":	"5a5e67602f52056122186cd5c07d3fc540274ea6",
+	"commit date":	"2024-09-14 09:00:20 +0800"
+}
+mcc:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"baf70da0ba9f1a95a844726d8b2c28a1365b886a",
+	"commit date":	"2024-10-08 16:20:58 +0800"
+}
+mccl:
+{
+	"version":	"2.11.4",
+	"build archs":	"22",
+	"git branch":	"kuae1.3.0_musa3.1.0_mccl1.7.0",
+	"git tag":	"No tag",
+	"commit id":	"3354f892e15c13ef74b6d7d1bee317c11f9d0af6",
+	"commit date":	"2024-06-18 11:21:07 +0800"
+}
+muPP:
+{
+	"version":	"1.7.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muPP1.7.0",
+	"git tag":	"20241024_develop",
+	"commit id":	"f0e7e1c596943e2fe98e14ff096e3c2f2c877247",
+	"commit date":	"2024-08-23 10:42:21 +0800"
+}
+mublas:
+{
+	"version":	"1.6.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_mublas1.6.0",
+	"git tag":	"No tag",
+	"commit id":	"7bd80754907ffe182da297f54737c74f6e4d4e09",
+	"commit date":	"2024-09-30 11:42:09 +0800"
+}
+mudnn:
+{
+	"version":	"2.7.0",
+	"git branch":	"kuae1.3.0_musa3.1.0_mudnn2.7.0",
+	"git tag":	"No tag",
+	"commit id":	"2fa2f81bf0d77fa977ee398f37a3fdfc6d18cfb1",
+	"commit date":	"2024-09-14 16:31:08 +0800"
+}
+mufft:
+{
+	"version":	"1.6.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muFFT1.6.0",
+	"git tag":	"No tag",
+	"commit id":	"a4790e6ac030a68fb033928c54b2d5044d33cf9e",
+	"commit date":	"2024-08-23 10:33:45 +0800"
+}
+murand:
+{
+	"version":	"1.0.0",
+	"build archs":	"21;22",
+	"git branch":	"kuae1.3.0_musa3.1.0_muRand1.0.0",
+	"git tag":	"20241024_develop",
+	"commit id":	"bc218b10bf4ab6454fe03816297478391ee6d503",
+	"commit date":	"2024-05-17 15:37:47 +0800"
+}
+musify:
+{
+	"version":	"1.0.0",
+	"git branch":	"kuae1.3.0_musa3.1.0_musify1.0.0",
+	"commit id":	"d0720f523c8744a882484be081133054ebd9012f",
+	"commit date":	"2024-08-23 11:19:27 +0800"
+}
+musolver:
+{
+	"version":	"1.0.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_musolver1.0.0",
+	"git tag":	"No tag",
+	"commit id":	"65e4a393fa32b27068a993d8bf080645dd16f534",
+	"commit date":	"2024-08-29 10:20:23 +0800"
+}
+musparse:
+{
+	"version":	"1.1.0",
+	"build archs":	"21,22",
+	"git branch":	"kuae1.3.0_musa3.1.0_musparse1.1.0",
+	"git tag":	"20240909_develop",
+	"commit id":	"73a84b13534251f7d0ea4d832c9f11839914c59a",
+	"commit date":	"2024-08-23 10:32:58 +0800"
+}
+musa_runtime:
+{
+	"version":	"3.1.0",
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"7b1fcc028ea2604d0571afb18b3662c25edd1512",
+	"commit date":	"2024-10-24 06:47:08 +0000"
+}
+driver_dependency:
+{
+	"git branch":	"kuae1.3.0_musa3.1.0",
+	"git tag":	"No tag",
+	"commit id":	"c64ecd8ad4fa3fd696a5eba63f01e9c8b42c7924",
+	"commit date":	"2024-10-24 06:42:43 +0000"
+}
+
+## mcc
+clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git baf70da0ba9f1a95a844726d8b2c28a1365b886a)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/musa/bin
+
+## OS / CPU / MEM
+Linux 5.15.0-105-generic x86_64
+model name	: Intel(R) Xeon(R) Gold 6430
+15
+               total        used        free      shared  buff/cache   available
+Mem:            1007          11         311           0         683         989
+
+## python
+Python 3.10.8
+
+## 源码包 md5
+a9c487d1d4bc867d72672220120ae7ec  /root/lpq_new.tar.gz

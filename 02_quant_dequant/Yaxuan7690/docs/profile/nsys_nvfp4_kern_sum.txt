@@ -1,0 +1,14 @@
+# nsys cuda_gpu_kern_sum -- NVFP4, 8192x8192 (67108864 elements), 6 launches (1 warmup + 5 repeat)
+# GPU kernel total: 1.9314 ms per pipeline iteration
+
+Kernel                              Calls     Avg (ms) Time (%)
+<unnamed>::k_quant_nvfp4<float, __half, lpq::FastSink<__half>, (bool)0>(const T1 *, const unsigned char *, const float *, long long, long long, int, long long, unsigned long long, unsigned char *, double *, float *)      6       0.7458    38.6%
+    void lpq::<unnamed>::k_quant_nvfp4<float, __half, lpq::FastSink<__half>, (bool)0>(const T1 *, const unsigned char *, const float *, long long, long long, int, long long, unsigned long long, unsigned char *, double *, float *)
+<unnamed>::k_block_amax_pow2_vec4<float>(const T1 *, float *, float *, long long, int, int)      6       0.6865    35.5%
+    void lpq::<unnamed>::k_block_amax_pow2_vec4<float>(const T1 *, float *, float *, long long, int, int)
+<unnamed>::k_dequant_nvfp4<__half>(const unsigned char *, const unsigned char *, const float *, long long, long long, int, long long, T1 *)      6       0.4460    23.1%
+    void lpq::<unnamed>::k_dequant_nvfp4<__half>(const unsigned char *, const unsigned char *, const float *, long long, long long, int, long long, T1 *)
+<unnamed>::k_nvfp4_block_scales(const float *, long long, const float *, unsigned char *)      6       0.0523     2.7%
+    lpq::<unnamed>::k_nvfp4_block_scales(const float *, long long, const float *, unsigned char *)
+<unnamed>::k_nvfp4_global_scale(const float *, float *, float *)      6       0.0009     0.0%
+    lpq::<unnamed>::k_nvfp4_global_scale(const float *, float *, float *)

@@ -1,0 +1,78 @@
+# NVIDIA 侧终验归档 -- RTX 5060 Ti (sm_120) / CUDA 12.9 / Windows 11
+# 生成时间: 2026-09-20 11:12:24
+# 内容: 按选题二 PDF 的逐条要求做的一次可执行层面复检（覆盖矩阵 / 三种分布 / FP16 输入 /
+#       三套测试 / compute_75 架构下限的逐位对比 / PTX 指令流扫描）
+
+==============================================================================
+## 环境
+------------------------------------------------------------------------------
+name, driver_version, memory.total [MiB], compute_cap
+NVIDIA GeForce RTX 5060 Ti, 610.60, 16311 MiB, 12.0
+
+==============================================================================
+## 1. 覆盖矩阵：格式 × 缩放模式 × 输出类型（512²，RNE，与 CPU 参考逐位对拍）
+------------------------------------------------------------------------------
+张量           配置                                     输出      packed    scales  lowp.bin   dequant      压缩率      位一致     rc
+normal_512   mxfp8-e4m3_block_fp16_nearest          fp16    262144      8192    270464    524288 3.878730      yes      0
+normal_512   mxfp8-e5m2_block_bf16_nearest          bf16    262144      8192    270464    524288 3.878730      yes      0
+normal_512   nvfp4_block_fp16_nearest               fp16    131072     16384    147584    524288 7.110918      yes      0
+normal_512   nvfp4_block_fp32_nearest               fp32    131072     16384    147584   1048576 7.110918      yes      0
+normal_512   nvfp4_tensor_fp16_nearest              fp16    131072         1    131201    524288 7.999695      yes      0
+normal_512   mxfp4_block_fp16_nearest               fp16    131072      8192    139392    524288 7.529196      yes      0
+random_512   mxfp8-e4m3_block_fp16_stochastic       fp16    262144      8192    270464    524288 3.878730       no      0
+outlier_512  nvfp4_block_fp32_nearest               fp32    131072     16384    147584   1048576 7.110918      yes      0
+normal_512   nvfp4-46-mse_block_fp16_nearest        fp16    131072     16384    147584    524288 7.110918      yes      0
+normal_512   mxfp8-e4m3_tensor_fp32_nearest         fp32    262144         1    262273   1048576 3.999924      yes      0
+
+说明：packed = 打包后字节数（4 bit 格式为 numel/2，即每字节 2 个元素；8 bit 格式为 numel）；
+      scales = 缩放因子个数（tensor 模式 1 个，block 模式 numel/block_size）；
+      lowp.bin = 128 B 头 + packed + scales；dequant = numel × output_type 字节数。
+      随机舍入配置的 packed_bits_identical=no 属预期（GPU 与 CPU 用不同随机数流），该项由
+      tests/test_pipeline.cu 的「±1 ulp + 无偏」两条判据覆盖（见 总结报告 6.4）。
+
+==============================================================================
+## 2. 三种分布的误差统计（nvfp4 block / fp16 / RNE）
+------------------------------------------------------------------------------
+分布              max_abs_error          mae            mse relative_mse
+random_512           0.166817     0.044265       0.003439     0.010310
+normal_512           0.641105     0.071416       0.009075     0.009078
+outlier_512          3.536430     0.084073       0.027749     0.003880
+
+==============================================================================
+## 3. FP16 输入矩阵（PDF 功能第 1 条要求 fp32 或 fp16 都能读）
+------------------------------------------------------------------------------
+norm_fp16_512        nvfp4_block_fp16_nearest               dtype=fp16  rc=0 packed_bits_identical=yes dequant_bit_mismatch_count=0
+normal_2048_fp16     mxfp8-e4m3_block_bf16_nearest          dtype=fp16  rc=0 packed_bits_identical=yes dequant_bit_mismatch_count=0
+normal_2048_fp16     nvfp4_block_fp32_nearest               dtype=fp16  rc=0 packed_bits_identical=yes dequant_bit_mismatch_count=0
+
+==============================================================================
+## 4. 三套测试（当前源码重建后复跑）
+------------------------------------------------------------------------------
+$ build/test_portability.exe
+total assertions: 22, failures: 0
+RESULT: PASSED
+$ build/test_formats.exe
+total assertions: 292651, failures: 0
+RESULT: PASSED
+$ build/test_pipeline.exe
+total assertions: 21532, failures: 0
+RESULT: PASSED
+
+==============================================================================
+## 5. 架构下限：-arch=compute_75（只出 PTX，驱动 JIT 到 sm_120）与 -arch=native 逐位对比
+------------------------------------------------------------------------------
+配置                                     lowp.bin       dequant.bin    CPU 对拍        
+mxfp8-e4m3_block_fp16_nearest          一致             一致             native=0 c75=0
+nvfp4_block_fp32_nearest               一致             一致             native=0 c75=0
+nvfp4-46-mse_block_fp16_nearest        一致             一致             native=0 c75=0
+mxfp4_block_fp16_nearest               一致             一致             native=0 c75=0
+
+==============================================================================
+## 6. 指令流扫描：从 compute_75 可执行文件里抽出的 PTX（cuobjdump -ptx）
+------------------------------------------------------------------------------
+$ cuobjdump -ptx build/lpq_quant_c75.exe > build/embedded_compute75.ptx
+文件 80.4 MB | sha256 0f5ae54b47cb4ed7a86c694b631706fedfa4449fde39fdd3d17f75cb30e2ea47
+.target: {'.target sm_75': 4}
+kernel 入口数: 385
+含 FP8/FP4/Tensor Core 关键字的指令: 0 条
+全部 cvt.* 指令种类: {'cvt.u64.u32': 14042, 'cvta.to.global.u64': 2670, 'cvt.u32.u64': 17323, 'cvt.u16.u32': 2266, 'cvt.u32.u16': 3058, 'cvt.f64.f32': 4574, 'cvt.rn.f32.f64': 2021, 'cvt.rn.f32.u32': 1052, 'cvt.s64.s32': 2, 'cvt.f32.f16': 2008}

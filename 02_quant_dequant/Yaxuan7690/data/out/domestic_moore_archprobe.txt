@@ -1,0 +1,47 @@
+# MUSA 架构代号探针全量记录
+# 机器  : 0 MTT S4000 |00000000:12:00.0 |0% 4MiB(49152MiB)
+# 编译器: clang version 14.0.0 (git@sh-code.mthreads.com:sw/mtcc.git baf70da0ba9f1a95a844726d8b2c28a1365b886a)
+# 探针  : data/out/_archprobe/arch_probe.cu
+#         内部调用 __float2bfloat16_rn / __bfloat16_as_ushort / __ushort_as_bfloat16
+# 编译参数: mcc -std=c++17 -O3 -mtgpu $ARCH_FLAG -L/usr/local/musa/lib -lmusart
+#           (与 scripts/run_domestic.sh 的探针步骤一致)
+
+=== arch = default  ===
+compile : FAILED
+            data/out/_archprobe/arch_probe.cu:9:30: error: use of undeclared identifier '__bfloat16_as_ushort'
+                const unsigned short u = __bfloat16_as_ushort(b);
+                                         ^
+            data/out/_archprobe/arch_probe.cu:10:13: error: use of undeclared identifier '__ushort_as_bfloat16'
+
+=== arch = mp_21 (--offload-arch=mp_21) ===
+compile : FAILED
+            data/out/_archprobe/arch_probe.cu:9:30: error: use of undeclared identifier '__bfloat16_as_ushort'
+                const unsigned short u = __bfloat16_as_ushort(b);
+                                         ^
+            data/out/_archprobe/arch_probe.cu:10:13: error: use of undeclared identifier '__ushort_as_bfloat16'
+
+=== arch = mp_22 (--offload-arch=mp_22) ===
+compile : OK
+run     : OK      (输出 42)
+
+=== arch = mp_10 (--offload-arch=mp_10) ===
+compile : FAILED
+            data/out/_archprobe/arch_probe.cu:9:30: error: use of undeclared identifier '__bfloat16_as_ushort'
+                const unsigned short u = __bfloat16_as_ushort(b);
+                                         ^
+            data/out/_archprobe/arch_probe.cu:10:13: error: use of undeclared identifier '__ushort_as_bfloat16'
+
+=== arch = mp_31 (--offload-arch=mp_31) ===
+compile : OK
+run     : FAILED  (exit 3)
+            launch-fail
+=== arch = mp_20 (--offload-arch=mp_20) ===
+compile : FAILED
+            error: unknown target CPU 'mp_20'
+            note: valid target CPU values are: mp_10, mp_21, mp_22, mp_31, mp_311
+
+=== arch = mp_30 (--offload-arch=mp_30) ===
+compile : FAILED
+            error: unknown target CPU 'mp_30'
+            note: valid target CPU values are: mp_10, mp_21, mp_22, mp_31, mp_311
+

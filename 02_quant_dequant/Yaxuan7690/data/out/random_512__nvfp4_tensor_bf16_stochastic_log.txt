@@ -1,0 +1,77 @@
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 20 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = nvfp4
+scale_rule = static_6
+block_size = 16
+scale_mode = tensor
+output_type = bf16
+rounding = stochastic
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = NVIDIA GeForce RTX 5060 Ti
+
+[input]
+file = data/tensors/random_512.tensor
+num_rows = 512
+num_cols = 512
+dtype = fp32
+numel = 262144
+input_bytes = 1048576
+
+[lowp]
+file = data/out/random_512__nvfp4_tensor_bf16_stochastic_lowp.bin
+element_format = e2m1
+scale_format = e4m3
+packed_bytes = 131072
+scale_bytes = 1
+global_scale = 2688.003906
+total_lowp_bytes = 131077
+compression_ratio = 7.999695  (original bytes / lowp bytes)
+bits_per_element = 4.000153
+
+[error]
+max_abs_error = 0.332311
+mae = 0.064704
+mse = 0.008067
+rmse = 0.089817
+relative_mse = 0.024182
+mean_signed_error = 0.000096
+signal_rms = 0.577585
+
+[performance]
+cuda_context_init_ms = 66.722400
+preprocess_ms = 0.547500
+amax_kernel_ms = 0.010880
+scale_kernel_ms = 0.011872
+quantize_kernel_ms = 0.017248
+quantize_total_ms = 0.040000
+dequantize_kernel_ms = 0.012224
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 0.157000
+quantize_kernel_ms_mean = 0.020984
+dequantize_kernel_ms_mean = 0.035150
+quantize_input_passes = 2
+effective_bandwidth_quantize_GBps = 29.491326  (input counted once)
+dram_bandwidth_quantize_GBps = 55.705726
+effective_bandwidth_dequantize_GBps = 53.612975
+
+[accuracy_check_cpu_reference]
+cpu_reference = independent table-based CPU reference (src/reference.cu)
+packed_bits_identical = no
+scales_identical = yes
+dequant_bit_mismatch_count = 87030
+dequant_max_abs_diff_gpu_vs_cpu = 0.333334
+cpu_reference_single_thread = yes
+cpu_quantize_ms = 4.903700
+cpu_dequantize_ms = 1.188600
+speedup_quantize_gpu_vs_cpu = 122.592503
+speedup_dequantize_gpu_vs_cpu = 97.234948

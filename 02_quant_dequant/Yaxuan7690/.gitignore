@@ -1,0 +1,19 @@
+# 构建产物
+build/
+
+# 体积较大的可再生产物(可用 tools/gen_data.py 与 build/lpq_quant 重新生成)
+data/tensors/
+data/out/*_lowp.bin
+data/out/*_dequant.bin
+
+# nsys 剖析报告(二进制, 体积不小, 需要时重新采集)
+*.nsys-rep
+*.sqlite
+
+# Python
+__pycache__/
+*.pyc
+
+# 编辑器
+.vscode/
+.idea/

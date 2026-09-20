@@ -1,0 +1,3 @@
+case,amax,scale,quant,dequant,metrics,total
+mxfp8-e4m3/block,0.0,0.0,0.977984,0.520288,0.0,1.498272
+nvfp4/block,0.675712,0.077888,1.12832,0.469024,0.0,2.350944

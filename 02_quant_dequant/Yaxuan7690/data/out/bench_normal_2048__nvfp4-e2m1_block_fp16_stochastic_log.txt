@@ -1,0 +1,65 @@
+# Low-precision format software simulation and dequantization -- error/perf log
+# generator: lpq_quant (CUDA)
+# note: kernel time is the min/mean over 50 measurements;
+#       timing uses CUDA events and covers GPU kernels only, excluding file IO and H2D/D2H copies;
+#       preprocess_ms includes file read and H2D copy; pipeline_ms is wall-clock time.
+#       cuda_context_init_ms covers process start through the one-time CUDA runtime bring-up.
+
+[config]
+format = nvfp4
+scale_rule = static_6
+block_size = 16
+scale_mode = block
+output_type = fp16
+rounding = stochastic
+target_gpu = "RTX 5060 Ti (sm_120, CUDA 12.9)"
+seed = 20260915
+device = NVIDIA GeForce RTX 5060 Ti
+
+[input]
+file = data/tensors/normal_2048.tensor
+num_rows = 2048
+num_cols = 2048
+dtype = fp32
+numel = 4194304
+input_bytes = 16777216
+
+[lowp]
+file = data/out/bench_normal_2048__nvfp4-e2m1_block_fp16_stochastic_lowp.bin
+element_format = e2m1
+scale_format = e4m3
+packed_bytes = 2097152
+scale_bytes = 262144
+global_scale = 520.886292
+total_lowp_bytes = 2359300
+compression_ratio = 7.111099  (original bytes / lowp bytes)
+bits_per_element = 4.500008
+
+[error]
+max_abs_error = 1.412645
+mae = 0.095402
+mse = 0.018814
+rmse = 0.137166
+relative_mse = 0.018807
+mean_signed_error = -0.000045
+signal_rms = 1.000197
+
+[performance]
+cuda_context_init_ms = 74.257300
+preprocess_ms = 6.190900
+amax_kernel_ms = 0.024928
+scale_kernel_ms = 0.012768
+quantize_kernel_ms = 0.089632
+quantize_total_ms = 0.127328
+dequantize_kernel_ms = 0.026496
+metrics_kernel_ms = 0.000000
+metrics_accum = fast(compensated fp32)
+error_stats_fused_into_quantize = yes
+error_stats_fused_note = accumulated inside the quantize kernel; zero extra DRAM traffic
+pipeline_wall_ms = 0.233600
+quantize_kernel_ms_mean = 0.091973
+dequantize_kernel_ms_mean = 0.048522
+quantize_input_passes = 2
+effective_bandwidth_quantize_GBps = 150.293073  (input counted once)
+dram_bandwidth_quantize_GBps = 282.056836
+effective_bandwidth_dequantize_GBps = 405.642654
