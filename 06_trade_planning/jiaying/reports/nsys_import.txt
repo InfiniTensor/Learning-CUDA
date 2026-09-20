@@ -1,0 +1,2 @@
+Processing [0%                                                                 ]Processing [2%                                                                 ]Processing [4%                                                                 ]Processing [====================================59%                            ]Processing [===============================================================100%]
+Saved report file to "output/trade_flow_trace.nsys-rep"

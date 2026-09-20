@@ -1,0 +1,7 @@
+Test project /mnt/d/Jiaying/Documents/ChatGPT/InfiniTensor/Learning-CUDA/06_trade_planning/jiaying/build-ubsan
+    Start 1: correctness
+1/1 Test #1: correctness ......................   Passed    4.96 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   4.97 sec
