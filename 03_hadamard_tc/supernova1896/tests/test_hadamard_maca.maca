@@ -1,0 +1,4 @@
+// 沐曦曦云 C500 正确性入口。
+// 复用统一的 CPU 参考、FP16/BF16 和融合量化检查，仅跳过 NVIDIA WMMA。
+#define HADAMARD_MACA 1
+#include "test_hadamard.cu"

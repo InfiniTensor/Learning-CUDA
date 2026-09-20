@@ -1,0 +1,3 @@
+Generating SQLite file /root/hadamard_transform_accel_verify2/profiling/nsys_hadamard.sqlite from /root/hadamard_transform_accel_verify2/profiling/nsys_hadamard.nsys-rep
+Processing [/root/hadamard_transform_accel_verify2/profiling/nsys_hadamard.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_gpu_kern_sum.py] to [/root/hadamard_transform_accel_verify2/profiling/nsys_stats_cuda_gpu_kern_sum.csv]... PROCESSED
+

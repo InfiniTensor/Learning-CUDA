@@ -1,0 +1,421 @@
+#include "hadamard_cuda.cuh"
+
+#include <cuda_fp16.h>
+
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <stdexcept>
+#include <string>
+
+namespace hadamard {
+namespace {
+
+// MACA 版本沿用 CUDA 兼容运行时接口，但不依赖 NVIDIA 的 WMMA 头文件。
+// BF16 以高 16 位保存，计算阶段统一转换为 FP32。
+__host__ __device__ inline float bf16_bits_to_float_raw(std::uint16_t bits) {
+    const std::uint32_t word = static_cast<std::uint32_t>(bits) << 16;
+#ifdef __CUDA_ARCH__
+    return __uint_as_float(word);
+#else
+    float value;
+    std::memcpy(&value, &word, sizeof(value));
+    return value;
+#endif
+}
+
+__host__ __device__ inline std::uint16_t float_to_bf16_bits_raw(float value) {
+#ifdef __CUDA_ARCH__
+    const std::uint32_t word = __float_as_uint(value);
+#else
+    std::uint32_t word;
+    std::memcpy(&word, &value, sizeof(word));
+#endif
+    const std::uint32_t lsb = (word >> 16) & 1u;
+    const std::uint32_t rounding_bias = 0x7fffu + lsb;
+    return static_cast<std::uint16_t>((word + rounding_bias) >> 16);
+}
+
+__device__ inline float load_value(const void* ptr, int index, DType dtype) {
+    if (dtype == DType::FP16) {
+        return __half2float(reinterpret_cast<const half*>(ptr)[index]);
+    }
+    return bf16_bits_to_float_raw(reinterpret_cast<const std::uint16_t*>(ptr)[index]);
+}
+
+__device__ inline void store_value(void* ptr, int index, DType dtype, float value) {
+    if (dtype == DType::FP16) {
+        reinterpret_cast<half*>(ptr)[index] = __float2half_rn(value);
+    } else {
+        reinterpret_cast<std::uint16_t*>(ptr)[index] = float_to_bf16_bits_raw(value);
+    }
+}
+
+__device__ inline float round_to_output_dtype(float value, DType dtype) {
+    if (dtype == DType::FP16) {
+        return __half2float(__float2half_rn(value));
+    }
+    return bf16_bits_to_float_raw(float_to_bf16_bits_raw(value));
+}
+
+// 对称 signed INT4 量化，调用方负责把两个 4 bit 元素打包到一个字节。
+__device__ inline int quantize_s4(float value, float scale) {
+    const float scaled = scale > 0.0f ? value / scale : 0.0f;
+    int q = static_cast<int>(lrintf(scaled));
+    q = max(-8, min(7, q));
+    return q & 0x0f;
+}
+
+// 软件实现 E4M3 编码，保证 MACA 与 NVIDIA 路径的字节结果一致。
+__device__ inline std::uint8_t encode_e4m3(float value) {
+    if (isnan(value)) {
+        return 0x7fu;
+    }
+
+    const std::uint8_t sign = signbit(value) ? 0x80u : 0u;
+    float x = fabsf(value);
+    if (x == 0.0f) {
+        return sign;
+    }
+
+    x = fminf(x, 240.0f);
+    int exp2 = 0;
+    const float mant = frexpf(x, &exp2);
+    int unbiased = exp2 - 1;
+    int biased = unbiased + 7;
+
+    if (biased <= 0) {
+        int sub = static_cast<int>(lrintf(x * 512.0f));
+        sub = max(0, min(7, sub));
+        return sign | static_cast<std::uint8_t>(sub);
+    }
+
+    float normalized = mant * 2.0f - 1.0f;
+    int mantissa = static_cast<int>(lrintf(normalized * 8.0f));
+    if (mantissa == 8) {
+        mantissa = 0;
+        ++biased;
+    }
+    if (biased >= 15) {
+        biased = 14;
+        mantissa = 7;
+    }
+    return sign | static_cast<std::uint8_t>((biased << 3) | mantissa);
+}
+
+__device__ inline void fht_in_shared(float* values, int dim, int tid) {
+    for (int stride = 1; stride < dim; stride <<= 1) {
+        if ((tid & stride) == 0) {
+            const float a = values[tid];
+            const float b = values[tid + stride];
+            values[tid] = a + b;
+            values[tid + stride] = a - b;
+        }
+        __syncthreads();
+    }
+}
+
+__global__ void hadamard_shared_maca_kernel(
+    const void* input,
+    void* output,
+    int rows,
+    int dim,
+    DType dtype) {
+    extern __shared__ float values[];
+    const int row = blockIdx.x;
+    const int tid = threadIdx.x;
+    if (row >= rows || tid >= dim) {
+        return;
+    }
+
+    values[tid] = load_value(input, row * dim + tid, dtype);
+    __syncthreads();
+    fht_in_shared(values, dim, tid);
+    store_value(output, row * dim + tid, dtype, values[tid] * rsqrtf(static_cast<float>(dim)));
+}
+
+__global__ void quantize_int4_maca_kernel(
+    const void* transformed,
+    std::uint8_t* packed,
+    float* scales,
+    int rows,
+    int dim,
+    DType dtype) {
+    extern __shared__ float scratch[];
+    const int row = blockIdx.x;
+    const int tid = threadIdx.x;
+    if (row >= rows || tid >= dim) {
+        return;
+    }
+
+    scratch[tid] = fabsf(load_value(transformed, row * dim + tid, dtype));
+    __syncthreads();
+    for (int stride = dim >> 1; stride > 0; stride >>= 1) {
+        if (tid < stride) {
+            scratch[tid] = fmaxf(scratch[tid], scratch[tid + stride]);
+        }
+        __syncthreads();
+    }
+
+    const float scale = scratch[0] > 0.0f ? scratch[0] / 7.0f : 1.0f;
+    if (tid == 0) {
+        scales[row] = scale;
+    }
+    if (tid < dim / 2) {
+        const int q0 = quantize_s4(load_value(transformed, row * dim + 2 * tid, dtype), scale);
+        const int q1 = quantize_s4(load_value(transformed, row * dim + 2 * tid + 1, dtype), scale);
+        packed[row * (dim / 2) + tid] = static_cast<std::uint8_t>(q0 | (q1 << 4));
+    }
+}
+
+__global__ void fused_hadamard_int4_maca_kernel(
+    const void* input,
+    std::uint8_t* packed,
+    float* scales,
+    int rows,
+    int dim,
+    DType dtype) {
+    extern __shared__ float shared[];
+    float* values = shared;
+    float* reduction = shared + dim;
+    const int row = blockIdx.x;
+    const int tid = threadIdx.x;
+    if (row >= rows || tid >= dim) {
+        return;
+    }
+
+    values[tid] = load_value(input, row * dim + tid, dtype);
+    __syncthreads();
+    fht_in_shared(values, dim, tid);
+
+    values[tid] = round_to_output_dtype(
+        values[tid] * rsqrtf(static_cast<float>(dim)), dtype);
+    reduction[tid] = fabsf(values[tid]);
+    __syncthreads();
+    for (int stride = dim >> 1; stride > 0; stride >>= 1) {
+        if (tid < stride) {
+            reduction[tid] = fmaxf(reduction[tid], reduction[tid + stride]);
+        }
+        __syncthreads();
+    }
+
+    const float scale = reduction[0] > 0.0f ? reduction[0] / 7.0f : 1.0f;
+    if (tid == 0) {
+        scales[row] = scale;
+    }
+    if (tid < dim / 2) {
+        const int q0 = quantize_s4(values[2 * tid], scale);
+        const int q1 = quantize_s4(values[2 * tid + 1], scale);
+        packed[row * (dim / 2) + tid] = static_cast<std::uint8_t>(q0 | (q1 << 4));
+    }
+}
+
+__global__ void quantize_e4m3_maca_kernel(
+    const void* transformed,
+    std::uint8_t* encoded,
+    int rows,
+    int dim,
+    DType dtype) {
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index < rows * dim) {
+        encoded[index] = encode_e4m3(load_value(transformed, index, dtype));
+    }
+}
+
+__global__ void fused_hadamard_e4m3_maca_kernel(
+    const void* input,
+    std::uint8_t* encoded,
+    int rows,
+    int dim,
+    DType dtype) {
+    extern __shared__ float values[];
+    const int row = blockIdx.x;
+    const int tid = threadIdx.x;
+    if (row >= rows || tid >= dim) {
+        return;
+    }
+
+    values[tid] = load_value(input, row * dim + tid, dtype);
+    __syncthreads();
+    fht_in_shared(values, dim, tid);
+    encoded[row * dim + tid] = encode_e4m3(round_to_output_dtype(
+        values[tid] * rsqrtf(static_cast<float>(dim)), dtype));
+}
+
+void validate_dim(int dim) {
+    if (dim < 1 || dim > 256 || (dim & (dim - 1)) != 0) {
+        throw std::invalid_argument("head_dim 必须是 [1, 256] 范围内的 2 的幂");
+    }
+}
+
+KernelTiming finish_timing(cudaEvent_t start, cudaEvent_t stop, int repeats) {
+    HADAMARD_CUDA_CHECK(cudaEventRecord(stop));
+    HADAMARD_CUDA_CHECK(cudaEventSynchronize(stop));
+    float milliseconds = 0.0f;
+    HADAMARD_CUDA_CHECK(cudaEventElapsedTime(&milliseconds, start, stop));
+    KernelTiming result;
+    result.milliseconds = milliseconds / static_cast<float>(std::max(1, repeats));
+    return result;
+}
+
+template <typename Launch>
+KernelTiming run_timed(int repeats, Launch launch) {
+    cudaEvent_t start;
+    cudaEvent_t stop;
+    HADAMARD_CUDA_CHECK(cudaEventCreate(&start));
+    HADAMARD_CUDA_CHECK(cudaEventCreate(&stop));
+    HADAMARD_CUDA_CHECK(cudaEventRecord(start));
+    for (int i = 0; i < repeats; ++i) {
+        launch();
+    }
+    HADAMARD_CUDA_CHECK(cudaGetLastError());
+    KernelTiming result = finish_timing(start, stop, repeats);
+    HADAMARD_CUDA_CHECK(cudaEventDestroy(start));
+    HADAMARD_CUDA_CHECK(cudaEventDestroy(stop));
+    return result;
+}
+
+}  // namespace
+
+const char* dtype_name(DType dtype) {
+    return dtype == DType::FP16 ? "fp16" : "bf16";
+}
+
+std::size_t element_size(DType) {
+    return sizeof(std::uint16_t);
+}
+
+std::size_t tensor_bytes(int rows, int dim, DType dtype) {
+    return static_cast<std::size_t>(rows) * dim * element_size(dtype);
+}
+
+std::size_t int4_packed_bytes(int rows, int dim) {
+    return static_cast<std::size_t>(rows) * ((dim + 1) / 2);
+}
+
+void check_cuda_status(cudaError_t status, const char* expr, const char* file, int line) {
+    if (status != cudaSuccess) {
+        throw std::runtime_error(
+            std::string(file) + ":" + std::to_string(line) +
+            " MACA 运行时调用失败: " + expr + " -> " + cudaGetErrorString(status));
+    }
+}
+
+KernelTiming launch_hadamard_shared(
+    const void* input,
+    void* output,
+    int rows,
+    int dim,
+    DType dtype,
+    int repeats) {
+    validate_dim(dim);
+    return run_timed(repeats, [&] {
+        hadamard_shared_maca_kernel<<<rows, dim, dim * sizeof(float)>>>(
+            input, output, rows, dim, dtype);
+    });
+}
+
+KernelTiming launch_hadamard_wmma_fp16(
+    const void*,
+    void*,
+    const void*,
+    int,
+    int,
+    int) {
+    throw std::invalid_argument(
+        "曦云 C500 适配不启用 NVIDIA WMMA；请使用 shared-memory FHT 主路径");
+}
+
+KernelTiming launch_quantize_int4(
+    const void* transformed,
+    std::uint8_t* packed,
+    float* scales,
+    int rows,
+    int dim,
+    DType dtype,
+    int repeats) {
+    validate_dim(dim);
+    return run_timed(repeats, [&] {
+        quantize_int4_maca_kernel<<<rows, dim, dim * sizeof(float)>>>(
+            transformed, packed, scales, rows, dim, dtype);
+    });
+}
+
+KernelTiming launch_fused_hadamard_int4(
+    const void* input,
+    std::uint8_t* packed,
+    float* scales,
+    int rows,
+    int dim,
+    DType dtype,
+    int repeats) {
+    validate_dim(dim);
+    return run_timed(repeats, [&] {
+        fused_hadamard_int4_maca_kernel<<<rows, dim, 2 * dim * sizeof(float)>>>(
+            input, packed, scales, rows, dim, dtype);
+    });
+}
+
+KernelTiming launch_quantize_e4m3(
+    const void* transformed,
+    std::uint8_t* encoded,
+    int rows,
+    int dim,
+    DType dtype,
+    int repeats) {
+    validate_dim(dim);
+    const int total = rows * dim;
+    const int block = 256;
+    const int grid = (total + block - 1) / block;
+    return run_timed(repeats, [&] {
+        quantize_e4m3_maca_kernel<<<grid, block>>>(
+            transformed, encoded, rows, dim, dtype);
+    });
+}
+
+KernelTiming launch_fused_hadamard_e4m3(
+    const void* input,
+    std::uint8_t* encoded,
+    int rows,
+    int dim,
+    DType dtype,
+    int repeats) {
+    validate_dim(dim);
+    return run_timed(repeats, [&] {
+        fused_hadamard_e4m3_maca_kernel<<<rows, dim, dim * sizeof(float)>>>(
+            input, encoded, rows, dim, dtype);
+    });
+}
+
+// C500 路径不需要显式 Hadamard 矩阵，但保留接口以便复用公共头文件。
+std::vector<std::uint16_t> make_hadamard_matrix_fp16(int dim) {
+    validate_dim(dim);
+    std::vector<float> matrix(static_cast<std::size_t>(dim) * dim, 1.0f);
+    for (int stride = 1; stride < dim; stride <<= 1) {
+        for (int r = 0; r < stride; ++r) {
+            for (int c = 0; c < stride; ++c) {
+                matrix[(r + stride) * dim + c] = matrix[r * dim + c];
+                matrix[r * dim + c + stride] = matrix[r * dim + c];
+                matrix[(r + stride) * dim + c + stride] = -matrix[r * dim + c];
+            }
+        }
+    }
+
+    const float norm = 1.0f / std::sqrt(static_cast<float>(dim));
+    std::vector<std::uint16_t> result(matrix.size());
+    for (std::size_t i = 0; i < matrix.size(); ++i) {
+        const half value = __float2half_rn(matrix[i] * norm);
+        std::memcpy(&result[i], &value, sizeof(result[i]));
+    }
+    return result;
+}
+
+std::uint16_t float_to_bf16_bits(float value) {
+    return float_to_bf16_bits_raw(value);
+}
+
+float bf16_bits_to_float(std::uint16_t bits) {
+    return bf16_bits_to_float_raw(bits);
+}
+
+}  // namespace hadamard

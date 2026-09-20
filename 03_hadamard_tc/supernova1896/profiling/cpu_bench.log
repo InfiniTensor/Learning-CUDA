@@ -1,0 +1,5 @@
+命令：
+./hadamard_cpu_bench --rows 16384 --dim 128 --repeats 10
+
+输出：
+cpu_fht_ms=6.431319 effective_gb_s=2.608674 rows=16384 dim=128 repeats=10
