@@ -1,0 +1,4 @@
+==PROF== Connected to process 1279974 (/media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/build/lp)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+benchmark /media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/profile.csv
+==PROF== Disconnected from process 1279974

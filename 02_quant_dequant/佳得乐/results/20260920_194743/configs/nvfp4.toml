@@ -1,0 +1,7 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+output_type = "fp16"
+rounding = "nearest"
+target_gpu = "RTX3090"
+seed = 42

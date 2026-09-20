@@ -1,0 +1,1853 @@
+[
+  {
+    "argv": [
+      "bash",
+      "-c",
+      "date -Is; uname -a; cat /etc/os-release; lscpu; c++ --version; cmake --version; nvcc --version; nvidia-smi; command -v compute-sanitizer ncu nsys"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "environment.log"
+  },
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+      "-B",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCUDA_ARCH=86"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "configure.log"
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build",
+      "-j",
+      "4"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "build.log"
+  },
+  {
+    "argv": [
+      "ctest",
+      "--output-on-failure",
+      "-V"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build",
+    "log": "tests.log"
+  },
+  {
+    "argv": [
+      "nvcc",
+      "-std=c++17",
+      "-O3",
+      "-arch=sm_86",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/tests/probe.cu",
+      "-o",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/probe"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "probe-build.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/probe"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "probe.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/quality"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "quality.csv"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "32",
+      "--cols",
+      "32",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp32_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp32_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp32_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "32",
+      "--cols",
+      "32",
+      "--dtype",
+      "fp16",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/32x32_fp16_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "32x32_fp16_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "uniform",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_uniform_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_uniform_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_uniform_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "outliers",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp32_outliers_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp32_outliers_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp32_outliers_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp16",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp16",
+      "--distribution",
+      "uniform",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_uniform_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_uniform_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_uniform_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "512",
+      "--cols",
+      "512",
+      "--dtype",
+      "fp16",
+      "--distribution",
+      "outliers",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/512x512_fp16_outliers_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/512x512_fp16_outliers_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "512x512_fp16_outliers_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "2048",
+      "--cols",
+      "2048",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp32_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp32_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp32_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "2048",
+      "--cols",
+      "2048",
+      "--dtype",
+      "fp16",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_generate.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_e4m3_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_e4m3_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_e4m3_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_e4m3_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_e4m3_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_e4m3_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_e5m2_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_e5m2_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_e5m2_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_e5m2_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_e5m2_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_e5m2_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_nvfp4_optimized.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_nvfp4_optimized",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_nvfp4_optimized.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/csv/2048x2048_fp16_normal_nvfp4_baseline.csv",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/2048x2048_fp16_normal_nvfp4_baseline",
+      "--kernel_variant",
+      "baseline",
+      "--warmup",
+      "3",
+      "--repeat",
+      "5"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "2048x2048_fp16_normal_nvfp4_baseline.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "quantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e4m3.toml",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e4m3.lp",
+      "--backend",
+      "cuda",
+      "--kernel_variant",
+      "optimized"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e4m3_quantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "dequantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e4m3.lp",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e4m3_decoded.tensor",
+      "--backend",
+      "cuda"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e4m3_dequantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "verify",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--packed",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e4m3.lp"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e4m3_verify.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "quantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/e5m2.toml",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e5m2.lp",
+      "--backend",
+      "cuda",
+      "--kernel_variant",
+      "optimized"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e5m2_quantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "dequantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e5m2.lp",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e5m2_decoded.tensor",
+      "--backend",
+      "cuda"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e5m2_dequantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "verify",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--packed",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/e5m2.lp"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "e5m2_verify.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "quantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/nvfp4.lp",
+      "--backend",
+      "cuda",
+      "--kernel_variant",
+      "optimized"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nvfp4_quantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "dequantize",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/nvfp4.lp",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/nvfp4_decoded.tensor",
+      "--backend",
+      "cuda"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nvfp4_dequantize.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "verify",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/32x32_fp16_normal.tensor",
+      "--packed",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/data/nvfp4.lp"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nvfp4_verify.log"
+  },
+  {
+    "argv": [
+      "compute-sanitizer",
+      "--tool",
+      "memcheck",
+      "--error-exitcode",
+      "1",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/integration_tests",
+      "gpu"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743",
+    "log": "memcheck.log"
+  },
+  {
+    "argv": [
+      "compute-sanitizer",
+      "--tool",
+      "racecheck",
+      "--error-exitcode",
+      "1",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/integration_tests",
+      "gpu"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743",
+    "log": "racecheck.log"
+  },
+  {
+    "argv": [
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "generate",
+      "--rows",
+      "1024",
+      "--cols",
+      "1024",
+      "--dtype",
+      "fp32",
+      "--distribution",
+      "normal",
+      "--seed",
+      "42",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/input.tensor"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nsys/generate.log"
+  },
+  {
+    "argv": [
+      "ncu",
+      "--set",
+      "basic",
+      "--launch-count",
+      "3",
+      "--export",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/ncu",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/input.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "0",
+      "--repeat",
+      "1",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/profile_work",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/profile.csv"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nsys/ncu.log"
+  },
+  {
+    "argv": [
+      "nsys",
+      "profile",
+      "--trace=cuda",
+      "--sample=none",
+      "--cpuctxsw=none",
+      "--output",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/nsys_all",
+      "--force-overwrite=true",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/build/lp",
+      "benchmark",
+      "--input",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/input.tensor",
+      "--config",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/configs/nvfp4.toml",
+      "--kernel_variant",
+      "optimized",
+      "--warmup",
+      "0",
+      "--repeat",
+      "1",
+      "--workdir",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/profile_work",
+      "--csv",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743/nsys/profile.csv"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "nsys/nsys.log"
+  },
+  {
+    "argv": [
+      "nvidia-smi"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "gpu-final.log"
+  },
+  {
+    "argv": [
+      "/home/hyq/anaconda3/bin/python3",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/scripts/summarize.py",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "summary.log"
+  },
+  {
+    "argv": [
+      "/home/hyq/anaconda3/bin/python3",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/scripts/write_report.py",
+      "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09/results/20260920_194743"
+    ],
+    "cwd": "/media/hyq/FD52D072D518FF27/InfiniTensor-2026\u590f/CUDA/delivery/MXFP8_NVFP4\u4f4e\u7cbe\u5ea6\u6a21\u62df\u4e0e\u53cd\u91cf\u5316\uff08CUDA\uff09",
+    "log": "report.log"
+  }
+]

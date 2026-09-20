@@ -1,0 +1,37 @@
+{
+  "mode": "full",
+  "run_id": "20260920_194743",
+  "seed": 42,
+  "arch": "86",
+  "warmup": 3,
+  "repeat": 5,
+  "cpu_threads": 1,
+  "cpu_flags": "Release -O3 -ffp-contract=off",
+  "cuda_flags": "-O3 --fmad=false -lineinfo -arch=sm_86",
+  "distributions": {
+    "uniform": "[-1,1]",
+    "normal": "mean=0,std=1",
+    "outliers": "normal; every 100th element *=100"
+  },
+  "source_sha256": {
+    "src/cpu.cpp": "74ab1c2210b9d93eecbf253d55c56bf8276342b5f6a639e466689d769a0c36e7",
+    "src/gpu.cu": "2694cf2f0e654c36992843928c1d8cac72d42d2bf87a1a941ada61191dee73b6",
+    "src/gpu_stub.cpp": "d5bfc436aa2ab3e7455d3b2029626b449e30ac264c28eaa71f692f681f989dc3",
+    "src/io.cpp": "087dff73aad137109c7d4ed6c7e119b009652e30dc80e1ff095efa4fa3876918",
+    "src/main.cpp": "f57fe6a72dd14dc5222476a05254d5325ac6ba85d92982cfa3c5417c348ecd60",
+    "include/numeric.hpp": "7f167b858a268ba555c97dd716548d272f735862e4dbcb280999cd55bde494e2",
+    "include/project.hpp": "5e48eaedd40725eeaa77a8ab22d1df55b69142f5e04a64f938037ae802c3ba21",
+    "tests/integration.cpp": "6d54f24a748db62394253d8b5a1d214dd39d00fcf0cd954007db13c4c1cff393",
+    "tests/probe.cu": "aafd724c2d8daa8af062be0cee79c72bf79b498c9da4250b011d1492655689c4",
+    "tests/quality.cpp": "6f60a950caeb7209bda7c7d306687e7b1488af446110ab331f797d4fb4eef632",
+    "tests/scalar.cpp": "f0d78e2a35266b135ae73db184067f2cf5c2f6b82603e729a3cf4b8d8357f716",
+    "scripts/clean.py": "dc4be7a76ec72716a061cde5139664e5266a6a63d269d3fadce141245a821b40",
+    "scripts/package.py": "5f8805a33e5f4d6b0a6f02d40cddf4399e841a296245b0e0cb973136786356b5",
+    "scripts/reproduce.py": "5336470cc474ed6fe6996e2c560ba8c0f5bc393dd8e07256296001b2fce7f61a",
+    "scripts/summarize.py": "48046d041bcdc77f894e8cdfba2a0c1a75c685b0a5b10a8101f1b3cdf5270ac4",
+    "scripts/write_report.py": "f4a042827241f71c0d788a94c8e17a535dc85cac6daa0cfa507b83c31d503f48",
+    "configs/e4m3.toml": "0e7b810d65b82ad8a32d13679cc977022a672d23f4593a319cfb7cc96325e5b7",
+    "configs/e5m2.toml": "740e9faa8afb737f30ef88f56cf9c018624a4341ee6d435e8e600a218b1c9e21",
+    "configs/nvfp4.toml": "137ffb80572282fbad5d65b109108c16a4f6237e7a5a78aca183acec454724a5"
+  }
+}

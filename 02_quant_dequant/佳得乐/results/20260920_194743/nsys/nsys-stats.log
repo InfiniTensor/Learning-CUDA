@@ -1,0 +1,30 @@
+Generating SQLite file /media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/nsys_all.sqlite from /media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/nsys_all.nsys-rep
+Processing [/media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/nsys_all.sqlite] with [/usr/local/cuda-12.6/nsight-systems-2024.4.2/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     58.8          750,999          2  375,499.5  375,499.5   375,420   375,579        112.4  void lp::make_scales<(bool)1>(const unsigned char *, unsigned long, unsigned long, int, int, int, i…
+     26.7          341,403          2  170,701.5  170,701.5   170,622   170,781        112.4  void lp::encode_kernel<(bool)1>(const unsigned char *, unsigned long, unsigned long, int, int, int,…
+     11.5          146,878          2   73,439.0   73,439.0    73,439    73,439          0.0  void lp::decode_kernel<(bool)1>(const unsigned char *, const unsigned char *, const float *, unsign…
+      2.7           34,080          2   17,040.0   17,040.0    16,992    17,088         67.9  lp::reduce_all(const unsigned char *, unsigned long, int, unsigned int *, int *)                    
+      0.3            3,969          2    1,984.5    1,984.5     1,953     2,016         44.5  lp::make_global(const unsigned int *, float *, int)                                                 
+
+Processing [/media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/nsys_all.sqlite] with [/usr/local/cuda-12.6/nsight-systems-2024.4.2/host-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)  Min (ns)   Max (ns)   StdDev (ns)            Name         
+ --------  ---------------  ---------  -----------  --------  --------  ----------  ------------  ----------------------
+     96.0       79,109,450         18  4,394,969.4   1,649.0     1,020  78,884,374  18,590,116.1  cudaMalloc            
+      3.1        2,529,748         15    168,649.9  19,233.0     5,898     739,168     244,240.0  cudaMemcpy            
+      0.5          407,772         18     22,654.0   1,993.0       759      66,704      27,964.1  cudaFree              
+      0.4          302,830         10     30,283.0   8,404.5     2,040     236,280      72,518.4  cudaLaunchKernel      
+      0.0           28,420         16      1,776.3     985.5       746       7,927       2,063.5  cudaEventRecord       
+      0.0           13,153          4      3,288.3   2,877.0       949       6,450       2,773.2  cudaMemset            
+      0.0           10,462          3      3,487.3   3,523.0     3,340       3,599         133.1  cudaEventSynchronize  
+      0.0            7,909         21        376.6     173.0       143       1,821         473.9  cudaEventCreate       
+      0.0            4,538         21        216.1     143.0       108         823         190.1  cudaEventDestroy      
+      0.0              796          1        796.0     796.0       796         796           0.0  cuModuleGetLoadingMode
+

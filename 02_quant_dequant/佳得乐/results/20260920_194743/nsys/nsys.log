@@ -1,0 +1,5 @@
+benchmark /media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/profile.csv
+Generating '/tmp/nsys-report-9855.qdstrm'
+[1/1] [0%                          ] nsys_all.nsys-rep[1/1] [0%                          ] nsys_all.nsys-rep[1/1] [6%                          ] nsys_all.nsys-rep[1/1] [===========52%              ] nsys_all.nsys-rep[1/1] [========================98% ] nsys_all.nsys-rep[1/1] [========================99% ] nsys_all.nsys-rep[1/1] [========================100%] nsys_all.nsys-rep[1/1] [========================100%] nsys_all.nsys-rep
+Generated:
+    /media/hyq/FD52D072D518FF27/InfiniTensor-2026夏/CUDA/delivery/MXFP8_NVFP4低精度模拟与反量化（CUDA）/results/20260920_194743/nsys/nsys_all.nsys-rep
