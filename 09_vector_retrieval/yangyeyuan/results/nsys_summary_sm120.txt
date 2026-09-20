@@ -1,0 +1,19 @@
+Environment: NVIDIA GeForce RTX 5060, SM120, CUDA 13.2, WSL2
+Shape: N=65536, D=128, Q=128, batch=16, K=10, exact
+Command: nsys stats --report cuda_gpu_kern_sum,cuda_api_sum --format csv exact_timeline.nsys-rep
+
+GPU kernel summary:
+- distance_partial_topk_kernel<10>: 92.4%, 5,810,903 ns total, 8 calls, 726,363 ns average
+- transpose_to_soa_kernel:          6.3%,   398,433 ns total, 1 call
+- merge_topk_kernel<10>:            1.2%,    78,459 ns total, 8 calls,   9,807 ns average
+
+CUDA API summary highlights (profiler-instrumented process):
+- cudaMalloc:      407,410,330 ns total, 5 calls
+- cudaFree:        105,912,437 ns total, 5 calls
+- cudaMemcpyAsync:  60,598,558 ns total, 16 calls
+- cudaLaunchKernel: 22,046,988 ns total, 17 calls
+
+Interpretation:
+Distance plus block-local Top-K dominates GPU execution. Recursive merge is only 1.2%.
+Allocation dominates traced API time, so a long-lived service should reuse workspaces.
+Profiler overhead means API times are not application latency numbers.

@@ -1,0 +1,8 @@
+{
+  "search_mode": "ivf_flat",
+  "top_k": 10,
+  "batch_size": 1,
+  "nprobe": 1,
+  "recall_at_k": 0.55000000,
+  "mean_distance_error": 0.36549821
+}

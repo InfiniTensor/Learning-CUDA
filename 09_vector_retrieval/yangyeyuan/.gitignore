@@ -1,0 +1,9 @@
+/build*/
+/results/**/*.bin
+/results/**/*.ivf
+/results/**/*.ncu-rep
+/results/**/*.nsys-rep
+/results/**/*.sqlite
+/results/profile_fixture/
+/results/configs/
+/results/**/configs/
