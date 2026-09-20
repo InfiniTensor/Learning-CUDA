@@ -1,0 +1,6 @@
+version,profile_scope,batch,dim,dtype,ncu_duration_us,dram_throughput_pct,sm_throughput_pct,achieved_occupancy_pct,registers_per_thread,shared_memory_kib,stall_long_scoreboard_inst,stall_barrier_inst
+hadamard_v0,one_representative_stage_of_12,1024,4096,fp16,74.56,41.20,63.10,80.85,28,1.02,6.26,0.00
+hadamard_v1,complete_kernel,1024,4096,fp16,946.46,23.50,55.43,79.47,34,17.41,2.63,0.71
+hadamard_v2,complete_kernel,1024,4096,fp16,210.91,22.62,85.07,79.37,38,17.41,0.46,0.87
+
+
