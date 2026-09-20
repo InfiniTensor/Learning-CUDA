@@ -1,0 +1,14 @@
+# 二体圆轨道验证参数
+#
+# 周期 T = 2*pi/sqrt(2) ≈ 4.442883（等质量双星，m=1 each，d=1，G=1）
+# dt=1e-3、num_steps=44429 → 恰好 10 个周期，用于检验长期轨道稳定性
+# record_interval=50 → 889 个记录点，画轨迹足够平滑
+#
+# softening 取 1e-4：二体相距恒为 ~1，软化项对力的影响约 1e-8 量级，
+# 不会污染轨道要素，但足以让 kernel 里的自交互项不产生 0/0。
+dt = 1e-3
+num_steps = 44429
+record_interval = 50
+G = 1.0
+softening = 1e-4
+integrator = "leapfrog"

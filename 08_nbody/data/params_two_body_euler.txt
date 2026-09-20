@@ -1,0 +1,13 @@
+# 二体系统：Euler 对照参数
+#
+# 与 params_two_body.txt 完全相同，只把积分器换成 Euler。
+# 用途：在同一初值、同一 dt 下对比两种积分器的能量行为——
+#   Euler   一阶、非辛 → 能量单调漂移，轨道螺旋外扩
+#   Leapfrog 二阶、辛  → 能量有界振荡，轨道闭合
+# 这是报告里能量对比图的数据来源。
+dt = 1e-3
+num_steps = 44429
+record_interval = 50
+G = 1.0
+softening = 1e-4
+integrator = "euler"

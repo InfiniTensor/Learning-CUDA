@@ -1,0 +1,4 @@
+# equal-mass binary at 0.8x circular speed -> e=0.36 ellipse (starts at apocenter, a=0.735294, T=2.801317); G=1
+# x y z vx vy vz mass
+-0.5 0 0 0 -0.565685425 0 1
+0.5 0 0 0 0.565685425 0 1

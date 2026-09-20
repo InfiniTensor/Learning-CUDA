@@ -1,0 +1,15 @@
+# 星团演化参数（Plummer 球初值）
+#
+# softening 必须比二体验证时大得多。Plummer 球里粒子会发生近距离交会，
+# eps=1e-4 时 r→0 的两体会产生巨大加速度，把积分器打爆（能量骤变、粒子飞散）。
+# 经验取法：eps ≈ 平均粒子间距的量级。M=1、a=1 的 Plummer 球在 N=4096 时
+# 核心区平均间距约 0.02，故取 0.02。
+#
+# 时间单位：Plummer 球的动力学时标（crossing time）约为 1，
+# num_steps=2000 × dt=2e-3 = 4 个动力学时标，足以看到核心塌缩的起始。
+dt = 2e-3
+num_steps = 2000
+record_interval = 10
+G = 1.0
+softening = 0.02
+integrator = "leapfrog"

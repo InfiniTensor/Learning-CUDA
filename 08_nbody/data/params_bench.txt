@@ -1,0 +1,7 @@
+# 性能基准参数
+dt = 1e-3
+num_steps = 1000
+record_interval = 100
+G = 1.0
+softening = 0.01
+integrator = "leapfrog"
