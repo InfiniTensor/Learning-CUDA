@@ -1,0 +1,8 @@
+{
+  "status": "measured",
+  "device": "NVIDIA GeForce RTX 4090",
+  "dataset": {"n": 1000000, "nq": 1000, "dim": 128, "k": 10},
+  "exact": {"query_ms": 3851.290919, "qps": 259.653197, "p50_ms": 4.137849, "p99_ms": 5.861579, "workspace_mib": 976.625000, "cpu_gpu_recall_at_k": 1.000000, "speedup_vs_cpu": 42.469173},
+  "cpu": {"queries_measured": 20, "query_ms": 3271.222801},
+  "ivf_flat": {"index_build_ms": 0.000000, "query_ms": 6515.475806, "qps": 153.480733, "nlist": 256, "nprobe": 64, "recall_at_k": 0.937800, "mean_rank_score_error": 0.272549, "workspace_mib": 493.922852}
+}
