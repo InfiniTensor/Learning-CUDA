@@ -1,0 +1,21 @@
+{
+  "mode": "cvt",
+  "format": "mxfp8",
+  "shape": [4096, 4096],
+  "actual_gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "dependency": "cuda_fp8.h cvt 指令（sm_89+）",
+  "encode_byte_mismatches": 0,
+  "decode_bit_mismatches": 0,
+  "warmup": 20,
+  "iterations": 200,
+  "sw_encode_kernel_ms": 0.6187344193,
+  "hw_encode_kernel_ms": 0.3486006558,
+  "sw_decode_kernel_ms": 0.3453267217,
+  "hw_decode_kernel_ms": 0.2951062322,
+  "sw_encode_effective_gbps": 136.424232,
+  "hw_encode_effective_gbps": 242.1405887,
+  "sw_decode_effective_gbps": 244.4362475,
+  "hw_decode_effective_gbps": 286.0338373,
+  "encode_speedup": 1.7749089,
+  "decode_speedup": 1.170177698
+}

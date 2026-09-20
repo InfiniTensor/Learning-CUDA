@@ -1,0 +1,5 @@
+kernel,dtype,quant,batch,seq,heads,head_dim,rows,ms,effective_GBps
+warp_fht,fp16,int4,4,128,32,128,16384,0.015170,552.976
+shared_baseline,fp16,int4,4,128,32,128,16384,0.034844,240.751
+fused_int4,fp16,int4,4,128,32,128,16384,0.016453,322.639
+tensor_core_gemm,fp16,int4,4,128,32,128,16384,0.021078,397.972

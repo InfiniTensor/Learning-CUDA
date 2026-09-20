@@ -1,0 +1,9 @@
+Environment: NVIDIA GeForce RTX 5060, SM120, CUDA 13.2, WSL2
+Target: distance_partial_topk_kernel, N=65536, D=128, Q=16, batch=16, K=10
+
+ncu connected to the process, then returned:
+ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters.
+
+No hardware-counter values were produced. Enable the NVIDIA debugger/performance-counter
+interface on the Windows host, or profile on native Linux with suitable permissions, then rerun
+scripts/profile_ncu.sh. This file records the limitation and must not be interpreted as ncu data.

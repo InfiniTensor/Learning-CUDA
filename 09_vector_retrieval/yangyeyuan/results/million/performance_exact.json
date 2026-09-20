@@ -1,0 +1,16 @@
+{
+  "search_mode": "exact",
+  "top_k": 10,
+  "batch_size": 128,
+  "nlist": 4096,
+  "nprobe": 16,
+  "build_ms": 0.000000,
+  "total_ms": 11048.128024,
+  "gpu_ms": 10976.288391,
+  "qps": 90.513071,
+  "p50_batch_ms": 284.852136,
+  "p99_batch_ms": 2855.264881,
+  "cpu_baseline_ms": 0.000000,
+  "speedup_vs_cpu": 0.000000,
+  "peak_device_bytes": 522172416
+}

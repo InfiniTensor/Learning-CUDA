@@ -1,0 +1,10 @@
+# NVFP4 使用 E2M1 元素、E4M3 局部 scale 和 FP32 全局 scale。
+format = "nvfp4"
+# canonical NVFP4 每 16 个连续元素共享一个局部 scale。
+block_size = 16
+scale_mode = "block"
+# 输出只影响 dequantized.bin，不改变量化文件中的 nibble 编码。
+output_type = "fp16"
+rounding = "nearest"
+target_gpu = "T4"
+seed = 2026

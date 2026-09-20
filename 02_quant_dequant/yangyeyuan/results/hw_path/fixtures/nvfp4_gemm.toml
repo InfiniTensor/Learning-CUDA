@@ -1,0 +1,8 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+output_type = "fp32"
+rounding = "nearest"
+target_gpu = "RTX 5060 Ti"
+seed = 2026
+hardware_path = "gemm"

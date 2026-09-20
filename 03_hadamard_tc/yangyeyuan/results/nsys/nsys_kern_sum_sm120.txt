@@ -1,0 +1,22 @@
+Generating SQLite file results/nsys/hadamard_d128_fp16_int4.sqlite from results/nsys/hadamard_d128_fp16_int4.nsys-rep
+Processing [results/nsys/hadamard_d128_fp16_int4.sqlite] with [/home/yyy/.local/cuda-13.2/nsight-systems-2025.6.3/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     44.3          3862292        121   31919.8   31904.0     31840     33185        126.3  void hadamard::<unnamed>::shared_memory_fht_kernel<__half, (int)128>(const T1 *, T1 *, unsigned lon…
+     21.7          1891482        121   15632.1   15520.0     15360     20193        508.5  void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_64x64_32x6_nn_align8>(T1::Params) 
+     19.4          1691286        121   13977.6   13952.0     13888     14432        105.0  void hadamard::<unnamed>::warp_fht_kernel<__half, (int)128, (bool)1, (int)4>(const T1 *, T1 *, void…
+     14.5          1261268        122   10338.3   10208.0     10144     15392        596.0  void hadamard::<unnamed>::warp_fht_kernel<__half, (int)128, (bool)0, (int)0>(const T1 *, T1 *, void…
+      0.1             8000          1    8000.0    8000.0      8000      8000          0.0  void hadamard::<unnamed>::row_quant_kernel<__half, (int)128, (int)4>(const T1 *, void *, float *, u…
+
+Processing [results/nsys/hadamard_d128_fp16_int4.sqlite] with [/home/yyy/.local/cuda-13.2/nsight-systems-2025.6.3/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     72.2          1266927      7  180989.6   55777.0      4384    479174     196251.5  [CUDA memcpy Device-to-Host]
+     27.8           487366      2  243683.0  243683.0      1760    485606     342130.8  [CUDA memcpy Host-to-Device]
+

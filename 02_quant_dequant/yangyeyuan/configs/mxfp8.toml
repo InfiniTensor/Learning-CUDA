@@ -1,0 +1,10 @@
+# MXFP8 使用 E4M3 元素和 E8M0 分组 scale。
+format = "mxfp8"
+# canonical MXFP8 每 32 个连续元素共享一个 scale。
+block_size = 32
+scale_mode = "block"
+# 输出只影响 dequantized.bin，不改变量化文件中的元素编码。
+output_type = "fp16"
+rounding = "nearest"
+target_gpu = "T4"
+seed = 2026

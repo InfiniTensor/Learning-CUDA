@@ -1,0 +1,16 @@
+{
+  "search_mode": "ivf_flat",
+  "top_k": 10,
+  "batch_size": 128,
+  "nlist": 256,
+  "nprobe": 8,
+  "build_ms": 0.000000,
+  "total_ms": 1.346984,
+  "gpu_ms": 1.173472,
+  "qps": 74239.931580,
+  "p50_batch_ms": 0.901992,
+  "p99_batch_ms": 0.901992,
+  "cpu_baseline_ms": 0.000000,
+  "speedup_vs_cpu": 0.000000,
+  "peak_device_bytes": 51859528
+}

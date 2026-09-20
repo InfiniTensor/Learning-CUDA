@@ -1,0 +1,8 @@
+top_k = 10
+search_mode = "ivf_flat"
+batch_size = 7
+nlist = 8
+nprobe = 8
+kmeans_iters = 4
+train_size = 513
+seed = 2026

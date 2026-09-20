@@ -1,0 +1,6 @@
+/build/
+/cmake-build*/
+*.o
+*.ncu-rep
+*.nsys-rep
+*.sqlite
