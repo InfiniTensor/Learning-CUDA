@@ -1,0 +1,4 @@
+# performance log (vsearch)
+mode           nq         n    dim   topk     build_ms    search_ms          qps     p50_ms     p99_ms mean_batch_ms       gpu_used       cpu_ms        speedup
+exact_gpu     200    300000    128    100        0.000      545.184        366.8   272.2748   341.7478   272.2748        0.63 GB    11770.539           21.6
+ivf_flat     1000    300000    128    100        0.000      195.112       5125.3    24.7088    25.8533    24.2121        0.41 GB    11770.539           60.3

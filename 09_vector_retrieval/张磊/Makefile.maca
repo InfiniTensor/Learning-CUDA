@@ -1,0 +1,51 @@
+# 沐曦 MetaX（MACA）平台构建。
+#
+# 沐曦通过 cu-bridge 提供 CUDA 兼容层：
+#   * 编译器 : cucc（nvcc 风格 wrapper，内部调用 mxgpu_llvm 的 mxcc）
+#   * 头文件 : cu-bridge/include（cuda_runtime.h / cublas_v2.h / cub 等）
+#             与 /opt/maca/include（mcc、mcblas 等原生头）
+#   * 库     : /opt/maca/lib（libmcblas = cuBLAS 对应实现）
+# 与 NVIDIA / CoreX 共用同一份源码，不需要任何源码改动（沐曦的 64 位原子加与
+# double 精度均正常，因此无需 VSEARCH_COREX 那样的 float 累计分支）。
+
+MACA  ?= /opt/maca
+CUCC  := $(MACA)/tools/cu-bridge/bin/cucc
+CXX   := g++
+INCS  := -I$(MACA)/tools/cu-bridge/include -I$(MACA)/include -Iinclude
+LIBS  := -L$(MACA)/lib -L$(MACA)/tools/cu-bridge/lib -lmcblas
+CFLAGS := -std=c++17 -O2 -fPIC -Wall
+
+BUILD := build_maca
+CORE_SRCS := src/binary_io.cpp src/config.cpp src/cpu_reference.cpp \
+             src/result_io.cpp src/metric.cpp cuda/engine.cu
+CORE_OBJS := $(patsubst %.cpp,$(BUILD)/%.o,$(patsubst %.cu,$(BUILD)/%.o,$(CORE_SRCS)))
+
+.PHONY: all clean
+
+all: $(BUILD)/vsearch $(BUILD)/test_host $(BUILD)/test_gpu
+
+$(BUILD)/%.o: %.cu
+	@mkdir -p $(dir $@)
+	$(CUCC) $(INCS) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(INCS) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/vsearch: $(CORE_OBJS) src/main.cpp
+	@mkdir -p $(BUILD)/src
+	$(CXX) $(INCS) $(CFLAGS) -c src/main.cpp -o $(BUILD)/src/main.o
+	$(CUCC) $(BUILD)/src/main.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/test_host: $(CORE_OBJS) tests/test_host.cpp
+	@mkdir -p $(BUILD)/tests
+	$(CXX) $(INCS) $(CFLAGS) -c tests/test_host.cpp -o $(BUILD)/tests/test_host.o
+	$(CUCC) $(BUILD)/tests/test_host.o $(CORE_OBJS) $(LIBS) -o $@
+
+$(BUILD)/test_gpu: $(CORE_OBJS) tests/test_gpu.cu
+	@mkdir -p $(BUILD)/tests
+	$(CUCC) $(INCS) $(CFLAGS) -c tests/test_gpu.cu -o $(BUILD)/tests/test_gpu.o
+	$(CUCC) $(BUILD)/tests/test_gpu.o $(CORE_OBJS) $(LIBS) -o $@
+
+clean:
+	rm -rf $(BUILD)

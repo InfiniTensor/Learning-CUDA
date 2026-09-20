@@ -1,0 +1,8 @@
+# quality log (vsearch)
+num_queries=1000 top_k=100 metric=l2
+mode=ivf_flat
+recall_at_k=0.043780
+id_match_ratio=0.043780
+avg_relative_score_error=0
+avg_distance_error=0
+mismatched_rank_count=95622
