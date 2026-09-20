@@ -1,0 +1,95 @@
+# nsys 统计摘录 —— docs/report.md 4.3 节 profiler 部分的依据
+#
+# 生成方式:
+#   nsys profile --force-overwrite=true -o /tmp/m5_nsys --stats=true ./build/hw_bench
+# 工具版本: NVIDIA Nsight Systems（容器内 /usr/local/cuda/bin/nsys）
+# 生成时间: 2026-09-16（M5）
+#
+# 摘录范围: 只保留 cuda_api_sum / cuda_gpu_kernel_sum / cuda_gpu_mem_time_sum /
+#           cuda_gpu_mem_size_sum 四段报表，其余（osrt_sum、nvtx 跳过信息）与结论无关。
+#
+# 关键事实:
+#   * cudaLaunchKernel 9650 次，host 侧中位数 3047 ns、最小 2658 ns —— 与各行实测的
+#     ~2.0 us 底部同一量级，坐实「小 shape 由 launch 与尾部延迟主导」。
+#   * cudaMalloc 442 次合计 138.5 ms（单次最大 101 ms），是 benchmark 自己的缓冲区分配，
+#     不在计时区间内。
+#   * GPU 侧 memset 166 次合计 1.47 ms（单次最大 132 us），是每个 case 之间清输出缓冲。
+#   * 注意: 这次运行带了 nsys 插桩，最小的几行被抬到 3.4~3.8 us，所以报告里的性能数字
+#     取自未插桩的 docs/logs/bench_rtx4090d.txt，只把本文件用于上面的三条结论。
+
+[5/8] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)   StdDev (ns)                Name               
+ --------  ---------------  ---------  ---------  ---------  --------  ---------  -----------  ---------------------------------
+     41.8        163589741        164   997498.4    71001.5      1112   25755483    3515326.1  cudaEventSynchronize             
+     35.4        138540631        442   313440.3    55723.0      1401  101254964    4815561.8  cudaMalloc                       
+     13.1         51042659        442   115481.1    63538.5      1369    2096730     209958.5  cudaFree                         
+      8.6         33795229       9650     3502.1     3047.0      2658    2793427      28455.1  cudaLaunchKernel                 
+      0.3          1328947          1  1328947.0  1328947.0   1328947    1328947          0.0  cudaGetDeviceProperties_v2_v12000
+      0.3          1198748        328     3654.7     3632.0      2809      17084       1165.5  cudaEventRecord                  
+      0.3          1131677        166     6817.3     6821.5      3230      28143       3880.9  cudaMemset                       
+      0.1           270220        328      823.8      852.5       435       4689        410.6  cudaEventCreate                  
+      0.0           176692        328      538.7      492.0       337        989        166.7  cudaEventDestroy                 
+      0.0             1153          1     1153.0     1153.0      1153       1153          0.0  cuModuleGetLoadingMode           
+
+[6/8] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     17.4         32224692        520   61970.6    9536.0      1600    305122     111367.3  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)7>(const T1 *, T1 *, long, float)             
+     12.7         23557754        520   45303.4    3680.0      1056    226242      85412.4  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)7, (int)4>(const T1 *, unsigned char *, …
+      9.7         18005304       1122   16047.5    3200.0      1024    293026      59859.4  <unnamed>::copy_kernel(const unsigned char *, unsigned char *, long)                                
+      8.5         15702248        156  100655.4   10144.0      4192    301474     132625.1  void hadamard::<unnamed>::tc_fwht_kernel<__nv_bfloat16, (int)7>(const T1 *, T1 *, long, float)      
+      8.5         15632776        260   60126.1    5328.5      1024    301346     113262.5  void hadamard::<unnamed>::fwht_kernel<__half, (int)7, (int)4>(const T1 *, T1 *, long, float)        
+      8.3         15287333        156   97995.7    5664.0      2368    299554     133331.3  void hadamard::<unnamed>::fwht_kernel<__nv_bfloat16, (int)7, (int)4>(const T1 *, T1 *, long, float) 
+      7.2         13298681        260   51148.8   12768.0      3456    220674      84340.0  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)7>(const T1 *, unsigned char *, float *, …
+      6.5         11952977        260   45973.0    6048.0      1184    216322      83936.3  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)7, (int)4>(const T1 *, unsigned char *, floa…
+      4.1          7663123        208   36841.9   36816.0      9056     64929      27812.6  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)10>(const T1 *, T1 *, long, float)            
+      2.1          3875229        208   18630.9   18640.0      5056     32512      13589.2  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)9>(const T1 *, T1 *, long, float)             
+      1.5          2845524        312    9120.3    7392.0      3072     17088       5777.4  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)8>(const T1 *, T1 *, long, float)             
+      1.2          2269166        416    5454.7    5008.0      1184     10688       4130.8  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)6>(const T1 *, T1 *, long, float)             
+      1.2          2258480        104   21716.2   21728.0      8256     35393      13475.3  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)9>(const T1 *, unsigned char *, float *, …
+      1.0          1835691        104   17650.9   17664.0      3328     32384      14373.8  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)4>(const T1 *, unsigned char *, float *, …
+      0.9          1637162        156   10494.6    8800.0      4128     18912       6013.7  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)8>(const T1 *, unsigned char *, float *, …
+      0.8          1399912        208    6730.3    6352.0      2656     11936       3916.6  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)6>(const T1 *, unsigned char *, float *, …
+      0.6          1106985        208    5322.0    5312.0      1312      9536       3998.2  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)4>(const T1 *, T1 *, long, float)             
+      0.5           972004        416    2336.5    2272.0      1056      3776       1157.4  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)6, (int)3>(const T1 *, unsigned char *, …
+      0.5           932585        312    2989.1    3008.0       992      5089       1949.9  void hadamard::<unnamed>::fwht_kernel<__half, (int)3, (int)0>(const T1 *, T1 *, long, float)        
+      0.5           923848        208    4441.6    4448.0      1184      8000       3242.4  void hadamard::<unnamed>::tc_fwht_kernel<__half, (int)5>(const T1 *, T1 *, long, float)             
+      0.5           887493        104    8533.6    8528.0      2368     15136       6170.0  void hadamard::<unnamed>::tc_fwht_fp8_kernel<__half, (int)5>(const T1 *, unsigned char *, float *, …
+      0.4           700129        312    2244.0    1824.0      1088      3904       1138.6  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)8, (int)5>(const T1 *, unsigned char *, …
+      0.3           634819        208    3052.0    2912.0      1152      5376       1787.0  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)6, (int)3>(const T1 *, unsigned char *, floa…
+      0.3           617701        208    2969.7    2816.0      1024      5216       1832.7  void hadamard::<unnamed>::fwht_kernel<__half, (int)6, (int)3>(const T1 *, T1 *, long, float)        
+      0.3           590947        208    2841.1    2784.0      1184      4704       1627.9  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)10, (int)5>(const T1 *, unsigned char *,…
+      0.3           584419        156    3746.3    2912.0      1184      7233       2476.8  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)8, (int)5>(const T1 *, unsigned char *, floa…
+      0.3           563779        208    2710.5    2736.0      1120      4352       1557.6  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)3, (int)0>(const T1 *, unsigned char *, floa…
+      0.3           552322        208    2655.4    2624.0      1056      4352       1558.0  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)3, (int)0>(const T1 *, unsigned char *, …
+      0.3           537828        104    5171.4    5104.0      1568      8992       3613.3  void hadamard::<unnamed>::tc_fwht_kernel<__nv_bfloat16, (int)6>(const T1 *, T1 *, long, float)      
+      0.3           517985        208    2490.3    2496.0      1088      4032       1359.5  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)9, (int)5>(const T1 *, unsigned char *, …
+      0.3           516196        156    3308.9    2656.0      1056      6400       2141.3  void hadamard::<unnamed>::fwht_kernel<__half, (int)8, (int)5>(const T1 *, T1 *, long, float)        
+      0.3           513059        208    2466.6    2464.0      1024      4128       1415.2  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)4, (int)1>(const T1 *, unsigned char *, …
+      0.3           493571        104    4745.9    4864.0      1760      7873       2974.1  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)10, (int)5>(const T1 *, unsigned char *, flo…
+      0.3           488994        208    2350.9    2384.0      1024      3776       1290.1  void hadamard::<unnamed>::quantize_fp8_kernel<__half, (int)5, (int)2>(const T1 *, unsigned char *, …
+      0.3           487588        104    4688.3    4752.0      1408      8193       3282.5  void hadamard::<unnamed>::fwht_kernel<__half, (int)10, (int)5>(const T1 *, T1 *, long, float)       
+      0.2           429380        104    4128.7    4208.0      1312      7072       2801.1  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)9, (int)5>(const T1 *, unsigned char *, floa…
+      0.2           397507        104    3822.2    3840.0      1152      6688       2656.9  void hadamard::<unnamed>::fwht_kernel<__half, (int)9, (int)5>(const T1 *, T1 *, long, float)        
+      0.2           395267         52    7601.3    7584.0      7552      7712         35.5  void hadamard::<unnamed>::tc_fwht_kernel<__nv_bfloat16, (int)8>(const T1 *, T1 *, long, float)      
+      0.2           314754        104    3026.5    3040.0      1024      5152       2006.5  void hadamard::<unnamed>::fwht_kernel<__half, (int)5, (int)2>(const T1 *, T1 *, long, float)        
+      0.2           311554        104    2995.7    2976.0       992      5184       1994.8  void hadamard::<unnamed>::fwht_kernel<__half, (int)4, (int)1>(const T1 *, T1 *, long, float)        
+      0.2           300161        104    2886.2    2832.0      1248      4736       1624.6  void hadamard::<unnamed>::fwht_kernel<__nv_bfloat16, (int)6, (int)3>(const T1 *, T1 *, long, float) 
+      0.2           292419        104    2811.7    2848.0      1120      4640       1686.2  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)5, (int)2>(const T1 *, unsigned char *, floa…
+      0.2           285251        104    2742.8    2752.0      1088      4480       1642.1  void hadamard::<unnamed>::fwht_fp8_kernel<__half, (int)4, (int)1>(const T1 *, unsigned char *, floa…
+      0.1           139137         52    2675.7    2688.0      2656      2784         23.0  void hadamard::<unnamed>::fwht_kernel<__nv_bfloat16, (int)8, (int)5>(const T1 *, T1 *, long, float) 
+
+[7/8] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)    Operation  
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  -------------
+    100.0          1472427    166    8870.0    2960.0       480    132065      26674.5  [CUDA memset]
+
+[8/8] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)    Operation  
+ ----------  -----  --------  --------  --------  --------  -----------  -------------
+   1849.389    166    11.141     4.194     0.000   134.218       29.801  [CUDA memset]
+

@@ -1,0 +1,136 @@
+# ctest 原始记录 —— docs/report.md 摘要与第 5 节「57 项检查 0 failed / 0 skipped、ctest 2/2」的依据
+#
+# 生成方式:
+#   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
+#   cd build && ctest --output-on-failure         # 本文件即 build/Testing/Temporary/LastTest.log
+# 生成时间:
+#   2026-09-17 01:14 UTC（M5 改完 benchmark 之后的那次回归；此后的提交只动了 docs/ 与 README，
+#   代码与这次运行时完全相同）
+# 设备:
+#   NVIDIA GeForce RTX 4090 D (sm_89, 114 SMs)
+#
+# 读法:
+#   * hadamard_probe（hw_probe）: 3 项 —— hello kernel 往返、fp16 / bf16 的 WMMA identity 探针。
+#   * hadamard_correctness（hw_tests）: 57 项 = 12 项 CPU 参考自检（两套参考互校、正交性、精度往返）
+#     + 20 项 GPU 变换对拍（M2 / M3 × fp16 / bf16 × d = 2/64/128/256/512）
+#     + 25 项 FP8 量化检查（舍入规则、半 ulp 上界、全零行、融合 vs 两段式逐字节对拍），
+#     末尾一行 `0 failed, 0 skipped`。
+#   * 最大绝对误差: fp16 为 0.000738、bf16 为 0.007638，都出现在 d = 256，
+#     即报告里的 ≤ 7.4e-4（门槛 1e-2）与 ≤ 7.7e-3（门槛 5e-2）。
+#   * hw_probe 输出里的 `stub status : ... not implemented` 是 M0 阶段遗留的过期提示（当时 M2 / M3
+#     还是桩函数），不反映实现状态；两条路径的对拍结果就是下面 hadamard_correctness 里的 20 个 GPU 用例。
+#   * 这一行，以及 hadamard_correctness 里小标题 `-- GPU implementations (filled in during M2/M3) --`
+#     的过期措辞，已在本记录之后的收尾提交里从源码改掉（只改输出字符串与注释，不涉及任何检查逻辑），
+#     所以重新运行得到的输出与本记录只在这两行上不同。
+#
+# 归档时未改动任何字符，直接是 LastTest.log 原文。
+
+Start testing: Sep 17 01:14 UTC
+----------------------------------------------------------
+1/2 Testing: hadamard_probe
+1/2 Test: hadamard_probe
+Command: "/root/Dev/Learning-CUDA/03_hadamard_tc/MarinusZhang/build/hw_probe"
+Directory: /root/Dev/Learning-CUDA/03_hadamard_tc/MarinusZhang/build
+"hadamard_probe" start time: Sep 17 01:14 UTC
+Output:
+----------------------------------------------------------
+device         : NVIDIA GeForce RTX 4090 D (sm_89, 114 SMs)
+driver/runtime : 12080 / 12080
+global memory  : 23.53 GiB
+scope          : head_dim 64/128/256 (powers of two), fp16 and bf16
+
+[PASS] hello kernel round-trip (got 0xC0DA)
+[PASS] WMMA 16x16x16 identity probe (fp16)
+[PASS] WMMA 16x16x16 identity probe (bf16)
+
+stub status    : fwht baseline (M2) and tensor core (M3) not implemented
+M0 probe       : OK
+<end of output>
+Test time =   0.19 sec
+----------------------------------------------------------
+Test Passed.
+"hadamard_probe" end time: Sep 17 01:14 UTC
+"hadamard_probe" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: hadamard_correctness
+2/2 Test: hadamard_correctness
+Command: "/root/Dev/Learning-CUDA/03_hadamard_tc/MarinusZhang/build/hw_tests"
+Directory: /root/Dev/Learning-CUDA/03_hadamard_tc/MarinusZhang/build
+"hadamard_correctness" start time: Sep 17 01:14 UTC
+Output:
+----------------------------------------------------------
+== Hadamard correctness harness ==
+
+[PASS] reference agreement (matmul vs butterfly) d=2 rows=1 max|diff|=0.000000
+[PASS] reference agreement (matmul vs butterfly) d=64 rows=1 max|diff|=0.000000
+[PASS] reference agreement (matmul vs butterfly) d=128 rows=24 max|diff|=0.000001
+[PASS] reference agreement (matmul vs butterfly) d=256 rows=56 max|diff|=0.000001
+[PASS] reference agreement (matmul vs butterfly) d=512 rows=90 max|diff|=0.000002
+[PASS] orthogonality (transform applied twice) d=2 rows=1 max|diff|=0.000000
+[PASS] orthogonality (transform applied twice) d=64 rows=1 max|diff|=0.000000
+[PASS] orthogonality (transform applied twice) d=128 rows=24 max|diff|=0.000000
+[PASS] orthogonality (transform applied twice) d=256 rows=56 max|diff|=0.000000
+[PASS] orthogonality (transform applied twice) d=512 rows=90 max|diff|=0.000000
+[PASS] precision round-trip fp16                      max|diff|=0.000244 limit=0.001000
+[PASS] precision round-trip bf16                      max|diff|=0.001952 limit=0.005000
+
+-- GPU implementations (filled in during M2/M3) --
+[PASS] fwht baseline fp16 d=2 rows=1                  max|diff|=0.000095 limit=0.010000
+[PASS] fwht baseline bf16 d=2 rows=1                  max|diff|=0.000507 limit=0.050000
+[PASS] fwht baseline fp16 d=64 rows=1                 max|diff|=0.000473 limit=0.010000
+[PASS] fwht baseline bf16 d=64 rows=1                 max|diff|=0.002388 limit=0.050000
+[PASS] fwht baseline fp16 d=128 rows=24               max|diff|=0.000535 limit=0.010000
+[PASS] fwht baseline bf16 d=128 rows=24               max|diff|=0.003904 limit=0.050000
+[PASS] fwht baseline fp16 d=256 rows=56               max|diff|=0.000738 limit=0.010000
+[PASS] fwht baseline bf16 d=256 rows=56               max|diff|=0.007638 limit=0.050000
+[PASS] fwht baseline fp16 d=512 rows=90               max|diff|=0.000611 limit=0.010000
+[PASS] fwht baseline bf16 d=512 rows=90               max|diff|=0.007237 limit=0.050000
+[PASS] tensor core fp16 d=2 rows=1                    max|diff|=0.000095 limit=0.010000
+[PASS] tensor core bf16 d=2 rows=1                    max|diff|=0.000507 limit=0.050000
+[PASS] tensor core fp16 d=64 rows=1                   max|diff|=0.000473 limit=0.010000
+[PASS] tensor core bf16 d=64 rows=1                   max|diff|=0.002388 limit=0.050000
+[PASS] tensor core fp16 d=128 rows=24                 max|diff|=0.000535 limit=0.010000
+[PASS] tensor core bf16 d=128 rows=24                 max|diff|=0.003904 limit=0.050000
+[PASS] tensor core fp16 d=256 rows=56                 max|diff|=0.000738 limit=0.010000
+[PASS] tensor core bf16 d=256 rows=56                 max|diff|=0.007638 limit=0.050000
+[PASS] tensor core fp16 d=512 rows=90                 max|diff|=0.000611 limit=0.010000
+[PASS] tensor core bf16 d=512 rows=90                 max|diff|=0.007237 limit=0.050000
+
+-- FP8 E4M3 quantization (M4) --
+[PASS] fp8 rounding rule vs independent RTNE decode   mismatches=0/1527
+[PASS] fp8 round-trip within half an E4M3 ulp         err/(amax/16)=0.571430 (amax=448.000031, scale=1.000000)
+[PASS] fp8 all-zero row                               scale=1.000000 codes=0x00
+[PASS] fused fp8 tensor core fp16 d=2 rows=1          codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.215149
+[PASS] fused fp8 tensor core bf16 d=2 rows=1          codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.184328
+[PASS] fused fp8 tensor core fp16 d=64 rows=1         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.534136
+[PASS] fused fp8 tensor core bf16 d=64 rows=1         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.561033
+[PASS] fused fp8 tensor core fp16 d=128 rows=24       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.563853
+[PASS] fused fp8 tensor core bf16 d=128 rows=24       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.560107
+[PASS] fused fp8 tensor core fp16 d=256 rows=56       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571423
+[PASS] fused fp8 tensor core bf16 d=256 rows=56       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571424
+[PASS] fused fp8 tensor core fp16 d=512 rows=90       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571425
+[PASS] fused fp8 tensor core bf16 d=512 rows=90       codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571424
+[PASS] fused fp8 butterfly fp16 d=2 rows=1            codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.215149
+[PASS] fused fp8 butterfly bf16 d=2 rows=1            codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.184328
+[PASS] fused fp8 butterfly fp16 d=64 rows=1           codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.534136
+[PASS] fused fp8 butterfly bf16 d=64 rows=1           codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.561033
+[PASS] fused fp8 butterfly fp16 d=128 rows=24         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.563853
+[PASS] fused fp8 butterfly bf16 d=128 rows=24         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.560107
+[PASS] fused fp8 butterfly fp16 d=256 rows=56         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571423
+[PASS] fused fp8 butterfly bf16 d=256 rows=56         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571424
+[PASS] fused fp8 butterfly fp16 d=512 rows=90         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571425
+[PASS] fused fp8 butterfly bf16 d=512 rows=90         codes differing=0 |scale diff|=0.000000 err/(amax/16)=0.571424
+[PASS] fused fp8 tensor core all-zero input           scale=1.000000 codes=0x00
+[PASS] fused fp8 butterfly all-zero input             scale=1.000000 codes=0x00
+
+0 failed, 0 skipped
+<end of output>
+Test time =   0.36 sec
+----------------------------------------------------------
+Test Passed.
+"hadamard_correctness" end time: Sep 17 01:14 UTC
+"hadamard_correctness" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 17 01:14 UTC

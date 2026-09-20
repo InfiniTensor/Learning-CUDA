@@ -1,0 +1,462 @@
+# nvcc -Xptxas -v 的完整输出 —— docs/report.md 4.3 节占用率表的依据
+#
+# 生成方式（与 CMake 构建同一组选项，PATH 里没有 nvcc 时用绝对路径）:
+#   /usr/local/cuda/bin/nvcc -arch=sm_89 -O3 -DNDEBUG -std=c++17 -I include \
+#       -Xptxas -v -c src/hadamard_gpu.cu -o /tmp/hg_v.o
+# 编译器: Cuda compilation tools, release 12.8, V12.8.61
+# 生成时间: 2026-09-16（M5）
+#
+# 关键事实:
+#   * 89 个 entry function（每个模板 instantiation 一条），全部只有
+#     "Used N registers, ... 0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads"，
+#     没有任何 spill —— M2 的蝶形把一行留在寄存器里，这个结论依赖于此。
+#   * 寄存器数 / 静态 smem 见 "_Z" 行之后的 "Used N registers, M bytes smem"。
+#   * 注意: 这里编译的是 hadamard_gpu.cu 单文件，-o 指向 /tmp，产物不入库。
+
+nohup: ignoring input
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li9EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li9EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 63 registers, used 1 barriers, 34432 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 32.432 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li8EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li8EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 61 registers, used 1 barriers, 18048 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 36.681 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li7EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li7EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 63 registers, used 1 barriers, 9856 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 37.336 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li6EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li6EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 47 registers, used 1 barriers, 5760 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 33.284 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers, 3712 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 31.611 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li4EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI13__nv_bfloat16Li4EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2688 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 29.683 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi9EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi9EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 34432 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 29.739 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi8EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi8EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 18048 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 34.804 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi7EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi7EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 9856 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 35.919 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi6EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi6EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 5760 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 32.797 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 33 registers, used 1 barriers, 3712 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 30.870 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi4EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac718tc_fwht_fp8_kernelI6__halfLi4EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2688 bytes smem, 388 bytes cmem[0]
+ptxas info    : Compile time = 29.044 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 79.143 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 36.798 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 21.994 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 19.573 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 17.475 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 15.438 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 13.734 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 11.205 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 9.766 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 8.886 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi10ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi10ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 79.488 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi9ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi9ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 36.813 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi8ELi5EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi8ELi5EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 21.597 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi7ELi4EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi7ELi4EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 19.286 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi6ELi3EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi6ELi3EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 17.559 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi5ELi2EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi5ELi2EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 15.471 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi4ELi1EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi4ELi1EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 13.748 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi3ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi3ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 11.216 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi2ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi2ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 9.782 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi1ELi0EEEvPKT_PhPflf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac715fwht_fp8_kernelI6__halfLi1ELi0EEEvPKT_PhPflf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers, 388 bytes cmem[0]
+ptxas info    : Compile time = 8.858 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 16.088 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 12.428 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 11.064 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.936 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.786 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.558 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.418 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 9.687 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 9.052 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 8.549 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi10ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi10ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 16.294 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi9ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi9ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 12.428 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi8ELi5EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi8ELi5EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 11.094 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi7ELi4EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi7ELi4EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.961 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi6ELi3EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi6ELi3EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.774 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi5ELi2EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi5ELi2EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.591 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi4ELi1EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi4ELi1EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 10.431 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi3ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi3ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 9.693 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi2ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi2ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 9.053 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi1ELi0EEEvPKT_PhPfl' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac719quantize_fp8_kernelI6__halfLi1ELi0EEEvPKT_PhPfl
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers, 384 bytes cmem[0]
+ptxas info    : Compile time = 8.496 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li10EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li10EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 69 registers, used 1 barriers, 34048 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 16.064 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li9EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li9EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 63 registers, used 1 barriers, 19456 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 15.745 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li8EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li8EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 63 registers, used 1 barriers, 19456 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 15.749 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li7EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li7EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 46 registers, used 1 barriers, 11264 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 10.990 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li6EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li6EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 7168 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 8.272 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 4096 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 8.146 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li4EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI13__nv_bfloat16Li4EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2560 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 6.376 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi10EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi10EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 65 registers, used 1 barriers, 34048 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 15.598 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi9EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi9EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 19456 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 15.000 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi8EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi8EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 19456 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 14.999 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi7EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi7EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 11264 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 10.245 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi6EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi6EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 7168 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 7.448 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 4096 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 7.295 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi4EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac714tc_fwht_kernelI6__halfLi4EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2560 bytes smem, 380 bytes cmem[0]
+ptxas info    : Compile time = 6.162 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li10ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 53.013 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li9ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 20.922 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li8ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 9.887 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li7ELi4EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 8.235 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li6ELi3EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 6.874 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li5ELi2EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 5.513 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li4ELi1EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 4.257 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li3ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 2.742 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li2ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 2.393 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI13__nv_bfloat16Li1ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 1.725 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi10ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi10ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 54.651 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi9ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi9ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 21.171 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi8ELi5EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi8ELi5EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 9.705 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi7ELi4EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi7ELi4EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 8.377 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi6ELi3EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi6ELi3EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 6.958 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi5ELi2EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi5ELi2EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 5.508 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi4ELi1EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi4ELi1EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 4.158 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi3ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi3ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 2.526 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi2ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi2ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 2.208 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi1ELi0EEEvPKT_PS3_lf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac711fwht_kernelI6__halfLi1ELi0EEEvPKT_PS3_lf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 11 registers, used 0 barriers, 380 bytes cmem[0]
+ptxas info    : Compile time = 1.712 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac726wmma_identity_probe_kernelI13__nv_bfloat16EEvPKT_S5_Pf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac726wmma_identity_probe_kernelI13__nv_bfloat16EEvPKT_S5_Pf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 376 bytes cmem[0]
+ptxas info    : Compile time = 1.678 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac726wmma_identity_probe_kernelI6__halfEEvPKT_S5_Pf' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac726wmma_identity_probe_kernelI6__halfEEvPKT_S5_Pf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers, 376 bytes cmem[0]
+ptxas info    : Compile time = 1.695 ms
+ptxas info    : Compiling entry function '_ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac712hello_kernelEPii' for 'sm_89'
+ptxas info    : Function properties for _ZN8hadamard48_GLOBAL__N__da461c06_15_hadamard_gpu_cu_a56f3ac712hello_kernelEPii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 8 registers, used 0 barriers, 364 bytes cmem[0]
+ptxas info    : Compile time = 0.713 ms

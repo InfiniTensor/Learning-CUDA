@@ -1,0 +1,14 @@
+build/
+build-*/
+cmake-build-*/
+compile_commands.json
+*.o
+*.so
+*.a
+*.ptx
+*.cubin
+*.sass
+*.ncu-rep
+*.nsys-rep
+__pycache__/
+.cache/
