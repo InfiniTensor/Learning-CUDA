@@ -1,0 +1,4 @@
+# Equal masses, approximately circular softened orbit (G=1, softening=0.001).
+# x y z vx vy vz mass
+-0.5 0 0 0 -0.707106250857 0 1
+0.5 0 0 0 0.707106250857 0 1

@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-20",
+  "tool": {
+    "name": "NVIDIA Nsight Systems",
+    "version": "2026.5.1.161-265138896106v0",
+    "archive_sha256": "078c9d05e60de3ffa981a14b7c659459cd659860356ecfa27eadf65be3f50ee0",
+    "archive_integrity_check": "passed",
+    "installation_scope": "project-local .tools/nsight-systems-2026.5.1; extracted only, no system installer executed"
+  },
+  "platform": "WSL Ubuntu 24.04.4, NVIDIA GeForce RTX 5060 Laptop GPU, driver 582.05",
+  "provenance": {
+    "executable": {
+      "path": "./build-wsl-review/nbody",
+      "sha256": "1eaf1070eaac3b74a14b38ff4366a91c7d0ab0e9068a4ccd9d91a1bb60423089"
+    },
+    "input": {
+      "path": "./outputs/submission-benchmark/cluster_4096.txt",
+      "sha256": "377bc9267f2f19d449e5a83110e981bc9f7aedd8fae6e6a447e9d7f638a4e83d"
+    },
+    "config": {
+      "path": "./evidence/profile_inputs/five_steps.cfg",
+      "sha256": "8ee18d23905e8d0a0b6ed4041ea51722f72564793e76802d8113913d9840e6eb"
+    },
+    "capture_script": {
+      "path": "./scripts/profile_nsys.py",
+      "sha256": "f9b6029c6e9b576923635d0359adc0dc80e44574d52598a431649d3344b066b1"
+    },
+    "analysis_script": {
+      "path": "./scripts/verify_nsys.py",
+      "sha256": "7b393677602fd9a7250a1519df05dfd2af1d748fa85170f3587c621c0e9214b8"
+    }
+  },
+  "workload": {
+    "particles": 4096,
+    "num_steps": 5,
+    "dt": 0.001,
+    "integrator": "leapfrog",
+    "cuda_execution": "direct",
+    "trajectory": false,
+    "profile_command_trace": "cuda",
+    "note": "9 acceleration samples include warm-up and measured launches. The two kernels use the same input and profiler configuration."
+  },
+  "capture_validation": {
+    "tiled": {
+      "kernel_rows": 16,
+      "runtime_rows": 57,
+      "acceleration_instances": 9,
+      "acceleration_total_ns": 1772915,
+      "acceleration_average_ns": 196990.6
+    },
+    "naive": {
+      "kernel_rows": 16,
+      "runtime_rows": 57,
+      "acceleration_instances": 9,
+      "acceleration_total_ns": 4798709,
+      "acceleration_average_ns": 533189.9
+    }
+  },
+  "kernel_average_speedup_tiled_vs_naive": 2.707,
+  "conclusion": "For this profiled short workload, the tiled acceleration kernel is faster than naive. CUDA API totals include one-time initialization and profiler overhead, so they are not used as an application speed comparison.",
+  "limitations": [
+    "This is a short profiler workload, not the 4096x1000 or 65536x1000 performance benchmark.",
+    "Nsight Compute 2025.1.1 remains unavailable on this GPU/WSL setup; no occupancy or warp-stall claims are made."
+  ]
+}

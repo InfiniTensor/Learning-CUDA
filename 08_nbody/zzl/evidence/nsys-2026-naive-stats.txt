@@ -1,0 +1,29 @@
+Generating SQLite file outputs/nsys-final/naive.sqlite from outputs/nsys-final/naive.nsys-rep
+Processing [outputs/nsys-final/naive.sqlite] with [./.tools/nsight-systems-2026.5.1/pkg/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     99.9          4798709          9  533189.9  533169.0    532850    533551        187.1  nbody::<unnamed>::acceleration_naive(const nbody::Vec4 *, nbody::Vec4 *, nbody::Vec4 *, int, float,…
+      0.1             5219          7     745.6     732.0       732       795         24.8  nbody::<unnamed>::drift_kick(nbody::Vec4 *, nbody::Vec4 *, const nbody::Vec4 *, int, float, bool)   
+
+Processing [outputs/nsys-final/naive.sqlite] with [./.tools/nsight-systems-2026.5.1/pkg/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)   StdDev (ns)            Name           
+ --------  ---------------  ---------  ----------  ----------  --------  ---------  -----------  -------------------------
+     89.5        183308151          2  91654075.5  91654075.5      5552  183302599  129610584.9  cudaStreamCreateWithFlags
+      6.7         13713759         16    857109.9      6555.5      4329   13526314    3378495.6  cudaLaunchKernel         
+      2.3          4779686          2   2389843.0   2389843.0   1600730    3178956    1115974.3  cudaEventSynchronize     
+      0.5          1098454          6    183075.7      4028.5       886     867180     346388.5  cudaMalloc               
+      0.5          1065935          8    133241.9     81190.0     22648     584594     185597.0  cudaMemcpy               
+      0.2           360503          6     60083.8      4069.0       840     202381      90908.8  cudaFree                 
+      0.2           327657          4     81914.3     23420.5      4453     276363     130435.9  cudaEventRecord          
+      0.1           226738          2    113369.0    113369.0      2055     224683     157421.8  cudaGetDeviceProperties  
+      0.0             7501          4      1875.3      1786.0       344       3585       1670.7  cudaEventCreate          
+      0.0             6956          2      3478.0      3478.0      2345       4611       1602.3  cudaStreamDestroy        
+      0.0             6864          1      6864.0      6864.0      6864       6864          0.0  cuModuleGetLoadingMode   
+      0.0             3080          4       770.0       578.0       236       1688        688.8  cudaEventDestroy         
+

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-20",
+  "source_commit": "43101d03f4da6f175f2087088f6ae02e952a7ca8",
+  "executable_sha256": "1eaf1070eaac3b74a14b38ff4366a91c7d0ab0e9068a4ccd9d91a1bb60423089",
+  "source_sha256": {
+    "CMakeLists.txt": "9972d81c15ba52ed7b6c1781470cbed74b6e817dd4f406cb0115098800517ae7",
+    "generate.py": "1e3840337804b38f798df6721238e41695f617c84547b05fef81ee7f84d58801",
+    "include/nbody.hpp": "d4dafd372a9e2864abcb113ea3a4680b8b1653ff129842db7df0015237ec51ec",
+    "scripts/benchmark.py": "693837eae3028a6dc6f67de88edce341b4e65bf1f624b914aac1329e94491e9d",
+    "scripts/benchmark_end_to_end.py": "6ef223e2780ff204ce0307649211fce3c43a8d5a3f772045989e423cab35fe63",
+    "scripts/benchmark_force.py": "ddfbbfbd6a697ee739343fed628e72079c426eb6de74d048a84b9bd024d0bb41",
+    "scripts/benchmark_trajectory.py": "f9b80a929f65bd726696944c9739f9e282e5b14c219fecbb80813f520c0e6f6e",
+    "scripts/compare_versions.py": "84d2d75d8a80c8dfe4991c6074305a2b4e55ae1382576ac2f6ed6febf73a9650",
+    "scripts/make_demos.py": "f369bf7b5214789d504fe073d7caf5ee183baa2dfba3a2b2802609b0bffbd740",
+    "scripts/package.py": "36174d5021701e5d61866342876affdf985cdb46b451822bfd7dfbd32b9f966c",
+    "scripts/prepare_release.py": "91f67e33c020f921982a060ac07cbc236e310c8e47a97dc0204493e1481f887b",
+    "scripts/profile_nsys.py": "f9b6029c6e9b576923635d0359adc0dc80e44574d52598a431649d3344b066b1",
+    "scripts/report.py": "f0faea7cfc14d6c348aad6005f1759c034ebf00a58124cbbf8df174d043b2c4a",
+    "scripts/setup_cuda.py": "18cfac2ee9b9e5b6dfcee0b1743e590278f547102a3f342542f639f13a988e34",
+    "scripts/verify_nsys.py": "7b393677602fd9a7250a1519df05dfd2af1d748fa85170f3587c621c0e9214b8",
+    "src/cpu.cpp": "c2d6d598fc9469d180311efb101f2c2340d20686fcb4f7caaf4a2c75dfd0e669",
+    "src/cuda_backend.cu": "403a5e6b234162eded6d1710d1cac95854cc2c1c28e34578ecfb8a61fe3a4f5d",
+    "src/io.cpp": "facae4b3e7ee895e3d31d61e1e1fd55f39f8c62a741c954ae23872e496c6e201",
+    "src/main.cpp": "bbe76093aa13223bde721bd6c10c6f72e8d4d62ae28ad20e52db260f4531ac8f",
+    "tests/test_nbody.py": "8532faa763aca0fa79f43c616280f35e235843246fd1e75556a69833acdd31dc",
+    "tests/test_package.py": "9de41ecbc1ff73948e3022f90fa6c05a76fd9af987548774ab68740b28aec25b",
+    "tests/test_trajectory_reader.py": "2d912a05c924f18da94856a0b64756a47a149deac4bbd30d61e51a508496decc",
+    "tests/test_verify_nsys.py": "2cd09a44e9fc9e685957fda29122677d7602228079cca4f642a40d64e136e02d",
+    "trajectory.py": "be5de5cc0cfbcb58e35300a0188aadeb08fc91ad195a5484516ab9ada26bef47",
+    "visualize.py": "dd4f5db7bbac0c9e6a32ec50f1b96222f8894bde0914f5f9807c6443d2b7d78f"
+  },
+  "tests": "submission-tests.json",
+  "benchmark": "submission-benchmark.json",
+  "end_to_end": "submission-end-to-end.json",
+  "platform": "WSL Ubuntu-24.04, CUDA 12.8, NVIDIA RTX 5060 Laptop",
+  "limitations": [
+    "Windows binary not rebuilt",
+    "No domestic GPU backend",
+    "Nsight Compute metrics unavailable; Nsight Systems CUDA trace is included"
+  ],
+  "source_note": "Source hashes and executable hash were captured after the recorded acceptance run."
+}

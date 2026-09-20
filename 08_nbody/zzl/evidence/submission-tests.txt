@@ -1,0 +1,31 @@
+test_animation_renders_2d_3d_and_exports_gif (__main__.Acceptance.test_animation_renders_2d_3d_and_exports_gif) ... ok
+test_binary_layout_initial_and_nondivisible_final (__main__.Acceptance.test_binary_layout_initial_and_nondivisible_final) ... ok
+test_bom_comments_and_quotes (__main__.Acceptance.test_bom_comments_and_quotes) ... ok
+test_circular_orbit_long_term (__main__.Acceptance.test_circular_orbit_long_term) ... ok
+test_coincident_particles_and_massless_probe (__main__.Acceptance.test_coincident_particles_and_massless_probe) ... ok
+test_colliding_output_paths (__main__.Acceptance.test_colliding_output_paths) ... ok
+test_corrupt_binary_and_metadata (__main__.Acceptance.test_corrupt_binary_and_metadata) ... ok
+test_cpu_cuda_three_level_convergence (__main__.Acceptance.test_cpu_cuda_three_level_convergence) ... ok
+test_cuda_tail_blocks_naive_tiled_and_integrators (__main__.Acceptance.test_cuda_tail_blocks_naive_tiled_and_integrators) ... ok
+test_elliptical_bound_orbit (__main__.Acceptance.test_elliptical_bound_orbit) ... ok
+test_graph_auto_policy_boundaries (__main__.Acceptance.test_graph_auto_policy_boundaries) ... ok
+test_graph_execution_matches_direct_with_output_boundaries (__main__.Acceptance.test_graph_execution_matches_direct_with_output_boundaries) ... ok
+test_invalid_config_inputs (__main__.Acceptance.test_invalid_config_inputs) ... ok
+test_invalid_execution_mode (__main__.Acceptance.test_invalid_execution_mode) ... ok
+test_invalid_particle_inputs (__main__.Acceptance.test_invalid_particle_inputs) ... ok
+test_leapfrog_second_order_convergence (__main__.Acceptance.test_leapfrog_second_order_convergence) ... ok
+test_multibody_conservation (__main__.Acceptance.test_multibody_conservation) ... ok
+test_preserve_existing_outputs (__main__.Acceptance.test_preserve_existing_outputs) ... ok
+test_recording_does_not_change_final_state (__main__.Acceptance.test_recording_does_not_change_final_state) ... ok
+test_sampled_elliptic_energy_envelope (__main__.Acceptance.test_sampled_elliptic_energy_envelope) ... ok
+test_softened_force_and_explicit_euler_against_numpy (__main__.Acceptance.test_softened_force_and_explicit_euler_against_numpy) ... ok
+test_spatial_hash_against_brute_force_and_cap (__main__.Acceptance.test_spatial_hash_against_brute_force_and_cap) ... ok
+test_trajectory_transpose_across_buffer_boundary (__main__.Acceptance.test_trajectory_transpose_across_buffer_boundary) ... ok
+test_trajectory_varied_record_counts (__main__.Acceptance.test_trajectory_varied_record_counts) ... ok
+test_zero_gravity_extreme_finite_coordinates (__main__.Acceptance.test_zero_gravity_extreme_finite_coordinates) ... ok
+test_zero_steps_and_single_particle_ballistic (__main__.Acceptance.test_zero_steps_and_single_particle_ballistic) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 49.278s
+
+OK

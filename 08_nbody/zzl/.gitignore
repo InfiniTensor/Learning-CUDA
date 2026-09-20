@@ -1,0 +1,12 @@
+.tools/
+.venv/
+build*/
+__pycache__/
+*.pyc
+*.tmp
+# 运行产物体积较大，仅示例动画随分支提交，其余保留在工作区
+outputs/*
+!outputs/demos/
+outputs/demos/*
+!outputs/demos/*.gif
+delivery/

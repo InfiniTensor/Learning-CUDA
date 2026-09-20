@@ -1,0 +1,5 @@
+{
+  "memcheck_exit": 99,
+  "synccheck_exit": 99,
+  "ncu_exit": 1
+}

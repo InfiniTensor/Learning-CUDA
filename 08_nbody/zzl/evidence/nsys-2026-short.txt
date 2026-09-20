@@ -1,0 +1,7 @@
+cuda: 4096 particles, 5 steps, 0.001257 s compute
+Log: outputs/nsys-2026-short.json
+Collecting data...
+Generating '/tmp/nsys-zzl1433/nsys-report-5121.qdstrm'
+[1/1] [0%                          ] nsys-2026-short.nsys-rep[1/1] [0%                          ] nsys-2026-short.nsys-rep[1/1] [1%                          ] nsys-2026-short.nsys-rep[1/1] [2%                          ] nsys-2026-short.nsys-rep[1/1] [5%                          ] nsys-2026-short.nsys-rep[1/1] [7%                          ] nsys-2026-short.nsys-rep[1/1] [14%                         ] nsys-2026-short.nsys-rep[1/1] [=15%                        ] nsys-2026-short.nsys-rep[1/1] [==19%                       ] nsys-2026-short.nsys-rep[1/1] [==20%                       ] nsys-2026-short.nsys-rep[1/1] [===========51%              ] nsys-2026-short.nsys-rep[1/1] [=============60%            ] nsys-2026-short.nsys-rep[1/1] [=======================96%  ] nsys-2026-short.nsys-rep[1/1] [========================98% ] nsys-2026-short.nsys-rep[1/1] [========================100%] nsys-2026-short.nsys-rep[1/1] [========================100%] nsys-2026-short.nsys-rep
+Generated:
+	./outputs/nsys-2026-short.nsys-rep

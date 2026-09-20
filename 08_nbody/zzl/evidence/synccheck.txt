@@ -1,0 +1,8 @@
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+========= 
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+========= 
+cuda: 513 particles, 5 steps, 0.000352 s compute
+Log: evidence/synccheck-run.json
+========= ERROR SUMMARY: 2 errors

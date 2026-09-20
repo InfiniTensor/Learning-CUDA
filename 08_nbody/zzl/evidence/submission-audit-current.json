@@ -1,0 +1,305 @@
+{
+  "tests_run": 26,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cuda_available": true,
+  "executable_sha256": "615f984e01a0e67308cebf9a422cf34be05244f6c40d5d0ae95e9fa0c709fed2",
+  "measurements": {
+    "circular_cpu": {
+      "steps": 20000,
+      "dt": 0.003,
+      "max_separation_error": 2.9325485229492188e-05,
+      "relative_energy_error": 9.568933214499094e-06
+    },
+    "circular_cuda": {
+      "steps": 20000,
+      "dt": 0.003,
+      "max_separation_error": 1.621246337890625e-05,
+      "relative_energy_error": 6.601390694625717e-06
+    },
+    "three_level_convergence": {
+      "cpu-()-euler": {
+        "errors": [
+          0.05228641709280246,
+          0.027243167636525338,
+          0.013925954789633157
+        ],
+        "observed_orders": [
+          0.9405417542895216,
+          0.9681182143037937
+        ]
+      },
+      "cpu-()-leapfrog": {
+        "errors": [
+          0.0004801086458238585,
+          0.00011971208047082073,
+          3.0003036506699282e-05
+        ],
+        "observed_orders": [
+          2.0037921704666726,
+          1.9963883223488765
+        ]
+      },
+      "cuda-('--kernel', 'naive', '--block-size', '256')-euler": {
+        "errors": [
+          0.0522867240060116,
+          0.027243247212283887,
+          0.013925954789633157
+        ],
+        "observed_orders": [
+          0.940546008637368,
+          0.9681224283286126
+        ]
+      },
+      "cuda-('--kernel', 'naive', '--block-size', '256')-leapfrog": {
+        "errors": [
+          0.0004802385934378914,
+          0.00012010488379910665,
+          3.0185271219179788e-05
+        ],
+        "observed_orders": [
+          1.9994565313652495,
+          1.9923781470826551
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '128')-euler": {
+        "errors": [
+          0.0522867240060116,
+          0.027243247212283887,
+          0.013925954789633157
+        ],
+        "observed_orders": [
+          0.940546008637368,
+          0.9681224283286126
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '128')-leapfrog": {
+        "errors": [
+          0.0004802385934378914,
+          0.00012010488379910665,
+          3.0185271219179788e-05
+        ],
+        "observed_orders": [
+          1.9994565313652495,
+          1.9923781470826551
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '256')-euler": {
+        "errors": [
+          0.0522867240060116,
+          0.027243247212283887,
+          0.013925954789633157
+        ],
+        "observed_orders": [
+          0.940546008637368,
+          0.9681224283286126
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '256')-leapfrog": {
+        "errors": [
+          0.0004802385934378914,
+          0.00012010488379910665,
+          3.0185271219179788e-05
+        ],
+        "observed_orders": [
+          1.9994565313652495,
+          1.9923781470826551
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '512')-euler": {
+        "errors": [
+          0.0522867240060116,
+          0.027243247212283887,
+          0.013925954789633157
+        ],
+        "observed_orders": [
+          0.940546008637368,
+          0.9681224283286126
+        ]
+      },
+      "cuda-('--kernel', 'tiled', '--block-size', '512')-leapfrog": {
+        "errors": [
+          0.0004802385934378914,
+          0.00012010488379910665,
+          3.0185271219179788e-05
+        ],
+        "observed_orders": [
+          1.9994565313652495,
+          1.9923781470826551
+        ]
+      }
+    },
+    "gpu_cpu_tail_blocks": {
+      "max_absolute_state_difference": 1.200000000478596e-07,
+      "gpu_cases": 88
+    },
+    "ellipse": {
+      "min_separation": 0.3913273513317108,
+      "max_separation": 1.0,
+      "relative_energy_error": 2.5908784862874538e-05
+    },
+    "second_order": {
+      "coarse_error": 0.0004801086458238585,
+      "fine_error": 0.00011971208047082073,
+      "ratio": 0.2493437298247291
+    },
+    "cluster_256": {
+      "backend": "cuda",
+      "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "kernel": "tiled",
+      "block_size": 256,
+      "particles": 256,
+      "num_steps": 2000,
+      "dt": 0.0005000000237487257,
+      "G": 1,
+      "softening": 0.019999999552965164,
+      "integrator": "leapfrog",
+      "record_interval": 200,
+      "records": 11,
+      "simulation_seconds": 0.04056700769148302,
+      "simulation_timer": "cuda_event",
+      "simulation_host_seconds": 0.041977511,
+      "cuda_execution": "graph",
+      "graph_setup_seconds": 0.013866393,
+      "graph_batch_steps": 25,
+      "graph_launches": 80,
+      "direct_steps": 0,
+      "average_step_ms": 0.02028350384574151,
+      "particle_steps_per_second": 12621093.57174731,
+      "device_allocation_bytes": 12288,
+      "transfer_seconds": 0.000867252,
+      "backend_wall_seconds": 0.057122743,
+      "warmup_seconds": 0.554193669,
+      "final_output_seconds": 0.000431092,
+      "trajectory_spool_seconds": 0.00011393300000000001,
+      "trajectory_finalize_seconds": 0.000177706,
+      "final_state_write_seconds": 0.000252843,
+      "total_wall_seconds": 0.612884911,
+      "cpu_threads": 1,
+      "cpu_simulation_seconds": null,
+      "cpu_backend_wall_seconds": null,
+      "speedup_vs_cpu": null,
+      "speedup_vs_cpu_host": null,
+      "energy_computed": true,
+      "initial_energy": -0.4389075018194616,
+      "final_energy": -0.43890737235343524,
+      "relative_energy_error": 2.949733732217206e-07,
+      "initial_momentum": [
+        9.417817636858672e-10,
+        -2.680735633475706e-10,
+        1.165062712971121e-09
+      ],
+      "final_momentum": [
+        -9.615882845537271e-08,
+        -2.5133886083494872e-08,
+        -1.660737325437367e-08
+      ],
+      "absolute_momentum_error": 1.0179733109180235e-07,
+      "momentum_normalization_scale": 0.5056520450557125,
+      "normalized_momentum_error": 2.013189348034504e-07,
+      "initial_angular_momentum": [
+        0.03830298408685351,
+        0.0024682951266209235,
+        0.006886759464589702
+      ],
+      "final_angular_momentum": [
+        0.03830299197808881,
+        0.0024683071661773374,
+        0.006886806213976512
+      ],
+      "center_of_mass_ballistic_error": 4.97772785912524e-08
+    },
+    "sampled_elliptic_energy": {
+      "cpu": {
+        "sample_times": [
+          0.5,
+          1,
+          1.5,
+          2,
+          4,
+          8,
+          12,
+          20
+        ],
+        "samples": [
+          {
+            "dt": 0.01,
+            "relative_energy_errors": [
+              3.3122606535127844e-06,
+              3.120404912977005e-05,
+              0.000132051517138538,
+              4.78989025205009e-06,
+              0.00038901523719082296,
+              4.990446866947194e-07,
+              4.149922183477906e-06,
+              4.279872203567866e-06
+            ]
+          },
+          {
+            "dt": 0.005,
+            "relative_energy_errors": [
+              4.826964374661491e-07,
+              7.266094115041769e-06,
+              3.146192340726917e-05,
+              1.91352016083737e-06,
+              9.833395984312357e-05,
+              1.775243309262149e-06,
+              1.9242806250243775e-06,
+              4.323171088197425e-06
+            ]
+          }
+        ],
+        "maximum_sampled_errors": [
+          0.00038901523719082296,
+          9.833395984312357e-05
+        ]
+      },
+      "cuda": {
+        "sample_times": [
+          0.5,
+          1,
+          1.5,
+          2,
+          4,
+          8,
+          12,
+          20
+        ],
+        "samples": [
+          {
+            "dt": 0.01,
+            "relative_energy_errors": [
+              3.3408935518845257e-06,
+              3.101707797554098e-05,
+              0.0001334805819702419,
+              4.427281270397283e-06,
+              0.0003850645447759939,
+              4.834291619823341e-06,
+              1.0804654852163198e-05,
+              1.474987012315308e-05
+            ]
+          },
+          {
+            "dt": 0.005,
+            "relative_energy_errors": [
+              3.9728818729451645e-07,
+              7.533127661386007e-06,
+              3.133435366387453e-05,
+              2.1590336941819474e-06,
+              9.808498990255742e-05,
+              3.3973634595123694e-08,
+              2.261033083517591e-06,
+              8.614555305792388e-06
+            ]
+          }
+        ],
+        "maximum_sampled_errors": [
+          0.0003850645447759939,
+          9.808498990255742e-05
+        ]
+      }
+    }
+  },
+  "failure_details": []
+}
