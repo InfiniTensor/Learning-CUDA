@@ -1,0 +1,8 @@
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+========= 
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+========= 
+asian_call price=5.534328794 se=0.08075124424 ci95=[5.376059263,5.692598324] gpu_ms=15.200363
+Outputs: build/sanitized_asian.json, build/sanitized_asian_performance.json
+========= ERROR SUMMARY: 2 errors

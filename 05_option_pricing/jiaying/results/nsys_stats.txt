@@ -1,0 +1,24 @@
+Generating SQLite file build/pricing_profile.sqlite from build/pricing_profile.nsys-rep
+Processing [build/pricing_profile.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+SKIPPED: build/pricing_profile.sqlite does not contain CUDA kernel data.
+
+Processing [build/pricing_profile.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                Name               
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ---------------------------------
+     62.7         13108257          2  6554128.5  6554128.5     74875  13033382    9163048.2  cudaLaunchKernel                 
+     27.0          5653103          1  5653103.0  5653103.0   5653103   5653103          0.0  cudaEventSynchronize             
+      5.0          1037933          3   345977.7   263190.0      6930    767813     387138.3  cudaFree                         
+      3.4           712246          2   356123.0   356123.0     37634    674612     450411.5  cudaMalloc                       
+      1.2           247482          3    82494.0     2217.0       916    244349     140172.1  cudaEventCreate                  
+      0.5            98850          1    98850.0    98850.0     98850     98850          0.0  cudaMemcpy                       
+      0.2            31874          3    10624.7     8965.0      4349     18560       7249.4  cudaEventRecord                  
+      0.0             4079          1     4079.0     4079.0      4079      4079          0.0  cuModuleGetLoadingMode           
+      0.0             2556          1     2556.0     2556.0      2556      2556          0.0  cudaGetDeviceProperties_v2_v12000
+      0.0             2475          3      825.0      327.0       319      1829        869.5  cudaEventDestroy                 
+
+Processing [build/pricing_profile.sqlite] with [/usr/lib/x86_64-linux-gnu/nsight-systems/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+SKIPPED: build/pricing_profile.sqlite does not contain GPU memory data.
+
