@@ -1,0 +1,7 @@
+build/
+build-*/
+__pycache__/
+*.pyc
+trajectory.bin
+performance.log
+benchmark_results/
