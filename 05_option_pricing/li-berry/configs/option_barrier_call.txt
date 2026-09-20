@@ -1,0 +1,8 @@
+# 障碍看涨期权参数（向上敲出，barrier > spot）
+option_type = barrier_call
+spot = 100.0
+strike = 100.0
+risk_free_rate = 0.03
+volatility = 0.2
+maturity = 1.0
+barrier = 120.0                   # 障碍价格（障碍期权使用）

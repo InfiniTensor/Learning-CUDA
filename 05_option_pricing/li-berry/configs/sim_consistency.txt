@@ -1,0 +1,6 @@
+# CPU/GPU 一致性验证参数：custom RNG（CPU/GPU uniform 流 bitwise 一致）
+num_paths = 200000
+num_steps = 256
+seed = 1234
+rng = "custom"
+variance_reduction = "none"

@@ -1,0 +1,6 @@
+# 对偶变量方差缩减（路径数需为偶数）
+num_paths = 10000000
+num_steps = 256
+seed = 1234
+rng = "curand"
+variance_reduction = "antithetic"
