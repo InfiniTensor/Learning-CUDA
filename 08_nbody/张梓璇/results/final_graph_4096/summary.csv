@@ -1,0 +1,3 @@
+N,kernel,block_size,source_chunks,cuda_graph,steps,repeats,median_time_ms,median_wall_time_ms,min_time_ms,max_time_ms,particle_steps_per_sec
+4096,split-source,64,32,off,200,5,15.074304,17.176800,14.275584,15.825920,54344135.575
+4096,split-source,64,32,on,200,5,13.830144,16.171500,13.303808,15.002624,59232933.817
