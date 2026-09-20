@@ -1,0 +1,6 @@
+# 小规模模拟参数（快速验证）：20 万路径、custom RNG
+num_paths = 200000
+num_steps = 256
+seed = 1234
+rng = "custom"
+variance_reduction = "none"

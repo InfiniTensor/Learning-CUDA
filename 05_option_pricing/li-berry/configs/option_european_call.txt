@@ -1,0 +1,7 @@
+# 欧式看涨期权参数（与 PDF 示例一致，黄金参考值见 data/reference_values.txt）
+option_type = european_call       # european_call / european_put / asian_call / barrier_call
+spot = 100.0                      # 初始价格
+strike = 100.0                    # 执行价格
+risk_free_rate = 0.03             # 无风险利率
+volatility = 0.2                  # 波动率
+maturity = 1.0                    # 到期时间，单位年

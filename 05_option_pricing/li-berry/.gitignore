@@ -1,0 +1,15 @@
+# 构建产物
+build/
+
+# 运行输出
+results/
+
+# 报告/基准数据
+data/*.csv
+data/*.nsys-rep
+data/*.ncu-rep
+data/*.sqlite
+
+# 编辑器
+*.swp
+.vscode/

@@ -1,0 +1,6 @@
+# 默认模拟参数：1000 万路径、256 步
+num_paths = 10000000              # 模拟路径数
+num_steps = 256                   # 每条路径的时间步数
+seed = 1234                       # 随机数种子
+rng = "curand"                    # curand 或自定义 RNG
+variance_reduction = "none"       # none / antithetic / control_variate
