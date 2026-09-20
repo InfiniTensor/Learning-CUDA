@@ -1,0 +1,6 @@
+{
+  "runs": 103,
+  "convergence_slope": -0.4899313492182615,
+  "max_cpu_gpu_difference": 2.6442326994668974e-07,
+  "asian_control_variance_ratio": 1375.5950239976432
+}

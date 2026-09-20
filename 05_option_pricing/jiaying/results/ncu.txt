@@ -1,0 +1,6 @@
+==WARNING== Could not deploy stock section files to "/home/jiaying/Documents/NVIDIA Nsight Compute/2024.1.1/Sections".
+Set the HOME environment variable to a writable directory.
+==WARNING== Using "/usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/../../sections" instead.
+==WARNING== See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq.
+==WARNING== Failed to add default section search path /usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/../../sections.
+==ERROR== Failed to add rules search path /usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/../../sections.

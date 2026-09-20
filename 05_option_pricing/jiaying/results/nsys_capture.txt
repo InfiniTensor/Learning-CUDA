@@ -1,0 +1,7 @@
+asian_call price=5.289311617 se=0.007734409652 ci95=[5.274152453,5.304470782] gpu_ms=20.723982
+Outputs: build/profile_price.json, build/profile_price_performance.json
+Importer error status: The importer binary and its dependencies were not found.
+Unable to retrieve the importer version: skipping importation of the QDSTRM file.
+Generating '/tmp/nsys-report-8b3c.qdstrm'
+Generated:
+    /mnt/d/Jiaying/Documents/ChatGPT/InfiniTensor/Learning-CUDA/05_option_pricing/jiaying/build/pricing_profile.qdstrm

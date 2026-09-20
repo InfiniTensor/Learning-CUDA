@@ -1,0 +1,6 @@
+{
+  "timing_scope": "total_ms: allocation, RNG, pilot, paths, all reductions, D2H, cleanup; excludes one-time context setup and file IO. simulation_ms includes intra-block reduction.",
+  "input_io_ms": 5.1707910000000004,
+  "process_before_output_ms": 165.532242,
+  "gpu": {"device": "NVIDIA GeForce RTX 4070 Laptop GPU", "total_ms": 14.527483999999999, "context_setup_ms": 145.82097200000001, "simulation_ms": 12.93718433380127, "reduction_ms": 0.10956799983978271, "paths_per_second": 68835043.975956202, "physical_paths_including_pilot": 1000000, "block_size": 256, "blocks": 576, "workspace_bytes": 55392}
+}

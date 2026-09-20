@@ -1,0 +1,10 @@
+{
+  "timing_scope": "total_ms: allocation, RNG, pilot, paths, all reductions, D2H, cleanup; excludes one-time context setup and file IO. simulation_ms includes intra-block reduction.",
+  "input_io_ms": 4.8276899999999996,
+  "process_before_output_ms": 264.46484900000002,
+  "cpu": {"device": "single CPU thread / Philox4x32-10", "total_ms": 58.114333000000002, "context_setup_ms": 0, "simulation_ms": 58.114333000000002, "reduction_ms": 0, "paths_per_second": 17207458.958532657, "physical_paths_including_pilot": 1000000, "block_size": 1, "blocks": 0, "workspace_bytes": 0},
+  "gpu": {"device": "NVIDIA GeForce RTX 4070 Laptop GPU", "total_ms": 15.065604, "context_setup_ms": 186.44734, "simulation_ms": 13.373439788818359, "reduction_ms": 0.10239999741315842, "paths_per_second": 66376363.005426131, "physical_paths_including_pilot": 1000000, "block_size": 256, "blocks": 576, "workspace_bytes": 55392},
+  "speedup": 3.8574180630262154,
+  "cold_speedup": 0.28839007483310847,
+  "cpu_gpu_price_difference": 1.7429555398962293e-07
+}
