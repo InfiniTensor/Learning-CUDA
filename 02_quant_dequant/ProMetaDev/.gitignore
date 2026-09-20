@@ -1,0 +1,26 @@
+# ===== 构建产物 =====
+build/
+*.o
+*.a
+*.so
+
+# ===== 运行产物：大体积二进制不入库 =====
+*.quant
+*.dequant.bin
+outputs/data/
+outputs/edge/
+outputs/perf/data/
+outputs/**/*.txt        # 生成的张量文件（文本头 + 二进制数据段）
+outputs/*.txt
+
+# ===== 性能剖析产物 =====
+*.nsys-rep
+*.sqlite
+*.ncu-rep
+
+# ===== 编辑器/系统 =====
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

@@ -1,0 +1,7 @@
+build/
+outputs/
+tests/tmp/
+*.bin
+*.log
+__pycache__/
+*.pyc

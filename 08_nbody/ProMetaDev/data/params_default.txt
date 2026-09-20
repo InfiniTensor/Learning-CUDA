@@ -1,0 +1,36 @@
+# 模拟默认参数 (CudaNBodyGravitySim_2026summer)
+# 时间步长 (题目示例: 1e-3)
+dt = 1e-3
+
+# 总步数 (基础版 ≥1000, 进阶版 ≥1000 不变)
+num_steps = 1000
+
+# 轨迹记录间隔 (每多少步写一帧; 默认 100 → R = 1000/100+1 = 11 帧)
+record_interval = 100
+
+# 引力常数 (默认 1.0, 归一化单位)
+G = 1.0
+
+# 软化因子 eps (防止 r→0 发散; 典型 1e-4)
+softening = 1e-4
+
+# 积分器: euler / leapfrog (leapfrog 保能量, 推荐默认)
+integrator = leapfrog
+
+# Kernel模式: simple / shared_tiling (shared_tiling 是进阶优化钩子)
+kernel_mode = simple
+
+# CUDA block size (典型值 128/256/512)
+block_size = 256
+
+# 是否也写 CSV 轨迹 (二进制已默认写, CSV 体积大且慢)
+write_csv = false
+
+# 跳过 CPU 参考 O(N^2) (加速比计算需要开, 但 N=65536 时 CPU 很慢)
+skip_cpu = false
+
+# 每 record_interval 计算总能量并打印 (用于正确性验证 drift)
+check_energy = false
+
+# 仅跑前 N 个记录帧 (0=跑全部; 调试用, 例如 10 = 10 record 帧 = 1000 steps)
+analyze_frames = 0

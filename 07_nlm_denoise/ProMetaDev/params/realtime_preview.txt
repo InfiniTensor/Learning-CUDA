@@ -1,0 +1,10 @@
+# 实时预览模式：搜索窗口抽稀 2 倍 + 权重查表，耗时约为精确模式的 1/2
+# 误差来源：① 候选数降为 1/4（有损，见 report.md 的质量-速度权衡）；
+#           ② exp() 用 2048 档查找表近似（近无损，MAE 约 0.06）
+patch_radius = 3
+search_radius = 10
+h = 10.0
+sigma = 25.0
+search_step = 2       # 搜索窗口采样步长（>1 为近似）
+use_lut = true        # 用查找表近似 exp()
+lut_bins = 2048

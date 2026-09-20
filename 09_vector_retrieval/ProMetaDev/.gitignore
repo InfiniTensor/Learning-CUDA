@@ -1,0 +1,26 @@
+# ===== 构建产物 =====
+build/
+*.o
+*.a
+*.so
+
+# ===== 运行产物：大体积二进制不入库 =====
+outputs/data/
+outputs/gt/
+outputs/index/
+outputs/**/*.txt
+outputs/*.txt
+*.bin
+*.result
+
+# ===== 性能剖析产物 =====
+*.nsys-rep
+*.sqlite
+*.ncu-rep
+
+# ===== 编辑器/系统 =====
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

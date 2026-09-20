@@ -1,0 +1,7 @@
+# sim_params.txt - 蒙特卡洛模拟参数 (key = value)
+num_paths         = 10000000
+num_steps         = 256
+seed              = 1234
+rng               = CURAND_DEFAULT
+variance_reduction= CONTROL_VARIATE
+block_size        = 256

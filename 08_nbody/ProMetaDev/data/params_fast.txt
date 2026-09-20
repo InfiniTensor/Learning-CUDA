@@ -1,0 +1,13 @@
+# 快速调试参数
+dt = 1e-3
+num_steps = 100
+record_interval = 10
+G = 1.0
+softening = 1e-4
+integrator = leapfrog
+kernel_mode = simple
+block_size = 256
+write_csv = false
+skip_cpu = true
+check_energy = true
+analyze_frames = 0
