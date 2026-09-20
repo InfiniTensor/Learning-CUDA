@@ -1,21 +1,14 @@
 # CUDA Hadamard 与动态 INT8 量化融合优化
 
-本项目在 NVIDIA GeForce RTX 5060 Laptop GPU（SM 12.0）上实现并逐步优化 Fast Walsh-Hadamard Transform（FWHT），随后将 FWHT、逐行绝对值最大值归约和动态对称 INT8 量化融合为单个 CUDA kernel。项目包含独立 Hadamard 的 `v0/v1/v2`、融合算子的 `fused_v0/v1/v2`、严格正确性门禁、CUDA Event benchmark、PyTorch/Dao FHT 对比和 Nsight Compute 分析。
+> 项目负责人：北京航空航天大学曹志伟  --github id：czwdysj
 
-统一计算为：
-
-```text
-y = x @ H(D) / sqrt(D)
-amax[row]  = max(abs(y[row, :]))
-scale[row] = amax[row] / 127          # 全零行使用 scale = 1
-q          = round(clamp(y / scale, -127, 127)).to(int8)
-```
+​	本项目在 NVIDIA GeForce RTX 5060 Laptop GPU（SM 12.0）上实现并逐步优化 Fast Walsh-Hadamard Transform（FWHT），随后将 FWHT、逐行绝对值最大值归约和动态对称 INT8 量化融合为单个 CUDA kernel。项目包含独立 Hadamard 的 `v0/v1/v2`、融合算子的 `fused_v0/v1/v2`、严格正确性门禁、CUDA Event benchmark、PyTorch/Dao FHT 对比和 Nsight Compute 分析。
 
 `H(D)` 是 Sylvester/Walsh Hadamard 矩阵，输入是 contiguous `[batch, D]`，`D` 为 32–8192 范围内的 2 的幂。Dao FHT 固定使用 `scale=1/sqrt(D)`，保证排列和归一化一致。正式延迟由 warmup 后的 CUDA Event 或 `torch.cuda.Event` 给出；NCU 会重放 kernel，因此 NCU duration 只用于定位瓶颈，不能替代正常运行延迟。
 
 ## 1. Hadamard 算子优化
 
-独立工程位于 [`hadamard_cudacore`](hadamard_cudacore)。三个版本计算相同的归一化 FWHT，只改变数据驻留位置、launch 数量和 butterfly 实现。
+​	以下是**单一hadamard算子**的优化 没有融合算子 对比的是pytorch的官方仓库。
 
 ### 1.1 hadamard_v0：global-memory 多 stage 基线
 
@@ -86,11 +79,11 @@ FP16 `[1024,4096]` 的 CUDA Event 延迟进一步下降到 **163.796 μs**，相
 | BF16 | v0 / v1 / v2 | 0.172x / 0.890x / **0.974x** | 0 / 8 / 8（共 12） |
 | FP32 | v0 / v1 / v2 | 0.173x / 0.978x / **1.057x** | 0 / 8 / 9（共 12） |
 
-v2 在小 batch 和中等 D 上可达到或超过 Dao，但 batch 很大时仍落后。例如 FP16 `[4096,8192]` 中 v2 为 1221.425 μs，Dao 为 500.739 μs，速度为 Dao 的 0.410x。下一版应减少跨 warp barrier，并针对小 D 采用一个 block 处理多行、针对大 D 研究更高并行度的 register/shared-memory tiling。
+**v2 在小 batch 和中等 D 上可达到或超过 Dao**，但 batch 很大时仍落后。例如 FP16 `[4096,8192]` 中 v2 为 1221.425 μs，Dao 为 500.739 μs，速度为 Dao 的 0.410x。下一版应减少跨 warp barrier，并针对小 D 采用一个 block 处理多行、针对大 D 研究更高并行度的 register/shared-memory tiling。
 
 ## 2. Hadamard + 动态 INT8 量化融合优化
 
-融合工程位于 [`Quantification_hadamard_cudacore`](Quantification_hadamard_cudacore)。基线 `separate` 依次执行 Hadamard、逐行 `amax(abs())` 和量化三个 CUDA kernel，并将完整 FP32 Hadamard 中间结果写入显存。三个融合版本均在一个 launch 内输出 INT8、FP32 amax 和 FP32 scale。
+​	融合工程位于 [`Quantification_hadamard_cudacore`](Quantification_hadamard_cudacore)。基线 `separate` 依次执行 Hadamard、逐行 `amax(abs())` 和量化三个 CUDA kernel，并将完整 FP32 Hadamard 中间结果写入显存。三个融合版本均在一个 launch 内输出 INT8、FP32 amax 和 FP32 scale。
 
 以下 NCU workload 固定为 FP16 `[1024,4096]`，warmup 100 后只采集一次正式 launch。
 
@@ -157,7 +150,7 @@ DRAM 仅为峰值的 13.66%，而 long-scoreboard 达 19.07%，说明 v0 不是�
 | fused_v1 | 8.446x | 4.508x |
 | fused_v2 | **9.054x** | **4.833x** |
 
-NCU 中 PyTorch eager 完整 pipeline 启动 12 个 kernel，累计 733.46 μs；大 elementwise/reduction stage 接近 95% DRAM throughput，主要成本是中间 tensor 重复物化。`torch.compile` 将量化部分融合为一个 Triton kernel，使完整 pipeline 减为 2 个 kernel、累计 155.23 μs；其中量化 kernel 为 74.21 μs，DRAM/SM throughput 为 59.30%/64.47%。Dao FHT 本身在两条路径中约 81 μs。自研融合 kernel 通过单 launch 完成 FWHT、amax 和 INT8 写回，避免完整 Hadamard 中间结果落盘与重读。
+​	NCU 中 PyTorch eager 完整 pipeline 启动 12 个 kernel，累计 733.46 μs；大 elementwise/reduction stage 接近 95% DRAM throughput，主要成本是中间 tensor 重复物化。`torch.compile` 将量化部分融合为一个 Triton kernel，使完整 pipeline 减为 2 个 kernel、累计 155.23 μs；其中量化 kernel 为 74.21 μs，DRAM/SM throughput 为 59.30%/64.47%。Dao FHT 本身在两条路径中约 81 μs。自研融合 kernel 通过单 launch 完成 FWHT、amax 和 INT8 写回，避免完整 Hadamard 中间结果落盘与重读。
 
 后续 v3 应保留单 launch 数据流，同时减少跨 warp barrier；小 D 可让一个 block 处理多行，大 D 可研究 register/shared-memory tiling 和更高 block 并行度。
 
@@ -221,3 +214,12 @@ ncu --profile-from-start off --set full --launch-count 1 \
 ```
 
 大型 `.ncu-rep`、构建目录、虚拟环境和第三方源码不进入 Git，均可由上述命令重新生成。
+
+## 优化结果总结
+
+​	本项目在 RTX 5060 Laptop GPU 上完成了归一化 Fast Walsh-Hadamard Transform 及其与逐行动态对称 INT8 量化的融合优化：独立 Hadamard 从多次 global-memory 读写和多 kernel launch 的 v0，逐步优化为 shared-memory 单 kernel 的 v1，以及采用向量化访存、warp shuffle 和寄存器计算的 v2，在 FP16 `[1024,4096]` 上延迟由 772.726 μs 降至 163.796 μs，累计加速 4.718x；v2 相对 Dao FHT 的几何平均速度在 FP16、BF16、FP32 下分别达到 **1.000x、0.974x 和 1.057x。**
+
+​	融合算子进一步将 Hadamard、`amax(abs())`、scale 计算和 INT8 写回合并为一次 kernel launch，其中 fused_v2 使用前五级 warp shuffle、warp reduction 和 `char4` 打包写回，相对三个 CUDA kernel 分离执行的几何平均加速为 2.672x，相对 Dao FHT + PyTorch eager 量化链加速 9.054x，相对 `torch.compile` 量化链加速 4.833x。NCU 表明 v2 的 SM throughput 已达到 83%–85%，DRAM throughput 仅约 13%–23%，说明当前主要瓶颈已从全局内存访问和 long-scoreboard 等待转移到跨 warp shared-memory 访问、同步 barrier 和 butterfly 计算；全部 FP32、FP16、BF16 正确性测试均通过，后续优化应重点减少跨 warp 同步、为小维度实现多行/block，并为大维度设计更高并行度的寄存器与 shared-memory tiling。
+
+
+
