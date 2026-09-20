@@ -1,0 +1,20 @@
+# low-precision quantization report
+target_gpu = "RTX 4060"
+distribution = "normal"
+format = "mxfp8-e4m3"
+block_size = 32
+scale_mode = "block"
+rounding = "nearest"
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 0.249422
+mae = 0.017960
+mse = 0.000704
+compression_ratio = 3.8788
+quantize_kernel_ms = 1.4444
+dequantize_kernel_ms = 0.5206
+quantize_bandwidth_gbps = 58.4391
+dequantize_bandwidth_gbps = 162.1480

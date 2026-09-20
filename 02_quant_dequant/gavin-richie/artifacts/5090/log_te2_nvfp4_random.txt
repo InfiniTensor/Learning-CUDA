@@ -1,0 +1,24 @@
+# Transformer Engine quantize/dequantize benchmark (cast kernels,
+# same error/bandwidth accounting as lowp run --log; TE 2.19.0)
+te_version = "2.19.0"
+gpu = "NVIDIA GeForce RTX 5090"
+tensor = "artifacts/t4096_random.bin"
+distribution = "random"
+format = "te-nvfp4"
+recipe = "NVFP4BlockScaling(vanilla)"
+scale_mode = "block"
+block_size = 16
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 1.666666
+mae = 0.442941
+mse = 0.344591
+compression_ratio = 7.1111
+quantize_kernel_ms = 0.0330
+quantize_alloc_ms = 0.0342
+dequantize_kernel_ms = 0.0276
+quantize_bandwidth_gbps = 2316.7242
+dequantize_bandwidth_gbps = 2770.9659

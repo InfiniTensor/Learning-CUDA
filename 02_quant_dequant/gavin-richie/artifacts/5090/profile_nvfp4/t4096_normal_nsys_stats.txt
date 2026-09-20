@@ -1,0 +1,125 @@
+Generating SQLite file artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite from artifacts/5090/profile_nvfp4/t4096_normal_pipeline.nsys-rep
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/nvtx_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain NV Tools Extension (NVTX) data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/osrt_sum.py]... 
+
+ ** OS Runtime Summary (osrt_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)   Med (ns)   Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ----------  ---------  --------  ---------  -----------  ----------------------
+     77.5        423114103         13  32547238.7  5640953.0      2484  310074836   84776293.5  poll                  
+     19.6        107122862        601    178241.0    14763.0      1122   21571383     930433.9  ioctl                 
+      1.9         10119171         18    562176.2     2114.0      1072   10076303    2374413.3  read                  
+      0.5          2687495         26    103365.2     6881.0      4737    1803731     352365.1  mmap64                
+      0.1           714712         10     71471.2    35566.0     21964     407830     118426.2  sem_timedwait         
+      0.1           458670         89      5153.6     3716.0      2154      27132       4075.6  fopen                 
+      0.1           354725          5     70945.0    67005.0     65983      81758       6817.5  fgets                 
+      0.1           325610         44      7400.2     6059.0      3075      20242       3579.5  open64                
+      0.1           285127          4     71281.8    64881.5     53454     101910      22953.7  pthread_create        
+      0.0           215408          1    215408.0   215408.0    215408     215408          0.0  pthread_cond_wait     
+      0.0           166288         15     11085.9     2664.0      1872     108250      27029.5  mmap                  
+      0.0           125954         73      1725.4     1362.0      1212       6560       1023.6  fclose                
+      0.0            40494          9      4499.3     3746.0      2604       9625       2200.3  munmap                
+      0.0            39139          6      6523.2     6920.5      2994      10186       2560.3  open                  
+      0.0            32921         11      2992.8     3005.0      1182       4797       1067.1  write                 
+      0.0            21694          4      5423.5     5223.0      3085       8163       2643.1  pipe2                 
+      0.0            21414          2     10707.0    10707.0      5739      15675       7025.8  socket                
+      0.0            19752          4      4938.0     3676.0      2194      10206       3710.7  pthread_cond_broadcast
+      0.0            15825          3      5275.0     4527.0      2755       8543       2965.6  fwrite                
+      0.0            12359          1     12359.0    12359.0     12359      12359          0.0  connect               
+      0.0             9085          6      1514.2     1528.0      1322       1742        158.3  fcntl                 
+      0.0             3315          1      3315.0     3315.0      3315       3315          0.0  bind                  
+      0.0             1822          1      1822.0     1822.0      1822       1822          0.0  listen                
+      0.0             1102          1      1102.0     1102.0      1102       1102          0.0  dup                   
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)   Med (ns)  Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ----------  --------  --------  ---------  -----------  ----------------------
+     95.8        125807036          8  15725879.5   53974.5      2374  125486001   44349809.6  cudaMalloc            
+      3.1          4114125          5    822825.0   26452.0      7351    3987798    1769435.9  cudaMemcpy            
+      0.5           706248          5    141249.6   16015.0      3886     647456     283076.1  cudaLaunchKernel      
+      0.4           568284          8     71035.5   44119.5      1954     188026      80032.4  cudaFree              
+      0.1            72073          2     36036.5   36036.5     31790      40283       6005.5  cudaEventSynchronize  
+      0.0            21613          4      5403.3    4176.5      3615       9645       2851.5  cudaEventRecord       
+      0.0            20793          4      5198.3    3851.0      1883      11208       4322.0  cudaMemset            
+      0.0            15814          4      3953.5     435.5       270      14673       7147.2  cudaEventCreate       
+      0.0             1783          4       445.8     350.5       260        822        262.8  cudaEventDestroy      
+      0.0             1683          1      1683.0    1683.0      1683       1683          0.0  cuModuleGetLoadingMode
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     38.4            66432          1   66432.0   66432.0     66432     66432          0.0  <unnamed>::metrics_kernel(const float *, const void *, unsigned long, unsigned int, float *, double…
+     23.6            40896          1   40896.0   40896.0     40896     40896          0.0  <unnamed>::quant_nvfp4_kernel(const float *, unsigned long, unsigned int, unsigned int, unsigned in…
+     20.4            35296          2   17648.0   17648.0     15840     19456       2556.9  <unnamed>::amax_kernel(const float *, unsigned long, unsigned int *)                                
+     17.6            30464          1   30464.0   30464.0     30464     30464          0.0  <unnamed>::dequant_nvfp4_kernel(const unsigned char *, const unsigned char *, unsigned long, unsign…
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     99.9          3913634      1  3913634.0  3913634.0   3913634   3913634          0.0  [CUDA memcpy Host-to-Device]
+      0.0             1664      4      416.0      352.0       320       640        150.1  [CUDA memcpy Device-to-Host]
+      0.0             1440      4      360.0      272.0       256       640        187.3  [CUDA memset]               
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     67.109      1    67.109    67.109    67.109    67.109        0.000  [CUDA memcpy Host-to-Device]
+      0.000      4     0.000     0.000     0.000     0.000        0.000  [CUDA memcpy Device-to-Host]
+      0.000      4     0.000     0.000     0.000     0.000        0.000  [CUDA memset]               
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/openmp_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain OpenMP event data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/opengl_khr_range_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain KHR Extension (KHR_DEBUG) data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/opengl_khr_gpu_range_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain GPU KHR Extension (KHR_DEBUG) data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/vulkan_marker_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain Vulkan Debug Extension (Vulkan Debug Util) data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/vulkan_gpu_marker_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain GPU Vulkan Debug Extension (GPU Vulkan Debug markers) data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/dx11_pix_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain DX11 CPU debug markers.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/dx12_gpu_marker_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain DX12 GPU debug markers.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/dx12_pix_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain DX12 CPU debug markers.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/wddm_queue_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain WDDM context data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/um_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/um_total_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/um_cpu_page_faults_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/openacc_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain OpenACC event data.
+
+Processing [artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/syscall_sum.py]... 
+SKIPPED: artifacts/5090/profile_nvfp4/t4096_normal_pipeline.sqlite does not contain syscall data.
+

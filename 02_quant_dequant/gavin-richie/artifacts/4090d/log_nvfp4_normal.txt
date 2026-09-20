@@ -1,0 +1,20 @@
+# low-precision quantization report
+target_gpu = "RTX 4090 D"
+distribution = "normal"
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+rounding = "nearest"
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 0.742681
+mae = 0.071412
+mse = 0.009041
+compression_ratio = 7.1111
+quantize_kernel_ms = 0.1020
+dequantize_kernel_ms = 0.0703
+quantize_bandwidth_gbps = 750.3337
+dequantize_bandwidth_gbps = 1089.2824

@@ -1,0 +1,21 @@
+# Transformer Engine per-tensor FP8 (CurrentScaling-style scale,
+# TE cast kernels; format = fp8-e4m3; TE 1.14 lacks the
+# MXFP8/NVFP4 block-scaling recipes, those need TE>=2.0 + sm_100)
+tensor = "artifacts/t4096_normal.bin"
+distribution = "normal"
+format = "te-fp8-e4m3"
+scale_mode = "tensor"
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 0.191125
+mae = 0.017974
+mse = 0.000701
+compression_ratio = 4.0000
+quantize_kernel_ms = 0.2704
+quantize_cast_only_ms = 0.0891
+dequantize_kernel_ms = 0.0324
+quantize_bandwidth_gbps = 310.2326
+dequantize_bandwidth_gbps = 2592.4052

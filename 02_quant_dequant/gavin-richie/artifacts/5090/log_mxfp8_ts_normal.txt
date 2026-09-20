@@ -1,0 +1,20 @@
+# low-precision quantization report
+target_gpu = "RTX 5090"
+distribution = "normal"
+format = "mxfp8-e4m3"
+block_size = 32
+scale_mode = "tensor"
+rounding = "nearest"
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 0.191125
+mae = 0.017974
+mse = 0.000701
+compression_ratio = 4.0000
+quantize_kernel_ms = 0.2982
+dequantize_kernel_ms = 0.0558
+quantize_bandwidth_gbps = 281.2704
+dequantize_bandwidth_gbps = 1503.9817

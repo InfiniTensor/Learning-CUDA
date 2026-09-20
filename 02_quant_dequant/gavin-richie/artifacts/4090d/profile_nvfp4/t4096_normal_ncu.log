@@ -1,0 +1,23 @@
+==PROF== Connected to process 6608 (/data/Learning-CUDA/02_quant_dequant/gavin-richie/build/lowp)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+# low-precision quantization report
+target_gpu = "RTX 4090 D"
+distribution = ""
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+rounding = "nearest"
+input_dtype = "fp32"
+output_type = "fp16"
+rows = 4096
+cols = 4096
+num_elements = 16777216
+max_abs_error = 0.742681
+mae = 0.071412
+mse = 0.009041
+compression_ratio = 7.1111
+quantize_kernel_ms = 0.7002
+dequantize_kernel_ms = 0.6687
+quantize_bandwidth_gbps = 109.3165
+dequantize_bandwidth_gbps = 114.4638
+==PROF== Disconnected from process 6608
