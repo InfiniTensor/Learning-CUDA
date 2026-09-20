@@ -1,0 +1,8 @@
+GPU: MetaX C500 sm_100
+shared fp16 dim=64 max_abs=0.0018959 tolerance=0.01
+shared bf16 dim=64 max_abs=0.0152636 tolerance=0.05
+shared fp16 dim=128 max_abs=0.00201416 tolerance=0.01
+shared bf16 dim=128 max_abs=0.0292883 tolerance=0.05
+shared fp16 dim=256 max_abs=0.0019331 tolerance=0.01
+shared bf16 dim=256 max_abs=0.0155067 tolerance=0.05
+All Hadamard correctness and fused-quantization tests passed.

@@ -1,0 +1,5 @@
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+36.9,201313,5,40262.6,39616.0,39520,42144,1124.9,"hadamard::<unnamed>::hadamard_wmma_fp16_kernel(const __half *, __half *, const __half *, int, int)"
+29.0,158241,5,31648.2,31488.0,31425,32128,296.6,"hadamard::<unnamed>::fused_hadamard_int4_kernel2(const void *, unsigned char *, float *, int, int, hadamard::DType)"
+17.2,93473,5,18694.6,18625.0,18336,19264,398.0,"hadamard::<unnamed>::hadamard_shared_kernel(const void *, void *, int, int, hadamard::DType)"
+16.9,91873,5,18374.6,18528.0,18048,18656,287.2,"hadamard::<unnamed>::fused_hadamard_e4m3_kernel(const void *, unsigned char *, int, int, hadamard::DType)"

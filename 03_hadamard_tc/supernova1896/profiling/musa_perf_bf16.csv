@@ -1,0 +1,4 @@
+kernel,dtype,batch,seq,heads,head_dim,rows,time_ms,effective_gb_s
+shared_fht,bf16,2,512,16,128,16384,0.0718725,116.715
+fused_int4,bf16,2,512,16,128,16384,0.137085,38.7236
+fused_e4m3,bf16,2,512,16,128,16384,0.0962757,65.3484

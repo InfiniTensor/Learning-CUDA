@@ -1,0 +1,8 @@
+GPU: MTT S4000 compute_capability=2.2
+shared fp16 dim=64 max_abs=0.00194788 tolerance=0.01
+shared bf16 dim=64 max_abs=0.0153866 tolerance=0.05
+shared fp16 dim=128 max_abs=0.00194407 tolerance=0.01
+shared bf16 dim=128 max_abs=0.0155487 tolerance=0.05
+shared fp16 dim=256 max_abs=0.0019474 tolerance=0.01
+shared bf16 dim=256 max_abs=0.0155821 tolerance=0.05
+所有 MUSA Hadamard 正确性和融合量化测试通过。

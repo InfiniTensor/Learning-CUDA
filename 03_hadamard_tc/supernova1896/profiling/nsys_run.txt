@@ -1,0 +1,12 @@
+GPU: NVIDIA GeForce RTX 4090 D sm_89
+shape=[2,512,16,128] dtype=fp16 rows=16384 repeats=5
+shared_fht_ms=0.0576448 effective_gb_s=145.522
+fused_int4_ms=0.0381632 effective_gb_s=139.098
+fused_e4m3_ms=0.0230848 effective_gb_s=272.537
+wmma_fp16_ms=0.0451072 effective_gb_s=186.697
+log appended to /tmp/hadamard_nsys_perf.csv
+Collecting data...
+Generating '/tmp/nsys-report-1865.qdstrm'
+[1/1] [0%                          ] nsys_hadamard.nsys-rep[1/1] [0%                          ] nsys_hadamard.nsys-rep[1/1] [7%                          ] nsys_hadamard.nsys-rep[1/1] [14%                         ] nsys_hadamard.nsys-rep[1/1] [=============59%            ] nsys_hadamard.nsys-rep[1/1] [========================100%] nsys_hadamard.nsys-rep[1/1] [========================100%] nsys_hadamard.nsys-rep
+Generated:
+    /root/hadamard_transform_accel_verify2/profiling/nsys_hadamard.nsys-rep

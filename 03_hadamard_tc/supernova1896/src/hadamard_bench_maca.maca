@@ -1,0 +1,4 @@
+// 沐曦曦云 C500 的 benchmark 入口。
+// 复用参数解析、CSV 日志和数据生成逻辑，同时屏蔽 NVIDIA WMMA 路径。
+#define HADAMARD_MACA 1
+#include "hadamard_bench.cu"
