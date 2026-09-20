@@ -1,0 +1,17 @@
+{
+  "hadamard": {
+    "measured_baseline_sha256": "aae50187525c1d35be4830bbf1d9336613c3eeb4c725f4196aa1b8061a37a5c2",
+    "rebuilt_sha256": "aae50187525c1d35be4830bbf1d9336613c3eeb4c725f4196aa1b8061a37a5c2",
+    "identical": true
+  },
+  "libcamp.so": {
+    "measured_baseline_sha256": "850bc16d2c6e9a3d857d9f9a87bad8de36dfcec8416be7002d6a45bd7a8bbb3c",
+    "rebuilt_sha256": "850bc16d2c6e9a3d857d9f9a87bad8de36dfcec8416be7002d6a45bd7a8bbb3c",
+    "identical": true
+  },
+  "libcube.so": {
+    "measured_baseline_sha256": "fa5db7ce35046d18072ed5c4d159e05f31dc353e4a11769f0000d353236dca99",
+    "rebuilt_sha256": "fa5db7ce35046d18072ed5c4d159e05f31dc353e4a11769f0000d353236dca99",
+    "identical": true
+  }
+}

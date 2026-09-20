@@ -1,0 +1,7 @@
+Device_id,OP Type,Core Type,Count,Total Time(us),Min Time(us),Avg Time(us),Max Time(us),Ratio(%)
+0,ascend_had,AI_CORE,50,4498.25,47.061,89.965,167.503,65.669
+0,ascend_quant,AI_CORE,15,1199.664,78.422,79.978,84.382,17.514
+0,ascend_prepare,AI_CORE,20,633.833,31.021,31.692,33.321,9.253
+0,ascend_cube,AI_CORE,20,354.506,17.48,17.725,19.001,5.175
+0,ascend_max_finish,AI_CORE,25,116.664,3.8,4.667,5.78,1.703
+0,ascend_amax,AI_CORE,10,46.941,3.5,4.694,9.26,0.685

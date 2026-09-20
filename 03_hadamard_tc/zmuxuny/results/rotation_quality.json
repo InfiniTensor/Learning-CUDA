@@ -1,0 +1,26 @@
+[
+  {
+    "distribution": "normal",
+    "format": "mxfp8",
+    "direct_mse": 0.0007147548430139033,
+    "rotate_quantize_inverse_mse": 0.0007158742381929759
+  },
+  {
+    "distribution": "normal",
+    "format": "nvfp4",
+    "direct_mse": 0.009122409066438287,
+    "rotate_quantize_inverse_mse": 0.009036686766111808
+  },
+  {
+    "distribution": "outliers",
+    "format": "mxfp8",
+    "direct_mse": 0.0020395604261748516,
+    "rotate_quantize_inverse_mse": 0.0025512970034816717
+  },
+  {
+    "distribution": "outliers",
+    "format": "nvfp4",
+    "direct_mse": 0.01857362684939627,
+    "rotate_quantize_inverse_mse": 0.044236213561354
+  }
+]

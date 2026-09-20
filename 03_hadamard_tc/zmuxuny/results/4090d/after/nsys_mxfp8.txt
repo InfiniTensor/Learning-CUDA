@@ -1,0 +1,16 @@
+$ nsys profile --sample=none --cpuctxsw=none --trace=cuda,nvtx --force-overwrite=true -o /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/results/4090d/after/timeline_mxfp8 /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/cuda-profile-tdk75qg5/input.bin --output /tmp/cuda-profile-tdk75qg5/output.bin --packed /tmp/cuda-profile-tdk75qg5/packed.bin --log /tmp/cuda-profile-tdk75qg5/metrics.json --repeats 20 --format mxfp8 --random_sign 1
+Hadamard=0.0054128 ms fused=0.0073296 ms unfused=0.0113536 ms; packed equal
+Collecting data...
+Generating '/tmp/nsys-report-9e86.qdstrm'
+
+[1/1] [0%                          ] timeline_mxfp8.nsys-rep
+[1/1] [0%                          ] timeline_mxfp8.nsys-rep
+[1/1] [8%                          ] timeline_mxfp8.nsys-rep
+[1/1] [13%                         ] timeline_mxfp8.nsys-rep
+[1/1] [==18%                       ] timeline_mxfp8.nsys-rep
+[1/1] [===================79%      ] timeline_mxfp8.nsys-rep
+[1/1] [===================80%      ] timeline_mxfp8.nsys-rep
+[1/1] [========================100%] timeline_mxfp8.nsys-rep
+[1/1] [========================100%] timeline_mxfp8.nsys-rep
+Generated:
+    /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/results/4090d/after/timeline_mxfp8.nsys-rep

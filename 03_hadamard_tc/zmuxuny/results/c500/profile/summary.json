@@ -1,0 +1,1420 @@
+{
+  "tool": "MACA mcTracer",
+  "gpu": "MetaX C500",
+  "rows": 8192,
+  "cols": 128,
+  "binary_sha256": "8e9939ebad29a1ae6d325d09fcba4237606b10bf1ad3b446db4a47752468a66f",
+  "timing_note": "Instrumented trace durations; use benchmark JSON for performance comparisons.",
+  "kernels": [
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::hadamard_kernel<128, 0, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 69,
+      "mean_us": 21.392695652173913,
+      "median_us": 17.664,
+      "min_us": 13.056,
+      "max_us": 36.352,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 16,
+        "complete_ts": 1789835587627222548,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi0ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835587627067076,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835587627075834
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::quant_vector_kernel<0, 1, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 46,
+      "mean_us": 19.611826086956523,
+      "median_us": 18.688,
+      "min_us": 14.592,
+      "max_us": 29.696,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 50,
+        "complete_ts": 1789835587629824969,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp19quant_vector_kernelILi0ELi1ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835587629601801,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835587629603581
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::hadamard_kernel<128, 2, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 25.922782608695652,
+      "median_us": 25.344,
+      "min_us": 24.064,
+      "max_us": 29.44,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 104,
+        "complete_ts": 1789835587631019244,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi2ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835587630908401,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835587630910021
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "lp::hadamard_tc(__half const*, __half const*, __half*, unsigned long, int, bool, bool, unsigned int)",
+      "count": 23,
+      "mean_us": 51.500521739130434,
+      "median_us": 50.944,
+      "min_us": 50.688,
+      "max_us": 58.112,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 223,
+        "complete_ts": 1789835587675872123,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 2,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 36,
+          "static_shared": 6144
+        },
+        "mtreg_occupancy(%)": 7,
+        "name": "_ZN2lp11hadamard_tcEPK6__halfS2_PS0_mibbj",
+        "queue_id": 0,
+        "queue_ts": 1789835587675691362,
+        "shared_memeory_occupancy(%)": 9,
+        "submit_ts": 1789835587675692825
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 0, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 46,
+      "mean_us": 7.006608695652174,
+      "median_us": 6.912,
+      "min_us": 6.656,
+      "max_us": 10.24,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 259,
+        "complete_ts": 1789835587683158007,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 14,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi0ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835587683095937,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835587683102990
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "mxfp8_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 2, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 17.853217391304348,
+      "median_us": 17.664,
+      "min_us": 17.664,
+      "max_us": 18.688,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 347,
+        "complete_ts": 1789835587689491467,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835587689412642,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835587689414471
+      },
+      "trace": "mxfp8_fp16/tracer_out-27946.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_kernel<128, 0, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 69,
+      "mean_us": 22.001159420289856,
+      "median_us": 18.432,
+      "min_us": 12.544,
+      "max_us": 36.096,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 16,
+        "complete_ts": 1789835592053992929,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi0ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592053837922,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592053846302
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::maximum_vector<1, 8>(void const*, unsigned long, float*)",
+      "count": 46,
+      "mean_us": 16.90713043478261,
+      "median_us": 15.36,
+      "min_us": 13.312,
+      "max_us": 25.6,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 51,
+        "complete_ts": 1789835592056784260,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 128
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp14maximum_vectorILi1ELi8EEEvPKvmPf",
+        "queue_id": 0,
+        "queue_ts": 1789835592056350986,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592056352446
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::quant_vector_kernel<1, 1, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 69,
+      "mean_us": 22.769159420289856,
+      "median_us": 20.736,
+      "min_us": 18.432,
+      "max_us": 38.656,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 52,
+        "complete_ts": 1789835592056785817,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 27,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 5,
+        "name": "_ZN2lp19quant_vector_kernelILi1ELi1ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592056365528,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592056366696
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_kernel<128, 1, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 14.213565217391304,
+      "median_us": 14.08,
+      "min_us": 13.824,
+      "max_us": 14.848,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 151,
+        "complete_ts": 1789835592059141356,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi1ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592058928363,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592058929874
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_kernel<128, 2, 1>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 36.34086956521739,
+      "median_us": 36.352,
+      "min_us": 35.84,
+      "max_us": 36.608,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 152,
+        "complete_ts": 1789835592059143620,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi2ELi1EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592058942661,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592058943979
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "lp::hadamard_tc(__half const*, __half const*, __half*, unsigned long, int, bool, bool, unsigned int)",
+      "count": 23,
+      "mean_us": 51.51165217391305,
+      "median_us": 50.944,
+      "min_us": 50.432,
+      "max_us": 58.624,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 315,
+        "complete_ts": 1789835592104491158,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 2,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 36,
+          "static_shared": 6144
+        },
+        "mtreg_occupancy(%)": 7,
+        "name": "_ZN2lp11hadamard_tcEPK6__halfS2_PS0_mibbj",
+        "queue_id": 0,
+        "queue_ts": 1789835592104310955,
+        "shared_memeory_occupancy(%)": 9,
+        "submit_ts": 1789835592104312439
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 0, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 46,
+      "mean_us": 7.273739130434783,
+      "median_us": 7.168,
+      "min_us": 6.656,
+      "max_us": 13.568,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 351,
+        "complete_ts": 1789835592111876068,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 14,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi0ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592111810854,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592111818536
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 1, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 9.616695652173913,
+      "median_us": 9.728,
+      "min_us": 9.216,
+      "max_us": 10.24,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 486,
+        "complete_ts": 1789835592119678292,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 12,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi1ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592119494765,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592119496298
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 2, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 30.575304347826087,
+      "median_us": 30.464,
+      "min_us": 30.464,
+      "max_us": 31.232,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 487,
+        "complete_ts": 1789835592119680160,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 21,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592119511047,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592119512218
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "nvfp4_fp16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 1, 3, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 11.41982608695652,
+      "median_us": 11.52,
+      "min_us": 11.264,
+      "max_us": 12.032,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 570,
+        "complete_ts": 1789835592122122859,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi1ELi3ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835592121966300,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835592121967996
+      },
+      "trace": "nvfp4_fp16/tracer_out-27975.json"
+    },
+    {
+      "case": "mxfp8_bf16",
+      "kernel": "void lp::hadamard_kernel<128, 0, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 69,
+      "mean_us": 22.758028985507245,
+      "median_us": 18.688,
+      "min_us": 13.568,
+      "max_us": 37.376,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 16,
+        "complete_ts": 1789835596507471837,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi0ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835596507312305,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835596507321085
+      },
+      "trace": "mxfp8_bf16/tracer_out-28003.json"
+    },
+    {
+      "case": "mxfp8_bf16",
+      "kernel": "void lp::quant_vector_kernel<0, 2, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 46,
+      "mean_us": 19.778782608695654,
+      "median_us": 18.304,
+      "min_us": 15.104,
+      "max_us": 30.72,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 50,
+        "complete_ts": 1789835596510017563,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp19quant_vector_kernelILi0ELi2ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835596509790525,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835596509792041
+      },
+      "trace": "mxfp8_bf16/tracer_out-28003.json"
+    },
+    {
+      "case": "mxfp8_bf16",
+      "kernel": "void lp::hadamard_kernel<128, 2, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 25.577739130434782,
+      "median_us": 25.344,
+      "min_us": 23.808,
+      "max_us": 31.488,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 104,
+        "complete_ts": 1789835596511285397,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi2ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835596511175106,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835596511177062
+      },
+      "trace": "mxfp8_bf16/tracer_out-28003.json"
+    },
+    {
+      "case": "mxfp8_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 0, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 46,
+      "mean_us": 7.329391304347826,
+      "median_us": 7.168,
+      "min_us": 6.912,
+      "max_us": 10.24,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 221,
+        "complete_ts": 1789835596538664790,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 14,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi0ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835596538617792,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835596538619525
+      },
+      "trace": "mxfp8_bf16/tracer_out-28003.json"
+    },
+    {
+      "case": "mxfp8_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 2, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 18.07582608695652,
+      "median_us": 17.92,
+      "min_us": 17.92,
+      "max_us": 18.944,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 309,
+        "complete_ts": 1789835596543248391,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835596543169452,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835596543171105
+      },
+      "trace": "mxfp8_bf16/tracer_out-28003.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_kernel<128, 0, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 69,
+      "mean_us": 21.351884057971013,
+      "median_us": 14.592,
+      "min_us": 12.8,
+      "max_us": 37.12,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 16,
+        "complete_ts": 1789835600933144391,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi0ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600932984818,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600932993855
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::maximum_vector<2, 8>(void const*, unsigned long, float*)",
+      "count": 46,
+      "mean_us": 15.972173913043479,
+      "median_us": 15.36,
+      "min_us": 13.312,
+      "max_us": 23.808,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 51,
+        "complete_ts": 1789835600935961690,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 128
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp14maximum_vectorILi2ELi8EEEvPKvmPf",
+        "queue_id": 0,
+        "queue_ts": 1789835600935520840,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600935522436
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::quant_vector_kernel<1, 2, 8>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)",
+      "count": 69,
+      "mean_us": 21.45576811594203,
+      "median_us": 20.48,
+      "min_us": 18.176,
+      "max_us": 36.864,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 52,
+        "complete_ts": 1789835600935963316,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 512,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 27,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 5,
+        "name": "_ZN2lp19quant_vector_kernelILi1ELi2ELi8EEEvPKvPhS3_PKfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600935541734,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600935543472
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_kernel<128, 1, 0>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 14.747826086956522,
+      "median_us": 14.592,
+      "min_us": 14.336,
+      "max_us": 15.872,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 151,
+        "complete_ts": 1789835600937985125,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 16,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi1ELi0EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600937769248,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600937770670
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_kernel<128, 2, 1>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 36.608,
+      "median_us": 36.608,
+      "min_us": 36.096,
+      "max_us": 37.376,
+      "launch": {
+        "block": {
+          "x": 128,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 152,
+        "complete_ts": 1789835600937987653,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 2048,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp15hadamard_kernelILi128ELi2ELi1EEEvPKvPvmibbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600937784196,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600937785363
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 0, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 46,
+      "mean_us": 7.340521739130435,
+      "median_us": 7.168,
+      "min_us": 6.912,
+      "max_us": 10.24,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 313,
+        "complete_ts": 1789835600965484055,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 14,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi0ELi0ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600965437369,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600965439099
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 1, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 10.262260869565218,
+      "median_us": 10.24,
+      "min_us": 9.984,
+      "max_us": 10.752,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 448,
+        "complete_ts": 1789835600970973655,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 12,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 2,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi1ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600970787081,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600970789207
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 2, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 30.987130434782607,
+      "median_us": 30.976,
+      "min_us": 30.72,
+      "max_us": 31.488,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 449,
+        "complete_ts": 1789835600970976040,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 22,
+          "static_shared": 0
+        },
+        "mtreg_occupancy(%)": 4,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600970802574,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600970803674
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    },
+    {
+      "case": "nvfp4_bf16",
+      "kernel": "void lp::hadamard_mma_kernel<128, 2, 3, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)",
+      "count": 23,
+      "mean_us": 11.386434782608696,
+      "median_us": 11.264,
+      "min_us": 11.264,
+      "max_us": 12.288,
+      "launch": {
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "co_id": 532,
+        "complete_ts": 1789835600973360208,
+        "device_id": 0,
+        "dispatch_id": 0,
+        "grid": {
+          "x": 1024,
+          "y": 1,
+          "z": 1
+        },
+        "hw_queue_id": [
+          0
+        ],
+        "is_dynamic_parallel": false,
+        "is_recompiled": false,
+        "launch_type": 0,
+        "link": true,
+        "max_block_size": 512,
+        "mem": {
+          "dynamic_shared": 0,
+          "private_per_thread": 0,
+          "private_total": 0,
+          "registers_per_thread": 20,
+          "static_shared": 16
+        },
+        "mtreg_occupancy(%)": 3,
+        "name": "_ZN2lp19hadamard_mma_kernelILi128ELi2ELi3ELi1ELi4EEEvPKtPtmbbjPhS4_PfNS_6LayoutE",
+        "queue_id": 0,
+        "queue_ts": 1789835600973199388,
+        "shared_memeory_occupancy(%)": 0,
+        "submit_ts": 1789835600973200731
+      },
+      "trace": "nvfp4_bf16/tracer_out-28032.json"
+    }
+  ]
+}

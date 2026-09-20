@@ -1,0 +1,5 @@
+$ /usr/local/bin/ncu --section-folder /tmp/lp-profile-jdll4hu5 --apply-rules no --metrics gpu__time_duration.sum,dram__throughput.avg.pct_of_peak_sustained_elapsed,sm__throughput.avg.pct_of_peak_sustained_elapsed --launch-count 3 --target-processes all /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/lp-profile-jdll4hu5/h.bin --output /tmp/lp-profile-jdll4hu5/h.out --packed /tmp/lp-profile-jdll4hu5/h.pack --log /tmp/lp-profile-jdll4hu5/h.json --format nvfp4 --repeats 1
+==PROF== Connected to process 4061 (/root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+Hadamard=0.227328 ms fused=0.47616 ms unfused=1.05578 ms; packed equal
+==PROF== Disconnected from process 4061

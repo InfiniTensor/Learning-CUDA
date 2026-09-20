@@ -1,0 +1,8 @@
+$ /tmp/infinitensor-sanitizer/usr/local/cuda-12.9/compute-sanitizer/compute-sanitizer --tool memcheck --error-exitcode 99 /root/workspace/InfiniTensor/Learning-CUDA-project/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/lp-profile-_zhz1d3l/h.bin --output /tmp/lp-profile-_zhz1d3l/h.out --packed /tmp/lp-profile-_zhz1d3l/h.pack --log /tmp/lp-profile-_zhz1d3l/h.json --format nvfp4 --repeats 1
+========= COMPUTE-SANITIZER
+========= Error: Failed to initialize WDDM debugger interface. Please run EnableDebuggerInterface.bat as an administrator
+=========
+========= Error: Device not supported. Please refer to the "Supported Devices" section of the sanitizer documentation
+=========
+Hadamard=0.034816 ms fused=0.069632 ms unfused=0.070656 ms; packed equal
+========= ERROR SUMMARY: 2 errors

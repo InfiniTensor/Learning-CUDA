@@ -1,0 +1,43 @@
+
+**** collection configuration ****
+        trace_cuda = true
+        trace_osrt = false
+        trace_nvtx = false
+        trace_cudnn = false
+        trace_cuinfer = false
+        trace_video = false
+        trace_power = false
+        trace_temperature = false
+        trace_raw_syscalls = false
+        trace_proc_kthread = false
+        trace_metric_sampling = false
+        trace_callstack = false
+        trace_mem = false
+        nic_metrics = false
+        event_sync = false
+        filter_processes = false
+        print_kernel_args = false
+        application command = /root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard
+        application arguments = --input /tmp/iluvatar-profile-m9k34e6c/input --output /tmp/iluvatar-profile-m9k34e6c/out --packed /tmp/iluvatar-profile-m9k34e6c/packed --log /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/metrics.json --repeats 3 --format mxfp8 --materialized_compare 1
+Hadamard=0.125722 ms fused=0.258592 ms unfused=0.199221 ms; packed equal
+
+    Waiting for converting temporary file to /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/trace.ixsys   [?25l.  
+    Waiting for filter small slices from file /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/trace.ixsys
+    Waiting for inserting CUDA data from /tmp/20353/injectionDB.20378.sqlite ...
+
+Report file /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/trace.ixsys saved.[?25h
+
+==20378== Profiling application: /root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard --input /tmp/iluvatar-profile-m9k34e6c/input --output /tmp/iluvatar-profile-m9k34e6c/out --packed /tmp/iluvatar-profile-m9k34e6c/packed --log /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/metrics.json --repeats 3 --format mxfp8 --materialized_compare 1 
+==20378== Profiling result:
+Summary data:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   48.15%  16.004ms         6  2.6674ms  2.6601ms  2.6795ms  lp::hadamard_tc(__half const*, __half const*, __half*, unsigned long, int, bool, bool, unsigned int)
+                   19.69%  6.5468ms        21  311.75us  2.3150us  589.97us  [CUDA memcpy DtoH]
+                   12.96%  4.3079ms         8  538.49us  80.873us  605.26us  [CUDA memcpy HtoD]
+                    6.84%  2.2761ms        18  126.44us  118.97us  134.61us  void lp::hadamard_kernel<1024, 0, 0, 2, 64>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)
+                    4.63%  1.5397ms         6  256.62us  255.23us  257.91us  void lp::hadamard_kernel<1024, 2, 0, 2, 64>(void const*, void*, unsigned long, int, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)
+                    2.66%  884.57us         6  147.42us  146.65us  148.07us  void lp::hadamard_mma_kernel<1024, 1, 2, 0, 1>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)
+                    2.64%  879.11us        12  73.259us  72.496us  74.165us  void lp::quant_vector_kernel<0, 1, 4>(void const*, unsigned char*, unsigned char*, float const*, lp::Layout)
+                    2.38%  792.67us        12  66.056us  63.984us  68.657us  void lp::hadamard_mma_kernel<1024, 1, 0, 0, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)
+                    0.01%  4.1060us         2  2.0530us  2.0530us  2.0530us  [CUDA memset]
+

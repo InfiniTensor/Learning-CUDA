@@ -1,0 +1,19 @@
+{
+  "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "cuda_toolkit": "11.5",
+  "host_compiler": "GCC 10.5",
+  "arch": 86,
+  "date_utc": "2026-09-19T13:31:44.619201+00:00",
+  "correctness": {
+    "status": "PASS",
+    "passed": 76,
+    "invalid_shape_cases": 1,
+    "max_abs_error_fp16": 0.0078125,
+    "max_abs_error_bf16": 6.103515625e-05,
+    "fused_packed_equal": true,
+    "factorized_tc_cases": 60,
+    "factorized_tc_max_abs_error_fp16": 0.0078125,
+    "factorized_tc_max_abs_error_bf16": 6.103515625e-05,
+    "oracle": "NumPy float64 dense Sylvester matrix"
+  }
+}

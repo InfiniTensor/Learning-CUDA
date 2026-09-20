@@ -1,0 +1,26 @@
+$ nsys stats --force-export=true --report cuda_gpu_kern_sum,cuda_api_sum --format csv /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_mxfp8.nsys-rep
+Generating SQLite file /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_mxfp8.sqlite from /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_mxfp8.nsys-rep
+Processing [/root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_mxfp8.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_gpu_kern_sum.py]...
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+29.8,304258,23,13228.6,13152.0,12960,14048,262.9,"lp::hadamard_tc(const __half *, const __half *, __half *, unsigned long, int, bool, bool, unsigned int)"
+22.2,226850,69,3287.7,3264.0,3168,3680,94.1,"void lp::hadamard_kernel<(int)128, (int)0, (int)0>(const void *, void *, unsigned long, int, bool, bool, unsigned int, unsigned char *, unsigned char *, float *, lp::Layout)"
+13.4,137313,46,2985.1,2976.0,2848,3168,70.7,"void lp::hadamard_mma_kernel<(int)128, (int)1, (int)0, (int)0, (int)4>(const unsigned short *, unsigned short *, unsigned long, bool, bool, unsigned int, unsigned char *, unsigned char *, float *, lp::Layout)"
+12.8,130529,23,5675.2,5664.0,5568,6016,114.8,"void lp::hadamard_kernel<(int)128, (int)2, (int)0>(const void *, void *, unsigned long, int, bool, bool, unsigned int, unsigned char *, unsigned char *, float *, lp::Layout)"
+12.8,130433,46,2835.5,2816.0,2784,2976,33.4,"void lp::quant_vector_kernel<(int)0, (int)1, (int)4>(const void *, unsigned char *, unsigned char *, const float *, lp::Layout)"
+9.1,92545,23,4023.7,4001.0,3904,4288,94.6,"void lp::hadamard_mma_kernel<(int)128, (int)1, (int)2, (int)0, (int)4>(const unsigned short *, unsigned short *, unsigned long, bool, bool, unsigned int, unsigned char *, unsigned char *, float *, lp::Layout)"
+
+Processing [/root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_mxfp8.sqlite] with [/usr/local/cuda-12.8/NsightSystems-cli-2024.6.2/target-linux-x64/reports/cuda_api_sum.py]...
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+79.1,93887402,11,8535218.4,58015.0,2205,93487359,28175465.3,cudaMalloc
+8.8,10500687,230,45655.2,3084.5,2601,9526754,627911.2,cudaLaunchKernel
+8.4,10025668,46,217949.3,222621.5,133612,311852,82648.3,cudaMemcpyAsync
+1.7,2023133,17,119007.8,21457.0,8269,331204,125250.4,cudaMemcpy
+0.9,1022993,1,1022993.0,1022993.0,1022993,1022993,0.0,cudaGetDeviceProperties_v2_v12000
+0.6,656788,11,59708.0,64535.0,2128,194304,62059.6,cudaFree
+0.3,370303,8,46287.9,19172.5,2100,216389,71330.8,cudaEventSynchronize
+0.1,81764,8,10220.5,5839.0,2640,36021,10918.2,cudaDeviceSynchronize
+0.1,68591,16,4286.9,3635.0,2764,13536,2552.7,cudaEventRecord
+0.0,16733,16,1045.8,903.5,386,2209,674.5,cudaEventCreate
+0.0,10624,2,5312.0,5312.0,2485,8139,3998.0,cudaMemset
+0.0,7274,16,454.6,307.0,254,899,237.4,cudaEventDestroy
+0.0,1225,1,1225.0,1225.0,1225,1225,0.0,cuModuleGetLoadingMode

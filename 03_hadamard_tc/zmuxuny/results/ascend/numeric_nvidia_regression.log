@@ -1,0 +1,4 @@
+mkdir -p build
+nvcc -DLP_CUDA_ARCH=86 -ccbin /usr/bin/g++-10 -std=c++17 -O3 -lineinfo --fmad=false -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 tests/validate_numeric.cu -o build/validate_numeric 
+build/validate_numeric
+{"status":"PASS","exact_hash_checks":49152,"exact_product_checks":65536,"exact_division_checks":1048576}

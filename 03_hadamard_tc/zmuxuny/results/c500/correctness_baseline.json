@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "passed": 76,
+  "invalid_shape_cases": 1,
+  "max_abs_error_fp16": 0.0078125,
+  "max_abs_error_bf16": 6.103515625e-05,
+  "fused_packed_equal": true,
+  "factorized_tc_cases": 0,
+  "factorized_tc_max_abs_error_fp16": 0.0,
+  "factorized_tc_max_abs_error_bf16": 0.0,
+  "oracle": "NumPy float64 dense Sylvester matrix"
+}

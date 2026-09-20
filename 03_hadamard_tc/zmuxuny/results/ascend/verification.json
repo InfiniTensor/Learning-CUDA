@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "npu_cases": 92,
+  "negative_cases": 1,
+  "nvidia_cases": 92,
+  "interleaved_cases": 12,
+  "trials_per_binary": 3,
+  "standard_cases": 24,
+  "memcheck_cases": 4,
+  "profile_cases": 4,
+  "binaries": {
+    "hadamard": "a778efe1c9db69f0f4628ca1a2aa88136d11b6c400438126870ac956f7d3082a",
+    "libcamp.so": "790a8154e1cd75d8c7d26de870d107155bfdc88627243f6e0a4dc2d07ef76bfc",
+    "libcube.so": "61f1bb53578ee7bdcada3637ca3f0fe1efacde6167bb595a27eb02d7a24acee7"
+  }
+}

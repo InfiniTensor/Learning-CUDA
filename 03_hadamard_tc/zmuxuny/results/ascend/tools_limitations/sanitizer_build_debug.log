@@ -1,0 +1,11 @@
+mkdir -p build/ascend-sanitize
+/usr/local/Ascend/ascend-toolkit/latest/bin/bisheng -O2 -std=c++17 -xcce --cce-aicore-arch=dav-c220-vec -ffp-contract=off -I/usr/local/Ascend/ascend-toolkit/latest/compiler/tikcpp/tikcfw -I/usr/local/Ascend/ascend-toolkit/latest/compiler/tikcpp/tikcfw/interface -I/usr/local/Ascend/ascend-toolkit/latest/compiler/tikcpp/tikcfw/impl -I/usr/local/Ascend/ascend-toolkit/latest/include -g --cce-enable-sanitizer -fPIC -shared ascend/kernels.cpp -o build/ascend-sanitize/libcamp.so -L/usr/local/Ascend/ascend-toolkit/latest/lib64 -lascendcl -lruntime
+fatal error: error in backend: Cannot select: 0x2aaada5668e8: i32 = bitcast FrameIndex:i64<2>, ascend/kernels.cpp:120:17
+  0x2aaad9efdee0: i64 = FrameIndex<2>
+In function: launch_ascend_amax
+bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+2026-04-25T15:46:25+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/ascend-toolkit/latest/bin
+make: *** [ascend/Makefile:13: build/ascend-sanitize/libcamp.so] Error 1

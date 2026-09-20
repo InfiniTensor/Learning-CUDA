@@ -1,0 +1,3 @@
+g++ -x c++ -std=c++17 -O2 -ffp-contract=off -DLP_ASCEND -I/usr/local/Ascend/ascend-toolkit/latest/include tests/validate_numeric.cu -o build/ascend/validate_numeric -Lbuild/ascend -lcamp -L/usr/local/Ascend/ascend-toolkit/latest/lib64 -lascendcl -lruntime -Wl,-rpath,'$ORIGIN'
+build/ascend/validate_numeric
+{"status":"PASS","exact_hash_checks":49152,"exact_product_checks":65536,"exact_division_checks":1048576}

@@ -1,0 +1,139 @@
+-- The CXX compiler identification is GNU 12.3.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /root/camp/probes/san_cmake/build
+[  2%] Creating directories for 'camp_precompile'
+[  4%] No download step for 'camp_precompile'
+[  7%] No update step for 'camp_precompile'
+[  9%] No patch step for 'camp_precompile'
+[ 11%] Performing configure step for 'camp_precompile'
+-- The C compiler identification is GNU 12.3.1
+-- The CXX compiler identification is GNU 12.3.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    DYNAMIC_MODE
+    INCLUDE_DIR
+
+
+-- Build files have been written to: /root/camp/probes/san_cmake/build/camp_precompile-prefix/src/camp_precompile-build
+[ 14%] Performing build step for 'camp_precompile'
+[100%] Building CXX object CMakeFiles/precompile_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o
+[100%] Built target precompile_obj
+[100%] Built target check_src_template
+[ 16%] No install step for 'camp_precompile'
+[ 19%] Completed 'camp_precompile'
+[ 19%] Built target camp_precompile
+[ 21%] Creating directories for 'camp_preprocess'
+[ 23%] No download step for 'camp_preprocess'
+[ 26%] No update step for 'camp_preprocess'
+[ 28%] No patch step for 'camp_preprocess'
+[ 30%] Performing configure step for 'camp_preprocess'
+-- The C compiler identification is GNU 12.3.1
+-- The CXX compiler identification is GNU 12.3.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build
+[ 33%] Performing build step for 'camp_preprocess'
+[100%] Building CXX object CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o
+[100%] Building CXX object CMakeFiles/preprocess_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o
+[100%] Building CXX object CMakeFiles/aiv_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o
+[100%] Built target preprocess_obj
+[100%] Built target aic_obj
+/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/ccec_compiler/bin/ld.lld -m aicorelinux -Ttext=0 /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o -o /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.old.lld: error: undefined symbol: __sanitizer_report_set_atomic_none(unsigned char AS1*, unsigned long, unsigned long, long)
+>>> referenced by kernel_utils_base.h:56 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_utils_base.h:56)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:935 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:935)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_quant)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_dequant)
+>>> referenced 1 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report_store
+>>> referenced by kernel_utils_base.h:56 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_utils_base.h:56)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:928 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:928)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:928 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:928)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced 594 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report_set_flag(unsigned char AS1*, unsigned long, unsigned long, long, unsigned int, unsigned int, unsigned int)
+>>> referenced by kernel_tpipe_impl.h:930 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:930)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:932 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:932)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:932 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:932)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced 41 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report_wait_flag(unsigned char AS1*, unsigned long, unsigned long, long, unsigned int, unsigned int, unsigned int)
+>>> referenced by kernel_tpipe_impl.h:932 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:932)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:931 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:931)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:931 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:931)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced 141 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report___mstx_dfx_report_stub(unsigned char AS1*, unsigned long, unsigned long, long, unsigned int, unsigned int, void*)
+>>> referenced by kernel_tpipe_impl.h:931 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:931)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:932 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:932)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced 10 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report_load
+>>> referenced by kernel_tpipe_impl.h:935 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:935)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:935 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:935)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced 30 more times
+
+ld.lld: error: undefined symbol: __sanitizer_report_pipe_barrier(unsigned char AS1*, unsigned long, unsigned long, long, unsigned int)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_amax)
+>>> referenced by kernel_tpipe_impl.h:936 (/usr/local/Ascend/ascend-toolkit/latest/aarch64-linux/asc/impl/basic_api/kernel_tpipe_impl.h:936)
+>>>               /root/camp/probes/san_cmake/build/camp_preprocess-prefix/src/camp_preprocess-build/CMakeFiles/aic_obj.dir/root/camp/02_quant_dequant/zmuxuny/ascend/kernels.cpp.o:(ascend_quant)
+>>> referenced 5 more times
+gmake[5]: *** [CMakeFiles/merge_aic_obj_text.dir/build.make:70: CMakeFiles/merge_aic_obj_text] Error 1
+gmake[4]: *** [CMakeFiles/Makefile2:197: CMakeFiles/merge_aic_obj_text.dir/all] Error 2
+gmake[4]: *** Waiting for unfinished jobs....
+[100%] Built target aiv_obj
+gmake[3]: *** [Makefile:91: all] Error 2
+gmake[2]: *** [CMakeFiles/camp_preprocess.dir/build.make:86: camp_preprocess-prefix/src/camp_preprocess-stamp/camp_preprocess-build] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:150: CMakeFiles/camp_preprocess.dir/all] Error 2
+gmake: *** [Makefile:136: all] Error 2

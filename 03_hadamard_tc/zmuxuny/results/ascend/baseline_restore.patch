@@ -1,0 +1,1114 @@
+--- a/ascend/Makefile
++++ b/ascend/Makefile
+@@ -3,7 +3,7 @@
+ CXX ?= g++
+ BISHENG := $(ASCEND_HOME)/bin/bisheng
+ ASCINC := $(ASCEND_HOME)/compiler/tikcpp/tikcfw
+-ASCFLAGS := -O2 -gline-tables-only -std=c++17 -xcce --cce-aicore-arch=dav-c220-vec -ffp-contract=off -I$(ASCINC) -I$(ASCINC)/interface -I$(ASCINC)/impl -I$(ASCEND_HOME)/include
++ASCFLAGS := -O2 -std=c++17 -xcce --cce-aicore-arch=dav-c220-vec -ffp-contract=off -I$(ASCINC) -I$(ASCINC)/interface -I$(ASCINC)/impl -I$(ASCEND_HOME)/include
+ ASCFLAGS += $(ASCEND_EXTRA_FLAGS)
+ ASCLIBS := -L$(ASCEND_HOME)/lib64 -lascendcl -lruntime
+ TARGET ?= hadamard
+@@ -14,11 +14,11 @@
+ $(BUILD_DIR)/libcamp.so: ascend/kernels.cpp ascend/platform.hpp include/numeric.cuh
+ 	mkdir -p $(BUILD_DIR)
+ 	$(BISHENG) $(ASCFLAGS) -fPIC -shared $< -o $@ $(ASCLIBS)
+-$(BUILD_DIR)/$(TARGET): src/main.cu $(BUILD_DIR)/libcamp.so $(BUILD_DIR)/libcube.so $(wildcard ascend/*.hpp) $(wildcard include/*)
++$(BUILD_DIR)/$(TARGET): src/main.cu $(BUILD_DIR)/libcamp.so $(BUILD_DIR)/libcube.so ascend/backend.hpp ascend/platform.hpp include/host.hpp include/layout.cuh
+ 	$(CXX) -x c++ -std=c++17 -O2 -ffp-contract=off -DLP_ASCEND -I$(ASCEND_HOME)/include $< -o $@ -L$(BUILD_DIR) -lcamp -lcube $(ASCLIBS) -Wl,-rpath,'$$ORIGIN'
+ 
+ .PHONY: test numeric-test clean
+-$(BUILD_DIR)/validate_numeric: tests/validate_numeric.cu $(BUILD_DIR)/libcamp.so $(wildcard ascend/*.hpp) $(wildcard include/*)
++$(BUILD_DIR)/validate_numeric: tests/validate_numeric.cu $(BUILD_DIR)/libcamp.so
+ 	$(CXX) -x c++ -std=c++17 -O2 -ffp-contract=off -DLP_ASCEND -I$(ASCEND_HOME)/include $< -o $@ -L$(BUILD_DIR) -lcamp $(ASCLIBS) -Wl,-rpath,'$$ORIGIN'
+ numeric-test: $(BUILD_DIR)/validate_numeric
+ 	$(BUILD_DIR)/validate_numeric
+--- a/ascend/backend.hpp
++++ b/ascend/backend.hpp
+@@ -1,37 +1,23 @@
+ #pragma once
+ #include "../include/layout.cuh"
+ #include <algorithm>
+-extern "C" void launch_ascend_amax(void *, void *, void *, void *, uint64_t, int,
+-                                   unsigned);
+-extern "C" void launch_ascend_quant(void *, void *, void *, void *, void *, uint64_t,
+-                                    uint64_t, int, int, int, bool, bool, uint32_t,
+-                                    unsigned);
+-extern "C" void launch_ascend_dequant(void *, void *, void *, void *, float, uint64_t,
+-                                      uint64_t, int, int, bool, int, unsigned);
++extern "C" void launch_ascend_amax(void*,void*,void*,void*,uint64_t,int,unsigned);
++extern "C" void launch_ascend_quant(void*,void*,void*,void*,void*,uint64_t,uint64_t,int,int,int,bool,bool,uint32_t,unsigned);
++extern "C" void launch_ascend_dequant(void*,void*,void*,void*,float,uint64_t,uint64_t,int,int,bool,int,unsigned);
+ namespace lp {
+ struct AscendScratch {
+   void *p{};
+-  AscendScratch() { lp_ascend::checked(cudaMalloc(&p, 48 * 64)); }
++  AscendScratch() { lp_ascend::checked(cudaMalloc(&p,48*64)); }
+   ~AscendScratch() { cudaFree(p); }
+ };
+-inline unsigned ascend_cores(size_t work) {
+-  return unsigned(std::min<size_t>(48, work));
++inline unsigned ascend_cores(size_t work) { return unsigned(std::min<size_t>(48,work)); }
++inline void quantize(const void *in,uint8_t *data,uint8_t *scales,float *amax,Layout p) {
++  static AscendScratch scratch;
++  if(p.fmt==NVFP4 || p.tensor)
++    launch_ascend_amax(lp_ascend::stream(),const_cast<void*>(in),scratch.p,amax,p.count(),p.dtype,ascend_cores(p.count()));
++  launch_ascend_quant(lp_ascend::stream(),const_cast<void*>(in),data,scales,amax,p.rows,p.cols,p.dtype,p.fmt,p.block,p.tensor,p.stochastic,p.seed,ascend_cores(p.rows*((p.cols+p.block-1)/p.block)));
+ }
+-inline void quantize(const void *in, uint8_t *data, uint8_t *scales, float *amax,
+-                     Layout p) {
+-  static AscendScratch scratch;
+-  if (p.fmt == NVFP4 || p.tensor)
+-    launch_ascend_amax(lp_ascend::stream(), const_cast<void *>(in), scratch.p, amax,
+-                       p.count(), p.dtype, ascend_cores(p.count()));
+-  launch_ascend_quant(lp_ascend::stream(), const_cast<void *>(in), data, scales, amax,
+-                      p.rows, p.cols, p.dtype, p.fmt, p.block, p.tensor, p.stochastic,
+-                      p.seed,
+-                      ascend_cores(p.rows * ((p.cols + p.block - 1) / p.block)));
++inline void dequantize(uint8_t *data,uint8_t *scales,float global,void *out,int type,Layout p) {
++  launch_ascend_dequant(lp_ascend::stream(),data,scales,out,global,p.rows,p.cols,p.fmt,p.block,p.tensor,type,ascend_cores(p.rows*((p.cols+511)/512)));
+ }
+-inline void dequantize(uint8_t *data, uint8_t *scales, float global, void *out,
+-                       int type, Layout p) {
+-  launch_ascend_dequant(lp_ascend::stream(), data, scales, out, global, p.rows, p.cols,
+-                        p.fmt, p.block, p.tensor, type,
+-                        ascend_cores(p.rows * ((p.cols + 511) / 512)));
+ }
+-} // namespace lp
+--- a/ascend/cube.cpp
++++ b/ascend/cube.cpp
+@@ -1,100 +1,37 @@
+ #include "kernel_operator.h"
+ using namespace AscendC;
+-#ifndef LP_ASCEND_CUBE_ROWS
+-#define LP_ASCEND_CUBE_ROWS 64
+-#endif
+-constexpr int TILE_ROWS = LP_ASCEND_CUBE_ROWS;
+-static_assert(TILE_ROWS >= 16 && TILE_ROWS <= 128 && TILE_ROWS % 16 == 0);
+ 
+-// Each Cube core computes TILE_ROWS x 16 outputs. ND->NZ copy and Fixpipe handle
++// Each Cube core computes a 16x16 output tile. ND->NZ copy and Fixpipe handle
+ // partial final row tiles; accumulation stays FP32 until the AIV epilogue.
+-// One native Mmad computes H16; FP32 vector butterflies complete larger heads.
+-template <class T>
+-__aicore__ inline void cube_product(GM_ADDR input, GM_ADDR weight, GM_ADDR output,
+-                                    uint64_t rows, int d) {
+-  TPipe pipe;
+-  TBuf<TPosition::A1> abuf;
+-  TBuf<TPosition::B1> bbuf;
+-  TBuf<TPosition::A2> a0buf;
+-  TBuf<TPosition::B2> b0buf;
+-  TBuf<TPosition::CO1> cbuf;
+-  pipe.InitBuffer(abuf, TILE_ROWS * 32);
+-  pipe.InitBuffer(bbuf, 512);
+-  pipe.InitBuffer(a0buf, TILE_ROWS * 32);
+-  pipe.InitBuffer(b0buf, 512);
+-  pipe.InitBuffer(cbuf, TILE_ROWS * 64);
+-  auto a1 = abuf.Get<T>(), b1 = bbuf.Get<T>(), a0 = a0buf.Get<T>(), b0 = b0buf.Get<T>();
+-  auto c0 = cbuf.Get<float>();
+-  GlobalTensor<T> a, b;
+-  GlobalTensor<float> c;
+-  a.SetGlobalBuffer((__gm__ T *)input);
+-  b.SetGlobalBuffer((__gm__ T *)weight);
+-  c.SetGlobalBuffer((__gm__ float *)output);
+-  // The H16 coefficient tile is invariant across all output tiles on a core.
+-  Nd2NzParams bp;
+-  bp.ndNum = 1;
+-  bp.nValue = 16;
+-  bp.dValue = 16;
+-  bp.srcDValue = 16;
+-  bp.dstNzC0Stride = 16;
+-  bp.dstNzNStride = 1;
+-  DataCopy(b1, b, bp);
+-  PipeBarrier<PIPE_ALL>();
+-  LoadData2DParams lb;
+-  lb.repeatTimes = 1;
+-  lb.srcStride = 1;
+-  lb.ifTranspose = true;
+-  LoadData(b0, b1, lb);
+-  PipeBarrier<PIPE_ALL>();
+-  uint64_t tiles = (rows + TILE_ROWS - 1) / TILE_ROWS;
+-  for (uint64_t tile = GetBlockIdx(); tile < tiles; tile += GetBlockNum()) {
+-    uint64_t r = tile * TILE_ROWS;
+-    int valid = rows - r < TILE_ROWS ? int(rows - r) : TILE_ROWS;
+-    int padded = (valid + 15) / 16 * 16;
+-    Nd2NzParams ap;
+-    ap.ndNum = 1;
+-    ap.nValue = valid;
+-    ap.dValue = 16;
+-    ap.srcDValue = 16;
+-    ap.dstNzC0Stride = padded;
+-    ap.dstNzNStride = 1;
+-    DataCopy(a1, a[r * 16], ap);
+-    PipeBarrier<PIPE_ALL>();
+-    LoadData2DParams la;
+-    la.repeatTimes = padded / 16;
+-    la.srcStride = 1;
+-    la.ifTranspose = false;
+-    LoadData(a0, a1, la);
+-    PipeBarrier<PIPE_ALL>();
+-    MmadParams mm;
+-    mm.m = padded;
+-    mm.n = 16;
+-    mm.k = 16;
+-    mm.isBias = false;
+-    Mmad(c0, a0, b0, mm);
+-    PipeBarrier<PIPE_ALL>();
+-    FixpipeParamsV220 fix;
+-    fix.nSize = 16;
+-    fix.mSize = valid;
+-    fix.srcStride = padded;
+-    fix.dstStride = 16;
+-    Fixpipe(c[r * 16], c0, fix);
+-    PipeBarrier<PIPE_ALL>();
++// H16 uses one Mmad per tile; the dense comparison traverses all K tiles.
++template<class T>
++__aicore__ inline void cube_product(GM_ADDR input,GM_ADDR weight,GM_ADDR output,uint64_t rows,int d) {
++  TPipe pipe;TBuf<TPosition::A1> abuf;TBuf<TPosition::B1> bbuf;
++  TBuf<TPosition::A2> a0buf;TBuf<TPosition::B2> b0buf;TBuf<TPosition::CO1> cbuf;
++  pipe.InitBuffer(abuf,512);pipe.InitBuffer(bbuf,512);pipe.InitBuffer(a0buf,512);pipe.InitBuffer(b0buf,512);pipe.InitBuffer(cbuf,1024);
++  auto a1=abuf.Get<T>(),b1=bbuf.Get<T>(),a0=a0buf.Get<T>(),b0=b0buf.Get<T>();auto c0=cbuf.Get<float>();
++  GlobalTensor<T> a,b;GlobalTensor<float> c;a.SetGlobalBuffer((__gm__ T*)input);b.SetGlobalBuffer((__gm__ T*)weight);c.SetGlobalBuffer((__gm__ float*)output);
++  uint64_t nt=d/16,tiles=((rows+15)/16)*nt;
++  for(uint64_t tile=GetBlockIdx();tile<tiles;tile+=GetBlockNum()) {
++    uint64_t r=tile/nt*16;int col=tile%nt*16;int valid=rows-r<16?int(rows-r):16;
++    for(int k=0;k<d;k+=16) {
++      Nd2NzParams ap;ap.ndNum=1;ap.nValue=valid;ap.dValue=16;ap.srcDValue=d;ap.dstNzC0Stride=16;ap.dstNzNStride=1;
++      Nd2NzParams bp;bp.ndNum=1;bp.nValue=16;bp.dValue=16;bp.srcDValue=d;bp.dstNzC0Stride=16;bp.dstNzNStride=1;
++      DataCopy(a1,a[r*d+k],ap);DataCopy(b1,b[k*d+col],bp);PipeBarrier<PIPE_ALL>();
++      LoadData2DParams la;la.repeatTimes=1;la.srcStride=1;la.ifTranspose=false;
++      LoadData2DParams lb;lb.repeatTimes=1;lb.srcStride=1;lb.ifTranspose=true;
++      LoadData(a0,a1,la);LoadData(b0,b1,lb);PipeBarrier<PIPE_ALL>();
++      MmadParams mm;mm.m=16;mm.n=16;mm.k=16;mm.isBias=k!=0;
++      Mmad(c0,a0,b0,mm);PipeBarrier<PIPE_ALL>();
++    }
++    FixpipeParamsV220 fix;fix.nSize=16;fix.mSize=valid;fix.srcStride=16;fix.dstStride=d;
++    Fixpipe(c[r*d+col],c0,fix);PipeBarrier<PIPE_ALL>();
+   }
+ }
+-extern "C" __global__ __aicore__ void ascend_cube(GM_ADDR input, GM_ADDR weight,
+-                                                  GM_ADDR output, uint64_t rows, int d,
+-                                                  int dtype) {
+-  if (dtype == 1)
+-    cube_product<half>(input, weight, output, rows, d);
+-  else
+-    cube_product<bfloat16_t>(input, weight, output, rows, d);
++extern "C" __global__ __aicore__ void ascend_cube(GM_ADDR input,GM_ADDR weight,GM_ADDR output,uint64_t rows,int d,int dtype) {
++  if(dtype==1)cube_product<half>(input,weight,output,rows,d);
++  else cube_product<bfloat16_t>(input,weight,output,rows,d);
+ }
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_cube(void *stream, void *input, void *weight,
+-                                   void *output, uint64_t rows, int d, int dtype,
+-                                   unsigned cores) {
+-  ascend_cube<<<cores, nullptr, stream>>>((uint8_t *)input, (uint8_t *)weight,
+-                                          (uint8_t *)output, rows, d, dtype);
++extern "C" void launch_ascend_cube(void *stream,void *input,void *weight,void *output,uint64_t rows,int d,int dtype,unsigned cores) {
++  ascend_cube<<<cores,nullptr,stream>>>((uint8_t*)input,(uint8_t*)weight,(uint8_t*)output,rows,d,dtype);
+ }
+-#endif
+--- a/ascend/hadamard.hpp
++++ b/ascend/hadamard.hpp
+@@ -1,113 +1,57 @@
+ #pragma once
+ 
+ #include <memory>
+-extern "C" void launch_ascend_had(void *, void *, void *, void *, void *, void *,
+-                                  uint64_t, int, int, float, bool, uint32_t, int, bool,
+-                                  uint32_t, int, int, unsigned);
+-extern "C" void launch_ascend_prepare(void *, void *, void *, uint64_t, int, int, bool,
+-                                      uint32_t, unsigned);
+-extern "C" void launch_ascend_max_finish(void *, void *, void *, unsigned);
+-extern "C" void launch_ascend_cube(void *, void *, void *, void *, uint64_t, int, int,
+-                                   unsigned);
++extern "C" void launch_ascend_had(void*,void*,void*,void*,void*,void*,uint64_t,int,int,float,bool,uint32_t,int,bool,uint32_t,int,int,unsigned);
++extern "C" void launch_ascend_prepare(void*,void*,void*,uint64_t,int,int,bool,uint32_t,unsigned);
++extern "C" void launch_ascend_max_finish(void*,void*,void*,unsigned);
++extern "C" void launch_ascend_cube(void*,void*,void*,void*,uint64_t,int,int,unsigned);
+ namespace lp {
+-inline void ascend_transform(const void *in, void *out, size_t rows, int d, int dtype,
+-                             bool norm, bool signs, uint32_t seed, int stage = 1) {
+-  launch_ascend_had(lp_ascend::stream(), const_cast<void *>(in), out, nullptr, nullptr,
+-                    nullptr, rows, d, dtype, norm ? float(1 / std::sqrt(double(d))) : 1,
+-                    signs, seed, 0, false, 0, stage, 0, ascend_cores(rows));
++inline void ascend_transform(const void *in,void *out,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed,int stage=1) {
++  launch_ascend_had(lp_ascend::stream(),const_cast<void*>(in),out,nullptr,nullptr,nullptr,rows,d,dtype,norm?float(1/std::sqrt(double(d))):1,signs,seed,0,false,0,stage,0,ascend_cores(rows));
+ }
+-template <int MODE>
+-inline void launch_had(const void *in, void *out, size_t rows, int d, int dtype,
+-                       bool norm, bool signs, uint32_t seed, uint8_t *, uint8_t *,
+-                       float *, Layout) {
+-  static_assert(MODE == 0, "Ascend uses explicit reduction/fusion entrypoints");
+-  ascend_transform(in, out, rows, d, dtype, norm, signs, seed);
++template<int MODE> inline void launch_had(const void *in,void *out,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed,uint8_t*,uint8_t*,float*,Layout) {
++  static_assert(MODE==0,"Ascend uses explicit reduction/fusion entrypoints");ascend_transform(in,out,rows,d,dtype,norm,signs,seed);
+ }
+-inline void ascend_fused(const void *in, size_t rows, int d, int dtype, bool norm,
+-                         bool signs, uint32_t signseed, uint8_t *data, uint8_t *scales,
+-                         float *amax, Layout p, int stage = 1) {
+-  static AscendScratch scratch;
+-  unsigned cores = ascend_cores(rows);
+-  float factor = norm ? float(1 / std::sqrt(double(d))) : 1;
+-  if (p.fmt == NVFP4) {
+-    launch_ascend_had(lp_ascend::stream(), const_cast<void *>(in), nullptr, nullptr,
+-                      nullptr, scratch.p, rows, d, dtype, factor, signs, signseed,
+-                      p.fmt, p.stochastic, p.seed, stage, 1, cores);
++inline void ascend_fused(const void *in,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t signseed,uint8_t *data,uint8_t *scales,float *amax,Layout p,int stage=1) {
++  static AscendScratch scratch;unsigned cores=ascend_cores(rows);float factor=norm?float(1/std::sqrt(double(d))):1;
++  if(p.fmt==NVFP4) {
++    launch_ascend_had(lp_ascend::stream(),const_cast<void*>(in),nullptr,nullptr,nullptr,scratch.p,rows,d,dtype,factor,signs,signseed,p.fmt,p.stochastic,p.seed,stage,1,cores);
+     // Reuse the reduction finalizer through a dedicated launcher (no host amax).
+-    launch_ascend_max_finish(lp_ascend::stream(), scratch.p, amax, cores);
++    launch_ascend_max_finish(lp_ascend::stream(),scratch.p,amax,cores);
+   }
+-  launch_ascend_had(lp_ascend::stream(), const_cast<void *>(in), nullptr, data, scales,
+-                    amax, rows, d, dtype, factor, signs, signseed, p.fmt, p.stochastic,
+-                    p.seed, stage, 2, cores);
++  launch_ascend_had(lp_ascend::stream(),const_cast<void*>(in),nullptr,data,scales,amax,rows,d,dtype,factor,signs,signseed,p.fmt,p.stochastic,p.seed,stage,2,cores);
+ }
+-inline void fused_had(const void *in, size_t rows, int d, int dtype, bool norm,
+-                      bool signs, uint32_t seed, uint8_t *data, uint8_t *scales,
+-                      float *amax, Layout p) {
+-  ascend_fused(in, rows, d, dtype, norm, signs, seed, data, scales, amax, p);
+-}
++inline void fused_had(const void *in,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed,uint8_t *data,uint8_t *scales,float *amax,Layout p) { ascend_fused(in,rows,d,dtype,norm,signs,seed,data,scales,amax,p); }
+ 
+ // Native Cube implementation: original FP16/BF16 inputs, FP32 Mmad
+ // accumulation, and a separate FP32 butterfly/normalization epilogue.
+ struct CubePlan {
+-  size_t rows;
+-  int d, k, dtype;
+-  Device input, product, weight;
+-  CubePlan(size_t rows_, int d_, int k_, int dtype_)
+-      : rows(rows_), d(d_), k(k_), dtype(dtype_), input(rows * d * 2),
+-        product(rows * d * 4), weight(k * k * 2) {
+-    std::vector<uint16_t> h(k * k);
+-    for (int i = 0; i < k; ++i)
+-      for (int j = 0; j < k; ++j)
+-        save(h.data(), i * k + j, __builtin_parity(unsigned(i & j)) ? -1 : 1, dtype);
+-    weight.upload(h.data(), h.size() * 2);
++  size_t rows;int d,k,dtype;
++  Device input,product,weight;
++  CubePlan(size_t rows_,int d_,int k_,int dtype_):rows(rows_),d(d_),k(k_),dtype(dtype_),input(rows*d*2),product(rows*d*4),weight(k*k*2) {
++    std::vector<uint16_t> h(k*k);for(int i=0;i<k;++i)for(int j=0;j<k;++j)save(h.data(),i*k+j,__builtin_parity(unsigned(i&j))?-1:1,dtype);weight.upload(h.data(),h.size()*2);
+   }
+-  void run(const void *in, int type, bool signs, uint32_t seed) {
+-    void *source = const_cast<void *>(in);
+-    if (signs) {
+-      launch_ascend_prepare(lp_ascend::stream(), source, input.ptr, rows * d, d, type,
+-                            true, seed, ascend_cores((rows * d + 511) / 512));
+-      source = input.ptr;
+-    }
+-    size_t matrixRows = rows * d / k, tiles = ((matrixRows + 15) / 16) * (k / 16);
+-    launch_ascend_cube(lp_ascend::stream(), source, weight.ptr, product.ptr, matrixRows,
+-                       k, type, unsigned(std::min<size_t>(24, tiles)));
++  void run(const void *in,int type,bool signs,uint32_t seed) {
++    void *source=const_cast<void*>(in);
++    if(signs) { launch_ascend_prepare(lp_ascend::stream(),source,input.ptr,rows*d,d,type,true,seed,ascend_cores((rows*d+511)/512));source=input.ptr; }
++    size_t matrixRows=rows*d/k,tiles=((matrixRows+15)/16)*(k/16);
++    launch_ascend_cube(lp_ascend::stream(),source,weight.ptr,product.ptr,matrixRows,k,type,unsigned(std::min<size_t>(24,tiles)));
+   }
+ };
+-inline CubePlan &cube_plan(size_t rows, int d, int k, int dtype) {
+-  static std::unique_ptr<CubePlan> p;
+-  if (!p || p->rows != rows || p->d != d || p->k != k || p->dtype != dtype)
+-    p = std::make_unique<CubePlan>(rows, d, k, dtype);
+-  return *p;
++inline CubePlan &cube_plan(size_t rows,int d,int k,int dtype) {
++  static std::unique_ptr<CubePlan> factor,dense;auto &p=k==16?factor:dense;
++  if(!p||p->rows!=rows||p->d!=d||p->k!=k||p->dtype!=dtype)p=std::make_unique<CubePlan>(rows,d,k,dtype);return *p;
+ }
+-inline void launch_had_mma(const void *in, void *out, size_t rows, int d, int dtype,
+-                           bool norm, bool signs, uint32_t seed) {
+-  auto &p = cube_plan(rows, d, 16, dtype);
+-  p.run(in, dtype, signs, seed);
+-  ascend_transform(p.product.ptr, out, rows, d, dtype, norm, false, seed, 16);
++inline void ascend_dense(const void *in,void *out,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed) {
++  auto &p=cube_plan(rows,d,d,dtype);p.run(in,dtype,signs,seed);ascend_transform(p.product.ptr,out,rows,d,dtype,norm,false,seed,d);
+ }
+-inline void fused_had_mma(const void *in, size_t rows, int d, int dtype, bool norm,
+-                          bool signs, uint32_t seed, uint8_t *data, uint8_t *scales,
+-                          float *amax, Layout layout) {
+-  auto &p = cube_plan(rows, d, 16, dtype);
+-  p.run(in, dtype, signs, seed);
+-  ascend_fused(p.product.ptr, rows, d, dtype, norm, false, seed, data, scales, amax,
+-               layout, 16);
++inline void launch_had_mma(const void *in,void *out,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed) {
++  auto &p=cube_plan(rows,d,16,dtype);p.run(in,dtype,signs,seed);ascend_transform(p.product.ptr,out,rows,d,dtype,norm,false,seed,16);
+ }
+-inline void materialized_had_mma(const void *in, void *out, size_t rows, int d,
+-                                 int dtype, bool norm, bool signs, uint32_t seed,
+-                                 uint8_t *data, uint8_t *scales, float *amax,
+-                                 Layout p) {
+-  auto &plan = cube_plan(rows, d, 16, dtype);
+-  plan.run(in, dtype, signs, seed);
+-  static AscendScratch scratch;
+-  unsigned cores = ascend_cores(rows);
+-  launch_ascend_had(lp_ascend::stream(), plan.product.ptr, out, nullptr, nullptr,
+-                    scratch.p, rows, d, dtype,
+-                    norm ? float(1 / std::sqrt(double(d))) : 1, false, seed, p.fmt,
+-                    p.stochastic, p.seed, 16, 3, cores);
+-  launch_ascend_max_finish(lp_ascend::stream(), scratch.p, amax, cores);
+-  launch_ascend_quant(lp_ascend::stream(), out, data, scales, amax, rows, d, dtype,
+-                      p.fmt, p.block, p.tensor, p.stochastic, p.seed,
+-                      ascend_cores(rows));
++inline void fused_had_mma(const void *in,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed,uint8_t *data,uint8_t *scales,float *amax,Layout layout) {
++  auto &p=cube_plan(rows,d,16,dtype);p.run(in,dtype,signs,seed);ascend_fused(p.product.ptr,rows,d,dtype,norm,false,seed,data,scales,amax,layout,16);
+ }
+-} // namespace lp
++inline void materialized_had_mma(const void *in,void *out,size_t rows,int d,int dtype,bool norm,bool signs,uint32_t seed,uint8_t *data,uint8_t *scales,float *amax,Layout p) {
++  launch_had_mma(in,out,rows,d,dtype,norm,signs,seed);quantize(out,data,scales,amax,p);
++}
++}
+--- a/ascend/kernels.cpp
++++ b/ascend/kernels.cpp
+@@ -6,491 +6,170 @@
+ // GM input is read through typed tensors; output DMA is byte-granular so odd
+ // rows and adjacent groups never race through scalar byte-store cache lines.
+ __aicore__ inline float input_value(GM_ADDR in, uint64_t i, int dtype) {
+-  if (dtype == lp::FP32) {
+-    GlobalTensor<float> x;
+-    x.SetGlobalBuffer((__gm__ float *)in);
+-    return x.GetValue(i);
++  if (dtype == lp::FP32) { GlobalTensor<float> x; x.SetGlobalBuffer((__gm__ float*)in); return x.GetValue(i); }
++  if (dtype == lp::FP16) { GlobalTensor<half> x; x.SetGlobalBuffer((__gm__ half*)in); return float(x.GetValue(i)); }
++  GlobalTensor<uint16_t> x; x.SetGlobalBuffer((__gm__ uint16_t*)in); return lp::unbf16(x.GetValue(i));
++}
++__aicore__ inline void store_dma(GlobalTensor<uint8_t> dst, LocalTensor<uint8_t> src, uint32_t bytes) {
++  SetFlag<HardEvent::S_MTE3>(EVENT_ID0); WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
++  DataCopyPad(dst, src, DataCopyExtParams{1,bytes,0,0,0});
++  SetFlag<HardEvent::MTE3_S>(EVENT_ID0); WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
++}
++extern "C" __global__ __aicore__ void ascend_amax(GM_ADDR in, GM_ADDR partial, uint64_t n, int dtype) {
++  float a=0;
++  for (uint64_t i=GetBlockIdx(); i<n; i+=GetBlockNum()) a=lp::max_f(a,lp::abs_f(input_value(in,i,dtype)));
++  GlobalTensor<float> out; out.SetGlobalBuffer((__gm__ float*)partial);
++  // Separate cache lines for scalar writes from different cores.
++  out.SetValue(GetBlockIdx()*16,a);
++}
++extern "C" __global__ __aicore__ void ascend_max_finish(GM_ADDR partial, GM_ADDR result, int cores) {
++  GlobalTensor<float> x,y; x.SetGlobalBuffer((__gm__ float*)partial); y.SetGlobalBuffer((__gm__ float*)result);
++  float a=0; for(int i=0;i<cores;++i) a=lp::max_f(a,x.GetValue(i*16)); y.SetValue(0,a);
++}
++extern "C" __global__ __aicore__ void ascend_quant(GM_ADDR in, GM_ADDR data, GM_ADDR scales, GM_ADDR maximum,
++    uint64_t rows, uint64_t cols, int dtype, int fmt, int block, bool tensor, bool stochastic, uint32_t seed) {
++  TPipe pipe; TBuf<TPosition::VECCALC> buffer; pipe.InitBuffer(buffer,2048);
++  auto bytes=buffer.Get<uint8_t>();
++  GlobalTensor<uint8_t> output,scaleout; output.SetGlobalBuffer(data); scaleout.SetGlobalBuffer(scales);
++  GlobalTensor<float> maxin; maxin.SetGlobalBuffer((__gm__ float*)maximum);
++  float maximumValue=(fmt==lp::NVFP4 || tensor) ? maxin.GetValue(0) : 0;
++  float global=fmt==lp::NVFP4 ? lp::global_scale(maximumValue) : 1;
++  uint64_t gpr=(cols+block-1)/block;
++  for(uint64_t g=GetBlockIdx();g<rows*gpr;g+=GetBlockNum()) {
++    uint64_t row=g/gpr,start=(g%gpr)*block,end=start+block; if(end>cols)end=cols;
++    float a=maximumValue;
++    if(!tensor) { a=0; for(uint64_t c=start;c<end;++c) a=lp::max_f(a,lp::abs_f(input_value(in,row*cols+c,dtype))); }
++    uint8_t scale=fmt==lp::MXFP8 ? lp::mx_scale(a) : lp::encode8((a/global)/6.0f);
++    if(!tensor || g==0) { bytes.SetValue(0,scale); store_dma(scaleout[tensor?0:g],bytes,1); }
++    float s=lp::scale_value(scale,fmt);
++    for(uint64_t base=start;base<end;base+=512) {
++      uint32_t count=uint32_t(end-base); if(count>512)count=512;
++      for(uint32_t j=0;j<count;j+=(fmt==lp::MXFP8?1:2)) {
++        uint8_t packed=0;
++        for(int k=0;k<(fmt==lp::MXFP8?1:2);++k) {
++          if(j+k>=count)break;
++          uint64_t idx=row*cols+base+j+k;
++          float v=input_value(in,idx,dtype);
++          if(fmt==lp::NVFP4)v=v/global;
++          v=s==0 ? 0 : v/s;
++          uint8_t code=fmt==lp::MXFP8 ? lp::encode8(v,stochastic,lp::uniform(idx,seed)) : lp::encode4(v,stochastic,lp::uniform(idx,seed));
++          packed |= code<<(k*4);
++        }
++        bytes.SetValue(fmt==lp::MXFP8?j:j/2,packed);
++      }
++      uint64_t offset=fmt==lp::MXFP8?row*cols+base:row*((cols+1)/2)+base/2;
++      store_dma(output[offset],bytes,fmt==lp::MXFP8?count:(count+1)/2);
++    }
+   }
+-  if (dtype == lp::FP16) {
+-    GlobalTensor<half> x;
+-    x.SetGlobalBuffer((__gm__ half *)in);
+-    return float(x.GetValue(i));
++}
++extern "C" __global__ __aicore__ void ascend_dequant(GM_ADDR data,GM_ADDR scales,GM_ADDR out,float global,
++    uint64_t rows,uint64_t cols,int fmt,int block,bool tensor,int outtype) {
++  TPipe pipe; TBuf<TPosition::VECCALC> buffer; pipe.InitBuffer(buffer,2048);
++  auto bytes=buffer.Get<uint8_t>(); auto f32=buffer.Get<float>(); auto f16=buffer.Get<half>(); auto b16=buffer.Get<uint16_t>();
++  GlobalTensor<uint8_t> codes,scalesin,output; codes.SetGlobalBuffer(data);scalesin.SetGlobalBuffer(scales);output.SetGlobalBuffer(out);
++  uint64_t tiles=(cols+511)/512,gpr=(cols+block-1)/block;
++  for(uint64_t t=GetBlockIdx();t<rows*tiles;t+=GetBlockNum()) {
++    uint64_t row=t/tiles,start=t%tiles*512;uint32_t count=uint32_t(cols-start);if(count>512)count=512;
++    for(uint32_t j=0;j<count;++j) {
++      uint64_t c=start+j,g=tensor?0:row*gpr+c/block;
++      uint8_t code=codes.GetValue(fmt==lp::MXFP8?row*cols+c:row*((cols+1)/2)+c/2);
++      if(fmt==lp::NVFP4)code=(code>>((c&1)*4))&15;
++      float v=(fmt==lp::MXFP8?lp::fp8_value(code):lp::fp4_value(code))*lp::scale_value(scalesin.GetValue(g),fmt);v=v*global;
++      if(outtype==lp::FP32)f32.SetValue(j,v);else if(outtype==lp::FP16)f16.SetValue(j,half(v));else b16.SetValue(j,lp::bf16(v));
++    }
++    store_dma(output[(row*cols+start)*(outtype==lp::FP32?4:2)],bytes,count*(outtype==lp::FP32?4:2));
+   }
+-  GlobalTensor<uint16_t> x;
+-  x.SetGlobalBuffer((__gm__ uint16_t *)in);
+-  return lp::unbf16(x.GetValue(i));
+ }
+-__aicore__ inline void store_dma(GlobalTensor<uint8_t> dst, LocalTensor<uint8_t> src,
+-                                 uint32_t bytes) {
+-  SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
+-  WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
+-  DataCopyPad(dst, src, DataCopyExtParams{1, bytes, 0, 0, 0});
+-  SetFlag<HardEvent::MTE3_S>(EVENT_ID0);
+-  WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
++extern "C" void launch_ascend_amax(void *stream,void *in,void *scratch,void *maximum,uint64_t n,int dtype,unsigned cores) {
++  ascend_amax<<<cores,nullptr,stream>>>((uint8_t*)in,(uint8_t*)scratch,n,dtype);
++  ascend_max_finish<<<1,nullptr,stream>>>((uint8_t*)scratch,(uint8_t*)maximum,cores);
+ }
+-__aicore__ inline void load_dma(LocalTensor<uint8_t> dst, GlobalTensor<uint8_t> src,
+-                                uint32_t bytes) {
+-  DataCopyPad(dst, src, DataCopyExtParams{1, bytes, 0, 0, 0},
+-              DataCopyPadExtParams<uint8_t>{false, 0, 0, 0});
+-  SetFlag<HardEvent::MTE2_S>(EVENT_ID0);
+-  WaitFlag<HardEvent::MTE2_S>(EVENT_ID0);
++extern "C" void launch_ascend_quant(void *stream,void *in,void *data,void *scales,void *maximum,
++    uint64_t rows,uint64_t cols,int dtype,int fmt,int block,bool tensor,bool stochastic,uint32_t seed,unsigned cores) {
++  ascend_quant<<<cores,nullptr,stream>>>((uint8_t*)in,(uint8_t*)data,(uint8_t*)scales,(uint8_t*)maximum,rows,cols,dtype,fmt,block,tensor,stochastic,seed);
+ }
+-__aicore__ inline float local_value(LocalTensor<uint8_t> src, unsigned i, int dtype) {
+-  if (dtype == lp::FP32)
+-    return src.ReinterpretCast<float>().GetValue(i);
+-  if (dtype == lp::FP16)
+-    return float(src.ReinterpretCast<half>().GetValue(i));
+-  return lp::unbf16(src.ReinterpretCast<uint16_t>().GetValue(i));
++extern "C" void launch_ascend_dequant(void *stream,void *data,void *scales,void *out,float global,
++    uint64_t rows,uint64_t cols,int fmt,int block,bool tensor,int outtype,unsigned cores) {
++  ascend_dequant<<<cores,nullptr,stream>>>((uint8_t*)data,(uint8_t*)scales,(uint8_t*)out,global,rows,cols,fmt,block,tensor,outtype);
+ }
+-extern "C" __global__ __aicore__ void ascend_amax(GM_ADDR in, GM_ADDR partial,
+-                                                  uint64_t n, int dtype) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> buf, vbuf, tmpbuf, reducebuf;
+-  pipe.InitBuffer(buf, 4096 * 4);
+-  pipe.InitBuffer(vbuf, 4096 * 4);
+-  pipe.InitBuffer(tmpbuf, 4096 * 4);
+-  pipe.InitBuffer(reducebuf, 256);
+-  auto raw = buf.Get<uint8_t>();
+-  auto work = vbuf.Get<float>();
+-  auto tmp = tmpbuf.Get<float>();
+-  auto reduced = reducebuf.Get<float>();
+-  GlobalTensor<uint8_t> x;
+-  x.SetGlobalBuffer(in);
+-  int width = dtype == lp::FP32 ? 4 : 2;
+-  float a = 0;
+-  for (uint64_t base = GetBlockIdx() * 4096; base < n; base += GetBlockNum() * 4096) {
+-    unsigned count = n - base < 4096 ? unsigned(n - base) : 4096;
+-    load_dma(raw, x[base * width], count * width);
+-    SetFlag<HardEvent::S_V>(EVENT_ID0);
+-    WaitFlag<HardEvent::S_V>(EVENT_ID0);
+-    if (dtype == lp::FP32)
+-      Abs(work, raw.ReinterpretCast<float>(), count);
+-    else {
+-      if (dtype == lp::FP16)
+-        Cast(work, raw.ReinterpretCast<half>(), RoundMode::CAST_NONE, count);
+-      else
+-        Cast(work, raw.ReinterpretCast<bfloat16_t>(), RoundMode::CAST_NONE, count);
+-      PipeBarrier<PIPE_V>();
+-      Abs(work, work, count);
++
++// MODE 0 writes the transform, 1 reduces the rounded transform, and 2 fuses
++// encoding. startStage=16 consumes an FP32 H16 matrix product; d consumes a
++// dense matrix product. The independent butterfly starts at stage 1.
++template<int MODE>
++__aicore__ inline void had_impl(GM_ADDR in,GM_ADDR out,GM_ADDR data,GM_ADDR scales,GM_ADDR maximum,
++    uint64_t rows,int d,int dtype,float normalization,bool signs,uint32_t signseed,int fmt,bool stochastic,uint32_t seed,int startStage) {
++  TPipe pipe; TBuf<TPosition::VECCALC> values,outputs;
++  pipe.InitBuffer(values,4096);pipe.InitBuffer(outputs,4096);
++  auto v=values.Get<float>();auto bytes=outputs.Get<uint8_t>();auto halves=outputs.Get<half>();auto bf=outputs.Get<uint16_t>();
++  GlobalTensor<uint8_t> dest,codes,scaleout;dest.SetGlobalBuffer(out);codes.SetGlobalBuffer(data);scaleout.SetGlobalBuffer(scales);
++  GlobalTensor<float> maxbuf;maxbuf.SetGlobalBuffer((__gm__ float*)maximum);
++  float global=(MODE==2 && fmt==lp::NVFP4)?lp::global_scale(maxbuf.GetValue(0)):1;
++  float localmax=0;
++  for(uint64_t r=GetBlockIdx();r<rows;r+=GetBlockNum()) {
++    for(int c=0;c<d;++c) { float x=input_value(in,r*d+c,startStage==1?dtype:lp::FP32); if(signs && lp::uniform(c,signseed)<0.5f)x=-x;v.SetValue(c,x); }
++    for(int s=startStage;s<d;s*=2)for(int base=0;base<d;base+=s*2)for(int j=0;j<s;++j) {
++      float a=v.GetValue(base+j),b=v.GetValue(base+j+s);v.SetValue(base+j,a+b);v.SetValue(base+j+s,a-b);
+     }
+-    PipeBarrier<PIPE_V>();
+-    ReduceMax(reduced, work, tmp, int(count), false);
+-    SetFlag<HardEvent::V_S>(EVENT_ID0);
+-    WaitFlag<HardEvent::V_S>(EVENT_ID0);
+-    float m = reduced.GetValue(0);
+-    // Vector math may flush an all-subnormal tile. Inspect its original bits
+-    // only in this rare case, preserving the software format's tiny scales.
+-    if (m == 0 && dtype == lp::FP32)
+-      for (unsigned j = 0; j < count; ++j)
+-        m = lp::max_f(m, lp::abs_f(local_value(raw, j, dtype)));
+-    a = lp::max_f(a, m);
+-    SetFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-    WaitFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-  }
+-  GlobalTensor<float> out;
+-  out.SetGlobalBuffer((__gm__ float *)partial);
+-  out.SetValue(GetBlockIdx() * 16, a);
+-  // Restore the ABI vector mask after the final partial reduction tile.
+-  ResetMask();
+-}
+-extern "C" __global__ __aicore__ void ascend_max_finish(GM_ADDR partial, GM_ADDR result,
+-                                                        int cores) {
+-  GlobalTensor<float> x, y;
+-  x.SetGlobalBuffer((__gm__ float *)partial);
+-  y.SetGlobalBuffer((__gm__ float *)result);
+-  float a = 0;
+-  for (int i = 0; i < cores; ++i)
+-    a = lp::max_f(a, x.GetValue(i * 16));
+-  y.SetValue(0, a);
+-}
+-extern "C" __global__ __aicore__ void
+-ascend_quant(GM_ADDR in, GM_ADDR data, GM_ADDR scales, GM_ADDR maximum, uint64_t rows,
+-             uint64_t cols, int dtype, int fmt, int block, bool tensor, bool stochastic,
+-             uint32_t seed) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> ibuf, obuf, sbuf;
+-  pipe.InitBuffer(ibuf, 4096);
+-  pipe.InitBuffer(obuf, 1024);
+-  pipe.InitBuffer(sbuf, 64);
+-  auto raw = ibuf.Get<uint8_t>(), bytes = obuf.Get<uint8_t>(),
+-       scalesLocal = sbuf.Get<uint8_t>();
+-  GlobalTensor<uint8_t> input, output, scaleout;
+-  input.SetGlobalBuffer(in);
+-  output.SetGlobalBuffer(data);
+-  scaleout.SetGlobalBuffer(scales);
+-  GlobalTensor<float> maxin;
+-  maxin.SetGlobalBuffer((__gm__ float *)maximum);
+-  float maximumValue = (fmt == lp::NVFP4 || tensor) ? maxin.GetValue(0) : 0;
+-  float global = fmt == lp::NVFP4 ? lp::global_scale(maximumValue) : 1;
+-  uint64_t gpr = (cols + block - 1) / block;
+-  unsigned groupsPerTile = 1024 / block;
+-  uint64_t tilesPerRow = (gpr + groupsPerTile - 1) / groupsPerTile;
+-  for (uint64_t tile = GetBlockIdx(); tile < rows * tilesPerRow;
+-       tile += GetBlockNum()) {
+-    uint64_t row = tile / tilesPerRow,
+-             firstGroup = (tile % tilesPerRow) * groupsPerTile,
+-             start = firstGroup * block;
+-    unsigned count = unsigned(
+-        cols - start < groupsPerTile * block ? cols - start : groupsPerTile * block);
+-    load_dma(raw, input[(row * cols + start) * (dtype == lp::FP32 ? 4 : 2)],
+-             count * (dtype == lp::FP32 ? 4 : 2));
+-    unsigned groups = (count + block - 1) / block;
+-    for (unsigned g = 0; g < groups; ++g) {
+-      unsigned first = g * block, end = first + block;
+-      if (end > count)
+-        end = count;
+-      float a = maximumValue;
+-      if (!tensor) {
+-        a = 0;
+-        for (unsigned j = first; j < end; ++j)
+-          a = lp::max_f(a, lp::abs_f(local_value(raw, j, dtype)));
+-      }
+-      uint8_t sc =
+-          fmt == lp::MXFP8 ? lp::mx_scale(a) : lp::encode8((a / global) / 6.0f);
+-      scalesLocal.SetValue(g, sc);
+-      float scale = lp::scale_value(sc, fmt);
+-      for (unsigned j = first; j < end; j += (fmt == lp::MXFP8 ? 1 : 2)) {
+-        uint8_t packed = 0;
+-        for (int k = 0; k < (fmt == lp::MXFP8 ? 1 : 2) && j + k < end; ++k) {
+-          uint64_t idx = row * cols + start + j + k;
+-          float v = local_value(raw, j + k, dtype);
+-          float u = stochastic ? lp::uniform(idx, seed) : 0;
+-          uint8_t code;
+-          if (fmt == lp::MXFP8)
+-            code = lp::encode8(lp::mx_scaled(v, sc), stochastic, u);
+-          else
+-            code = lp::encode4_scaled(v / global, scale, stochastic, u);
+-          packed |= code << (4 * k);
++    for(int c=0;c<d;++c) { float x=lp::cast(v.GetValue(c)*normalization,dtype);v.SetValue(c,x);
++      if constexpr(MODE==1)localmax=lp::max_f(localmax,lp::abs_f(x));
++      if constexpr(MODE==0) { if(dtype==lp::FP16)halves.SetValue(c,half(x));else bf.SetValue(c,lp::bf16(x)); }
++    }
++    if constexpr(MODE==0)store_dma(dest[r*d*2],bytes,d*2);
++    if constexpr(MODE==2) {
++      int block=fmt==lp::MXFP8?32:16,groups=(d+block-1)/block;
++      for(int g=0;g<groups;++g) {
++        int first=g*block,end=first+block;if(end>d)end=d;float a=0;
++        for(int c=first;c<end;++c)a=lp::max_f(a,lp::abs_f(v.GetValue(c)));
++        uint8_t sc=fmt==lp::MXFP8?lp::mx_scale(a):lp::encode8((a/global)/6.0f);
++        bytes.SetValue(0,sc);store_dma(scaleout[r*groups+g],bytes,1);float scale=lp::scale_value(sc,fmt);
++        for(int c=first;c<end;c+=(fmt==lp::MXFP8?1:2)) {
++          uint8_t packed=0;for(int k=0;k<(fmt==lp::MXFP8?1:2) && c+k<end;++k) {
++            float x=v.GetValue(c+k);if(fmt==lp::NVFP4)x=x/global;x=scale==0?0:x/scale;
++            uint8_t code=fmt==lp::MXFP8?lp::encode8(x,stochastic,lp::uniform(r*d+c+k,seed)):lp::encode4(x,stochastic,lp::uniform(r*d+c+k,seed));packed|=code<<(k*4);
++          }
++          bytes.SetValue(fmt==lp::MXFP8?c-first:(c-first)/2,packed);
+         }
+-        bytes.SetValue(fmt == lp::MXFP8 ? j : j / 2, packed);
++        store_dma(codes[fmt==lp::MXFP8?r*d+first:r*((d+1)/2)+first/2],bytes,fmt==lp::MXFP8?end-first:(end-first+1)/2);
+       }
+     }
+-    if (!tensor)
+-      store_dma(scaleout[row * gpr + firstGroup], scalesLocal, groups);
+-    else if (tile == 0)
+-      store_dma(scaleout, scalesLocal, 1);
+-    store_dma(output[fmt == lp::MXFP8 ? row * cols + start
+-                                      : row * ((cols + 1) / 2) + start / 2],
+-              bytes, fmt == lp::MXFP8 ? count : (count + 1) / 2);
+-    SetFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-    WaitFlag<HardEvent::S_MTE2>(EVENT_ID0);
++  }
++  if constexpr(MODE==1)maxbuf.SetValue(GetBlockIdx()*16,localmax);
++}
++extern "C" __global__ __aicore__ void ascend_had(GM_ADDR in,GM_ADDR out,GM_ADDR data,GM_ADDR scales,GM_ADDR maximum,
++    uint64_t rows,int d,int dtype,float normalization,bool signs,uint32_t signseed,int fmt,bool stochastic,uint32_t seed,int stage,int mode) {
++  if(mode==0)had_impl<0>(in,out,data,scales,maximum,rows,d,dtype,normalization,signs,signseed,fmt,stochastic,seed,stage);
++  else if(mode==1)had_impl<1>(in,out,data,scales,maximum,rows,d,dtype,normalization,signs,signseed,fmt,stochastic,seed,stage);
++  else had_impl<2>(in,out,data,scales,maximum,rows,d,dtype,normalization,signs,signseed,fmt,stochastic,seed,stage);
++}
++// Apply column signs while preserving the original FP16/BF16 bits before Cube.
++extern "C" __global__ __aicore__ void ascend_prepare(GM_ADDR in,GM_ADDR out,uint64_t n,int d,int dtype,bool signs,uint32_t seed) {
++  TPipe pipe;TBuf<TPosition::VECCALC> buf;pipe.InitBuffer(buf,2048);auto x=buf.Get<uint16_t>();auto bytes=buf.Get<uint8_t>();
++  GlobalTensor<uint8_t> y;y.SetGlobalBuffer(out);
++  for(uint64_t base=GetBlockIdx()*512;base<n;base+=GetBlockNum()*512) {
++    uint32_t count=uint32_t(n-base);if(count>512)count=512;
++    for(uint32_t j=0;j<count;++j) { GlobalTensor<uint16_t> raw;raw.SetGlobalBuffer((__gm__ uint16_t*)in);uint16_t v=raw.GetValue(base+j);if(signs && lp::uniform((base+j)%d,seed)<0.5f)v^=0x8000;x.SetValue(j,v); }
++    store_dma(y[base*2],bytes,count*2);
+   }
+ }
+-extern "C" __global__ __aicore__ void
+-ascend_dequant(GM_ADDR data, GM_ADDR scales, GM_ADDR out, float global, uint64_t rows,
+-               uint64_t cols, int fmt, int block, bool tensor, int outtype) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> buffer, cb, sb;
+-  pipe.InitBuffer(buffer, 2048);
+-  pipe.InitBuffer(cb, 512);
+-  pipe.InitBuffer(sb, 64);
+-  auto bytes = buffer.Get<uint8_t>(), codeLocal = cb.Get<uint8_t>(),
+-       scaleLocal = sb.Get<uint8_t>();
+-  auto f32 = buffer.Get<float>();
+-  auto f16 = buffer.Get<half>();
+-  auto b16 = buffer.Get<uint16_t>();
+-  GlobalTensor<uint8_t> codes, scalesin, output;
+-  codes.SetGlobalBuffer(data);
+-  scalesin.SetGlobalBuffer(scales);
+-  output.SetGlobalBuffer(out);
+-  uint64_t tiles = (cols + 511) / 512, gpr = (cols + block - 1) / block;
+-  for (uint64_t t = GetBlockIdx(); t < rows * tiles; t += GetBlockNum()) {
+-    uint64_t row = t / tiles, start = t % tiles * 512;
+-    uint32_t count = uint32_t(cols - start);
+-    if (count > 512)
+-      count = 512;
+-    load_dma(codeLocal,
+-             codes[fmt == lp::MXFP8 ? row * cols + start
+-                                    : row * ((cols + 1) / 2) + start / 2],
+-             fmt == lp::MXFP8 ? count : (count + 1) / 2);
+-    unsigned first = start / block, groups = (start + count - 1) / block - first + 1;
+-    load_dma(scaleLocal, scalesin[tensor ? 0 : row * gpr + first], tensor ? 1 : groups);
+-    for (uint32_t j = 0; j < count; ++j) {
+-      unsigned g = tensor ? 0 : (start + j) / block - first;
+-      uint8_t code = codeLocal.GetValue(fmt == lp::MXFP8 ? j : j / 2);
+-      if (fmt == lp::NVFP4)
+-        code = (code >> ((j & 1) * 4)) & 15;
+-      float v = (fmt == lp::MXFP8 ? lp::fp8_value(code) : lp::fp4_value(code)) *
+-                lp::scale_value(scaleLocal.GetValue(g), fmt);
+-      v = v * global;
+-      if (outtype == lp::FP32)
+-        f32.SetValue(j, v);
+-      else if (outtype == lp::FP16)
+-        f16.SetValue(j, half(v));
+-      else
+-        b16.SetValue(j, lp::bf16(v));
+-    }
+-    store_dma(output[(row * cols + start) * (outtype == lp::FP32 ? 4 : 2)], bytes,
+-              count * (outtype == lp::FP32 ? 4 : 2));
+-    SetFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-    WaitFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-  }
++extern "C" void launch_ascend_had(void *stream,void *in,void *out,void *data,void *scales,void *maximum,uint64_t rows,int d,int dtype,float norm,bool signs,uint32_t signseed,int fmt,bool stochastic,uint32_t seed,int stage,int mode,unsigned cores) {
++  ascend_had<<<cores,nullptr,stream>>>((uint8_t*)in,(uint8_t*)out,(uint8_t*)data,(uint8_t*)scales,(uint8_t*)maximum,rows,d,dtype,norm,signs,signseed,fmt,stochastic,seed,stage,mode);
+ }
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_amax(void *stream, void *in, void *scratch, void *maximum,
+-                                   uint64_t n, int dtype, unsigned cores) {
+-  ascend_amax<<<cores, nullptr, stream>>>((uint8_t *)in, (uint8_t *)scratch, n, dtype);
+-  ascend_max_finish<<<1, nullptr, stream>>>((uint8_t *)scratch, (uint8_t *)maximum,
+-                                            cores);
++extern "C" void launch_ascend_prepare(void *stream,void *in,void *out,uint64_t n,int d,int dtype,bool signs,uint32_t seed,unsigned cores) {
++  ascend_prepare<<<cores,nullptr,stream>>>((uint8_t*)in,(uint8_t*)out,n,d,dtype,signs,seed);
+ }
+-#endif
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_quant(void *stream, void *in, void *data, void *scales,
+-                                    void *maximum, uint64_t rows, uint64_t cols,
+-                                    int dtype, int fmt, int block, bool tensor,
+-                                    bool stochastic, uint32_t seed, unsigned cores) {
+-  ascend_quant<<<cores, nullptr, stream>>>(
+-      (uint8_t *)in, (uint8_t *)data, (uint8_t *)scales, (uint8_t *)maximum, rows, cols,
+-      dtype, fmt, block, tensor, stochastic, seed);
+-}
+-#endif
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_dequant(void *stream, void *data, void *scales, void *out,
+-                                      float global, uint64_t rows, uint64_t cols,
+-                                      int fmt, int block, bool tensor, int outtype,
+-                                      unsigned cores) {
+-  ascend_dequant<<<cores, nullptr, stream>>>((uint8_t *)data, (uint8_t *)scales,
+-                                             (uint8_t *)out, global, rows, cols, fmt,
+-                                             block, tensor, outtype);
+-}
+-#endif
+-
+-// MODE 0 writes the transform; 1 reduces its rounded values; 2 fuses encoding;
+-// 3 writes and reduces together. startStage=16 consumes an FP32 H16 product.
+-// The independent butterfly reads the original dtype and starts at stage 1.
+-template <int MODE>
+-__aicore__ inline void
+-had_impl(GM_ADDR in, GM_ADDR out, GM_ADDR data, GM_ADDR scales, GM_ADDR maximum,
+-         uint64_t rows, int d, int dtype, float normalization, bool signs,
+-         uint32_t signseed, int fmt, bool stochastic, uint32_t seed, int startStage) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> values, outputs, pingpong, inputbuf, scalebuf;
+-  pipe.InitBuffer(values, 4096);
+-  pipe.InitBuffer(outputs, 4096);
+-  pipe.InitBuffer(pingpong, 4096);
+-  pipe.InitBuffer(inputbuf, 4096);
+-  pipe.InitBuffer(scalebuf, 64);
+-  auto v = values.Get<float>();
+-  auto other = pingpong.Get<float>();
+-  auto raw = inputbuf.Get<uint8_t>();
+-  auto scaleBytes = scalebuf.Get<uint8_t>();
+-  auto bytes = outputs.Get<uint8_t>();
+-  auto halves = outputs.Get<half>();
+-  auto bf = outputs.Get<uint16_t>();
+-  GlobalTensor<uint8_t> dest, codes, scaleout;
+-  dest.SetGlobalBuffer(out);
+-  codes.SetGlobalBuffer(data);
+-  scaleout.SetGlobalBuffer(scales);
+-  GlobalTensor<float> maxbuf;
+-  maxbuf.SetGlobalBuffer((__gm__ float *)maximum);
+-  float global =
+-      (MODE == 2 && fmt == lp::NVFP4) ? lp::global_scale(maxbuf.GetValue(0)) : 1;
+-  float localmax = 0;
+-  GlobalTensor<uint8_t> input;
+-  input.SetGlobalBuffer(in);
+-  for (uint64_t r = GetBlockIdx(); r < rows; r += GetBlockNum()) {
+-    int inputType = startStage == 1 ? dtype : lp::FP32;
+-    int width = inputType == lp::FP32 ? 4 : 2;
+-    load_dma(raw, input[r * d * width], d * width);
+-    for (int c = 0; c < d; ++c) {
+-      float x = local_value(raw, c, inputType);
+-      if (signs && lp::uniform(c, signseed) < 0.5f)
+-        x = -x;
+-      v.SetValue(c, x);
+-    }
+-    // Small butterflies are scalar because their addresses are not 32-byte
+-    // aligned. Larger stages use two vector instructions per pair of blocks,
+-    // ping-ponging UB buffers so both sums consume the original operands.
+-    int stage = startStage;
+-    for (; stage < d && stage < 8; stage *= 2)
+-      for (int base = 0; base < d; base += stage * 2)
+-        for (int j = 0; j < stage; ++j) {
+-          float a = v.GetValue(base + j), b = v.GetValue(base + j + stage);
+-          v.SetValue(base + j, a + b);
+-          v.SetValue(base + j + stage, a - b);
+-        }
+-    if (stage < d) {
+-      SetFlag<HardEvent::S_V>(EVENT_ID0);
+-      WaitFlag<HardEvent::S_V>(EVENT_ID0);
+-      for (; stage < d; stage *= 2) {
+-        if (stage <= 64) {
+-          BinaryRepeatParams rp;
+-          rp.dstBlkStride = 1;
+-          rp.src0BlkStride = 1;
+-          rp.src1BlkStride = 1;
+-          rp.dstRepStride = stage / 4;
+-          rp.src0RepStride = stage / 4;
+-          rp.src1RepStride = stage / 4;
+-          Add(other, v, v[stage], uint64_t(stage), uint8_t(d / (2 * stage)), rp);
+-          Sub(other[stage], v, v[stage], uint64_t(stage), uint8_t(d / (2 * stage)), rp);
+-        } else
+-          for (int base = 0; base < d; base += stage * 2) {
+-            Add(other[base], v[base], v[base + stage], stage);
+-            Sub(other[base + stage], v[base], v[base + stage], stage);
+-          }
+-        PipeBarrier<PIPE_V>();
+-        auto swap = v;
+-        v = other;
+-        other = swap;
+-      }
+-      SetFlag<HardEvent::V_S>(EVENT_ID0);
+-      WaitFlag<HardEvent::V_S>(EVENT_ID0);
+-    }
+-    for (int c = 0; c < d; ++c) {
+-      float x = lp::cast(v.GetValue(c) * normalization, dtype);
+-      v.SetValue(c, x);
+-      if constexpr (MODE == 1 || MODE == 3)
+-        localmax = lp::max_f(localmax, lp::abs_f(x));
+-      if constexpr (MODE == 0 || MODE == 3) {
+-        if (dtype == lp::FP16)
+-          halves.SetValue(c, half(x));
+-        else
+-          bf.SetValue(c, lp::bf16(x));
+-      }
+-    }
+-    if constexpr (MODE == 0 || MODE == 3)
+-      store_dma(dest[r * d * 2], bytes, d * 2);
+-    if constexpr (MODE == 2) {
+-      int block = fmt == lp::MXFP8 ? 32 : 16, groups = (d + block - 1) / block;
+-      for (int g = 0; g < groups; ++g) {
+-        int first = g * block, end = first + block;
+-        if (end > d)
+-          end = d;
+-        float a = 0;
+-        for (int c = first; c < end; ++c)
+-          a = lp::max_f(a, lp::abs_f(v.GetValue(c)));
+-        uint8_t sc =
+-            fmt == lp::MXFP8 ? lp::mx_scale(a) : lp::encode8((a / global) / 6.0f);
+-        scaleBytes.SetValue(g, sc);
+-        float scale = lp::scale_value(sc, fmt);
+-        for (int c = first; c < end; c += (fmt == lp::MXFP8 ? 1 : 2)) {
+-          uint8_t packed = 0;
+-          for (int k = 0; k < (fmt == lp::MXFP8 ? 1 : 2) && c + k < end; ++k) {
+-            float x = v.GetValue(c + k),
+-                  u = stochastic ? lp::uniform(r * d + c + k, seed) : 0;
+-            uint8_t code = fmt == lp::MXFP8
+-                               ? lp::encode8(lp::mx_scaled(x, sc), stochastic, u)
+-                               : lp::encode4_scaled(x / global, scale, stochastic, u);
+-            packed |= code << (k * 4);
+-          }
+-          bytes.SetValue(fmt == lp::MXFP8 ? c : c / 2, packed);
+-        }
+-      }
+-      store_dma(scaleout[r * groups], scaleBytes, groups);
+-      store_dma(codes[fmt == lp::MXFP8 ? r * d : r * ((d + 1) / 2)], bytes,
+-                fmt == lp::MXFP8 ? d : (d + 1) / 2);
+-    }
+-    SetFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-    WaitFlag<HardEvent::S_MTE2>(EVENT_ID0);
+-  }
+-  if constexpr (MODE == 1 || MODE == 3)
+-    maxbuf.SetValue(GetBlockIdx() * 16, localmax);
+-  ResetMask();
+-}
+-extern "C" __global__ __aicore__ void
+-ascend_had(GM_ADDR in, GM_ADDR out, GM_ADDR data, GM_ADDR scales, GM_ADDR maximum,
+-           uint64_t rows, int d, int dtype, float normalization, bool signs,
+-           uint32_t signseed, int fmt, bool stochastic, uint32_t seed, int stage,
+-           int mode) {
+-  if (mode == 0)
+-    had_impl<0>(in, out, data, scales, maximum, rows, d, dtype, normalization, signs,
+-                signseed, fmt, stochastic, seed, stage);
+-  else if (mode == 1)
+-    had_impl<1>(in, out, data, scales, maximum, rows, d, dtype, normalization, signs,
+-                signseed, fmt, stochastic, seed, stage);
+-  else if (mode == 3)
+-    had_impl<3>(in, out, data, scales, maximum, rows, d, dtype, normalization, signs,
+-                signseed, fmt, stochastic, seed, stage);
+-  else
+-    had_impl<2>(in, out, data, scales, maximum, rows, d, dtype, normalization, signs,
+-                signseed, fmt, stochastic, seed, stage);
+-}
+-// Apply column signs while preserving the original FP16/BF16 bits before Cube.
+-extern "C" __global__ __aicore__ void ascend_prepare(GM_ADDR in, GM_ADDR out,
+-                                                     uint64_t n, int d, int dtype,
+-                                                     bool signs, uint32_t seed) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> buf;
+-  pipe.InitBuffer(buf, 2048);
+-  auto x = buf.Get<uint16_t>();
+-  auto bytes = buf.Get<uint8_t>();
+-  GlobalTensor<uint8_t> y;
+-  y.SetGlobalBuffer(out);
+-  for (uint64_t base = GetBlockIdx() * 512; base < n; base += GetBlockNum() * 512) {
+-    uint32_t count = uint32_t(n - base);
+-    if (count > 512)
+-      count = 512;
+-    for (uint32_t j = 0; j < count; ++j) {
+-      GlobalTensor<uint16_t> raw;
+-      raw.SetGlobalBuffer((__gm__ uint16_t *)in);
+-      uint16_t v = raw.GetValue(base + j);
+-      if (signs && lp::uniform((base + j) % d, seed) < 0.5f)
+-        v ^= 0x8000;
+-      x.SetValue(j, v);
+-    }
+-    store_dma(y[base * 2], bytes, count * 2);
+-  }
+-}
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_had(void *stream, void *in, void *out, void *data,
+-                                  void *scales, void *maximum, uint64_t rows, int d,
+-                                  int dtype, float norm, bool signs, uint32_t signseed,
+-                                  int fmt, bool stochastic, uint32_t seed, int stage,
+-                                  int mode, unsigned cores) {
+-  ascend_had<<<cores, nullptr, stream>>>((uint8_t *)in, (uint8_t *)out, (uint8_t *)data,
+-                                         (uint8_t *)scales, (uint8_t *)maximum, rows, d,
+-                                         dtype, norm, signs, signseed, fmt, stochastic,
+-                                         seed, stage, mode);
+-}
+-#endif
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_prepare(void *stream, void *in, void *out, uint64_t n,
+-                                      int d, int dtype, bool signs, uint32_t seed,
+-                                      unsigned cores) {
+-  ascend_prepare<<<cores, nullptr, stream>>>((uint8_t *)in, (uint8_t *)out, n, d, dtype,
+-                                             signs, seed);
+-}
+-#endif
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_max_finish(void *stream, void *partial, void *maximum,
+-                                         unsigned cores) {
+-  ascend_max_finish<<<1, nullptr, stream>>>((uint8_t *)partial, (uint8_t *)maximum,
+-                                            cores);
+-}
+-#endif
++extern "C" void launch_ascend_max_finish(void *stream,void *partial,void *maximum,unsigned cores) { ascend_max_finish<<<1,nullptr,stream>>>((uint8_t*)partial,(uint8_t*)maximum,cores); }
+ 
+ // Standalone numeric checks share exactly the implementation used by kernels.
+-extern "C" __global__ __aicore__ void ascend_numeric(GM_ADDR ap, GM_ADDR bp,
+-                                                     GM_ADDR out, uint64_t base,
+-                                                     uint32_t seed, int mode) {
+-  TPipe pipe;
+-  TBuf<TPosition::VECCALC> buf;
+-  pipe.InitBuffer(buf, 1024);
+-  auto f = buf.Get<float>();
+-  auto bytes = buf.Get<uint8_t>();
+-  GlobalTensor<float> a, b;
+-  a.SetGlobalBuffer((__gm__ float *)ap);
+-  b.SetGlobalBuffer((__gm__ float *)bp);
+-  GlobalTensor<uint8_t> y;
+-  y.SetGlobalBuffer(out);
+-  unsigned start = GetBlockIdx() * 256;
+-  for (unsigned j = 0; j < 256; ++j) {
+-    unsigned i = start + j;
+-    float v;
+-    if (mode == 0)
+-      v = lp::uniform(base + i, seed);
+-    else if (mode == 1)
+-      v = lp::multiply_rn(a.GetValue(i), b.GetValue(i));
+-    else
+-      v = lp::divide_rn(a.GetValue(i), b.GetValue(i));
+-    f.SetValue(j, v);
++extern "C" __global__ __aicore__ void ascend_numeric(GM_ADDR ap,GM_ADDR bp,GM_ADDR out,uint64_t base,uint32_t seed,int mode) {
++  TPipe pipe;TBuf<TPosition::VECCALC> buf;pipe.InitBuffer(buf,1024);auto f=buf.Get<float>();auto bytes=buf.Get<uint8_t>();
++  GlobalTensor<float> a,b;a.SetGlobalBuffer((__gm__ float*)ap);b.SetGlobalBuffer((__gm__ float*)bp);GlobalTensor<uint8_t> y;y.SetGlobalBuffer(out);
++  unsigned start=GetBlockIdx()*256;
++  for(unsigned j=0;j<256;++j) { unsigned i=start+j;float v;
++    if(mode==0)v=lp::uniform(base+i,seed);else if(mode==1)v=lp::multiply_rn(a.GetValue(i),b.GetValue(i));else v=lp::divide_rn(a.GetValue(i),b.GetValue(i));f.SetValue(j,v);
+   }
+-  store_dma(y[start * 4], bytes, 1024);
++  store_dma(y[start*4],bytes,1024);
+ }
+-#ifndef __CCE_AICORE__
+-extern "C" void launch_ascend_numeric(void *stream, void *a, void *b, void *out,
+-                                      uint64_t base, uint32_t seed, int mode) {
+-  ascend_numeric<<<16, nullptr, stream>>>((uint8_t *)a, (uint8_t *)b, (uint8_t *)out,
+-                                          base, seed, mode);
++extern "C" void launch_ascend_numeric(void *stream,void *a,void *b,void *out,uint64_t base,uint32_t seed,int mode) {
++  ascend_numeric<<<16,nullptr,stream>>>((uint8_t*)a,(uint8_t*)b,(uint8_t*)out,base,seed,mode);
+ }
+-#endif
+--- a/ascend/platform.hpp
++++ b/ascend/platform.hpp
+@@ -10,9 +10,9 @@
+ __aicore__ inline half __float2half_rn(float x) { return half(x); }
+ #else
+ #include <acl/acl.h>
+-#include <cstring>
+ #include <stdexcept>
+ #include <string>
++#include <cstring>
+ #define __host__
+ #define __device__
+ using __half = __fp16;
+@@ -20,80 +20,37 @@
+ inline __half __float2half_rn(float x) { return __half(x); }
+ namespace lp_ascend {
+ inline void checked(aclError e) {
+-  if (e != ACL_SUCCESS)
+-    throw std::runtime_error(
+-        "ACL error " + std::to_string(e) + ": " +
+-        (aclGetRecentErrMsg() ? aclGetRecentErrMsg() : "no runtime detail"));
++  if (e != ACL_SUCCESS) throw std::runtime_error("ACL error " + std::to_string(e) + ": " + (aclGetRecentErrMsg() ? aclGetRecentErrMsg() : "no runtime detail"));
+ }
+ struct Runtime {
+   aclrtStream stream{};
+-  Runtime() {
+-    checked(aclInit(nullptr));
+-    checked(aclrtSetDevice(0));
+-    checked(aclrtCreateStream(&stream));
+-  }
+-  ~Runtime() {
+-    aclrtSynchronizeStream(stream);
+-    aclrtDestroyStream(stream);
+-    aclrtResetDevice(0);
+-    aclFinalize();
+-  }
++  Runtime() { checked(aclInit(nullptr)); checked(aclrtSetDevice(0)); checked(aclrtCreateStream(&stream)); }
++  ~Runtime() { aclrtSynchronizeStream(stream); aclrtDestroyStream(stream); aclrtResetDevice(0); aclFinalize(); }
+ };
+-inline Runtime &runtime() {
+-  static Runtime r;
+-  return r;
++inline Runtime &runtime() { static Runtime r; return r; }
++inline aclrtStream stream() { return runtime().stream; }
+ }
+-inline aclrtStream stream() { return runtime().stream; }
+-} // namespace lp_ascend
+ using cudaError_t = aclError;
+ using cudaEvent_t = aclrtEvent;
+ constexpr auto cudaSuccess = ACL_SUCCESS;
+ constexpr auto cudaMemcpyHostToDevice = ACL_MEMCPY_HOST_TO_DEVICE;
+ constexpr auto cudaMemcpyDeviceToHost = ACL_MEMCPY_DEVICE_TO_HOST;
+-inline const char *cudaGetErrorString(aclError) {
+-  auto s = aclGetRecentErrMsg();
+-  return s ? s : "ACL runtime error";
+-}
+-inline aclError cudaMalloc(void **p, size_t n) {
+-  lp_ascend::runtime();
+-  return aclrtMalloc(p, n, ACL_MEM_MALLOC_HUGE_FIRST);
+-}
+-template <class T> inline aclError cudaMalloc(T **p, size_t n) {
+-  return cudaMalloc(reinterpret_cast<void **>(p), n);
+-}
++inline const char *cudaGetErrorString(aclError) { auto s=aclGetRecentErrMsg(); return s ? s : "ACL runtime error"; }
++inline aclError cudaMalloc(void **p, size_t n) { lp_ascend::runtime(); return aclrtMalloc(p,n,ACL_MEM_MALLOC_HUGE_FIRST); }
++template<class T> inline aclError cudaMalloc(T **p,size_t n) { return cudaMalloc(reinterpret_cast<void**>(p),n); }
+ inline aclError cudaFree(void *p) { return aclrtFree(p); }
+-inline aclError cudaMemcpy(void *d, const void *s, size_t n, aclrtMemcpyKind k) {
+-  auto e = aclrtSynchronizeStream(lp_ascend::stream());
+-  return e ? e : aclrtMemcpy(d, n, s, n, k);
+-}
++inline aclError cudaMemcpy(void *d,const void *s,size_t n,aclrtMemcpyKind k) { auto e=aclrtSynchronizeStream(lp_ascend::stream()); return e ? e : aclrtMemcpy(d,n,s,n,k); }
+ // Existing end-to-end timing uses pageable vectors. ACL's synchronous copy is
+ // required for those pointers; kernel-only measurements still use device events.
+-inline aclError cudaMemcpyAsync(void *d, const void *s, size_t n, aclrtMemcpyKind k) {
+-  auto e = aclrtSynchronizeStream(lp_ascend::stream());
+-  return e ? e : aclrtMemcpy(d, n, s, n, k);
+-}
+-inline aclError cudaMemset(void *p, int v, size_t n) { return aclrtMemset(p, n, v, n); }
++inline aclError cudaMemcpyAsync(void *d,const void *s,size_t n,aclrtMemcpyKind k) { auto e=aclrtSynchronizeStream(lp_ascend::stream()); return e ? e : aclrtMemcpy(d,n,s,n,k); }
++inline aclError cudaMemset(void *p,int v,size_t n) { return aclrtMemset(p,n,v,n); }
+ inline aclError cudaGetLastError() { return ACL_SUCCESS; }
+-inline aclError cudaDeviceSynchronize() {
+-  return aclrtSynchronizeStream(lp_ascend::stream());
+-}
++inline aclError cudaDeviceSynchronize() { return aclrtSynchronizeStream(lp_ascend::stream()); }
+ inline aclError cudaEventCreate(cudaEvent_t *e) { return aclrtCreateEvent(e); }
+ inline aclError cudaEventDestroy(cudaEvent_t e) { return aclrtDestroyEvent(e); }
+-inline aclError cudaEventRecord(cudaEvent_t e) {
+-  return aclrtRecordEvent(e, lp_ascend::stream());
+-}
++inline aclError cudaEventRecord(cudaEvent_t e) { return aclrtRecordEvent(e,lp_ascend::stream()); }
+ inline aclError cudaEventSynchronize(cudaEvent_t e) { return aclrtSynchronizeEvent(e); }
+-inline aclError cudaEventElapsedTime(float *ms, cudaEvent_t a, cudaEvent_t b) {
+-  return aclrtEventElapsedTime(ms, a, b);
+-}
+-struct cudaDeviceProp {
+-  char name[128];
+-};
+-inline aclError cudaGetDeviceProperties(cudaDeviceProp *p, int) {
+-  lp_ascend::runtime();
+-  const char *s = aclrtGetSocName();
+-  std::strncpy(p->name, s ? s : "Ascend", 127);
+-  p->name[127] = 0;
+-  return ACL_SUCCESS;
+-}
++inline aclError cudaEventElapsedTime(float *ms,cudaEvent_t a,cudaEvent_t b) { return aclrtEventElapsedTime(ms,a,b); }
++struct cudaDeviceProp { char name[128]; };
++inline aclError cudaGetDeviceProperties(cudaDeviceProp *p,int) { lp_ascend::runtime(); const char *s=aclrtGetSocName(); std::strncpy(p->name,s ? s : "Ascend",127); p->name[127]=0; return ACL_SUCCESS; }
+ #endif

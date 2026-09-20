@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "final_variants": "quant: vector 2/4/8, CTA128/256/512; hadamard: 1/2/4 logical groups or physical waves",
+  "scans": {
+    "tune_butterfly.csv": {
+      "rows": 396,
+      "status": "COMPLETE"
+    },
+    "tune_butterfly_interrupted.csv": {
+      "rows": 646,
+      "status": "INTERRUPTED_NOT_USED"
+    },
+    "tune_mma.csv": {
+      "rows": 396,
+      "status": "COMPLETE"
+    }
+  },
+  "initial_scan_note": "Initial broad scan stopped after no progress; exact stalled candidate not localized. Final 1/2/4-group scans completed with per-line output and a 150-second process timeout."
+}

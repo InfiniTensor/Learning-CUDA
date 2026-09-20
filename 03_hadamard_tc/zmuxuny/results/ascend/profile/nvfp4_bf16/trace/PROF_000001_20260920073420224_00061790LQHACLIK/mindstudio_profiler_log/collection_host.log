@@ -1,0 +1,33 @@
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - CpuUsageAnalysis process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - MemUsageAnalysis process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - DiskUsageAnalysis process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - NetworkUsageAnalysis process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - HostSyscallAnalysis process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [collection_engine.py:96] - Database process finished.
+2026-09-20 07:34:22 [INFO] [collection_engine.py:97] - Analysis finished.
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - GeLogicStreamParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - ParsingMemoryData process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - ParsingCpuUsageData process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_time_parser.py:116] - Start parsing sync data ...
+2026-09-20 07:34:22 [INFO] [ms_time_parser.py:119] - Parsing sync data finished...
+2026-09-20 07:34:22 [WARNING] [data_preparation_parser.py:104] - No data preparation data, data list is empty!
+2026-09-20 07:34:22 [INFO] [data_preparation_parser.py:117] - Parsing data preparation has finished.
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - DataPreparationParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - NpuOpMemParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - Mc2CommInfoParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [stream_expand_spec_parser.py:106] - start parsing Stream expand info data file: unaging.compact.expand_stream_spec.slice_0
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - MsTimeParser process data finished, execute time is 0.009 s
+2026-09-20 07:34:22 [INFO] [stream_expand_spec_parser.py:111] - Create Stream expand info data finished!
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - StreamExpandSpecParser process data finished, execute time is 0.008 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - CaptureStreamInfoParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - RuntimeOpInfoParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - HCCLOperatorParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [cann_calculator.py:82] - start to analysis cann software callstack
+2026-09-20 07:34:22 [INFO] [msprof_c_interface.py:34] - Data will be parsed by msprof_analysis.so!
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - CANNCalculator process data finished, execute time is 0.036 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - MsprofTxParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - StaticOpMemParser process data finished, execute time is 0.004 s
+2026-09-20 07:34:22 [INFO] [ms_multi_process.py:76] - NpuOpMemCalculator process data finished, execute time is 0.004 s
+2026-09-20 07:34:23 [WARNING] [file_manager.py:98] - Data has been analyzed, path is /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host, there are ['time.db', 'stream_expand_spec.db', 'ge_hash.db', 'rts_track.db', 'api_event.db', 'runtime.db', 'ge_info.db'] in sqlite.
+2026-09-20 07:34:23 [WARNING] [msprof_export.py:477] - File all_file.complete already exists. All data will be exported from db in sqlite. Path is /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host 
+2026-09-20 07:34:23 [INFO] [ms_multi_process.py:76] - NpuOpMemCalculator process data finished, execute time is 0.005 s

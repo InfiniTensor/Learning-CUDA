@@ -1,0 +1,1 @@
+{"name":"MetaX C500","global_memory_bytes":68283269120,"multiprocessors":104,"warp_size":64,"max_threads_per_block":1024,"shared_memory_per_block":65536,"driver_api_version":11060,"runtime_api_version":11060}

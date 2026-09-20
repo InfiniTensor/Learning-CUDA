@@ -1,0 +1,18 @@
+{
+  "memcheck": {
+    "returncode": 0,
+    "log": "memcheck.txt"
+  },
+  "racecheck": {
+    "returncode": 0,
+    "log": "racecheck.txt"
+  },
+  "synccheck": {
+    "returncode": 0,
+    "log": "synccheck.txt"
+  },
+  "ncu": {
+    "returncode": 1,
+    "log": "ncu.txt"
+  }
+}

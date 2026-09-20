@@ -1,0 +1,150 @@
+==21446== IXKN-CLI is profiling process 21446, command: /root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard --input /tmp/iluvatar-profile-7kbu4vok/input --output /tmp/iluvatar-profile-7kbu4vok/out --packed /tmp/iluvatar-profile-7kbu4vok/packed --log /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/counters_nvfp4_fp16/metrics.json --repeats 1 --format nvfp4 --materialized_compare 1 
+==21446== Some kernel(s) will be replayed on device 0 in order to collect all events/metrics.
+==21446== Replaying kernel "void lp::hadamard_mma_kernel<1024, 1, 2, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout)" (done)
+Hadamard=0.179465 ms fused=0.48105 ms unfused=0.369215 ms; packed equal
+==21446== Profiling application: /root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard --input /tmp/iluvatar-profile-7kbu4vok/input --output /tmp/iluvatar-profile-7kbu4vok/out --packed /tmp/iluvatar-profile-7kbu4vok/packed --log /root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/counters_nvfp4_fp16/metrics.json --repeats 1 --format nvfp4 --materialized_compare 1 
+==21446== Profiling result:
+==21446== Section Results:
+  Kernel: void lp::hadamard_mma_kernel<1024, 1, 2, 1, 4>(unsigned short const*, unsigned short*, unsigned long, bool, bool, unsigned int, unsigned char*, unsigned char*, float*, lp::Layout) (2048,1,1)x(256,1,1), Context 1, Stream 1, Correlation Id 374
+    Section: GPU Speed Of Light
+    ------------------------------------------------------------------------- ---------------- -------------
+    Duration                                                                         213257.00 Ns             
+    Elapsed Cycles                                                                    20389184 Cycles         
+    SPP Active Cycles                                                                 20152684 Cycles         
+    Scheduler(NS) Issue Cycles                                                        19275175 Cycles         
+    ALU Active Cycles                                                                 19717371 Cycles         
+    ALU Calculate Cycles                                                              19256028 Cycles         
+    -ALU Calculate Cycles(Upper limit)                                                20021248 Cycles         
+    -ALU Calculate Cycles(Lower limit)                                                19185664 Cycles         
+    LSU Active Cycles                                                                 12790264 Cycles         
+    L1 Vector Cache Active Cycles                                                      4462734 Cycles         
+    Flop HP Efficiency                                                                  0.0000 %              
+    Flop SP Efficiency                                                                  9.6137 %              
+    TCU Efficiency                                                                      1.3008 %              
+    L1 Read Efficiency                                                                  2.6829 %              
+    L2 Read Efficiency                                                                 11.5617 %              
+    Dram Read Efficiency                                                               10.0191 %              
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: High-level overview of the usage for compute and memory resources of the GPU.
+    INF: High Throughput --- The kernel is utilizing greater than 80% of the available compute or memory
+performance of the device. To further improve performance, work will likely need to be shifted from the
+most utilized to another unit. Start by analyzing workloads in the Compute Workload Analysis section.
+
+    Section: Compute Workload Analysis
+    ------------------------------------------------------------------------- ---------------- -------------
+    Executed IPC Active                                                                 1.1898 Inst/Cycle     
+    Executed IPC Elapsed                                                                1.1760 Inst/Cycle     
+    SPP Activity Busy                                                                    98.84 %              
+    Scheduler(NS) Issue Busy                                                             95.65 %              
+    Control Flow Unit Utilization                                                        12.69 %              
+    ALU Utilization                                                                      97.84 %              
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Analysis of the compute resources utilization by average on all SPP.
+    WRN: High Utilization --- BFU is the highest-utilized pipeline (98.36%). The pipeline is over-utilized and
+likely a performance bottleneck.
+    WRN: High Integer Compute --- The utilization of integer compute pipeline is 64.78%, check if this kernel
+doing too much work for flow control or offset calculation.
+
+    Section: Memory Access
+    ------------------------------------------------------------------------- ---------------- -------------
+    LSU Utilization                                                                      63.47 %              
+    LSU--Global Memory Utilization                                                       47.35 %              
+    LSU--Shared Memory Utilization                                                       30.70 %              
+    Global Memory Load Throughput                                                       151.12 GB/s           
+    Global Memory Store Throughput                                                      293.07 GB/s           
+    Shared Memory Load Throughput                                                            0 B/s            
+    Shared Memory Store Throughput                                                           0 B/s            
+    Shared Load Bank Conflict                                                                0 Conflicts      
+    Shared Store Bank Conflict                                                         2752512 Conflicts      
+    L1VK Unit Utilization                                                                22.14 %              
+    L1 Vector Cache Load Hit Rate                                                        51.47 %              
+    L2 Cache Load Hit Rate                                                               54.95 %              
+    L2 Cache to Memory Access                                                           269093 Requests       
+    Memory Access Throughput                                                             75.21 GB/s           
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Summary of Memory access operations.
+    WRN: Bank Conflict --- Shared memory bank conflict happens, which caused by more than one threads accessing
+the same shared memory bank at the same time. Try to avoid accessing shared memory in this way to eliminate
+bank conflicts.
+
+    Section: Scheduler Statistics
+    ------------------------------------------------------------------------- ---------------- -------------
+    Maximum Warps Per Scheduler(NS)                                                          8 Warps          
+    Active Warps Per Scheduler(NS)                                                    4.746267 Warps          
+    Eligible Warps Per Scheduler(NS)                                                  3.746980 Warps          
+    Issued(Selected) Warps Per Scheduler(NS)                                          1.189816 Warps          
+    Stalled Warps Per Scheduler(NS)                                                   0.995828 Warps          
+    No Eligible                                                                           4.35 %              
+    One or More Eligible                                                                 95.65 %              
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Summary of the activities on the Schedulers(NS).
+
+    Section: Warp State Statistics
+    ------------------------------------------------------------------------- ---------------- -------------
+    Avg. Active Threads Per Warp                                                         56.46 Threads        
+    Warp Execution Efficiency                                                            88.21 %              
+    Executed Instructions Per Warp                                                     2927.00 Instructions   
+    Warp Stalled by Memory Dependency                                                     8.09 %              
+    Warp Stalled by Memory Throttle                                                       1.16 %              
+    Warp Stalled by Pipeline Busy                                                         1.39 %              
+    Warp Stalled by Execution Dependency                                                  4.05 %              
+    Warp Stalled by Synchronization                                                       0.00 %              
+    Warp Stalled by Insturction Fetch                                                     5.54 %              
+    Warp Stalled by Other Reasons                                                         1.23 %              
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Statistics of Warp state scheduled by NS.
+
+    Section: Instruction Statistics
+    ------------------------------------------------------------------------- ---------------- -------------
+    Executed IPC                                                                        1.1898 Inst/Cycle     
+    Executed Instructions                                                             23977984 Instructions   
+    Single-Lane Memory Instructions                                                      16384 Instructions   
+    Single-Lane ALU Instructions                                                       3121152 Instructions   
+    Single-Lane Control Flow Instructions                                               557056 Instructions   
+    Multi-Lane Memory Instructions                                                     1327104 Instructions   
+     -Multi-Lane Global Memory Instructions                                             409600 Instructions   
+     -Multi-Lane Shared Memory Instructions                                             917504 Instructions   
+     -Multi-Lane SME Memory Instructions                                                     0 Instructions   
+    Multi-Lane ALU Instructions                                                       18956288 Instructions   
+     -Multi-Lane ALU Integer Instructions                                             12279808 Instructions   
+     -Multi-Lane ALU Half Float Instructions                                            131072 Instructions   
+     -Multi-Lane ALU Single Float Instructions                                         6545408 Instructions   
+     +BFU Instructions                                                                18644992 Instructions   
+     +SFU Instructions                                                                  278528 Instructions   
+     +Multi-Lane Matrix Instructions                                                     32768 Instructions   
+     +Multi-Lane 4-Pass Multiply Instructions                                                0 Instructions   
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Statistics of Instructions issued and executed by the kernel.
+
+    Section: Launch Statistics
+    ------------------------------------------------------------------------- ---------------- -------------
+    Grid Size                                                                     [2048, 1, 1]                
+    Block Size                                                                     [256, 1, 1]                
+    Launched Warps                                                                        8192 Warps          
+    Threads                                                                             524288 Threads        
+    Scalar Register                                                                         38 Registers/Warp 
+    Vector Register                                                                         48 Registers/Thread
+    Dynamic Shared Memory                                                                    0 Bytes/Block    
+    Static Shared Memory                                                                     0 Bytes/Block    
+    Local Memory                                                                             8 Bytes/Thread   
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: General information of Launch Statistics.
+
+    Section: Occupancy
+    ------------------------------------------------------------------------- ---------------- -------------
+    Achieved Active Warps Per CU                                                         75.94 Warps          
+    Achieved Occupancy                                                                   59.33 %              
+    Block Limit CU                                                                         128 Blocks         
+    Block Limit VRF Per CU                                                                  20 Blocks         
+    Block Limit SRF Per CU                                                                  52 Blocks         
+    Block Limit Shared Mem Per CU                                                          128 Blocks         
+    Block Limit Warps Per CU                                                                32 Blocks         
+    Theoretical Active Warps Per CU                                                         80 Warps          
+    Theoretical Occupancy                                                                62.50 %              
+    Waves Per CU                                                                          6.40                
+    ------------------------------------------------------------------------- ---------------- -------------
+    INF: Occupancy is defined as the ratio of active warps on an NR to the maximum number(8) of active warps
+supported by the NR.
+    WRN: Occupancy Limiters --- This kernel's theoretical occupancy (62.50%) is limited by the number of
+required VRF.
+

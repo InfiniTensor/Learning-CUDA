@@ -1,0 +1,14 @@
+$ nsys profile --sample=none --cpuctxsw=none --trace=cuda,nvtx --force-overwrite=true -o /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_nvfp4 /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/cuda-profile-xj53qk14/input.bin --output /tmp/cuda-profile-xj53qk14/output.bin --packed /tmp/cuda-profile-xj53qk14/packed.bin --log /tmp/cuda-profile-xj53qk14/metrics.json --repeats 20 --format nvfp4 --random_sign 1
+Hadamard=0.0046688 ms fused=0.0153664 ms unfused=0.0157536 ms; packed equal
+Collecting data...
+Generating '/tmp/nsys-report-7a23.qdstrm'
+
+[1/1] [0%                          ] timeline_nvfp4.nsys-rep
+[1/1] [0%                          ] timeline_nvfp4.nsys-rep
+[1/1] [6%                          ] timeline_nvfp4.nsys-rep
+[1/1] [12%                         ] timeline_nvfp4.nsys-rep
+[1/1] [==================78%       ] timeline_nvfp4.nsys-rep
+[1/1] [========================100%] timeline_nvfp4.nsys-rep
+[1/1] [========================100%] timeline_nvfp4.nsys-rep
+Generated:
+    /root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/results/4090d/tuning/software/timeline_nvfp4.nsys-rep

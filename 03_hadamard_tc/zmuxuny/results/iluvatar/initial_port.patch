@@ -1,0 +1,298 @@
+--- a/Makefile
++++ b/Makefile
+@@ -29,12 +29,12 @@
+ $(error Unsupported PLATFORM '$(PLATFORM)' (expected nvidia, metax or iluvatar))
+ endif
+ 
+-.PHONY: all test numeric-test clean native
++.PHONY: all test clean native
+ all: $(BUILD_DIR)/hadamard
+ $(BUILD_DIR)/hadamard: src/main.cu src/hadamard.cuh src/tensor_core.cuh src/metax_matrix.cuh src/iluvatar_matrix.cuh $(wildcard include/*) Makefile
+ 	mkdir -p $(BUILD_DIR)
+ 	$(NVCC) $(CXXFLAGS) $< -o $@ $(LDLIBS)
+-test: all numeric-test
++test: all
+ 	mkdir -p $(dir $(TEST_OUTPUT))
+ 	$(RUN_ENV) python3 tests/validate.py --binary $(BUILD_DIR)/hadamard --output $(TEST_OUTPUT)
+ clean:
+@@ -50,10 +50,3 @@
+ 	mkdir -p $(BUILD_DIR)
+ 	$(NVCC) $(CXXFLAGS) -DLP_NATIVE_FP8=1 $< -o $@ $(LDLIBS)
+ endif
+-
+-# Check lane-dependent RNG separately so launch-layout regressions are explicit.
+-$(BUILD_DIR)/validate_numeric: tests/validate_numeric.cu $(wildcard include/*) Makefile
+-	mkdir -p $(BUILD_DIR)
+-	$(NVCC) $(CXXFLAGS) $< -o $@ $(LDLIBS)
+-numeric-test: $(BUILD_DIR)/validate_numeric
+-	$(RUN_ENV) $(BUILD_DIR)/validate_numeric
+--- a/include/gpu.cuh
++++ b/include/gpu.cuh
+@@ -159,29 +159,6 @@
+     return;
+   }
+   constexpr int V = 8, THREADS = 256;
+-#elif defined(__ILUVATAR__)
+-  // MR-V100: two FP32 values per lane favor MXFP8, while NVFP4's
+-  // 16-bit inputs benefit from eight. The scan is in results/iluvatar/.
+-  if (p.count() <= 65536 || (p.dtype == FP32 && FMT == MXFP8)) {
+-    constexpr int T = 256, VEC = 2;
+-    size_t grid = (p.count() + T * VEC - 1) / (T * VEC);
+-    if (p.dtype == FP32)
+-      quant_vector_kernel<FMT, FP32, VEC><<<grid, T>>>(x, data, scales, amax, p);
+-    else if (p.dtype == FP16)
+-      quant_vector_kernel<FMT, FP16, VEC><<<grid, T>>>(x, data, scales, amax, p);
+-    else
+-      quant_vector_kernel<FMT, BF16, VEC><<<grid, T>>>(x, data, scales, amax, p);
+-    return;
+-  }
+-  if (FMT == NVFP4 && p.dtype != FP32) {
+-    size_t grid = (p.count() + 1023) / 1024;
+-    if (p.dtype == FP16)
+-      quant_vector_kernel<FMT, FP16, 8><<<grid, 128>>>(x, data, scales, amax, p);
+-    else
+-      quant_vector_kernel<FMT, BF16, 8><<<grid, 128>>>(x, data, scales, amax, p);
+-    return;
+-  }
+-  constexpr int V = 4, THREADS = 128;
+ #else
+   constexpr int V = 4, THREADS = 128;
+ #endif
+@@ -196,16 +173,6 @@
+ 
+ inline void launch_max(const void *x, size_t n, int dtype, float *amax) {
+   cudaMemsetAsync(amax, 0, sizeof(float));
+-#if defined(__ILUVATAR__)
+-  // Scalar FP32 accesses outperform vector loads on MR-V100. Half-size
+-  // inputs use four values per lane; cap the grid to amortize the final atomics.
+-  if (dtype == FP32)
+-    maximum<<<std::min(size_t(256), (n + 255) / 256), 256>>>(x, n, dtype, amax);
+-  else if (dtype == FP16)
+-    maximum_vector<FP16, 4><<<std::min(size_t(128), (n + 2047) / 2048), 512>>>(x, n, amax);
+-  else
+-    maximum_vector<BF16, 4><<<std::min(size_t(128), (n + 2047) / 2048), 512>>>(x, n, amax);
+-#else
+   size_t blocks = std::min(size_t(512), (n + 2047) / 2048);
+ #if defined(__MACACC__)
+   constexpr int FP32_VECTOR = 4;
+@@ -218,7 +185,6 @@
+     maximum_vector<FP16, 8><<<blocks, 256>>>(x, n, amax);
+   else
+     maximum_vector<BF16, 8><<<blocks, 256>>>(x, n, amax);
+-#endif
+ }
+ // Reuse an already computed tensor maximum (e.g. a fused transform+amax).
+ inline void quantize_with_amax(const void *x, uint8_t *data, uint8_t *scales,
+@@ -260,15 +226,6 @@
+     return;
+   }
+   int half_threads = p.count() <= 1048576 ? 512 : 128;
+-#elif defined(__ILUVATAR__)
+-  // Small outputs favor fewer, wider CTAs; large outputs retain the streamed
+-  // vector path. Keep the cutoff aligned with the tested quantization boundary.
+-  int half_threads = p.count() <= 65536 ? 512 : 128;
+-  if (out_type == FP32 && p.count() <= 65536) {
+-    dequant_vector_kernel<FMT, FP32, 8><<<(p.count() + 4095) / 4096, 512>>>(
+-        data, scales, global, out, p);
+-    return;
+-  }
+ #else
+   constexpr int half_threads = 128;
+ #endif
+--- a/include/numeric.cuh
++++ b/include/numeric.cuh
+@@ -18,8 +18,6 @@
+ #if defined(__MACACC__)
+ constexpr unsigned long long FULL_WARP_MASK = ~0ULL;
+ #else
+-// CoreX also accepts a 32-bit mask: SDK 4.4 implements sync shuffles with
+-// native lockstep shuffles and uses their width argument to define subgroups.
+ constexpr unsigned FULL_WARP_MASK = 0xffffffffU;
+ #endif
+ inline const char *compute_platform() {
+@@ -40,8 +38,7 @@
+ // Use native round-to-nearest BF16 conversion on Ampere+, with the original
+ // bit-exact integer implementation for the CPU and older architectures.
+ __host__ __device__ inline uint16_t bf16(float x) {
+-#if !defined(__MACACC__) && !defined(__ILUVATAR__) && defined(__CUDA_ARCH__) && \
+-    __CUDA_ARCH__ >= 800
++#if !defined(__MACACC__) && !defined(__ILUVATAR__) && defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
+   uint16_t result;
+   asm("cvt.rn.bf16.f32 %0, %1;" : "=h"(result) : "f"(x));
+   return result;
+@@ -125,10 +122,7 @@
+ // Inspect the sign bit on both host and device, including negative zero.
+ // CoreX exposes an unqualified signbit overload only on the device.
+ __host__ __device__ inline bool negative(float x) {
+-  union {
+-    float f;
+-    uint32_t u;
+-  } bits{x};
++  union { float f; uint32_t u; } bits{x};
+   return (bits.u >> 31) != 0;
+ }
+ __host__ __device__ inline uint8_t encode8(float x, bool stochastic = false,
+--- a/include/vector.cuh
++++ b/include/vector.cuh
+@@ -125,8 +125,7 @@
+     __half2 h = __floats2half2_rn(lo, hi);
+     return *reinterpret_cast<unsigned *>(&h);
+   } else {
+-#if !defined(__MACACC__) && !defined(__ILUVATAR__) && defined(__CUDA_ARCH__) && \
+-    __CUDA_ARCH__ >= 800
++#if !defined(__MACACC__) && !defined(__ILUVATAR__) && defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
+     unsigned bits;
+     asm("cvt.rn.bf16x2.f32 %0, %1, %2;" : "=r"(bits) : "f"(hi), "f"(lo));
+     return bits;
+--- a/src/hadamard.cuh
++++ b/src/hadamard.cuh
+@@ -11,18 +11,18 @@
+ #else
+ constexpr int BUTTERFLY_LANES = 32;
+ #endif
+-// One logical group of W lanes transforms a row. XOR butterflies stay in
+-// registers: log2(W) stages exchange lanes; remaining stages exchange registers.
+-template <int D, int MODE, int FMT, int WARPS = 4,
+-          int W = (D <= 128 ? 32 : BUTTERFLY_LANES)>
++// One native wave transforms one row. XOR butterflies stay in registers: the first
++// log2(wave size) stages exchange lanes; remaining stages exchange registers.
++template <int D, int MODE, int FMT>
+ __global__ void hadamard_kernel(const void *x, void *y, size_t rows, int dtype,
+                                 bool normalize, bool random_sign, uint32_t sign_seed,
+                                 uint8_t *data, uint8_t *scales, float *amax, Layout p) {
+   // Small dimensions favor two logical 32-lane rows per C500 wave;
+   // larger rows benefit from all 64 lanes and fewer values per thread.
++  constexpr int W = D <= 128 ? 32 : BUTTERFLY_LANES;
+   constexpr int V = (D + W - 1) / W;
+   int lane = threadIdx.x % W;
+-  size_t row = size_t(blockIdx.x) * WARPS + threadIdx.x / W;
++  size_t row = size_t(blockIdx.x) * 4 + threadIdx.x / W;
+   if (row >= rows && MODE != 1)
+     return;
+   float v[V];
+@@ -66,12 +66,12 @@
+       if (j * W + lane < D)
+         m = fmaxf(m, fabsf(v[j]));
+     m = warp_max(m, W);
+-    __shared__ float maxima[WARPS];
++    __shared__ float maxima[4];
+     if (lane == 0)
+       maxima[threadIdx.x / W] = m;
+     __syncthreads();
+     if (threadIdx.x < 32) {
+-      m = warp_max(lane < WARPS ? maxima[lane] : 0.0f);
++      m = warp_max(lane < 4 ? maxima[lane] : 0.0f);
+       if (lane == 0)
+         atomicMax(reinterpret_cast<unsigned *>(amax), __float_as_uint(m));
+     }
+@@ -116,26 +116,11 @@
+ inline void launch_had_format(const void *x, void *y, size_t rows, int d, int dtype,
+                               bool norm, bool signs, uint32_t seed, uint8_t *data,
+                               uint8_t *scales, float *amax, Layout p) {
+-#if defined(__ILUVATAR__)
+-  // Native 64-lane rows reduce register pressure for D>=128. The amax
+-  // prepass uses more rows per CTA to reduce atomic contention; D=1024
+-  // benefits from two waves per CTA in the transform/output stages.
+-#define HAD_CASE(D)                                                             \
+-  case D: {                                                                     \
+-    constexpr int W = (MODE == 1 && D <= 128) || D < 128 ? 32 : 64;              \
+-    constexpr int R = MODE == 1 ? 16 : (D >= 512 ? 2 : 4);                      \
+-    hadamard_kernel<D, MODE, FMT, R, W><<<(rows + R - 1) / R, R * W>>>(          \
+-        x, y, rows, dtype, norm, signs, seed, data, scales, amax, p);             \
+-    break;                                                                      \
+-  }
+-#else
+-#define HAD_CASE(D)                                                             \
+-  case D:                                                                       \
+-    hadamard_kernel<D, MODE, FMT>                                                \
+-        <<<(rows + 3) / 4, 4 * (D <= 128 ? 32 : BUTTERFLY_LANES)>>>(             \
+-            x, y, rows, dtype, norm, signs, seed, data, scales, amax, p);          \
++#define HAD_CASE(D)                                                                    \
++  case D:                                                                              \
++    hadamard_kernel<D, MODE, FMT><<<(rows + 3) / 4, 4 * (D <= 128 ? 32 : BUTTERFLY_LANES)>>>(                            \
++        x, y, rows, dtype, norm, signs, seed, data, scales, amax, p);                  \
+     break
+-#endif
+   switch (d) {
+     HAD_CASE(1);
+     HAD_CASE(2);
+@@ -176,8 +161,8 @@
+   launch_had<2>(x, nullptr, rows, d, dtype, norm, signs, seed, data, scales, amax, p);
+ }
+ 
+-// MACA and CoreX matrix fragments span 64 lanes; NVIDIA fragments span 32.
+-// Quantization still groups consecutive values into logical 16/32-value blocks.
++// MACA WMMA fragments span a native 64-lane wave, unlike CUDA's 32 lanes.
++// Butterfly kernels also use the native wave; quantization groups stay 16/32.
+ #if defined(__MACACC__) || defined(__ILUVATAR__)
+ constexpr int MATRIX_LANES = 64;
+ #else
+--- a/src/iluvatar_matrix.cuh
++++ b/src/iluvatar_matrix.cuh
+@@ -1,9 +1,5 @@
+ #pragma once
+ #include <mma.h>
+-
+-#if __IVCORE_ARCH__ != 0 && __IVCORE_ARCH__ != 11
+-#error "This native fragment layout requires CoreX ivcore11 (tested on MR-V100)"
+-#endif
+ 
+ namespace lp {
+ // CoreX 4.4 ivcore11 native m16n16k16 matrix operation. Register coordinates
+@@ -12,7 +8,7 @@
+ // Constructing registers directly avoids the SDK's swizzled memory layout.
+ template <int TYPE>
+ __device__ __forceinline__ void iluvatar_mma_h16(float *out, const uint16_t *a,
+-                                                 const uint16_t *b) {
++                                               const uint16_t *b) {
+   v4f32 zero = {0, 0, 0, 0};
+   v4f32 result;
+   if constexpr (TYPE == FP16) {
+@@ -195,8 +191,7 @@
+     for (int j = 0; j < 4; ++j) {
+       int r = 2 * group + (j % 2) + 8 * (j / 2);
+       size_t row = row_base + r;
+-      a[j] =
+-          row < rows ? reinterpret_cast<const uint16_t *>(x)[row * d + k + column] : 0;
++      a[j] = row < rows ? reinterpret_cast<const uint16_t *>(x)[row * d + k + column] : 0;
+       if (signs && uniform(k + column, seed) < 0.5f)
+         a[j] ^= 0x8000U;
+       b[j] = reinterpret_cast<const uint16_t *>(h)[(k + r) * d + col_base + column];
+--- a/src/tensor_core.cuh
++++ b/src/tensor_core.cuh
+@@ -230,29 +230,13 @@
+                                 bool signs, uint32_t seed, uint8_t *data,
+                                 uint8_t *scales, float *amax, Layout p) {
+   size_t n = rows * d;
+-#if defined(__ILUVATAR__)
+-  // One wave per CTA improves large MXFP8 fusion; retain four for the
+-  // bandwidth-bound standalone transform and the NVFP4 reduction pipeline.
+-#define MMA_CASE(D)                                                             \
+-  case D: {                                                                     \
+-    constexpr int W = MODE == 2 && FMT == MXFP8 && D >= 256 ? 1 : 4;            \
+-    constexpr int ITEMS = D > 256 ? D : 256;                                    \
+-    hadamard_mma_kernel<D, TYPE, MODE, FMT, W>                                   \
+-        <<<(n + W * ITEMS - 1) / (W * ITEMS), W * MMA_LANES>>>(                  \
+-            static_cast<const uint16_t *>(x), static_cast<uint16_t *>(y), n,    \
+-            norm, signs, seed, data, scales, amax, p);                           \
+-    break;                                                                      \
+-  }
+-#else
+-#define MMA_CASE(D)                                                             \
+-  case D:                                                                       \
+-    hadamard_mma_kernel<D, TYPE, MODE, FMT>                                      \
+-        <<<(n + 4 * (D > 256 ? D : 256) - 1) / (4 * (D > 256 ? D : 256)),        \
+-           4 * MMA_LANES>>>(                                                    \
+-            static_cast<const uint16_t *>(x), static_cast<uint16_t *>(y), n,    \
+-            norm, signs, seed, data, scales, amax, p);                           \
++#define MMA_CASE(D)                                                                    \
++  case D:                                                                              \
++    hadamard_mma_kernel<D, TYPE, MODE, FMT>                                            \
++        <<<(n + 4 * (D > 256 ? D : 256) - 1) / (4 * (D > 256 ? D : 256)), 4 * MMA_LANES>>>(      \
++            static_cast<const uint16_t *>(x), static_cast<uint16_t *>(y), n, norm,     \
++            signs, seed, data, scales, amax, p);                                       \
+     break
+-#endif
+   switch (d) {
+     MMA_CASE(16);
+     MMA_CASE(32);

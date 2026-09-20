@@ -1,0 +1,13 @@
+{
+  "Makefile": "47b3b2f5005ef06037719d810827997fb44189223460b6aa09acac93a38c0ce2",
+  "include/gpu.cuh": "cb587281edac8efb528f02b600a65db250c5e2eb8660043ac786b5617d54a02f",
+  "include/host.hpp": "98a09a6684b228d38abfc2e81302988c5f48cbf307fcd8e79c3fe0b49465e9a2",
+  "include/layout.cuh": "1d0aa72f15363d9797413b154edb92a0a315a88ef16f10cf7ada161ca6f09ffa",
+  "include/numeric.cuh": "17bc5c53177f4917364424efe8bee210ca114d18f6e66506faa1dc96c09d1a3d",
+  "include/vector.cuh": "648f64736342a8b375fdd4931203d322a1785ff73aadab261771aa792c82382e",
+  "src/hadamard.cuh": "91f40405b0709aef4c88ed61e3fe5d170da841c8bfeb2c79f548c5f354d04fab",
+  "src/iluvatar_matrix.cuh": "5bd7ab292e6e52b4c3ccf17937c4a45004b5f02cb67c7ca9bcc41c1f7ab6df3c",
+  "src/main.cu": "f7584b64865491b6f652d3edf1389b5f17e42800c93dcc25bef5f4776ca23de4",
+  "src/metax_matrix.cuh": "73499c04f530568205b3cfad21f9377a9a6187c19aa7e3b75309f966e1f53210",
+  "src/tensor_core.cuh": "57b301c0c7c3aa3f5f6b1ab3575cd98f7934735ef9fed519cc27d24ed290549b"
+}

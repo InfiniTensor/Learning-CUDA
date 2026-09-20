@@ -1,0 +1,3 @@
+Hadamard=0.0884724 ms fused=0.212213 ms unfused=0.113829 ms; packed equal
+Some activities may have incomplete timestamps because not all HW events are returned from mt-perf before time limit!
+Some activities may have incomplete timestamps because not all HW events are returned from mt-perf before time limit!

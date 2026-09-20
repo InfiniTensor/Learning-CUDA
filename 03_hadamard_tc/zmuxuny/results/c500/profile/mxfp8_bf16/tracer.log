@@ -1,0 +1,8 @@
+(Tracer): 16:33:13 [INFO ] Tracer startup
+(Tracer): 16:33:13 [INFO ] Rpc connection established!
+(Tracer): 16:33:16 [INFO ] Output file: 	/root/cuda-camp-c500/03_hadamard_tc/zmuxuny/results/c500/profile/mxfp8_bf16/tracer_out-28003.json
+mctxAutoStart called! 
+mcToolsExtPid_UsedPort:28003-32831
+Hadamard=0.0390272 ms fused=0.028544 ms unfused=0.050432 ms; packed equal
+(Tracer): 16:33:17 [INFO ] User process ends execution.
+(Tracer): 16:33:17 [INFO ] Tracer ends execution.

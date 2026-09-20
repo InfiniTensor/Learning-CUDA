@@ -1,0 +1,4 @@
+$ /usr/local/cuda/compute-sanitizer/compute-sanitizer --tool racecheck --error-exitcode 99 /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/lp-profile-jdll4hu5/h.bin --output /tmp/lp-profile-jdll4hu5/h.out --packed /tmp/lp-profile-jdll4hu5/h.pack --log /tmp/lp-profile-jdll4hu5/h.json --format nvfp4 --repeats 1
+========= COMPUTE-SANITIZER
+Hadamard=0.137216 ms fused=0.26624 ms unfused=0.93184 ms; packed equal
+========= RACECHECK SUMMARY: 0 hazards displayed (0 errors, 0 warnings)

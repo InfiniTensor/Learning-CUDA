@@ -1,0 +1,4 @@
+$ /usr/local/cuda/bin/compute-sanitizer --tool memcheck --error-exitcode 99 /root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/cuda-profile-tdk75qg5/input.bin --output /tmp/cuda-profile-tdk75qg5/output.bin --packed /tmp/cuda-profile-tdk75qg5/packed.bin --log /tmp/cuda-profile-tdk75qg5/metrics.json --repeats 1 --format mxfp8 --random_sign 1
+========= COMPUTE-SANITIZER
+Hadamard=0.099328 ms fused=0.140288 ms unfused=0.116736 ms; packed equal
+========= ERROR SUMMARY: 0 errors

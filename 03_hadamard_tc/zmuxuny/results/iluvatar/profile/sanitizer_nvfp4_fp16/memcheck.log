@@ -1,0 +1,4 @@
+Hadamard=59.4863 ms fused=160.945 ms unfused=138.567 ms; packed equal
+========= LEAK SUMMARY: 0 bytes leaked in 0 allocations
+[mem_check]: ILLEGAL OPERATION (invalid 0 (r:0 w:0)) (out of bound 0 (r:0 w:0)) (misaligned 0) (used after free 0) SUMMARY: 0 errors
+========= ERROR SUMMARY: 0 errors

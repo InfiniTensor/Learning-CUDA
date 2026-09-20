@@ -1,0 +1,151 @@
+{
+  "gpu": "Iluvatar MR-V100",
+  "binary_sha256": "a6eb55a0ea8956c8300740fa52d099567088a5ff1099d229c3e3f0ac75ed3c99",
+  "timing_note": "Instrumented runs; use uninstrumented device-event benchmarks for speedups.",
+  "runs": [
+    {
+      "case": "trace_mxfp8_fp16",
+      "tool": "ixsys",
+      "shape": [
+        8192,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsys",
+        "-t",
+        "cuda",
+        "--print-gpu-summary",
+        "-o",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/trace.ixsys",
+        "/root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard",
+        "--input",
+        "/tmp/iluvatar-profile-m9k34e6c/input",
+        "--output",
+        "/tmp/iluvatar-profile-m9k34e6c/out",
+        "--packed",
+        "/tmp/iluvatar-profile-m9k34e6c/packed",
+        "--log",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_fp16/metrics.json",
+        "--repeats",
+        "3",
+        "--format",
+        "mxfp8",
+        "--materialized_compare",
+        "1"
+      ],
+      "returncode": 0,
+      "zero_error_summary": null,
+      "passed": true,
+      "log": "trace_mxfp8_fp16/ixsys.log"
+    },
+    {
+      "case": "trace_nvfp4_fp16",
+      "tool": "ixsys",
+      "shape": [
+        8192,
+        1024
+      ],
+      "dtype": 1,
+      "command": [
+        "/usr/local/corex/bin/ixsys",
+        "-t",
+        "cuda",
+        "--print-gpu-summary",
+        "-o",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_nvfp4_fp16/trace.ixsys",
+        "/root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard",
+        "--input",
+        "/tmp/iluvatar-profile-m9k34e6c/input",
+        "--output",
+        "/tmp/iluvatar-profile-m9k34e6c/out",
+        "--packed",
+        "/tmp/iluvatar-profile-m9k34e6c/packed",
+        "--log",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_nvfp4_fp16/metrics.json",
+        "--repeats",
+        "3",
+        "--format",
+        "nvfp4",
+        "--materialized_compare",
+        "1"
+      ],
+      "returncode": 0,
+      "zero_error_summary": null,
+      "passed": true,
+      "log": "trace_nvfp4_fp16/ixsys.log"
+    },
+    {
+      "case": "trace_mxfp8_bf16",
+      "tool": "ixsys",
+      "shape": [
+        8192,
+        1024
+      ],
+      "dtype": 2,
+      "command": [
+        "/usr/local/corex/bin/ixsys",
+        "-t",
+        "cuda",
+        "--print-gpu-summary",
+        "-o",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_bf16/trace.ixsys",
+        "/root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard",
+        "--input",
+        "/tmp/iluvatar-profile-m9k34e6c/input",
+        "--output",
+        "/tmp/iluvatar-profile-m9k34e6c/out",
+        "--packed",
+        "/tmp/iluvatar-profile-m9k34e6c/packed",
+        "--log",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_mxfp8_bf16/metrics.json",
+        "--repeats",
+        "3",
+        "--format",
+        "mxfp8",
+        "--materialized_compare",
+        "1"
+      ],
+      "returncode": 0,
+      "zero_error_summary": null,
+      "passed": true,
+      "log": "trace_mxfp8_bf16/ixsys.log"
+    },
+    {
+      "case": "trace_nvfp4_bf16",
+      "tool": "ixsys",
+      "shape": [
+        8192,
+        1024
+      ],
+      "dtype": 2,
+      "command": [
+        "/usr/local/corex/bin/ixsys",
+        "-t",
+        "cuda",
+        "--print-gpu-summary",
+        "-o",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_nvfp4_bf16/trace.ixsys",
+        "/root/camp/03_hadamard_tc/zmuxuny/build/iluvatar/hadamard",
+        "--input",
+        "/tmp/iluvatar-profile-m9k34e6c/input",
+        "--output",
+        "/tmp/iluvatar-profile-m9k34e6c/out",
+        "--packed",
+        "/tmp/iluvatar-profile-m9k34e6c/packed",
+        "--log",
+        "/root/camp/03_hadamard_tc/zmuxuny/results/iluvatar/profile/trace_nvfp4_bf16/metrics.json",
+        "--repeats",
+        "3",
+        "--format",
+        "nvfp4",
+        "--materialized_compare",
+        "1"
+      ],
+      "returncode": 0,
+      "zero_error_summary": null,
+      "passed": true,
+      "log": "trace_nvfp4_bf16/ixsys.log"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+2026-09-20 07:34:12 [INFO] [collection_engine.py:96] - Database process finished.
+2026-09-20 07:34:12 [INFO] [collection_engine.py:97] - Analysis finished.
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - L2CacheParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingRuntimeData process data finished, execute time is 0.006 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingPeripheralData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingNicData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingRoceData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingTSData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingAICPUData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingCtrlCPUData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingMemoryData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingCpuUsageData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingPcieData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingHBMData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingQosData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - NonMiniLLCParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingHCCSData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParsingFftsAICoreSampleData process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - BiuPerfParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - SocProfilerParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_time_parser.py:116] - Start parsing sync data ...
+2026-09-20 07:34:12 [INFO] [ms_time_parser.py:119] - Parsing sync data finished...
+2026-09-20 07:34:12 [WARNING] [data_preparation_parser.py:104] - No data preparation data, data list is empty!
+2026-09-20 07:34:12 [INFO] [data_preparation_parser.py:117] - Parsing data preparation has finished.
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - DataPreparationParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParallelStrategyParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - NpuMemParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - NpuModuleMemParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - MsTimeParser process data finished, execute time is 0.010 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - AicpuAddInfoParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - NetDevStatsParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - SocPmuParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [lpm_info_parser.py:128] - start parsing lpm data, files: ['lpmInfoConv.data.0.slice_0']
+2026-09-20 07:34:12 [INFO] [lpm_info_parser.py:105] - Start parsing Lpm info data file.
+2026-09-20 07:34:12 [INFO] [lpm_info_parser.py:109] - Parsing Lpm info data finished!
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - LpmInfoConvParser process data finished, execute time is 0.011 s
+2026-09-20 07:34:12 [INFO] [ts_track_parser.py:100] - start parsing rts data file: ts_track.data.0.slice_0
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - TstrackParser process data finished, execute time is 0.009 s
+2026-09-20 07:34:12 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - AicpuBinDataParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - HCCLOperatorParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParallelParser process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [msprof_c_interface.py:41] - Device Data will be parsed by msprof_analysis.so!
+2026-09-20 07:34:12 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:12 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:12 [INFO] [profiling_scene.py:71] - Current scene of data is based on single_op
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - L2CacheCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - MemcpyCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [WARNING] [base_model.py:75] - Table TsBlockNum not found.
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - BlockNumCalculator process data finished, execute time is 0.008 s
+2026-09-20 07:34:12 [WARNING] [biu_monitor_calculator.py:110] - Biu flow data or biu cycles data list is empty!
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - StarsIterRecCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [WARNING] [biu_monitor_calculator.py:110] - Biu flow data or biu cycles data list is empty!
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - BiuPerfCalculator process data finished, execute time is 0.007 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - SocPmuCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - KfcCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - ParseAiCoreOpSummaryCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - MergeOpCounterCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - OpCounterOpSceneCalculator process data finished, execute time is 0.013 s
+2026-09-20 07:34:12 [INFO] [ms_multi_process.py:76] - OpSummaryOpSceneCalculator process data finished, execute time is 0.016 s
+2026-09-20 07:34:12 [WARNING] [msprof_export.py:566] - Unable to get freq data. Maybe the data is not collected, or the data may fail to be analyzed.
+2026-09-20 07:34:12 [WARNING] [pipeline_overlap_viewer.py:85] - Both task data and hccl data are missing, no need to calculate the overlap.
+2026-09-20 07:34:12 [WARNING] [msprof_export.py:566] - Unable to get msprof data. Maybe the data is not collected, or the data may fail to be analyzed.
+2026-09-20 07:34:12 [INFO] [msprof_c_interface.py:55] - Data will be export by msprof_analysis.so!
+2026-09-20 07:34:13 [WARNING] [file_manager.py:98] - Data has been analyzed, path is /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/mxfp8_bf16/trace/PROF_000001_20260920073410068_00061281DAIBQEMK/device_0, there are ['time.db', 'freq.db', 'voltage.db', 'step_trace.db', 'metric_summary.db', 'ascend_task.db', 'biu_perf.db', 'ai_core_op_summary.db', 'op_counter.db'] in sqlite.
+2026-09-20 07:34:13 [WARNING] [msprof_export.py:477] - File all_file.complete already exists. All data will be exported from db in sqlite. Path is /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/mxfp8_bf16/trace/PROF_000001_20260920073410068_00061281DAIBQEMK/device_0 
+2026-09-20 07:34:13 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:13 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:13 [INFO] [profiling_scene.py:71] - Current scene of data is based on single_op
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - L2CacheCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - MemcpyCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [WARNING] [base_model.py:75] - Table TsBlockNum not found.
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - BlockNumCalculator process data finished, execute time is 0.008 s
+2026-09-20 07:34:13 [WARNING] [biu_monitor_calculator.py:110] - Biu flow data or biu cycles data list is empty!
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - StarsIterRecCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [WARNING] [biu_monitor_calculator.py:110] - Biu flow data or biu cycles data list is empty!
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - BiuPerfCalculator process data finished, execute time is 0.007 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - SocPmuCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - KfcCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - ParseAiCoreOpSummaryCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [op_summary_op_scene_calculator.py:79] - The db ai_core_op_summary.db already exists, and won't create again.
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - OpSummaryOpSceneCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - MergeOpCounterCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [ms_multi_process.py:76] - OpCounterOpSceneCalculator process data finished, execute time is 0.005 s
+2026-09-20 07:34:13 [INFO] [msprof_c_interface.py:62] - Summary will be export by msprof_analysis.so!
+2026-09-20 07:34:13 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:13 [WARNING] [base_model.py:75] - Table step_trace_data not found.
+2026-09-20 07:34:13 [INFO] [profiling_scene.py:71] - Current scene of data is based on single_op

@@ -1,0 +1,10 @@
+$ /usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/ncu --section-folder /tmp/lp-profile-_zhz1d3l --apply-rules no --metrics gpu__time_duration.sum,dram__throughput.avg.pct_of_peak_sustained_elapsed,sm__throughput.avg.pct_of_peak_sustained_elapsed --launch-count 3 --target-processes all /root/workspace/InfiniTensor/Learning-CUDA-project/03_hadamard_tc/zmuxuny/build/hadamard --input /tmp/lp-profile-_zhz1d3l/h.bin --output /tmp/lp-profile-_zhz1d3l/h.out --packed /tmp/lp-profile-_zhz1d3l/h.pack --log /tmp/lp-profile-_zhz1d3l/h.json --format nvfp4 --repeats 1
+==WARNING== Could not deploy stock section files to "/root/Documents/NVIDIA Nsight Compute/2021.3.1/Sections".
+Set the HOME environment variable to a writable directory.
+==WARNING== Using "/usr/lib/x86_64-linux-gnu/nsight-compute/target/linux-desktop-glibc_2_11_3-x64/../../sections" instead.
+==WARNING== See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq.
+==PROF== Connected to process 1744187 (/root/workspace/InfiniTensor/Learning-CUDA-project/03_hadamard_tc/zmuxuny/build/hadamard)
+==ERROR== Profiling is not supported on device 0 as it uses the Windows Subsystem for Linux (WSL).
+Hadamard=0.608256 ms fused=1.52986 ms unfused=19.3188 ms; packed equal
+==PROF== Disconnected from process 1744187
+==WARNING== No kernels were profiled.

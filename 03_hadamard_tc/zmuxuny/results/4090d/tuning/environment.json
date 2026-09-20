@@ -1,0 +1,64 @@
+{
+  "date_utc": "2026-09-19T15:15:24.726560+00:00",
+  "gpu": "name, driver_version, memory.total [MiB], clocks.current.sm [MHz], clocks.current.memory [MHz], temperature.gpu\nNVIDIA GeForce RTX 4090 D, 570.124.06, 24564 MiB, 210 MHz, 405 MHz, 36",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Jan_15_19:20:09_PST_2025\nCuda compilation tools, release 12.8, V12.8.61\nBuild cuda_12.8.r12.8/compiler.35404655_0",
+  "host_compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "python": "3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0]",
+  "numpy": "1.26.4",
+  "platform": "Linux-5.4.0-196-generic-x86_64-with-glibc2.39",
+  "architecture": "sm_89",
+  "flags": "-ccbin g++ -std=c++17 -O3 -lineinfo --fmad=false -gencode arch=compute_89,code=sm_89 -gencode arch=compute_89,code=compute_89",
+  "hadamard_arch_define": "-DLP_CUDA_ARCH=89",
+  "native_additional_define": "-DLP_NATIVE_FP8=1",
+  "previous_submission_commit": "e7c23862c311b9519230a4e1bb35f2f7d84895d4",
+  "binaries": {
+    "software": {
+      "path": "/root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/build/hadamard",
+      "sha256": "5d01f4d1e9963c62085e061f6d2b4c861f1571f1028c11b1eb850a723b07e10a"
+    },
+    "native": {
+      "path": "/root/zmuxuny-cuda-tuning/03_hadamard_tc/zmuxuny/build/hadamard_native",
+      "sha256": "8d074d43d00bafe8ad04874d1e35b2a1b8353862c6cee4fe3229537446972610"
+    },
+    "before": {
+      "path": "/root/zmuxuny-cuda-20260919/03_hadamard_tc/zmuxuny/build/hadamard",
+      "sha256": "622ee4a9632dad6fe90f78754d810b747b8026e883c0be72e90c04bc5cb1349d"
+    }
+  },
+  "source_sha256": {
+    "Makefile": "75528b516af32ca5b14fb93b97089dd0b03bc201221165d14b00054da51e3f50",
+    "include/gpu.cuh": "dbd8e2ef185302fd3da2dcf8d89fd3529d0f7edfb11982889712af49f346f2f2",
+    "include/host.hpp": "98a09a6684b228d38abfc2e81302988c5f48cbf307fcd8e79c3fe0b49465e9a2",
+    "include/layout.cuh": "d86ba852870c6244feb4f7d5908f39eabc69b7e6cef0ac21795ba7344dc9ef5d",
+    "include/numeric.cuh": "a2c97ae0c75d2be17549aa4a4b9b4109928cd2ab556196b16602ef57a6df1722",
+    "include/vector.cuh": "9846ef82b6386706053cb344698d0cfac6e0c2f8b38202fffd023f261573b048",
+    "src/hadamard.cuh": "5a44e368cc42305e7cd7e9f83ccca522df4b1aebf59e8121fbc4acd21b71e342",
+    "src/main.cu": "b4a07d09c8d6cc8751866e6893b8d0ffea1f4d8fb44cf3ac1fc5340ddc9fddea",
+    "src/tensor_core.cuh": "5e888da049c48bac778f8a34381381c6fb86d0771e02b14d959d938c72f0d79b",
+    "tests/benchmark.py": "551d20be01ecb03dfd7f5cf166bd4f0bb1b7fc52aff311358338ebd342de6227",
+    "tests/benchmark_extended.py": "9e8149ff9c8ae04aedb7d940a72b380ed43ecbe46c0a942e3944b1c8af8648f4",
+    "tests/benchmark_tuning.py": "72a1f82d8dadfe2ff61dff39a18d2ac916ecab870b3df1157f6751d33a2561d0",
+    "tests/check_bf16.cu": "f0d9777cd6cfe9620d2e2bae84c739e8f006aeb4a585a000629147a6b37b1d9c",
+    "tests/generate.py": "584c7364d4d251c113868e3ada1ca007f9f4417aaca8b3bef7ea67e023b4a2d1",
+    "tests/profile.py": "29a74769972b147ad491a7fd51e3404e59713cdbf5db3622e83137edeff65b38",
+    "tests/profile_native.py": "eed22726dccd1d458d58b23cc9974e4151463ce93e3ee788bdfa2707b8272d48",
+    "tests/reference.py": "b73e404d095145996a687b9c468ec2e4414c4919ae9b731b0de44f45ed72a7c1",
+    "tests/report.py": "ffa00380f160a1add4bbb8a257724bd252ba22e7266bbabdf08cd462345b45f6",
+    "tests/report_4090.py": "3a6b6074ffff77f84e9f418a40edf5f9b368f3c4f2e4c3a65d1ea648c96b5bd1",
+    "tests/report_tuning.py": "f268cf390bf53bd69e56e9be806e6dd69607b954c5ba422b79156fdad07a6479",
+    "tests/tune_mma.cu": "daf6d50851f013ebfcc334dc9a3521aa894e1ec81d0a5601b4c6aac2e489c07a",
+    "tests/validate.py": "d7ebec3d26fcf58e59821d394ff963742041a2af2fc6005dc838a8b814fce37a"
+  },
+  "clock_policy": "not locked; cases interleaved, no concurrent GPU jobs",
+  "device_properties": {
+    "name": "NVIDIA GeForce RTX 4090 D",
+    "sm": 89,
+    "l2_bytes": 75497472,
+    "multiprocessors": 114,
+    "global_memory_bytes": 25262096384,
+    "memory_bus_bits": 384
+  },
+  "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2024 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35237751) (public-release)",
+  "nsys": "NVIDIA Nsight Systems version 2024.6.2.225-246235244400v0",
+  "sanitizer": "NVIDIA (R) Compute Sanitizer\nCopyright (c) 2020-2025 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35351055) (public-release)"
+}

@@ -1,0 +1,1 @@
+{"name":"Iluvatar MR-V100","global_memory_bytes":34359738368,"multiprocessors":16,"warp_size":64,"max_threads_per_block":4096,"shared_memory_per_block":131072,"driver_api_version":10020,"runtime_api_version":10020}

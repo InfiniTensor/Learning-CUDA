@@ -1,0 +1,62 @@
+[mssanitizer] logging to file: ./mindstudio_sanitizer_log/mssanitizer_20260920072011_36895.log
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_quant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_quant. No error detected.
+[mssanitizer] No active sanitizer tool on kernel ascend_dequant.
+[mssanitizer] WARN: initcheck is not supported on the kernel that without `--cce-enable-sanitizer' compiler option, thus it's temporarily ignored.
+[mssanitizer] Sanitizer finished on kernel ascend_dequant. No error detected.
+quant=101.734 ms dequant=65.6052 ms CPU/GPU exact match

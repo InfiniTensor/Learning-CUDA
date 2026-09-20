@@ -1,0 +1,32 @@
+[INFO] Start profiling....
+Hadamard=0.01193 ms fused=0.02965 ms unfused=0.03109 ms; packed equal
+[INFO] Start export data in PROF_000001_20260920073420224_00061790LQHACLIK.
+Sun 20 Sep 2026 07:34:22 [WARNING] [MSVP] [61827] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: Start analyzing data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host" ...
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: It may take few minutes, please be patient ...
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: Analysis data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host" finished.
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: Start analyzing data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0" ...
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: It may take few minutes, please be patient ...
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_common.py: Analysis data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0" finished.
+Sun 20 Sep 2026 07:34:22 [INFO] [MSVP] [61830] msprof_export.py: All collected data will be exported, path is: /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0.
+Sun 20 Sep 2026 07:34:23 [WARNING] [MSVP] [61996] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: The data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host" has been analyzed. Parsing phase will be skipped.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: The data in "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0" has been analyzed. Parsing phase will be skipped.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: All collected data will be exported, path is: /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: There is no summary data to export for "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/host"
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: All collected data will be exported, path is: /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_export.py: There is no summary data to export for "/root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/device_0"
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_common.py: Start exporting summary output_file.
+Sun 20 Sep 2026 07:34:23 [INFO] [MSVP] [61999] msprof_common.py: End exporting summary output_file.The file is stored in the /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK/mindstudio_profiler_output path.
+[INFO] Export all data in PROF_000001_20260920073420224_00061790LQHACLIK done.
+[INFO] Start query data in PROF_000001_20260920073420224_00061790LQHACLIK.
+Sun 20 Sep 2026 07:34:24 [WARNING] [MSVP] [62038] msprof_entrance.py: Msprof analysis is parsing data as root, which may cause potential system security risks.
+Job Info	Device ID	Dir Name	Collection Time           	Model ID	Iteration Number	Top Time Iteration	Rank ID	
+
+NA      	         	host    	2026-09-20 07:34:20.761799	N/A     	N/A             	N/A               	-1     	
+
+NA      	0        	device_0	2026-09-20 07:34:20.764495	N/A     	N/A             	N/A               	-1     	
+
+[INFO] Query all data in PROF_000001_20260920073420224_00061790LQHACLIK done.
+[INFO] Profiling finished.
+[INFO] Process profiling data complete. Data is saved in /root/camp/03_hadamard_tc/zmuxuny/results/ascend/profile/nvfp4_bf16/trace/PROF_000001_20260920073420224_00061790LQHACLIK

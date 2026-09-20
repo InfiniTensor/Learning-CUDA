@@ -1,0 +1,356 @@
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32.BF16 R4, R24, R28, RZ ;                          /* 0x0000001c1804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R24, R24, R2, RZ ;                          /* 0x000000021818723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17f0*/                   HMMA.16816.F32.BF16 R12, R8, R28, RZ ;                          /* 0x0000001c080c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1820*/                   HMMA.16816.F32.BF16 R8, R8, R2, RZ ;                            /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2230*/                   HMMA.16816.F32.BF16 R16, R20, R28, RZ ;                         /* 0x0000001c1410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2260*/                   HMMA.16816.F32.BF16 R20, R20, R2, RZ ;                          /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c80*/                   HMMA.16816.F32.BF16 R28, R32.reuse, R28, RZ ;                   /* 0x0000001c201c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2d00*/                   HMMA.16816.F32.BF16 R32, R32, R2, RZ ;                          /* 0x000000022020723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32.BF16 R4, R12, R10, RZ ;                          /* 0x0000000a0c04723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R12, R12, R2, RZ ;                          /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17e0*/                   HMMA.16816.F32.BF16 R8, R16, R10, RZ ;                          /* 0x0000000a1008723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1850*/                   HMMA.16816.F32.BF16 R16, R16, R2, RZ ;                          /* 0x000000021010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dd0*/                   HMMA.16816.F32.BF16 R16, R4, R16, RZ ;                          /* 0x000000100410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R4, R4, R8, RZ ;                            /* 0x000000080404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dd0*/                   HMMA.16816.F32.BF16 R12, R16, R12, RZ ;                         /* 0x0000000c100c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R16, R16, R6, RZ ;                          /* 0x000000061010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dd0*/                   HMMA.16816.F32.BF16 R12, R16, R12, RZ ;                         /* 0x0000000c100c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R16, R16, R6, RZ ;                          /* 0x000000061010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R12, R16, R12, RZ ;                         /* 0x0000000c100c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e10*/                   HMMA.16816.F32.BF16 R16, R16, R6, RZ ;                          /* 0x000000061010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R4, R8, R6, RZ ;                            /* 0x000000060804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32.BF16 R8, R8, R18, RZ ;                           /* 0x000000120808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32 R4, R8, R28, RZ ;                                /* 0x0000001c0804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R8, R8, R2, RZ ;                                 /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17f0*/                   HMMA.16816.F32 R24, R20, R28, RZ ;                              /* 0x0000001c1418723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1820*/                   HMMA.16816.F32 R20, R20, R2, RZ ;                               /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2230*/                   HMMA.16816.F32 R12, R16, R28, RZ ;                              /* 0x0000001c100c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2260*/                   HMMA.16816.F32 R16, R16, R2, RZ ;                               /* 0x000000021010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c80*/                   HMMA.16816.F32 R28, R32.reuse, R28, RZ ;                        /* 0x0000001c201c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2d00*/                   HMMA.16816.F32 R32, R32, R2, RZ ;                               /* 0x000000022020723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32 R8, R12, R4, RZ ;                                /* 0x000000040c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17f0*/                   HMMA.16816.F32 R4, R16.reuse, R4, RZ ;                          /* 0x000000041004723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1870*/                   HMMA.16816.F32 R16, R16, R2, RZ ;                               /* 0x000000021010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R8, R4, R10, RZ ;                                /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R4, R4, R18, RZ ;                                /* 0x000000120404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R8, R12, R8, RZ ;                                /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R8, R12, R8, RZ ;                                /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R8, R12, R8, RZ ;                                /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R4, R8, R6, RZ ;                                 /* 0x000000060804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi2ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R8, R8, R18, RZ ;                                /* 0x000000120808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R32, R20, R16, RZ ;                         /* 0x000000101420723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R20, R20, R2, RZ ;                          /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17f0*/                   HMMA.16816.F32.BF16 R24, R28.reuse, R16, RZ ;                   /* 0x000000101c18723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1800*/                   HMMA.16816.F32.BF16 R28, R28, R2, RZ ;                          /* 0x000000021c1c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2250*/                   HMMA.16816.F32.BF16 R40, R44, R16, RZ ;                         /* 0x000000102c28723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2280*/                   HMMA.16816.F32.BF16 R44, R44, R2, RZ ;                          /* 0x000000022c2c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2ca0*/                   HMMA.16816.F32.BF16 R16, R36.reuse, R16, RZ ;                   /* 0x000000102410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2cf0*/                   HMMA.16816.F32.BF16 R36, R36, R2, RZ ;                          /* 0x000000022424723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R20, R12, R8, RZ ;                          /* 0x000000080c14723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32.BF16 R12, R12, R2, RZ ;                          /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1820*/                   HMMA.16816.F32.BF16 R8, R16.reuse, R8, RZ ;                     /* 0x000000081008723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1870*/                   HMMA.16816.F32.BF16 R16, R16, R2, RZ ;                          /* 0x000000021010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R8, R12, R8, RZ ;                           /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R12, R12, R4, RZ ;                          /* 0x000000040c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R8, R12, R8, RZ ;                           /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R12, R12, R4, RZ ;                          /* 0x000000040c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R8, R12, R8, RZ ;                           /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R12, R12, R4, RZ ;                          /* 0x000000040c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R12, R8, R12, RZ ;                          /* 0x0000000c080c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R8, R8, R4, RZ ;                            /* 0x000000040808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R8, R12, R8, RZ ;                           /* 0x000000080c08723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R12, R12, R2, RZ ;                          /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R16, R4, R22, RZ ;                               /* 0x000000160410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R4, R4, R2, RZ ;                                 /* 0x000000020404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1800*/                   HMMA.16816.F32 R28, R12, R22, RZ ;                              /* 0x000000160c1c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1830*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2230*/                   HMMA.16816.F32 R44, R8, R22, RZ ;                               /* 0x00000016082c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2260*/                   HMMA.16816.F32 R8, R8, R2, RZ ;                                 /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c70*/                   HMMA.16816.F32 R20, R24, R22, RZ ;                              /* 0x000000161814723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2cb0*/                   HMMA.16816.F32 R24, R24, R2, RZ ;                               /* 0x000000021818723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R20, R8, R4, RZ ;                                /* 0x000000040814723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R8, R8, R2, RZ ;                                 /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1820*/                   HMMA.16816.F32 R4, R12.reuse, R4, RZ ;                          /* 0x000000040c04723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1890*/                   HMMA.16816.F32 R12, R12, R2, RZ ;                               /* 0x000000020c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R4, R20, R6, RZ ;                                /* 0x000000061404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R20, R20, R2, RZ ;                               /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R4, R20, R6, RZ ;                                /* 0x000000061404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R20, R20, R2, RZ ;                               /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dd0*/                   HMMA.16816.F32 R4, R20, R6, RZ ;                                /* 0x000000061404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R20, R20, R2, RZ ;                               /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R4, R20, R6, RZ ;                                /* 0x000000061404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R20, R20, R2, RZ ;                               /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32 R4, R8, R4, RZ ;                                 /* 0x000000040804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi2ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e40*/                   HMMA.16816.F32 R8, R8, R18, RZ ;                                /* 0x000000120808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d50*/                   HMMA.16816.F32.BF16 R4, R24, R28, RZ ;                          /* 0x0000001c1804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32.BF16 R24, R24, R2, RZ ;                          /* 0x000000021818723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1790*/                   HMMA.16816.F32.BF16 R12, R8, R28, RZ ;                          /* 0x0000001c080c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17c0*/                   HMMA.16816.F32.BF16 R8, R8, R2, RZ ;                            /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*21d0*/                   HMMA.16816.F32.BF16 R16, R20, R28, RZ ;                         /* 0x0000001c1410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2200*/                   HMMA.16816.F32.BF16 R20, R20, R2, RZ ;                          /* 0x000000021414723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c20*/                   HMMA.16816.F32.BF16 R28, R32, R28, RZ ;                         /* 0x0000001c201c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c60*/                   HMMA.16816.F32.BF16 R32, R32, R2, RZ ;                          /* 0x000000022020723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d50*/                   HMMA.16816.F32.BF16 R16, R4, R12, RZ ;                          /* 0x0000000c0410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32.BF16 R4, R4, R20, RZ ;                           /* 0x000000140404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1790*/                   HMMA.16816.F32.BF16 R12, R8, R12, RZ ;                          /* 0x0000000c080c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1800*/                   HMMA.16816.F32.BF16 R8, R8, R20, RZ ;                           /* 0x000000140808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32.BF16 R8, R4, R10, RZ ;                           /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0da0*/                   HMMA.16816.F32.BF16 R4, R4, R14, RZ ;                           /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d40*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32.BF16 R4, R4, R14, RZ ;                           /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d40*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32.BF16 R4, R4, R14, RZ ;                           /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d70*/                   HMMA.16816.F32.BF16 R8, R4, R10, RZ ;                           /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d90*/                   HMMA.16816.F32.BF16 R4, R4, R14, RZ ;                           /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d30*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R4, R4, R14, RZ ;                           /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d50*/                   HMMA.16816.F32 R4, R24, R28, RZ ;                               /* 0x0000001c1804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32 R24, R24, R2, RZ ;                               /* 0x000000021818723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1790*/                   HMMA.16816.F32 R12, R8, R28, RZ ;                               /* 0x0000001c080c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17c0*/                   HMMA.16816.F32 R8, R8, R2, RZ ;                                 /* 0x000000020808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*21d0*/                   HMMA.16816.F32 R20, R16, R28, RZ ;                              /* 0x0000001c1014723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2200*/                   HMMA.16816.F32 R16, R16, R2, RZ ;                               /* 0x000000021010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c20*/                   HMMA.16816.F32 R28, R32, R28, RZ ;                              /* 0x0000001c201c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2c60*/                   HMMA.16816.F32 R32, R32, R2, RZ ;                               /* 0x000000022020723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d50*/                   HMMA.16816.F32 R16, R12, R4, RZ ;                               /* 0x000000040c10723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32 R12, R12, R20, RZ ;                              /* 0x000000140c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1780*/                   HMMA.16816.F32 R4, R8, R4, RZ ;                                 /* 0x000000040804723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*17f0*/                   HMMA.16816.F32 R8, R8, R20, RZ ;                                /* 0x000000140808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d40*/                   HMMA.16816.F32 R8, R4, R8, RZ ;                                 /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R4, R4, R14, RZ ;                                /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d30*/                   HMMA.16816.F32 R8, R4, R10, RZ ;                                /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R4, R4, R16, RZ ;                                /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d30*/                   HMMA.16816.F32 R8, R4, R10, RZ ;                                /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R4, R4, R16, RZ ;                                /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d80*/                   HMMA.16816.F32 R8, R4, R10, RZ ;                                /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0da0*/                   HMMA.16816.F32 R4, R4, R14, RZ ;                                /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0d50*/                   HMMA.16816.F32 R8, R4, R10, RZ ;                                /* 0x0000000a0408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi1ELi1EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32 R4, R4, R16, RZ ;                                /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e40*/                   HMMA.16816.F32.BF16 R32, R8, R28, RZ ;                          /* 0x0000001c0820723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e70*/                   HMMA.16816.F32.BF16 R8, R8, R40, RZ ;                           /* 0x000000280808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*18a0*/                   HMMA.16816.F32.BF16 R16, R12, R28, RZ ;                         /* 0x0000001c0c10723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*18d0*/                   HMMA.16816.F32.BF16 R12, R12, R40, RZ ;                         /* 0x000000280c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2330*/                   HMMA.16816.F32.BF16 R20, R24, R28, RZ ;                         /* 0x0000001c1814723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2360*/                   HMMA.16816.F32.BF16 R24, R24, R40, RZ ;                         /* 0x000000281818723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2e40*/                   HMMA.16816.F32.BF16 R28, R36, R28, RZ ;                         /* 0x0000001c241c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2e70*/                   HMMA.16816.F32.BF16 R36, R36, R40, RZ ;                         /* 0x000000282424723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e60*/                   HMMA.16816.F32.BF16 R8, R4, R16, RZ ;                           /* 0x000000100408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e90*/                   HMMA.16816.F32.BF16 R4, R4, R20, RZ ;                           /* 0x000000140404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1900*/                   HMMA.16816.F32.BF16 R16, R12, R16, RZ ;                         /* 0x000000100c10723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1940*/                   HMMA.16816.F32.BF16 R12, R12, R20, RZ ;                         /* 0x000000140c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R4, R4, R16, RZ ;                           /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R4, R4, R16, RZ ;                           /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dc0*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R4, R4, R16, RZ ;                           /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e00*/                   HMMA.16816.F32.BF16 R4, R4, R16, RZ ;                           /* 0x000000100404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0da0*/                   HMMA.16816.F32.BF16 R8, R4, R8, RZ ;                            /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi2ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e60*/                   HMMA.16816.F32.BF16 R4, R4, R12, RZ ;                           /* 0x0000000c0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e20*/                   HMMA.16816.F32 R32, R16, R24, RZ ;                              /* 0x000000181020723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e50*/                   HMMA.16816.F32 R16, R16, R40, RZ ;                              /* 0x000000281010723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*18a0*/                   HMMA.16816.F32 R12, R28, R24, RZ ;                              /* 0x000000181c0c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*18d0*/                   HMMA.16816.F32 R28, R28, R40, RZ ;                              /* 0x000000281c1c723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2300*/                   HMMA.16816.F32 R20, R8, R24, RZ ;                               /* 0x000000180814723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2330*/                   HMMA.16816.F32 R8, R8, R40, RZ ;                                /* 0x000000280808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2e10*/                   HMMA.16816.F32 R24, R36.reuse, R24, RZ ;                        /* 0x000000182418723c */
+Function : _ZN2lp19hadamard_mma_kernelILi1024ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*2e50*/                   HMMA.16816.F32 R36, R36, R40, RZ ;                              /* 0x000000282424723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e40*/                   HMMA.16816.F32 R16, R4, R20, RZ ;                               /* 0x000000140410723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e70*/                   HMMA.16816.F32 R4, R4, R12, RZ ;                                /* 0x0000000c0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1900*/                   HMMA.16816.F32 R20, R8, R20, RZ ;                               /* 0x000000140814723c */
+Function : _ZN2lp19hadamard_mma_kernelILi512ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*1970*/                   HMMA.16816.F32 R8, R8, R12, RZ ;                                /* 0x0000000c0808723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32 R8, R4, R8, RZ ;                                 /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi256ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R4, R4, R2, RZ ;                                 /* 0x000000020404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0da0*/                   HMMA.16816.F32 R8, R4, R8, RZ ;                                 /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi128ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R4, R4, R2, RZ ;                                 /* 0x000000020404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0db0*/                   HMMA.16816.F32 R8, R4, R8, RZ ;                                 /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi64ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R4, R4, R2, RZ ;                                 /* 0x000000020404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0dd0*/                   HMMA.16816.F32 R8, R4, R16, RZ ;                                /* 0x000000100408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi32ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0df0*/                   HMMA.16816.F32 R4, R4, R14, RZ ;                                /* 0x0000000e0404723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0de0*/                   HMMA.16816.F32 R8, R4, R8, RZ ;                                 /* 0x000000080408723c */
+Function : _ZN2lp19hadamard_mma_kernelILi16ELi1ELi0ELi0EEEvPKtPtmbbjPhS4_PfNS_6LayoutE
+        /*0e10*/                   HMMA.16816.F32 R4, R4, R2, RZ ;                                 /* 0x000000020404723c */
+Function : _ZN2lp11hadamard_tcEPK6__halfS2_PS0_mibbj
+        /*1170*/                   HMMA.16816.F32 R4, R12.reuse, R16, R4 ;                         /* 0x000000100c04723c */
+Function : _ZN2lp11hadamard_tcEPK6__halfS2_PS0_mibbj
+        /*1180*/                   HMMA.16816.F32 R8, R12, R18, R8 ;                               /* 0x000000120c08723c */

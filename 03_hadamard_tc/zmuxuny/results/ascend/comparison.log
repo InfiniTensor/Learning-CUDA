@@ -1,0 +1,12 @@
+{"rows": 32, "cols": 64, "dtype": "fp16", "format": "mxfp8"} 0.01127 -> 0.00952 ms
+{"rows": 32, "cols": 64, "dtype": "fp16", "format": "nvfp4"} 0.01130 -> 0.00956 ms
+{"rows": 8192, "cols": 1024, "dtype": "fp16", "format": "mxfp8"} 29.39291 -> 15.05314 ms
+{"rows": 8192, "cols": 1024, "dtype": "fp16", "format": "nvfp4"} 29.39324 -> 15.05198 ms
+{"rows": 65536, "cols": 1024, "dtype": "fp16", "format": "mxfp8"} 235.41677 -> 120.42426 ms
+{"rows": 65536, "cols": 1024, "dtype": "fp16", "format": "nvfp4"} 235.39095 -> 120.41111 ms
+{"rows": 32, "cols": 64, "dtype": "bf16", "format": "mxfp8"} 0.01198 -> 0.00983 ms
+{"rows": 32, "cols": 64, "dtype": "bf16", "format": "nvfp4"} 0.01168 -> 0.01016 ms
+{"rows": 8192, "cols": 1024, "dtype": "bf16", "format": "mxfp8"} 31.27685 -> 16.69691 ms
+{"rows": 8192, "cols": 1024, "dtype": "bf16", "format": "nvfp4"} 31.27462 -> 16.69552 ms
+{"rows": 65536, "cols": 1024, "dtype": "bf16", "format": "mxfp8"} 250.45532 -> 133.55643 ms
+{"rows": 65536, "cols": 1024, "dtype": "bf16", "format": "nvfp4"} 250.44173 -> 133.53861 ms

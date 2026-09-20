@@ -1,0 +1,8 @@
+fatal error: error in backend: Cannot select: 0x2aab0c70f930: i32 = bitcast FrameIndex:i64<1>, /root/camp/probes/probe_san.cpp:10:11
+  0x2aab0c7100e8: i64 = FrameIndex<1>
+In function: launch_probe
+bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+2026-04-25T15:46:25+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/cann-9.0.0/bin
