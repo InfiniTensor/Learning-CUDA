@@ -1,0 +1,8 @@
+{
+  "cuda_triton_shape_dtype_policy_comparisons": 36,
+  "real_weight_official_oracle_cases": 2,
+  "zero_signed_zero": true,
+  "rounding_midpoints": true,
+  "truncated_file_rejected": true,
+  "odd_columns_roundtrip": true
+}

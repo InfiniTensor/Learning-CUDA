@@ -1,0 +1,7 @@
+-r requirements.txt
+triton>=3.0
+safetensors
+transformers>=5.0
+fastapi
+uvicorn
+requests

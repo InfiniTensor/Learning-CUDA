@@ -1,0 +1,1078 @@
+[
+  {
+    "info": {
+      "status": "ok",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "mode": "bf16",
+      "quantized_linear_count": 0,
+      "original_linear_bytes": 0,
+      "packed_linear_bytes": 0,
+      "allocated_after_load_bytes": 1736535040,
+      "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "backend": "Transformers eager/SDPA; manual CUDA dequant + F.linear; no Marlin/no graph"
+    },
+    "samples": [
+      {
+        "task": "arith",
+        "prompt": "17 + 25 = ? Reply with only the integer.",
+        "expected": "42",
+        "answer": "50\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "50\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 2.083797464998497,
+          "output_tokens_per_second": 2.399465439412849,
+          "peak_allocated_bytes": 1774866432
+        }
+      },
+      {
+        "task": "extract",
+        "prompt": "Extract the access word after KEY: from this text: red KEY: lantern blue. Reply with only the access word.",
+        "expected": "lantern",
+        "answer": "lantern\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "lantern\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.3666122300001007,
+          "output_tokens_per_second": 13.638388441101997,
+          "peak_allocated_bytes": 1775198720
+        }
+      },
+      {
+        "task": "choice",
+        "prompt": "Which planet is known as the Red Planet? A. Venus B. Mars C. Jupiter D. Earth. Reply with only the letter.",
+        "expected": "B",
+        "answer": "B\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "B\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 40,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.25984805499865615,
+          "output_tokens_per_second": 15.393611470444474,
+          "peak_allocated_bytes": 1775330816
+        }
+      },
+      {
+        "task": "reverse",
+        "prompt": "Reverse the string abcde. Reply with only the reversed string.",
+        "expected": "edcba",
+        "answer": "edcba\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "edcba\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.26984433799952967,
+          "output_tokens_per_second": 18.52920108336205,
+          "peak_allocated_bytes": 1774833664
+        }
+      },
+      {
+        "task": "chinese",
+        "prompt": "请只回答数字：一个盒子里有12个球，拿走5个，又放入3个，剩下几个？",
+        "expected": "10",
+        "answer": "12\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "12\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.3532237180006632,
+          "output_tokens_per_second": 14.155334835104737,
+          "peak_allocated_bytes": 1775265280
+        }
+      },
+      {
+        "task": "sort",
+        "prompt": "Sort these integers in ascending order: 9, 2, 5. Reply with only the comma-separated list.",
+        "expected": "2,5,9",
+        "answer": "2, 5, 9\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "2, 5, 9\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 10
+        },
+        "measurement": {
+          "elapsed_seconds": 0.4844782740001392,
+          "output_tokens_per_second": 20.64076045646812,
+          "peak_allocated_bytes": 1775198720
+        }
+      },
+      {
+        "task": "fact",
+        "prompt": "What is the chemical symbol for gold? Reply with only the symbol.",
+        "expected": "Au",
+        "answer": "Au\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Au\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.24303875799887464,
+          "output_tokens_per_second": 16.458280288029293,
+          "peak_allocated_bytes": 1774866432
+        }
+      },
+      {
+        "task": "word",
+        "prompt": "The sentence is: \"The cat sleeps on the mat.\" What is its third word? Reply with only that word.",
+        "expected": "sleeps",
+        "answer": "mat\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "mat\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.258568371000365,
+          "output_tokens_per_second": 15.46979618784988,
+          "peak_allocated_bytes": 1775198720
+        }
+      },
+      {
+        "task": "explain",
+        "prompt": "用中文两句话解释为什么低精度权重能节省显存。",
+        "expected": null,
+        "answer": "低精度权重（如 INT8 或 INT4）通过减少数据位数的数量，显著降低了模型参数量，从而减少了需要加载的显存容量。\n\n此外，低精度权重通常采用更紧凑的量化格式，使得模型在推理过程中能更有效地利用有限的显存空间，同时保持较高的计算精度。\n",
+        "exact_match": null,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "低精度权重（如 INT8 或 INT4）通过减少数据位数的数量，显著降低了模型参数量，从而减少了需要加载的显存容量。\n\n此外，低精度权重通常采用更紧凑的量化格式，使得模型在推理过程中能更有效地利用有限的显存空间，同时保持较高的计算精度。\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 71
+        },
+        "measurement": {
+          "elapsed_seconds": 2.7084084689995507,
+          "output_tokens_per_second": 26.21465735787868,
+          "peak_allocated_bytes": 1774866432
+        }
+      }
+    ],
+    "exact_matches": 5,
+    "scored_tasks": 8
+  },
+  {
+    "info": {
+      "status": "ok",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "mode": "mxfp8",
+      "quantized_linear_count": 186,
+      "original_linear_bytes": 995229696,
+      "packed_linear_bytes": 513165312,
+      "allocated_after_load_bytes": 1273571328,
+      "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "backend": "Transformers eager/SDPA; manual CUDA dequant + F.linear; no Marlin/no graph"
+    },
+    "samples": [
+      {
+        "task": "arith",
+        "prompt": "17 + 25 = ? Reply with only the integer.",
+        "expected": "42",
+        "answer": "50\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "50\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 1.5109867339997436,
+          "output_tokens_per_second": 3.3090958957425554,
+          "peak_allocated_bytes": 1315820544
+        }
+      },
+      {
+        "task": "extract",
+        "prompt": "Extract the access word after KEY: from this text: red KEY: lantern blue. Reply with only the access word.",
+        "expected": "lantern",
+        "answer": "lantern\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "lantern\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.4741032260008069,
+          "output_tokens_per_second": 10.546226487797597,
+          "peak_allocated_bytes": 1315944448
+        }
+      },
+      {
+        "task": "choice",
+        "prompt": "Which planet is known as the Red Planet? A. Venus B. Mars C. Jupiter D. Earth. Reply with only the letter.",
+        "expected": "B",
+        "answer": "B\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "B\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 40,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.28910475300108374,
+          "output_tokens_per_second": 13.835815421495356,
+          "peak_allocated_bytes": 1315981312
+        }
+      },
+      {
+        "task": "reverse",
+        "prompt": "Reverse the string abcde. Reply with only the reversed string.",
+        "expected": "edcba",
+        "answer": "edcba\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "edcba\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.3409561839998787,
+          "output_tokens_per_second": 14.664640897088931,
+          "peak_allocated_bytes": 1315808256
+        }
+      },
+      {
+        "task": "chinese",
+        "prompt": "请只回答数字：一个盒子里有12个球，拿走5个，又放入3个，剩下几个？",
+        "expected": "10",
+        "answer": "12\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "12\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.33544340300068143,
+          "output_tokens_per_second": 14.905644157174983,
+          "peak_allocated_bytes": 1315969024
+        }
+      },
+      {
+        "task": "sort",
+        "prompt": "Sort these integers in ascending order: 9, 2, 5. Reply with only the comma-separated list.",
+        "expected": "2,5,9",
+        "answer": "2, 5, 9\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "2, 5, 9\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 10
+        },
+        "measurement": {
+          "elapsed_seconds": 0.5233191120005358,
+          "output_tokens_per_second": 19.108799527256252,
+          "peak_allocated_bytes": 1316005888
+        }
+      },
+      {
+        "task": "fact",
+        "prompt": "What is the chemical symbol for gold? Reply with only the symbol.",
+        "expected": "Au",
+        "answer": "Au\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Au\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.26828294699953403,
+          "output_tokens_per_second": 14.909631956618352,
+          "peak_allocated_bytes": 1315808256
+        }
+      },
+      {
+        "task": "word",
+        "prompt": "The sentence is: \"The cat sleeps on the mat.\" What is its third word? Reply with only that word.",
+        "expected": "sleeps",
+        "answer": "mat\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "mat\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.27031050699952175,
+          "output_tokens_per_second": 14.79779696468505,
+          "peak_allocated_bytes": 1315932160
+        }
+      },
+      {
+        "task": "explain",
+        "prompt": "用中文两句话解释为什么低精度权重能节省显存。",
+        "expected": null,
+        "answer": "低精度权重（如 INT8 或 INT4）通过减少数据位数的数量，显著降低了模型在训练和推理过程中需要存储的权重数据量，从而在显存中释放了更多空间用于其他任务。\n",
+        "exact_match": null,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "低精度权重（如 INT8 或 INT4）通过减少数据位数的数量，显著降低了模型在训练和推理过程中需要存储的权重数据量，从而在显存中释放了更多空间用于其他任务。\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 50
+        },
+        "measurement": {
+          "elapsed_seconds": 2.551089103999402,
+          "output_tokens_per_second": 19.599472210364517,
+          "peak_allocated_bytes": 1316376064
+        }
+      }
+    ],
+    "exact_matches": 5,
+    "scored_tasks": 8
+  },
+  {
+    "info": {
+      "status": "ok",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "mode": "nvfp4",
+      "quantized_linear_count": 186,
+      "original_linear_bytes": 995229696,
+      "packed_linear_bytes": 279909096,
+      "allocated_after_load_bytes": 1008988160,
+      "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "backend": "Transformers eager/SDPA; manual CUDA dequant + F.linear; no Marlin/no graph"
+    },
+    "samples": [
+      {
+        "task": "arith",
+        "prompt": "17 + 25 = ? Reply with only the integer.",
+        "expected": "42",
+        "answer": "40\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "40\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 1.532541188000323,
+          "output_tokens_per_second": 3.2625550550612323,
+          "peak_allocated_bytes": 1051237376
+        }
+      },
+      {
+        "task": "extract",
+        "prompt": "Extract the access word after KEY: from this text: red KEY: lantern blue. Reply with only the access word.",
+        "expected": "lantern",
+        "answer": "lantern\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "lantern\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.40420393900058116,
+          "output_tokens_per_second": 12.36999325727207,
+          "peak_allocated_bytes": 1051361280
+        }
+      },
+      {
+        "task": "choice",
+        "prompt": "Which planet is known as the Red Planet? A. Venus B. Mars C. Jupiter D. Earth. Reply with only the letter.",
+        "expected": "B",
+        "answer": "B\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "B\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 40,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.3090450809995673,
+          "output_tokens_per_second": 12.943095509116356,
+          "peak_allocated_bytes": 1051398144
+        }
+      },
+      {
+        "task": "reverse",
+        "prompt": "Reverse the string abcde. Reply with only the reversed string.",
+        "expected": "edcba",
+        "answer": "eabcde\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "eabcde\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25,
+          "completion_tokens": 6
+        },
+        "measurement": {
+          "elapsed_seconds": 0.37046846999874106,
+          "output_tokens_per_second": 16.195710258474598,
+          "peak_allocated_bytes": 1051237376
+        }
+      },
+      {
+        "task": "chinese",
+        "prompt": "请只回答数字：一个盒子里有12个球，拿走5个，又放入3个，剩下几个？",
+        "expected": "10",
+        "answer": "12\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "12\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.32080571799997415,
+          "output_tokens_per_second": 15.585757109230837,
+          "peak_allocated_bytes": 1051385856
+        }
+      },
+      {
+        "task": "sort",
+        "prompt": "Sort these integers in ascending order: 9, 2, 5. Reply with only the comma-separated list.",
+        "expected": "2,5,9",
+        "answer": "[2, 5, 9]\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[2, 5, 9]\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 12
+        },
+        "measurement": {
+          "elapsed_seconds": 0.5597251109993522,
+          "output_tokens_per_second": 21.439095306220572,
+          "peak_allocated_bytes": 1051447296
+        }
+      },
+      {
+        "task": "fact",
+        "prompt": "What is the chemical symbol for gold? Reply with only the symbol.",
+        "expected": "Au",
+        "answer": "Au\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Au\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.2605439849994582,
+          "output_tokens_per_second": 15.352494128806383,
+          "peak_allocated_bytes": 1051225088
+        }
+      },
+      {
+        "task": "word",
+        "prompt": "The sentence is: \"The cat sleeps on the mat.\" What is its third word? Reply with only that word.",
+        "expected": "sleeps",
+        "answer": "mat\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "mat\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.32780549000017345,
+          "output_tokens_per_second": 12.202358172823413,
+          "peak_allocated_bytes": 1051348992
+        }
+      },
+      {
+        "task": "explain",
+        "prompt": "用中文两句话解释为什么低精度权重能节省显存。",
+        "expected": null,
+        "answer": "低精度权重（如使用 8 位或 4 位浮点数的权重）之所以能节省显存，是因为它们将原本需要 16 位或 32 位浮点数的计算结果压缩成更小的数值，从而减少了计算所需的额外空间。\n\n此外，低精度计算通常能显著降低中间变量的数值范围，避免了在计算过程中产生巨大的中间结果，从而有效减少了显存中需要存储的数据量。",
+        "exact_match": null,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "低精度权重（如使用 8 位或 4 位浮点数的权重）之所以能节省显存，是因为它们将原本需要 16 位或 32 位浮点数的计算结果压缩成更小的数值，从而减少了计算所需的额外空间。\n\n此外，低精度计算通常能显著降低中间变量的数值范围，避免了在计算过程中产生巨大的中间结果，从而有效减少了显存中需要存储的数据量。"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 96
+        },
+        "measurement": {
+          "elapsed_seconds": 4.554920832999414,
+          "output_tokens_per_second": 21.07610725185404,
+          "peak_allocated_bytes": 1052359680
+        }
+      }
+    ],
+    "exact_matches": 3,
+    "scored_tasks": 8
+  },
+  {
+    "info": {
+      "status": "ok",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "mode": "nvfp4_4over6",
+      "quantized_linear_count": 186,
+      "original_linear_bytes": 995229696,
+      "packed_linear_bytes": 279909096,
+      "allocated_after_load_bytes": 1008988160,
+      "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "backend": "Transformers eager/SDPA; manual CUDA dequant + F.linear; no Marlin/no graph"
+    },
+    "samples": [
+      {
+        "task": "arith",
+        "prompt": "17 + 25 = ? Reply with only the integer.",
+        "expected": "42",
+        "answer": "5\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "5\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 1.6418988950008497,
+          "output_tokens_per_second": 2.43620360070827,
+          "peak_allocated_bytes": 1051225088
+        }
+      },
+      {
+        "task": "extract",
+        "prompt": "Extract the access word after KEY: from this text: red KEY: lantern blue. Reply with only the access word.",
+        "expected": "lantern",
+        "answer": "lantern\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "lantern\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 5
+        },
+        "measurement": {
+          "elapsed_seconds": 0.43940800999916974,
+          "output_tokens_per_second": 11.378945959609265,
+          "peak_allocated_bytes": 1051361280
+        }
+      },
+      {
+        "task": "choice",
+        "prompt": "Which planet is known as the Red Planet? A. Venus B. Mars C. Jupiter D. Earth. Reply with only the letter.",
+        "expected": "B",
+        "answer": "B\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "B\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 40,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.3313087309998082,
+          "output_tokens_per_second": 12.073331082851288,
+          "peak_allocated_bytes": 1051398144
+        }
+      },
+      {
+        "task": "reverse",
+        "prompt": "Reverse the string abcde. Reply with only the reversed string.",
+        "expected": "edcba",
+        "answer": "eabcde\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "eabcde\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25,
+          "completion_tokens": 6
+        },
+        "measurement": {
+          "elapsed_seconds": 0.37149798999962513,
+          "output_tokens_per_second": 16.150827626297666,
+          "peak_allocated_bytes": 1051237376
+        }
+      },
+      {
+        "task": "chinese",
+        "prompt": "请只回答数字：一个盒子里有12个球，拿走5个，又放入3个，剩下几个？",
+        "expected": "10",
+        "answer": "12 - 5 + 3 = 10\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "12 - 5 + 3 = 10\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 15
+        },
+        "measurement": {
+          "elapsed_seconds": 0.7718033689998265,
+          "output_tokens_per_second": 19.4350019739333,
+          "peak_allocated_bytes": 1051509248
+        }
+      },
+      {
+        "task": "sort",
+        "prompt": "Sort these integers in ascending order: 9, 2, 5. Reply with only the comma-separated list.",
+        "expected": "2,5,9",
+        "answer": "2, 5, 9\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "2, 5, 9\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 10
+        },
+        "measurement": {
+          "elapsed_seconds": 0.531373113999507,
+          "output_tokens_per_second": 18.81916818247089,
+          "peak_allocated_bytes": 1051422720
+        }
+      },
+      {
+        "task": "fact",
+        "prompt": "What is the chemical symbol for gold? Reply with only the symbol.",
+        "expected": "Au",
+        "answer": "Au\n",
+        "exact_match": true,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Au\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.2625091509999038,
+          "output_tokens_per_second": 15.23756404210635,
+          "peak_allocated_bytes": 1051225088
+        }
+      },
+      {
+        "task": "word",
+        "prompt": "The sentence is: \"The cat sleeps on the mat.\" What is its third word? Reply with only that word.",
+        "expected": "sleeps",
+        "answer": "mat\n",
+        "exact_match": false,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "mat\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 36,
+          "completion_tokens": 4
+        },
+        "measurement": {
+          "elapsed_seconds": 0.26696002000062435,
+          "output_tokens_per_second": 14.983517007492901,
+          "peak_allocated_bytes": 1051348992
+        }
+      },
+      {
+        "task": "explain",
+        "prompt": "用中文两句话解释为什么低精度权重能节省显存。",
+        "expected": null,
+        "answer": "低精度权重（如 4 位或 8 位）在计算过程中会进行舍入操作，这些舍入过程会改变数据的数值，从而在计算过程中“浪费”一部分计算资源（如浮点运算或内存访问），导致整体计算效率下降。\n\n相比之下，高精度权重（如 16 位或 32 位）在计算过程中几乎不进行任何舍入操作，能够保持数据的原始精度，从而最大限度地减少",
+        "exact_match": null,
+        "object": "chat.completion",
+        "model": "Qwen3.5-0.8B",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "低精度权重（如 4 位或 8 位）在计算过程中会进行舍入操作，这些舍入过程会改变数据的数值，从而在计算过程中“浪费”一部分计算资源（如浮点运算或内存访问），导致整体计算效率下降。\n\n相比之下，高精度权重（如 16 位或 32 位）在计算过程中几乎不进行任何舍入操作，能够保持数据的原始精度，从而最大限度地减少"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 26,
+          "completion_tokens": 96
+        },
+        "measurement": {
+          "elapsed_seconds": 4.322023052000077,
+          "output_tokens_per_second": 22.21182044727287,
+          "peak_allocated_bytes": 1052359680
+        }
+      }
+    ],
+    "exact_matches": 4,
+    "scored_tasks": 8
+  }
+]

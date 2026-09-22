@@ -1,0 +1,339 @@
+{
+  "model": "Qwen/Qwen3.5-0.8B",
+  "vllm_commit": "4cc0cb6f76a608622a29d9ea8f4d415697e21364",
+  "enforce_eager": true,
+  "prefix_caching": false,
+  "quantization": "mxfp8",
+  "batch": 1,
+  "prompt_tokens": 128,
+  "new_tokens": 64,
+  "init_seconds": 11.8085942980033,
+  "cycles": 8,
+  "warmup_runs_per_variant": 2,
+  "layout_note": "all variants retain both compressed layouts; same process/weights/KV budget",
+  "kernel_sha256": {
+    "mx_e2e_lab.so": "d9beecac563654509c2333e781d14d9d25f25a2010c65220b159c89bdab7e2b8",
+    "warp_mma_prefetch.so": "834ba97fc6cb53362c89eafc56d0d50993ba5eb86ae9333bb417eb0db8377213"
+  },
+  "all_token_ids_identical": true,
+  "rows": [
+    {
+      "cycle": 0,
+      "variant": "upstream",
+      "seconds": 1.7099514529982116,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 0,
+      "variant": "ada_v2",
+      "seconds": 1.7695004170018365,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 0,
+      "variant": "rewrite",
+      "seconds": 1.7183186289985315,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 1,
+      "variant": "upstream",
+      "seconds": 1.6506865629999083,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 1,
+      "variant": "rewrite",
+      "seconds": 1.6430114540053182,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 1,
+      "variant": "ada_v2",
+      "seconds": 1.6436809259976144,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "variant": "rewrite",
+      "seconds": 1.7383486359976814,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "variant": "upstream",
+      "seconds": 1.6479430880062864,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "variant": "ada_v2",
+      "seconds": 1.659871525997005,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 3,
+      "variant": "rewrite",
+      "seconds": 1.6156996580029954,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 3,
+      "variant": "ada_v2",
+      "seconds": 1.7356045950000407,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 3,
+      "variant": "upstream",
+      "seconds": 1.6022472620024928,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 4,
+      "variant": "ada_v2",
+      "seconds": 1.6394730169995455,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 4,
+      "variant": "rewrite",
+      "seconds": 1.7202353550019325,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 4,
+      "variant": "upstream",
+      "seconds": 1.63695471000392,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 5,
+      "variant": "ada_v2",
+      "seconds": 1.7762697910002316,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 5,
+      "variant": "upstream",
+      "seconds": 1.705120402002649,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 5,
+      "variant": "rewrite",
+      "seconds": 1.7033167780027725,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 6,
+      "variant": "upstream",
+      "seconds": 1.6998210239980835,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 6,
+      "variant": "ada_v2",
+      "seconds": 1.7437216710022767,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 6,
+      "variant": "rewrite",
+      "seconds": 1.6589866509966669,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 7,
+      "variant": "upstream",
+      "seconds": 1.7102029360030429,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 7,
+      "variant": "rewrite",
+      "seconds": 1.8815018969980883,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    },
+    {
+      "cycle": 7,
+      "variant": "ada_v2",
+      "seconds": 1.648140516001149,
+      "dispatch": {
+        "marlin_calls": 0,
+        "marlin_rows": 0,
+        "bf16_calls": 0,
+        "bf16_rows": 0,
+        "rewrite_calls": 0,
+        "rewrite_rows": 0
+      }
+    }
+  ],
+  "medians": {
+    "upstream": 1.675253793498996,
+    "ada_v2": 1.6977380604985228,
+    "rewrite": 1.710817703500652
+  },
+  "export_note": "Submission excerpt: per-run times and token-equality result retained; repeated token arrays omitted."
+}

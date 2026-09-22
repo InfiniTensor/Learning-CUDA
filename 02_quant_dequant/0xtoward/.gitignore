@@ -1,0 +1,7 @@
+__pycache__/
+*.so
+*.o
+*.lpt
+*.lpq
+output/
+.ruff_cache/

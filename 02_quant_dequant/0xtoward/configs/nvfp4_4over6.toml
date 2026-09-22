@@ -1,0 +1,7 @@
+format = "nvfp4"
+block_size = 16
+scale_mode = "block"
+output_type = "bf16"
+rounding = "nearest"
+four_over_six = true
+target_gpu = "RTX 4070 Laptop"

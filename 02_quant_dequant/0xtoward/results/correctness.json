@@ -1,0 +1,32 @@
+{
+  "dtype_tail_output_cases": 180,
+  "official_oracle": [
+    {
+      "dtype": "torch.float32",
+      "four_over_six": false,
+      "code_mismatches": 0,
+      "scale_mismatches": 0
+    },
+    {
+      "dtype": "torch.float32",
+      "four_over_six": true,
+      "code_mismatches": 0,
+      "scale_mismatches": 0
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "four_over_six": false,
+      "code_mismatches": 0,
+      "scale_mismatches": 0
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "four_over_six": true,
+      "code_mismatches": 0,
+      "scale_mismatches": 0
+    }
+  ],
+  "oracle_commit": "dadfad6901d473a734fe71e0b082e70ee993e23a",
+  "stochastic_same_seed": true,
+  "nondefault_stream": true
+}
